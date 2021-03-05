@@ -90,7 +90,7 @@
         'sleet': 'mdi-weather-snowy-rainy',
         'snow': 'mdi-weather-snowy',
         'thunderstorm': 'mdi-weather-lightning',
-        'wind': 'mdi-weather-windy',
+        'windy': 'mdi-weather-windy',
         'clear_night': 'mdi-weather-night'
       },
       vals: {

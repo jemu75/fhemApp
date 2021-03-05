@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import config from '/public/assets/app.config.json';
 
 export default class Fhem extends EventEmitter {
   constructor() {
@@ -6,7 +7,7 @@ export default class Fhem extends EventEmitter {
 
     this.app = {
       connection: {
-        location: 'http://fhem',
+        location: 'localhost',
         port: '8083',
         path: 'fhem'
       },
@@ -556,6 +557,9 @@ export default class Fhem extends EventEmitter {
 
   // mainfunction, create websocket and listen for updates from FHEM
   init() {
+    if(config.connection) Object.assign(this.app.connection, config.connection);
+    if(config.options) Object.assign(this.app.options, config.options);
+
     let options = [ { param: 'inform', value: 'type=status;filter=.*;fmt=JSON' }, { param: 'XHR', value: '1' } ];
     let url = this.createURL(options).replace('http','ws');
 
