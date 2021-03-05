@@ -2,7 +2,6 @@ import Vue from 'vue';
 import Vuetify from 'vuetify/lib/framework';
 import de from 'vuetify/es5/locale/de';
 import colors from 'vuetify/es5/util/colors';
-import config from '/public/assets/app.config.json';
 
 Vue.use(Vuetify);
 
@@ -26,7 +25,5 @@ const settings = {
       }
     }
 };
-
-if(config.theme) Object.assign(settings.theme, config.theme);
 
 export default new Vuetify(settings);
