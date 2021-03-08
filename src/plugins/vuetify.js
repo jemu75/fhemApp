@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib/framework';
 import de from 'vuetify/es5/locale/de';
-import colors from 'vuetify/es5/util/colors';
+import colors from 'vuetify/lib/util/colors';
 
 Vue.use(Vuetify);
 
@@ -20,7 +20,7 @@ const settings = {
           accent: colors.green.accent2
         },
         light: {
-          secondary: colors.grey.lighten3,
+          secondary: colors.grey.lighten3
         }
       }
     }

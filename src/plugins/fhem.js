@@ -27,9 +27,6 @@ export default class Fhem extends EventEmitter {
         logRecord: true,
         logBuffer: 500
       },
-      theme: {
-        dark: true
-      },
       data: {
         roomList: [],
         groupList: [],
@@ -559,12 +556,6 @@ export default class Fhem extends EventEmitter {
 
   // mainfunction, create websocket and listen for updates from FHEM
   async init() {
-    const config = await fetch('/config.json').then(res => res.json());
-
-    if(config.connection) Object.assign(this.app.connection, config.connection);
-    if(config.options) Object.assign(this.app.options, config.options);
-    //if(config.theme) Object.assign(this.app.theme, config.theme);
-
     let options = [ { param: 'inform', value: 'type=status;filter=.*;fmt=JSON' }, { param: 'XHR', value: '1' } ];
     let url = this.createURL(options).replace('http','ws');
 
