@@ -12,8 +12,23 @@ Vue.config.productionTip = false
 
 Vue.prototype.$fhem = new fhem()
 
-new Vue({
-  vuetify,
-  router,
-  render: h => h(App)
-}).$mount('#app')
+fetch('/config.json')
+  .then(res => res.json())
+  .catch(() => {
+    return {
+      connection: {},
+      options: {},
+      theme: {}
+    }
+  })
+  .then(cfg => {
+    if(cfg.connection) Object.assign(Vue.prototype.$fhem.app.connection, cfg.connection)
+    if(cfg.options) Object.assign(Vue.prototype.$fhem.app.options, cfg.options)
+    if(cfg.theme) Object.assign(vuetify.framework.theme, cfg.theme)
+
+    new Vue({
+      vuetify,
+      router,
+      render: h => h(App)
+    }).$mount('#app')
+  })
