@@ -1,7 +1,7 @@
 <template>
   <v-col class="col-12 col-sm-6 col-md-6 col-lg-6" :order="vals.order">
     <v-card :dark="this.$vuetify.theme.dark" color="secondary">
-      <v-progress-linear height="7" :value="vals.mainLevel" :color="vals.mainColor" background-color="secondary lighten-1"></v-progress-linear>
+      <v-progress-linear height="7" :value="vals.mainLevel" :color="vals.mainColor" background-color="secondary darken-1"></v-progress-linear>
 
       <v-card-title class="text-truncate">{{ vals.title }}</v-card-title>
       <v-divider></v-divider>
@@ -14,13 +14,19 @@
               </v-progress-circular>
             </v-col>
             <v-col class="text-truncate" align="left">
-              <div class="headline">{{ el.title }}</div>
-              <div>{{ el.mainState }}</div>
+              <div class="text-truncate headline">{{ el.title }}</div>
+              <div class="text-truncate">{{ el.mainState }}</div>
             </v-col>
+            <v-divider v-if="el.toggleCmd" vertical></v-divider>
             <v-col class="col-2" align="center">
               <v-btn v-if="el.route" icon link :to="el.route">
                 <v-icon large>{{ rightIcon }}</v-icon>
               </v-btn>
+              <div v-if="el.toggleCmd">
+                <v-btn icon @click="set(el.toggleCmd)">
+                  <v-icon large>{{ el.toggleIcon }}</v-icon>
+                </v-btn>
+              </div>
             </v-col>
           </v-row>
           <v-divider></v-divider>
@@ -68,11 +74,38 @@
     },
 
     methods: {
+      checkToggle(item) {
+        let toggleDefs = this.$fhem.getEl(item, 'Options', 'toggle');
+        let result = null;
+
+        if(toggleDefs && toggleDefs.length > 0) {
+          for(var def of toggleDefs) {
+            let vals = def.split(':');
+            let value = this.$fhem.getEl(item, 'Readings', vals[0] || 'state', 'Value')
+
+            if(!result || value === vals[1]) {
+              result = {
+                cmd: vals[2] ? ('set ' + item.Name + ' ' + vals[2]) : null,
+                icon: vals[3] || ''
+              }
+            }
+          }
+        } else {
+          result = { cmd: null, icon: '' }
+        }
+        return result;
+      },
+
+      set(cmd) {
+        this.$fhem.request(cmd)
+      },
+
       doList(val) {
         if(val.Connected) {
-          for(const item in val.Options.connected) {
+          for(var item in val.Options.connected) {
             let idx = this.list.map((e) => e.name).indexOf(item);
             let states = this.$fhem.handleStates(val.Connected[item], {});
+            let toggle = this.checkToggle(val.Connected[item]);
 
             let listItem = {
               name: item,
@@ -80,7 +113,9 @@
               mainState: states.mainState,
               mainColor: states.mainColor,
               mainLevel: states.mainLevel,
-              route: this.$fhem.getEl(val.Connected[item], 'Options', 'link')
+              route: this.$fhem.getEl(val.Connected[item], 'Options', 'link'),
+              toggleIcon: toggle.icon,
+              toggleCmd: toggle.cmd
             }
 
             if(listItem.mainColor != 'success') {

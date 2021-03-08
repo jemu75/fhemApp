@@ -488,10 +488,11 @@ export default class Fhem extends EventEmitter {
               Object.values(device.Connected).forEach((item, i) => {
                 if(item.Name === data.Name) {
                   let alias = Object.keys(device.Connected)[i];
-                  if(data.devicePart === 'Readings' && this.getEl(source, source.Connected[alias], 'Readings', data.param, data.paramPart)) {
+
+                  if(data.devicePart === 'Readings' && this.getEl(source.Connected[alias], 'Readings', data.param, data.paramPart)) {
                     source.Connected[alias].Readings[data.param][data.paramPart] = data.value;
                   }
-                  if(data.devicePart === 'Attributes' && this.getEl(source, source.Connected[alias], 'Attributes', data.param)) {
+                  if(data.devicePart === 'Attributes' && this.getEl(source.Connected[alias], 'Attributes', data.param)) {
                     source.Connected[alias].Attributes[data.param] = data.value;
                   }
                   this.app.data.deviceList.splice(idx, 1, source);

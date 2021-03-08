@@ -1,7 +1,7 @@
 <template>
   <v-col :class="vals.gridSize" :order="vals.order">
     <v-card :dark="this.$vuetify.theme.dark" color="secondary">
-      <v-progress-linear height="7" :value="vals.mainLevel" :color="vals.mainColor" background-color="secondary lighten-1"></v-progress-linear>
+      <v-progress-linear height="7" :value="vals.mainLevel" :color="vals.mainColor" background-color="secondary darken-1"></v-progress-linear>
 
       <v-card-title class="text-truncate">
         {{ vals.title }}

@@ -20,7 +20,10 @@ const settings = {
           accent: colors.green.accent2
         },
         light: {
-          secondary: colors.grey.lighten3
+          primary: colors.grey,
+          secondary: colors.grey.lighten3,
+          success: colors.green.accent3,
+          accent: colors.green.accent3
         }
       }
     }
