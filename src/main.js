@@ -12,19 +12,19 @@ Vue.config.productionTip = false
 
 Vue.prototype.$fhem = new fhem()
 
-fetch('/config.json')
+fetch('/cfg/config.json')
   .then(res => res.json())
-  .catch(() => {
-    return {
-      connection: {},
-      options: {},
-      theme: {}
-    }
-  })
+  .catch(() => null)
   .then(cfg => {
-    if(cfg.connection) Object.assign(Vue.prototype.$fhem.app.connection, cfg.connection)
-    if(cfg.options) Object.assign(Vue.prototype.$fhem.app.options, cfg.options)
-    if(cfg.theme) Object.assign(vuetify.framework.theme, cfg.theme)
+    if(cfg) {
+      if(cfg.connection) Object.assign(Vue.prototype.$fhem.app.connection, cfg.connection)
+      if(cfg.options) Object.assign(Vue.prototype.$fhem.app.options, cfg.options)
+      if(cfg.theme) {
+        if(cfg.theme.dark != -1) Object.assign(vuetify.framework.theme, { dark: cfg.theme.dark })
+        if(cfg.theme.light) Object.assign(vuetify.framework.theme.themes.light, cfg.theme.light)
+        if(cfg.theme.dark) Object.assign(vuetify.framework.theme.themes.dark, cfg.theme.dark)
+      }
+    }
 
     new Vue({
       vuetify,

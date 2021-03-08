@@ -9,6 +9,9 @@
     "logBuffer": 500
   },
   "theme": {
-    "dark": true
+    "dark": true,
+    "light": {
+      "primary": "#F48FB1"
+    }
   }
 }
