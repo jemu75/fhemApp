@@ -9,7 +9,7 @@ Für den Betrieb wird FHEM (als Backend) und ein Web-Server für die Web-Applica
 * Webserver - z.B. Apache https://httpd.apache.org/
 
 # Installation
-...
+Für den Betrieb der **FHEMApp** müssen alle Dateien und Unterverzeichnisse aus dem Ordner [www/fhemapp](./www/fhemapp) auf das Arbeitsverzeichnis des Webservers kopiert werden. Andere Verzeichnisse und Dateien sind nicht für den Betrieb der App notwendig.
 
 # Konfiguration in FHEM
 
