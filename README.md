@@ -5,7 +5,7 @@
 
 ![](./docs/media/fhemApp_group_example.png)*Beispiel für Geräte in der Desktopansicht*
 
-![](./docs/media/fhemApp_mobile_example.png)*Beispiel die App in der Smartphoneansicht*
+![](./docs/media/fhemApp_mobile_example.png)*Beispiel für die App in der Smartphoneansicht*
 
 # Systemanforderungen
 Für den Betrieb wird FHEM (als Backend) und ein Web-Server für **FHEMApp** (Frontend) benötigt.
