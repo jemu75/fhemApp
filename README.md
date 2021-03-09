@@ -90,11 +90,10 @@ attr global userattr appOptions:textField-long
 # Konfiguration der Aktoren / Sensoren in FHEMApp
 Jedes SmartHome-Gerät welches in **FHEMApp** angezeigt werden soll konfiguriert ihr nun direkt in FHEM. Dazu verwendet ihr das neu angelegte FHEM-Attribut `appOptions` sowie weitere FHEM-Attribute z.B. `alias`,`group`,`room`,`sortby` die standardmäßig zur Verfügung stehen.
 
-### allgemeine Parameter für appOptions
-Jedes in FHEM definierte Gerät kann über das Attribut `appOptions` in **FHEMApp** angezeigt werden. Dazu stehen verschiedene *Templates* zur Verfügung. Weiterhin kann das Verhalten der *Templates* definiert werden.
+### Definition über das Attribut appOptions
+Jedes in FHEM definierte Gerät kann über das Attribut `appOptions` in **FHEMApp** angezeigt werden. Dazu stehen verschiedene *Templates* zur Verfügung.
 
-Das folgende Beispiel stellt einen in FHEM definierten Schaltaktor als Schalter auf FHEMApp dar. *Definition:*
-`{ "template": "switch" }`
+Das folgende Beispiel stellt einen in FHEM definierten Schaltaktor als Schalter auf FHEMApp dar.
 
 *Definition in FHEM*<br>
 ![Definition in FHEM](./docs/media/template_switch_fhem.png)
