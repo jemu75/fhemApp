@@ -21,8 +21,10 @@ fetch('/cfg/config.json')
       if(cfg.options) Object.assign(Vue.prototype.$fhem.app.options, cfg.options)
       if(cfg.theme) {
         if(cfg.theme.dark != -1) Object.assign(vuetify.framework.theme, { dark: cfg.theme.dark })
-        if(cfg.theme.light) Object.assign(vuetify.framework.theme.themes.light, cfg.theme.light)
-        if(cfg.theme.dark) Object.assign(vuetify.framework.theme.themes.dark, cfg.theme.dark)
+        if(cfg.theme.themes) {
+          if(cfg.theme.themes.light) Object.assign(vuetify.framework.theme.themes.light, cfg.theme.themes.light)
+          if(cfg.theme.themes.dark) Object.assign(vuetify.framework.theme.themes.dark, cfg.theme.themes.dark)
+        }
       }
     }
 

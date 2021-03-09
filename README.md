@@ -1,5 +1,5 @@
 # FHEM App
-**FHEMApp** ist eine Web-Application zur Steuerung deiner Smarthome Umgebung. Sie wurde als Frontend für den gemeinsamen Einsatz von FHEM(tm) entwickelt. **FHEMApp** ist für den Betrieb auf unterschiedlichen Geräten (responsives design) ausgerichtet. Die Elemente zur Steuerung der verschiedenen SmartHome-Geräte (Aktoren/Sensoren) sind auf eine sehr einfache und intuitive Bedienung ausgelegt. Für die Einrichtung von **FHEMApp** sind keine Programmierkenntnisse erfordlerlich. **FHEMApp** wird komplett über FHEM konfiguriert.  
+**FHEMApp** ist eine Web-Application zur Steuerung deiner Smarthome Umgebung. Sie wurde als Frontend für den Einsatz mit FHEM(tm) entwickelt. **FHEMApp** ist für den Betrieb auf unterschiedlichen Geräten optimiert. Die Elemente zur Steuerung der verschiedenen SmartHome-Geräte sind sehr einfach zu bedienen. Für die Einrichtung von **FHEMApp** sind keine Programmierkenntnisse erforderlich. **FHEMApp** wird komplett über FHEM konfiguriert.
 
 ![](./docs/media/fhemapp_desk_main.png)*Beispiel für eine Startseite in der Desktopansicht*
 
@@ -13,18 +13,28 @@
 *Beispiele für die App in der Smartphoneansicht*
 
 # Systemanforderungen
-Für den Betrieb wird FHEM (als Backend) und ein Web-Server für **FHEMApp** (Frontend) benötigt.
+Für den Betrieb der **FHEMApp** wird FHEM(tm) und ein Web-Server benötigt.
 * Backendsystem - FHEM https://fhem.de/
 * Webserver - z.B. Apache https://httpd.apache.org/
 
 # Installation
-Für den Betrieb der **FHEMApp** müssen alle Dateien und Unterverzeichnisse aus dem Ordner [www/fhemapp](./www/fhemapp) auf das Arbeitsverzeichnis des Webservers kopiert werden. Andere Verzeichnisse und Dateien sind nicht für den Betrieb der App notwendig.
+Kopiert einfach alle Dateien und Unterverzeichnisse aus dem Ordner [www/fhemapp](./www/fhemapp) auf das Arbeitsverzeichnis eures Webservers. Danach sollte folgende Verzeichnisstruktur auf eurem Webserver vorhanden sein.
+```bash
+.
+└─ fhemapp
+    ├── favicon.png
+    ├── index.html
+    ├── cfg
+    ├── css
+    ├── img
+    └── js
+```
 
 # Konfiguration der Web-Application
-Die initiale Konfiguration von **FHEMApp** erfolgt über die Datei `config.json` welche sich im Verzeichnis [www/fhemapp/cfg](./www/fhemapp/cfg) befindet. Die Konfigurationsdatei könnt ihr über einen normalen Texteditor bearbeiten. Beachtet bei der Veränderung der Konfiguration auf die richtige Schreibweise im *JSON-Format*.
+Die initiale Konfiguration von **FHEMApp** erfolgt über die Datei `config.json` welche sich im Verzeichnis `../fhemapp/cfg/` befindet. Die Konfigurationsdatei könnt ihr über einen normalen Texteditor bearbeiten, um die folgenden Einstellungen vorzunehmen.
 
 ### Verbindungseinstellung für FHEM
-Unter *connection* könnt ihr den `Serverort`, den `Port` sowie den `Pfad` eurer FHEM Installation angeben. Standardmäßig ist **FHEMApp** auf die folgenden Verbindungseinstellungen konfiguriert.
+Hier wird festgelegt, wo sich die FHEM Installation befindet. Der Parameter `location` gibt die IP-Adresse bzw. URL von FHEM an. Die Parameter `port` und `path` entsprechen dem Standard eurer FHEM Installation und können bei Bedarf angepasst werden.
 ```
 "connection": {
   "location": "http://fhem",
@@ -34,7 +44,7 @@ Unter *connection* könnt ihr den `Serverort`, den `Port` sowie den `Pfad` eurer
 ```
 
 ### Performanceeinstellungen für FHEMApp (optional)
-Unter *options* könnt ihr die maximale Anzahl der `Chartpunkte` reduzieren, falls die Darstellung von Grafiken zu lange dauert. Das kann bei Betrieb von FHEM auf kleineren Systemen sinnvoll sein. Über den `Log-Puffer` könnt ihr die Anzahl der Logeinträge reduzieren, die **FHEMApp** zwischenspeichert. Dies ist nur für die Fehleranalyse notwendig.
+Wenn ihr in **FHEMApp** Daten aus FHEM-Logs in Charts darstellt, ist es ggf. sinnvoll die Anzahl der `maxChartPoints` zu reduzieren um die Ladezeit zu verkürzen. Über den Parameter `logBuffer` könnt ihr die Anzahl der Logeinträge verändern, die **FHEMApp** zwischenspeichert. Dies ist nur für die Fehleranalyse notwendig.
 ```
 "options": {
   "maxChartPoints": 100,
@@ -43,12 +53,22 @@ Unter *options* könnt ihr die maximale Anzahl der `Chartpunkte` reduzieren, fal
 ```
 
 ### Themeneinstellungen für FHEMApp (optional)
-Unter *theme* könnt ihr das farbliche Layout von **FHEMApp** individuell anpassen. Grundsätzlich könnt ihr zwischen einem *dunklen* und einem *hellen* Layout über den Parameter `dark` wechseln. Weiterhin könnt ihr das *dunkle* bzw. das *helle* Layout über die Definitionen unter den Parametern `light` bzw. `dark` individuell verändern. Welche Parameter ihr hier verwenden könnt, ist hier [Vuetify Customizing](https://vuetifyjs.com/en/features/theme/#customizing) beschrieben.    
+Zusätzlich könnt ihr das Farbschema von **FHEMApp** individuell anpassen. Grundsätzlich könnt ihr zwischen einem *dunklen* und einem *hellen* Layout über den Parameter `dark` (`true` bzw. `false`) wechseln. Weiterhin könnt ihr die einzelnen Farben für die beiden Farbschemen unter dem Parameter `themes` individuell anpassen. Siehe dazu auch [(Vuetify Customizing)](https://vuetifyjs.com/en/features/theme/#customizing)    
 ```
 "theme": {
   "dark": true,
-  "light": {
-    "primary": "#F48FB1"
+  "themes": {
+    "light": {
+      "primary": "#78909C",
+      "secondary": "#CFD8DC",
+      "accent": "#8bc34a",
+      "error": "#e91e63",
+      "warning": "#ffc107",
+      "info": "#03a9f4",
+      "success": "#4caf50"
+    },
+    "dark": {
+    }
   }
 }
 ```
@@ -70,4 +90,4 @@ attr global userattr appOptions:textField-long
 > Fertig! - Jetzt ist eure FHEMApp einsatzbereit :-)
 
 # Konfiguration der Aktoren / Sensoren in FHEMApp
-Jedes SmartHome-Gerät (Aktor/Sensor) welches in **FHEMApp** angezeigt werden soll konfiguriert ihr nun direkt in FHEM (*fhem.cfg*). Dazu verwendet ihr das neu angelegte FHEM-Attribut `appOptions` sowie weitere FHEM-Attribute wie z.B. `alias`,`group`,`room`,`sortby` die euch standardmäßig in FHEM zur Verfügung stehen. 
+Jedes SmartHome-Gerät (Aktor/Sensor) welches in **FHEMApp** angezeigt werden soll konfiguriert ihr nun direkt in FHEM (*fhem.cfg*). Dazu verwendet ihr das neu angelegte FHEM-Attribut `appOptions` sowie weitere FHEM-Attribute wie z.B. `alias`,`group`,`room`,`sortby` die euch standardmäßig in FHEM zur Verfügung stehen.
