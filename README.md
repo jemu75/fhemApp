@@ -2,9 +2,10 @@
 **FHEMApp** ist eine Web-Application zur Steuerung deiner Smarthome Umgebung. Sie wurde als Frontend für den gemeinsamen Einsatz von FHEM(tm) entwickelt. **FHEMApp** ist für den Betrieb auf unterschiedlichen Geräten (responsives design) ausgerichtet. Die Elemente zur Steuerung der verschiedenen SmartHome-Geräte (Aktoren/Sensoren) sind auf eine sehr einfache und intuitive Bedienung ausgelegt. Für die Einrichtung von **FHEMApp** sind keine Programmierkenntnisse erfordlerlich. **FHEMApp** wird komplett über FHEM konfiguriert.  
 
 ![](./docs/media/fhemApp_main_example.png)*Beispiel für eine Startseite in der Desktopansicht*
-![](./docs/media/fhemApp_mobile_main_example.jpg)*Beispiel für eine Startseite in der Smartphoneansicht*
-![](./docs/media/fhemApp_mobile_room_example.jpg)*Beispiel für die Steuerung in der Smartphoneansicht*
 
+![](./docs/media/fhemApp_group_example.png)*Beispiel für Geräte in der Desktopansicht*
+
+![](./docs/media/fhemApp_mobile_example.png)*Beispiel die App in der Smartphoneansicht*
 
 # Systemanforderungen
 Für den Betrieb wird FHEM (als Backend) und ein Web-Server für **FHEMApp** (Frontend) benötigt.
