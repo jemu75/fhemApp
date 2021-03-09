@@ -101,3 +101,22 @@ Das folgende Beispiel stellt einen in FHEM definierten Schaltaktor als Schalter 
 ![Anzeige in FHEMApp](./docs/media/template_switch_example.png)<br>*Anzeige in FHEMApp*
 
 ### Übersicht der verfügbaren Templates
+| Template | Beschreibung |
+|----------|--------------|
+|switch | Schalteraktoren (optional mit Leistungsmessung) |
+| dimmer | Dimmer |
+| light | Lichtschalter |
+| thermostat | Raumthermostat |
+| shutter | Jalousieschalter |
+| thermometer | Temperatursensor |
+| smokedetect | Rauchmelder |
+| contact    | Tür/Fensterkontakt |
+| motiondetect | Bewegungsmelder |
+| watersensor | Zisternensensor |
+| sonos | Sonosplayer |
+| panel | Panel zur Gruppierung mehrerer Devices |
+| chart | Diagramm zur Visualisierung von Log-Daten |
+| weather | Wettervorhersage (darksky-API) |
+| scenes | LightScenes |
+| sysmon | Systemmonitor |
+| hmlan | HMLAN-Adapter |
