@@ -93,12 +93,13 @@ Jedes SmartHome-Gerät welches in **FHEMApp** angezeigt werden soll konfiguriert
 ### allgemeine Parameter für appOptions
 Jedes in FHEM definierte Gerät kann über das Attribut `appOptions` in **FHEMApp** angezeigt werden. Dazu stehen verschiedene *Templates* zur Verfügung. Weiterhin kann das Verhalten der *Templates* definiert werden.
 
-Das folgende Beispiel stellt einen in FHEM definierten Schaltaktor als Schalter auf FHEMApp dar.
-```
-{ "template": "switch" }
-```
-![Definition in FHEM](./docs/media/template_switch_fhem.png)*Definition in FHEM*
+Das folgende Beispiel stellt einen in FHEM definierten Schaltaktor als Schalter auf FHEMApp dar. *Definition:*
+`{ "template": "switch" }`
 
-![Anzeige in FHEMApp](./docs/media/template_switch_example.png)*Anzeige in FHEMApp*
+*Definition in FHEM*
+![Definition in FHEM](./docs/media/template_switch_fhem.png)
+
+*Anzeige in FHEMApp*
+![Anzeige in FHEMApp](./docs/media/template_switch_example.png)
 
 ### Übersicht der verfügbaren Templates
