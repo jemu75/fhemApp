@@ -96,9 +96,11 @@ Jedes in FHEM definierte Gerät kann über das Attribut `appOptions` in **FHEMAp
 Das folgende Beispiel stellt einen in FHEM definierten Schaltaktor als Schalter auf FHEMApp dar. *Definition:*
 `{ "template": "switch" }`
 
-![Definition in FHEM](./docs/media/template_switch_fhem.png)<br>*Definition in FHEM*
+*Definition in FHEM*
+![Definition in FHEM](./docs/media/template_switch_fhem.png)
 
-![Anzeige in FHEMApp](./docs/media/template_switch_example.png)<br>*Anzeige in FHEMApp*
+*Anzeige in FHEMApp*
+![Anzeige in FHEMApp](./docs/media/template_switch_example.png)
 
 ### Übersicht der verfügbaren Templates
 | Template | Beschreibung |
