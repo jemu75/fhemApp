@@ -21,7 +21,7 @@ Für den Betrieb wird FHEM (als Backend) und ein Web-Server für **FHEMApp** (Fr
 Für den Betrieb der **FHEMApp** müssen alle Dateien und Unterverzeichnisse aus dem Ordner [www/fhemapp](./www/fhemapp) auf das Arbeitsverzeichnis des Webservers kopiert werden. Andere Verzeichnisse und Dateien sind nicht für den Betrieb der App notwendig.
 
 # Konfiguration der Web-Application
-Die initiale Konfiguration von **FHEMApp** erfolgt über die Datei `config.json` welche sich im Verzeichnis [www/fhemapp/cfg](./www/fhemapp/cfg) befindet. Die Konfigurationsdatei könnt ihr über einen normalen Texteditor bearbeiten. Beachtet bei der Veränderung der Konfiguration auf die richtige Schreibweise im *JSON-Format*.
+Die initiale Konfiguration von **FHEMApp** erfolgt über die Datei `config.json` welche sich im Verzeichnis [.../cfg](./www/fhemapp/cfg) befindet. Die Konfigurationsdatei könnt ihr über einen normalen Texteditor bearbeiten. Beachtet bei der Veränderung der Konfiguration auf die richtige Schreibweise im *JSON-Format*.
 
 ### Verbindungseinstellung für FHEM
 Unter *connection* könnt ihr den `Serverort`, den `Port` sowie den `Pfad` eurer FHEM Installation angeben. Standardmäßig ist **FHEMApp** auf die folgenden Verbindungseinstellungen konfiguriert.
