@@ -74,7 +74,7 @@ Zusätzlich könnt ihr das Farbschema von **FHEMApp** individuell anpassen. Grun
 ```
 
 # Grundeinstellung in FHEM
-Bevor ihr in FHEM die gewünschten Geräte für die **FHEMApp** konfiguriert sind zwei Grundeinstellungen notwendig. Die folgenden Schritte setzen voraus, dass ihr mit FHEM vertraut seid.
+Bevor ihr die gewünschten Geräte für die Anzeige in der **FHEMApp** konfiguriert sind zwei Grundeinstellungen in FHEM notwendig. 
 1. Müsst ihr in eurem *FHEM-Device* `FHEMWEB` die beiden Attribute `CORS` auf `1` und `longpoll` auf `websocket` setzen. [(siehe auch)](https://fhem.de/commandref_DE.html#FHEMWEB) Das folgende Beispiel zeigt einen Auszug aus der Datei *fhem.cfg* nachdem die Grundeinstellung vorgenommen wurde.
 ```
 define WEB FHEMWEB 8083 global
