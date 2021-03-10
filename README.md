@@ -74,7 +74,7 @@ Zusätzlich könnt ihr das Farbschema von **FHEMApp** individuell anpassen. Grun
 ```
 
 # Grundeinstellung in FHEM
-Bevor ihr die gewünschten Geräte für die Anzeige in der **FHEMApp** konfiguriert sind zwei Grundeinstellungen in FHEM notwendig. 
+Bevor ihr die gewünschten Geräte für die Anzeige in der **FHEMApp** konfiguriert sind zwei Grundeinstellungen in FHEM notwendig.
 1. Müsst ihr in eurem *FHEM-Device* `FHEMWEB` die beiden Attribute `CORS` auf `1` und `longpoll` auf `websocket` setzen. [(siehe auch)](https://fhem.de/commandref_DE.html#FHEMWEB) Das folgende Beispiel zeigt einen Auszug aus der Datei *fhem.cfg* nachdem die Grundeinstellung vorgenommen wurde.
 ```
 define WEB FHEMWEB 8083 global
@@ -105,6 +105,18 @@ Zusätzlich könnt ihr Devices in **FHEMApp** auf der *Startseite* oder unter de
 ![Anzeige in FHEMApp](./docs/media/template_switch_example.png)
 
 # Übersicht der verfügbaren Templates
+In **FHEMApp** werden *Templates* für viele Aktoren und Sensoren zur Verfügung gestellt. Jedes *Template* besteht aus einer Grundstruktur mit einheitlichen Elementen.
+
+- **die Statusbar** - diese zeigt den aktuellen Status über einen farbigen Streifen am oberen Rand des *Templates* dar. Das Verhalten der *Statusbar* ist für jedes *Template* vordefiniert und kann abhängig von den unterschiedlichen Zuständen eines FHEM Devices individuell angepasst werden.
+- **der Gerätename** - befindet sich direkt unter der *Statusbar* und zeigt entweder den Wert aus dem FHEM-Attribut `alias` oder den internen `NAME` des Devices an.
+- **die Schaltelemente** - befinden sich unter dem Gerätename und schalten den jeweiligen Aktor. Das Verhalten der *Schaltelemente* ist in jedem *Template* fest definiert.
+- **der aktuelle Zustand** - wird in der Mitte dargestellt und kann abhängig von den unterschiedlichen Zuständen eines FHEM Devices individuell angepasst werden.
+- **die Systembar** - befindet sich am unteren Rand und liefert weitere Informationen zum jeweiligen *Device*. Das *StatusIcon* auf der linken Seite der *Systembar* kann ebenfalls individuell und abhängig vom Zustand des Devices angepasst werden. Die *Icons* auf der rechten Seite der *Systembar* zeigen bei Funk-Aktoren/Sensoren den Batteriezustand und den Verbindungsstatus an.
+
+Die individuellen Anpassungsmöglichenkeiten erfolgen über das FHEM-Attribut `appOptions` und werden im jeweiligen Device im Einzelnen beschrieben.
+
+Grundsätzlich ist es möglich weitere Templates auf Basis des Vue-Frameworks zu entwickeln und in **FHEMApp** zu integrieren.   
+
 | Template | Beschreibung | Beispiel |
 |----------|--------------|----------|
 | [switch](#template-switch) | Schalteraktoren (optional mit Leistungsmessung) | ![](./docs/media/template_switch_example.png) |
