@@ -91,12 +91,12 @@ attr global userattr appOptions:textField-long
 Jedes SmartHome-Gerät (Device) welches in **FHEMApp** angezeigt werden soll, konfiguriert ihr nun direkt in FHEM. Dazu verwendet ihr das neu angelegte FHEM-Attribut `appOptions` sowie weitere FHEM-Attribute wie `alias`,`group`,`room` oder `sortby`.
 
 ### Template festlegen
-Damit ein Gerät in der **FHEMApp** zur Verfügung steht, müsst ihr dem jeweiligen Device in FHEM ein *Template* zuordnen. In der **FHEMApp** stehen verschiedene [Templates](#übersicht-der-verfügbaren-templates) zur Verfügung. Dazu nutzt ihr das FHEM-Attribut `appOptions`  und definiert ein *Template* über folgenden Parameter  `{ "template": "switch" }` (Beispiel für einen Schalter)
+Damit ein Gerät in der **FHEMApp** zur Verfügung steht, müsst ihr dem jeweiligen Device in FHEM einem *Template* zuordnen. In der **FHEMApp** stehen verschiedene [Templates](#übersicht-der-verfügbaren-templates) zur Verfügung. Dazu nutzt ihr das FHEM-Attribut `appOptions`  und definiert ein *Template* über folgenden Parameter  `{ "template": "switch" }` (Beispiel für einen Schalter)
 
 ### zusätzliche Attribute setzen
 Nachdem ihr dem Device ein *Template* zugeordnet habt, könnt ihr defnieren unter welchem *Name* und in welchen *Menüpunkten* euer Device in **FHEMApp** angezeigt wird. Dazu nutzt ihr das FHEM-Attribut `alias` für den Name des Gerätes, das FHEM-Attribut `group` für die Anzeige im Menüpunkt *Gruppen* und das FHEM-Attribut `room` für die Anzeige im Menüpunkt *Bereiche*.
 
-Zusätzlich könnt ihr Devices auf der *Startseite* oder unter den Menüpunkten *System* bzw. *Dashboard* anzeigen. Die Definition erfolgt ebenfalls über das FHEM-Attribut `appOptions` und über folgende Parameter `"home": "true"`, `"system": "true"`, `"dashboard": "true"`. Wenn ihr euer Device z.B. als Schalter und zusätzlich auf der Startseite von **FHEMApp** darstellen wollt, dann sieht euer FHEM-Attribut `appOptions` so aus: { "template": "switch", "home": "true" }
+Zusätzlich könnt ihr Devices in **FHEMApp** auf der *Startseite* oder unter den Menüpunkten *System* bzw. *Dashboard* anzeigen. Die Definition erfolgt ebenfalls über das FHEM-Attribut `appOptions` mit folgenden Parametern `"home": "true"`, `"system": "true"`, `"dashboard": "true"`. Wenn ihr euer Device z.B. als Schalter und zusätzlich auf der Startseite von **FHEMApp** darstellen wollt, dann sieht euer FHEM-Attribut `appOptions` so aus: { "template": "switch", "home": "true" }
 
 *Definition in FHEM*<br>
 ![Definition in FHEM](./docs/media/template_switch_fhem.png)
