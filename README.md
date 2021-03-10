@@ -105,24 +105,24 @@ Zusätzlich könnt ihr Devices in **FHEMApp** auf der *Startseite* oder unter de
 ![Anzeige in FHEMApp](./docs/media/template_switch_example.png)
 
 # Übersicht der verfügbaren Templates
-| Template | Beschreibung |
-|----------|--------------|
-| [switch](#template-switch) | Schalteraktoren (optional mit Leistungsmessung) |
-| dimmer | Dimmer |
-| light | Lichtschalter |
-| thermostat | Raumthermostat |
-| shutter | Jalousieschalter |
-| thermometer | Temperatursensor |
-| smokedetect | Rauchmelder |
-| contact    | Tür/Fensterkontakt |
-| motiondetect | Bewegungsmelder |
-| watersensor | Zisternensensor |
-| sonos | Sonosplayer |
-| panel | Panel zur Gruppierung mehrerer Devices |
-| chart | Diagramm zur Visualisierung von Log-Daten |
-| weather | Wettervorhersage (darksky-API) |
-| scenes | LightScenes |
-| sysmon | Systemmonitor |
-| hmlan | HMLAN-Adapter |
+| Template | Beschreibung | Beispiel |
+|----------|--------------|----------|
+| [switch](#template-switch) | Schalteraktoren (optional mit Leistungsmessung) | ![](./docs/media/template_switch_example.png) |
+| dimmer | Dimmer | ![](./docs/media/template_dimmer_example.png) |
+| light | Lichtschalter | ![](./docs/media/template_light_example.png) |
+| thermostat | Raumthermostat | ![](./docs/media/template_thermostat_example.png) |
+| shutter | Jalousieschalter | ![](./docs/media/template_shutter_example.png) |
+| thermometer | Temperatursensor  | ![](./docs/media/template_thermometer_example.png) |
+| smokedetect | Rauchmelder | ![](./docs/media/template_smokedetect_example.png) |
+| contact    | Tür/Fensterkontakt | ![](./docs/media/template_contact_example.png) |
+| motiondetect | Bewegungsmelder | ![](./docs/media/template_motiondetect_example.png) |
+| watersensor | Zisternensensor | ![](./docs/media/template_watersensor_example.png) |
+| sonos | Sonosplayer | ![](./docs/media/template_sonos_example.png) |
+| scenes | LightScenes | ![](./docs/media/template_scenes_example.png) |
+| panel | Panel zur Gruppierung mehrerer Devices | ![](./docs/media/template_panel_example.png) |
+| chart | Diagramm zur Visualisierung von Log-Daten | ![](./docs/media/template_chart_example.png) |
+| weather | Wettervorhersage (darksky-API) | ![](./docs/media/template_weather_example.png) |
+| sysmon | Systemmonitor | ![](./docs/media/template_sysmon_example.png) |
+| hmlan | HMLAN-Adapter | ![](./docs/media/template_hmlan_example.png) |
 
 ### Template Switch
