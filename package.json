@@ -7,13 +7,23 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jemu75/fhemApp.git"
+  },
+  "author": "jemu75",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jemu75/fhemApp/issues"
+  },
+  "homepage": "https://github.com/jemu75/fhemApp#readme",
   "dependencies": {
     "apexcharts": "^3.25.0",
     "core-js": "^3.9.1",
     "vue": "^2.6.11",
     "vue-apexcharts": "^1.6.0",
     "vue-router": "^3.5.1",
-    "vuetify": "^2.4.5"
+    "vuetify": "^2.4.6"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.11",
