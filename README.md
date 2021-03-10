@@ -104,7 +104,7 @@ Das folgende Beispiel stellt einen in FHEM definierten Schaltaktor als Schalter 
 ### Übersicht der verfügbaren Templates
 | Template | Beschreibung |
 |----------|--------------|
-|[switch](#template-switch) | Schalteraktoren (optional mit Leistungsmessung) |
+| [switch](#template-switch) | Schalteraktoren (optional mit Leistungsmessung) |
 | dimmer | Dimmer |
 | light | Lichtschalter |
 | thermostat | Raumthermostat |
