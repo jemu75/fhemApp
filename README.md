@@ -31,7 +31,7 @@ Kopiert einfach alle Dateien und Unterverzeichnisse aus dem Ordner [www/fhemapp]
 ```
 
 # Konfiguration der Web-Application
-Die initiale Konfiguration von **FHEMApp** erfolgt über die Datei `config.json` welche sich im Verzeichnis `../fhemapp/cfg/` befindet. Die Konfigurationsdatei könnt ihr über einen normalen Texteditor bearbeiten, um die folgenden Einstellungen vorzunehmen.
+Die initiale Konfiguration von **FHEMApp** erfolgt über die Datei `config.json` welche sich im Verzeichnis `../fhemapp/cfg/` auf eurem Webserver befindet. Die Konfigurationsdatei könnt ihr über einen normalen Texteditor bearbeiten, um die folgenden Einstellungen vorzunehmen.
 
 ### Verbindungseinstellung für FHEM
 Hier wird festgelegt, wo sich die FHEM Installation befindet. Der Parameter `location` gibt die IP-Adresse bzw. URL von FHEM an. Die Parameter `port` und `path` entsprechen dem Standard eurer FHEM Installation und können bei Bedarf angepasst werden.
