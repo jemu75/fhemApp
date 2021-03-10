@@ -87,7 +87,7 @@ attr WEB stylesheetPrefix default
 attr global userattr appOptions:textField-long
 ```
 
-# Konfiguration der Aktoren / Sensoren in FHEMApp
+# Konfiguration der Geräte in FHEM
 Jedes SmartHome-Gerät welches in **FHEMApp** angezeigt werden soll konfiguriert ihr nun direkt in FHEM. Dazu verwendet ihr das neu angelegte FHEM-Attribut `appOptions` sowie weitere FHEM-Attribute z.B. `alias`,`group`,`room`,`sortby` die standardmäßig zur Verfügung stehen.
 
 ### Definition über das Attribut appOptions
