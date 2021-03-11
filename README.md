@@ -108,9 +108,9 @@ Zusätzlich könnt ihr Devices in **FHEMApp** auf der *Startseite* oder unter de
 In **FHEMApp** werden *Templates* für viele Aktoren und Sensoren zur Verfügung gestellt. Jedes *Template* besteht aus einer Grundstruktur mit einheitlichen Elementen.
 
 - **die Statusbar** - diese zeigt den aktuellen Status über einen farbigen Streifen am oberen Rand des *Templates* dar. Das Verhalten der *Statusbar* ist für jedes *Template* vordefiniert und kann abhängig von den unterschiedlichen Zuständen eines FHEM Devices individuell angepasst werden.
-- **der Gerätename** - befindet sich direkt unter der *Statusbar* und zeigt entweder den Wert aus dem FHEM-Attribut `alias` oder den internen `NAME` des Devices an.
+- **die Gerätebezeichnung** - befindet sich direkt unter der *Statusbar* und zeigt entweder den Wert aus dem FHEM-Attribut `alias` oder den internen `NAME` des Devices an.
 - **die Schaltelemente** - befinden sich unter dem Gerätename und schalten den jeweiligen Aktor. Das Verhalten der *Schaltelemente* ist in jedem *Template* fest definiert.
-- **der aktuelle Zustand** - wird in der Mitte dargestellt und kann abhängig von den unterschiedlichen Zuständen eines FHEM Devices individuell angepasst werden.
+- **der aktuelle Status** - wird in der Mitte dargestellt und kann abhängig von den unterschiedlichen Zuständen eines FHEM Devices individuell angepasst werden.
 - **die Systembar** - befindet sich am unteren Rand und liefert weitere Informationen zum jeweiligen *Device*. Das *StatusIcon* auf der linken Seite der *Systembar* kann ebenfalls individuell und abhängig vom Zustand des Devices angepasst werden. Die *Icons* auf der rechten Seite der *Systembar* zeigen bei Funk-Aktoren/Sensoren den Batteriezustand und den Verbindungsstatus an.
 
 Die individuellen Anpassungsmöglichenkeiten erfolgen über das FHEM-Attribut `appOptions` und werden im jeweiligen Device im Einzelnen beschrieben.
@@ -138,3 +138,23 @@ Grundsätzlich ist es möglich weitere Templates auf Basis des Vue-Frameworks zu
 | hmlan | HMLAN-Adapter | ![](./docs/media/template_hmlan_example.png) |
 
 ### Template Switch
+Dieses Template kommt für Schaltaktoren zum Einsatz.
+
+verwendete FHEM Parameter
+
+| Element | FHEM Parameter |
+|---------|----------------|
+| Name | `Attributes: alias` |
+| Sortierung | `Attributes: sortby` |
+| Verbindung Status | `Readings: Acitivty` |
+| Verbindung Qualität | `Internals: xxx_RSSI` |
+| Verbindung letztes Siganal | `Readings: state` (Zeitstempel) |
+| Leistungsanzeige | `Readings: power` |
+
+Standardverhalten
+
+| FHEM Parameter | Wert | Statustext | Statuslevel | Statusfarbe | Statusicon |
+|----------------|------|------------|-------------|-------------|------------|
+| Activity | ^(?!alive) | keine Verbindung | 100 | error | mdi-power-plug |
+| state | on | an | 100 | success | mdi-power-plug |
+| state | off | aus | 0 | success | mdi-power-plug-off |
