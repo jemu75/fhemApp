@@ -137,24 +137,35 @@ Grundsätzlich ist es möglich weitere Templates auf Basis des Vue-Frameworks zu
 | sysmon | Systemmonitor | ![](./docs/media/template_sysmon_example.png) |
 | hmlan | HMLAN-Adapter | ![](./docs/media/template_hmlan_example.png) |
 
-### Template Switch
-Dieses Template kommt für Schaltaktoren zum Einsatz.
+## Template Switch
+Dieses Template kann für unterschiedliche Schaltaktoren verwendet werden. Dabei werden verschiedene Varianten unterstützt - Schaltaktoren mit und ohne Leistungsmessung sowie funkbasierende und fest installierte Schaltaktoren.
 
-verwendete FHEM Parameter
+### verwendete FHEM Parameter
+| Template | FHEM Parameter | separater Kanal (connected) |
+|---------|----------------|------------------|
+| Name | `Attributes: alias` | |
+| Sortierung | `Attributes: sortby` | |
+| Verbindung Status¹ | `Readings: Acitivty` | receiver |
+| Verbindung Qualität¹ | `Internals: xxx_RSSI` | receiver |
+| Verbindung letztes Siganal¹ | `Readings: state` (Zeitstempel) | receiver |
+| Leistungsanzeige² | `Readings: power` | power |
 
-| Element | FHEM Parameter |
-|---------|----------------|
-| Name | `Attributes: alias` |
-| Sortierung | `Attributes: sortby` |
-| Verbindung Status | `Readings: Acitivty` |
-| Verbindung Qualität | `Internals: xxx_RSSI` |
-| Verbindung letztes Siganal | `Readings: state` (Zeitstempel) |
-| Leistungsanzeige | `Readings: power` |
+¹wird nur bei funkbasierenden Schaltaktoren verwendet
+²wird nur bei Schaltaktoren mit Leistungsmessung verwendet
+> HINWEIS: Wenn funkbasierende Schaltaktoren mehrere Kanäle nutzen, dann müssen diese explizit in `appOptions` über den Parameter `connected.receiver` bzw. `connected.power` defniert werden. Beispiel: { "template": "switch", "connected": { "receiver": "[Devicename]", "power": "[Devicename]" } }
 
-Standardverhalten
 
-| FHEM Parameter | Wert | Statustext | Statuslevel | Statusfarbe | Statusicon |
+### Standardverhalten
+| Reading | Wert | Statustext | Statuslevel | Statusfarbe | Statusicon |
 |----------------|------|------------|-------------|-------------|------------|
 | Activity | ^(?!alive) | keine Verbindung | 100 | error | mdi-power-plug |
 | state | on | an | 100 | success | mdi-power-plug |
 | state | off | aus | 0 | success | mdi-power-plug-off |
+
+> HINWEIS: Das Standardverhalten kann bei Bedarf individuell in `appOptions` über den Parameter `states` verändert werden. Beispiel: { "template": "switch",  "states": ["state:off:aus:0:success:mdi-water-off","state:on:ein:100:success:mdi-water" ] }
+
+### Aktionen
+| Button | Aktion | FHEM Kommando |
+|--------|--------|---------------|
+| links | ausschalten | set *[device]* off |
+| rechts | einschalten | set *[device]* on |
