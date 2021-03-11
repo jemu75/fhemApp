@@ -154,7 +154,6 @@ Dieses Template kann für unterschiedliche Schaltaktoren verwendet werden. Dabei
 ²wird nur bei Schaltaktoren mit Leistungsmessung verwendet
 > HINWEIS: Wenn funkbasierende Schaltaktoren mehrere Kanäle nutzen, dann müssen diese explizit in `appOptions` über den Parameter `connected.receiver` bzw. `connected.power` defniert werden. Beispiel: { "template": "switch", "connected": { "receiver": "*Kanalname*", "power": "*Kanalname*" } }
 
-
 ### Standardverhalten
 | Reading | Wert | Statustext | Statuslevel | Statusfarbe | Statusicon |
 |----------------|------|------------|-------------|-------------|------------|
@@ -169,3 +168,11 @@ Dieses Template kann für unterschiedliche Schaltaktoren verwendet werden. Dabei
 |--------|--------|---------------|
 | links | ausschalten | set *[device]* off |
 | rechts | einschalten | set *[device]* on |
+
+### Beispielkonfigurationen für switch
+```
+{ "template": "switch" }
+{ "template": "switch", "connected": { "receiver": "chn_akt.hm.eg.sw3" } }
+{ "template": "switch", "connected": { "receiver": "chn_akt.hm.dyn.sw2", "power": "chn_sen.hm.dyn.sw2_Pwr" } }
+{ "template": "switch", "connected": { "receiver": "chn_akt.os.gah.sw1" }, "states": ["state:off:aus:0:success:mdi-water-off","state:on:ein:100:success:mdi-water" ] }
+```
