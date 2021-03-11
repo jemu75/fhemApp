@@ -152,7 +152,7 @@ Dieses Template kann für unterschiedliche Schaltaktoren verwendet werden. Dabei
 
 ¹wird nur bei funkbasierenden Schaltaktoren verwendet
 ²wird nur bei Schaltaktoren mit Leistungsmessung verwendet
-> HINWEIS: Wenn funkbasierende Schaltaktoren mehrere Kanäle nutzen, dann müssen diese explizit in `appOptions` über den Parameter `connected.receiver` bzw. `connected.power` defniert werden. Beispiel: { "template": "switch", "connected": { "receiver": "*Devicename*", "power": "*Devicename*" } }
+> HINWEIS: Wenn funkbasierende Schaltaktoren mehrere Kanäle nutzen, dann müssen diese explizit in `appOptions` über den Parameter `connected.receiver` bzw. `connected.power` defniert werden. Beispiel: { "template": "switch", "connected": { "receiver": "*Kanalname*", "power": "*Kanalname*" } }
 
 
 ### Standardverhalten
@@ -162,7 +162,7 @@ Dieses Template kann für unterschiedliche Schaltaktoren verwendet werden. Dabei
 | state | on | an | 100 | success | mdi-power-plug |
 | state | off | aus | 0 | success | mdi-power-plug-off |
 
-> HINWEIS: Das Standardverhalten kann individuell in `appOptions` über den Parameter `states` verändert werden. Beispiel: { "template": "switch",  "states": ["def1", "def2", ...] } Die Definitionen müssen wie folgt angegeben werden:  "Reading:Wert:Statustext:Statuslevel:Statusfarbe:Statusicon" 
+> HINWEIS: Das Standardverhalten kann individuell in `appOptions` über den Parameter `states` verändert werden. Beispiel: { "template": "switch",  "states": ["def1", "def2", ...] } Die Definitionen müssen wie folgt angegeben werden:  "Reading:Wert:Statustext:Statuslevel:Statusfarbe:Statusicon"
 
 ### Aktionen
 | Button | Aktion | FHEM Kommando |
