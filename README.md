@@ -90,13 +90,28 @@ attr global userattr appOptions:textField-long
 # Konfiguration der Geräte in FHEM
 Jedes SmartHome-Gerät (Device) welches in **FHEMApp** angezeigt werden soll, konfiguriert ihr nun direkt in FHEM. Dazu verwendet ihr das neu angelegte FHEM-Attribut `appOptions` sowie weitere FHEM-Attribute wie `alias`,`group`,`room` oder `sortby`.
 
-### Template festlegen
+### Attribut `appOptions` allgemein
+Das Attribut `appOptions` kann mit unterschiedlichen Parametern befüllt werden, um die Darstellung des jeweiligen Devices in **FHEMApp** zu steuern. Es wird als Object im `JSON-Format` von **FHEMApp** verarbeitet und kann folgende Parameter beinhalten:
+
+```
+{
+  "template": "string",             - steuert über welches Template das Device dargestellt wird
+  "states": ["def1", "def2", ...],  - ermögliche zustandsabhängige Anpassungen des Templates
+  "connected": { object },          - bindet zusätzliche Devices in das Template ein
+  "home": "true",                   - zeigt ein Device auf der Startseite an
+  "dashboard": "true",              - zeigt ein Device im Dashboard an
+  "system":"true",                  - zeigt ein Device in den Systemeinstellungen an
+  "chartDef": ["def1", "def2", ...],- legt die Datenquellen für Grafiken fest
+  "link": "string",                 - gibt den URL-Pfad für Panels an  
+  "toggle": ["def1", "def2", ...],  - ermöglicht die Definition von "Schaltern"für Panels     
+}
+```
+
+### Template zuweisen
 Damit ein Gerät in der **FHEMApp** zur Verfügung steht, müsst ihr dem jeweiligen Device in FHEM einem *Template* zuordnen. In der **FHEMApp** stehen verschiedene [Templates](#übersicht-der-verfügbaren-templates) zur Verfügung. Dazu nutzt ihr das FHEM-Attribut `appOptions`  und definiert ein *Template* über folgenden Parameter  `{ "template": "switch" }` (Beispiel für einen Schalter)
 
-### zusätzliche Attribute setzen
+### weitere FHEM Attribute verwenden
 Nachdem ihr dem Device ein *Template* zugeordnet habt, könnt ihr defnieren unter welchem *Name* und in welchen *Menüpunkten* euer Device in **FHEMApp** angezeigt wird. Dazu nutzt ihr das FHEM-Attribut `alias` für den Name des Gerätes, das FHEM-Attribut `group` für die Anzeige im Menüpunkt *Gruppen* und das FHEM-Attribut `room` für die Anzeige im Menüpunkt *Bereiche*.
-
-Zusätzlich könnt ihr Devices in **FHEMApp** auf der *Startseite* oder unter den Menüpunkten *System* bzw. *Dashboard* anzeigen. Die Definition erfolgt ebenfalls über das FHEM-Attribut `appOptions` mit folgenden Parametern `"home": "true"`, `"system": "true"`, `"dashboard": "true"`. Wenn ihr euer Device z.B. als Schalter und zusätzlich auf der Startseite von **FHEMApp** darstellen wollt, dann sieht euer FHEM-Attribut `appOptions` so aus: { "template": "switch", "home": "true" }
 
 *Definition in FHEM*<br>
 ![Definition in FHEM](./docs/media/template_switch_fhem.png)
@@ -104,7 +119,7 @@ Zusätzlich könnt ihr Devices in **FHEMApp** auf der *Startseite* oder unter de
 *Anzeige in FHEMApp*<br>
 ![Anzeige in FHEMApp](./docs/media/template_switch_example.png)
 
-# Übersicht der verfügbaren Templates
+# Aufbau und Funktion von Templates
 In **FHEMApp** werden *Templates* für viele Aktoren und Sensoren zur Verfügung gestellt. Jedes *Template* besteht aus einer Grundstruktur mit einheitlichen Elementen.
 
 - **die Statusbar** - diese zeigt den aktuellen Status über einen farbigen Streifen am oberen Rand des *Templates* dar. Das Verhalten der *Statusbar* ist für jedes *Template* vordefiniert und kann abhängig von den unterschiedlichen Zuständen eines FHEM Devices individuell angepasst werden.
@@ -113,12 +128,17 @@ In **FHEMApp** werden *Templates* für viele Aktoren und Sensoren zur Verfügung
 - **der aktuelle Status** - wird in der Mitte dargestellt und kann abhängig von den unterschiedlichen Zuständen eines FHEM Devices individuell angepasst werden.
 - **die Systembar** - befindet sich am unteren Rand und liefert weitere Informationen zum jeweiligen *Device*. Das *StatusIcon* auf der linken Seite der *Systembar* kann ebenfalls individuell und abhängig vom Zustand des Devices angepasst werden. Die *Icons* auf der rechten Seite der *Systembar* zeigen bei Funk-Aktoren/Sensoren den Batteriezustand und den Verbindungsstatus an.
 
-### statusabhängige Anpassung von Templates
+Grundsätzlich ist es möglich weitere Templates auf Basis des Vue/Vuetify-Frameworks [siehe](https://vuetifyjs.com/en/) zu entwickeln und in **FHEMApp** zu integrieren.   
+
+
+### Templates individuell anpassen
 Die individuellen Anpassungsmöglichenkeiten können über das FHEM-Attribut `appOptions` im Parameter `states` vorgenommen werden. Der Parameter `states` beinhaltet dabei eine oder mehrere Definitionen, die das Standardverhalten des jeweiligen Templates überschreiben. Die Definitionen werden der Reihenfolge nach geprüft ["def1", "def2", "def3", ...] Jede Definition muss im folgenden Schema angegeben werden `Reading:Wert:Statustext:Statuslevel:Statusfarbe:StatusIcon`
 - **Reading** - beinhaltet das Reading welches den Status des Templates verändern soll.
 - **Wert** (optional)- ist der Wert auf den das Reading geprüft werden soll. Hier können *Zeichenketten*, *RegExp* oder *numerische Werte* angegeben werden. Bei numerischen Werten greift die Definition immer ab dem Wert! Wird der Wert nicht angegeben, so greift die Definition fürr alle restlichen (nicht definierten) Fälle
 - **Statustext** (optional) - ist der Text der ausgegeben werden soll. Wird der Statustext nicht angegeben, so wird der Wert des *Readings* zurückgegeben.
-- **Statuslevel** (optional) - gibt an, wie breit der farbige Balken im oberen Teil des Templates angezeigt wird. (!!! hier geht es weiter mit der Doku!!!)
+- **Statuslevel** (optional) - gibt an, wie breit der farbige Streifen im oberen Teil des Templates angezeigt wird. Hier können feste Werte zwischen 0 und 100 eingetragen werden. Trägt man alternativ den Name des *Reading* ein, so wird dieser Wert verwendet. Dies eignet sich beispielsweise für *Readings* wie `pct` oder `level`
+- **Statusfarbe** (optional) - legt fest welche Farbe der farbige Streifen im oberen Teil des Templates im jeweiligen Status hat. Hier können Farbcodes (z.B. #26A69A) oder Farbvorgaben aus den Themeneinstellungen (z.B. success, error, info) eingetragen werden.
+- **StatusIcon** (optional) - legt fest welches Icon unten links in der Systembar angezeigt wird. Hier kann auf alle Material Design Icons [siehe](https://materialdesignicons.com/) zugegriffen werden.      
 
 Beispiel:
 ```
@@ -129,9 +149,7 @@ Beispiel:
 ]
 ```
 
-
-Grundsätzlich ist es möglich weitere Templates auf Basis des Vue-Frameworks zu entwickeln und in **FHEMApp** zu integrieren.   
-
+# Übersicht der verfügbaren Templates
 | Template | Beschreibung | Beispiel |
 |----------|--------------|----------|
 | [switch](#template-switch) | Schalteraktoren (optional mit Leistungsmessung) | ![](./docs/media/template_switch_example.png) |
@@ -155,13 +173,13 @@ Grundsätzlich ist es möglich weitere Templates auf Basis des Vue-Frameworks zu
 ## Template Switch
 Dieses Template kann für unterschiedliche Schaltaktoren verwendet werden. Dabei werden verschiedene Varianten unterstützt - Schaltaktoren mit und ohne Leistungsmessung sowie funkbasierende und fest installierte Schaltaktoren.
 
-### Beispielkonfiguration für Schaltaktor
+#### Beispielkonfiguration für Schaltaktor
 Das FHEM-Attribut `appOptions` sollte wie folgt aussehen.
 ```
 { "template": "switch" }
 ```
 
-### Beispielkonfiguration für einen funkbasier Schaltaktor
+#### Beispielkonfiguration für einen funkbasier Schaltaktor
 Wenn die Informationen zur Funkverbindung über einem separaten Kanal geliefert werden, behandelt FHEM diesen als eigenständiges Device. In diesem Fall muss das Device in `appOptions` über den Parameter `connected.receiver` definiert werden.
 > Hinweis: Informationen zur Funkverbindung liefern die FHEM-Parameter `Internals: xxx_RSSI` und `Readings: Activity`
 
@@ -169,7 +187,7 @@ Wenn die Informationen zur Funkverbindung über einem separaten Kanal geliefert 
 { "template": "switch", "connected": { "receiver": "Devicename" } }
 ```
 
-### Beispielkonfiguration für einen funkbasier Schaltaktor mit separater Leistungsmessung
+#### Beispielkonfiguration für einen funkbasier Schaltaktor mit separater Leistungsmessung
 Wenn die Informationen zur Leisutngsmessung über einem separaten Kanal geliefert werden, behandelt FHEM diesen als eigenständiges Device. In diesem Fall muss das Device in `appOptions` über den Parameter `connected.power` definiert werden.
 >Hinweis: Informationen zur Leistungsmessung liefert der FHEM-Parameter `Readings: power`
 
@@ -177,7 +195,7 @@ Wenn die Informationen zur Leisutngsmessung über einem separaten Kanal geliefer
 { "template": "switch", "connected": { "receiver": "Devicename" } }
 ```
 
-### Beispielkonfiguration für Schaltaktor mit separatem Kanal für Leistungsmessung
+#### Beispielkonfiguration für Schaltaktor mit separatem Kanal für Leistungsmessung
 Das FHEM-Attribut `appOptions` sollte wie folgt aussehen. Wenn die Leistungsmessung über einen separaten Kanal erfolgt
 
 Der separate Kanal, welcher in FHEM als eigenständiges Device behandelt wird, muss in `appOptions` über den Parameter `connected.power` definiert werden.
@@ -186,7 +204,7 @@ Der separate Kanal, welcher in FHEM als eigenständiges Device behandelt wird, m
 ```
 
 ### Beispielkonfiguration für einen Schaltaktor mit individuellem Statusverhalten
-Die statusabhängige Anpassung von Templates erfolgt in `appOptions` über den Parameter `states`. [siehe auch](#statusabhängige-anpassung-von-templates)
+Die statusabhängige Anpassung von Templates erfolgt in `appOptions` über den Parameter `states`. [siehe auch](#templates-individuell-anpassen)
 ```
 { "template": "switch", "states": ["state:off:aus:0:success:mdi-water-off","state:on:ein:100:success:mdi-water"] }
 ```
