@@ -14,14 +14,8 @@
 
       <v-card-text>
         <v-row align="center">
-          <v-col align="center" v-if="!active">
+          <v-col align="center">
             <div class="headline font-weight-bold">{{ vals.mainState }}</div>
-          </v-col>
-          <v-col align="center" v-if="active">
-            <div class="headline font-weight-bold">{{ vals.temp }}</div>
-          </v-col>
-          <v-col align="center" v-if="active">
-            <div class="headline font-weight-bold">{{ vals.hum }}</div>
           </v-col>
         </v-row>
 
@@ -45,11 +39,12 @@
             <v-icon large>{{ day.icon }}</v-icon>
           </v-col>
           <v-col class="text-truncate">
-            <h3>{{ day.temp }}</h3>
+            <h3>{{ day.weekday }}</h3>
             <span>{{ day.condition }}</span>
           </v-col>
-          <v-col class="headline col-2 pl-0" align="center">
-            {{ day.weekday }}
+          <v-col class="col-2 pl-0" align="center">
+            <div>{{ day.temp_max }}</div>
+            <div>{{ day.temp_min }}</div>
           </v-col>
         </v-row>
       </v-card-text>
@@ -77,30 +72,37 @@
       name: 'weather',
       iconSet: {
         // Weather Darksky - Icons
-        'sunny': 'mdi-weather-sunny',
-        'fog': 'mdi-weather-fog',
-        'cloudy': 'mdi-weather-cloudy',
-        'partly_cloudy': 'mdi-weather-partly-cloudy',
-        'partly_cloudy_night': 'mdi-weather-night-partly-cloudy',
-        'chance_of_rain': 'mdi-weather-partly-rainy',
+        sunny: 'mdi-weather-sunny',
+        fog: 'mdi-weather-fog',
+        cloudy: 'mdi-weather-cloudy',
+        partly_cloudy: 'mdi-weather-partly-cloudy',
+        partly_cloudy_night: 'mdi-weather-night-partly-cloudy',
+        chance_of_rain: 'mdi-weather-partly-rainy',
 
-        'clear_day': 'mdi-weather-sunny',
-        'hail': 'mdi-weather-hail',
-        'rain': 'mdi-weather-rainy',
-        'sleet': 'mdi-weather-snowy-rainy',
-        'snow': 'mdi-weather-snowy',
-        'thunderstorm': 'mdi-weather-lightning',
-        'windy': 'mdi-weather-windy',
-        'clear_night': 'mdi-weather-night'
+        clear_day: 'mdi-weather-sunny',
+        hail: 'mdi-weather-hail',
+        rain: 'mdi-weather-rainy',
+        sleet: 'mdi-weather-snowy-rainy',
+        snow: 'mdi-weather-snowy',
+        thunderstorm: 'mdi-weather-lightning',
+        windy: 'mdi-weather-windy',
+        clear_night: 'mdi-weather-night'
+      },
+      weekdays: {
+        Mo: 'Montag',
+        Di: 'Dienstag',
+        Mi: 'Mittwoch',
+        Do: 'Donnerstag',
+        Fr: 'Freitag',
+        Sa: 'Samstag',
+        So: 'Sonntag'
       },
       vals: {
         order: '',
         title: '',
-        mainState: '',
         mainLevel: 0,
         mainColor: 'success',
-        temp: '',
-        hum: '',
+        mainState: '',
         pressure: '',
         wind: '',
         forecast: [],
@@ -121,18 +123,12 @@
           let lastevent = this.$fhem.getEl(val, 'Readings', 'validity', 'Time');
           let activity = this.$fhem.getEl(val, 'Readings', 'validity', 'Value');
           let icon = this.$fhem.getEl(val, 'Readings', 'icon', 'Value');
-          let temp_ext = this.$fhem.getEl(val, 'Connected', 'thermometer', 'Readings', 'temperature', 'Value');
-          let hum_ext = this.$fhem.getEl(val, 'Connected', 'thermometer', 'Readings', 'humidity', 'Value');
-          let temp = this.$fhem.getEl(val, 'Readings', 'temperature', 'Value');
-          let hum = this.$fhem.getEl(val, 'Readings', 'humidity', 'Value');
           let press = this.$fhem.getEl(val, 'Readings', 'pressure', 'Value');
           let wind = this.$fhem.getEl(val, 'Readings', 'wind_condition', 'Value');
 
           this.vals.order = this.$fhem.getEl(val, 'Attributes', 'sortby') || 'last';
           this.vals.title = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
-
-          this.vals.temp = (temp_ext ? temp_ext : temp) + '°C';
-          this.vals.hum = (hum_ext ? hum_ext : hum) + '%';
+          this.vals.mainState = this.$fhem.getEl(val, 'Readings', 'condition', 'Value') || '';
 
           this.vals.systemIcon = this.getIcon(icon);
           this.vals.pressure = press ? parseInt(press).toLocaleString('de-DE') + 'hPa' : '';
@@ -153,6 +149,14 @@
     },
 
     methods: {
+      getIcon(icon) {
+        if(icon && this.iconSet[icon]) {
+          return this.iconSet[icon];
+        } else {
+          this.vals.systemIconValue = icon;
+        }
+      },
+
       loadForecast() {
         this.vals.forecast.splice(0);
 
@@ -164,10 +168,12 @@
           let min = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + '_low_c', 'Value') || '--';
 
           let day = {
-            weekday,
+            weekday: i === 1 ? 'heute' : this.weekdays[weekday],
             condition,
             icon: this.getIcon(icon),
-            temp: max +'°C max. ' + min +'°C min.'
+            temp: max +'°C max. ' + min +'°C min.',
+            temp_max: max + '°C',
+            temp_min: min + '°C'
           };
 
           this.vals.forecast.push(day);
@@ -182,14 +188,6 @@
           this.expanded = true;
           this.maxIcon = 'mdi-arrow-collapse';
           this.loadForecast();
-        }
-      },
-
-      getIcon(icon) {
-        if(icon && this.iconSet[icon]) {
-          return this.iconSet[icon];
-        } else {
-          this.vals.systemIconValue = icon;
         }
       }
     },
