@@ -15,7 +15,7 @@
 # Systemanforderungen
 Für den Betrieb der **FHEMApp** wird FHEM(tm) und ein Web-Server benötigt.
 * Backendsystem - FHEM https://fhem.de/
-* Webserver - z.B. Apache https://httpd.apache.org/
+* Webserver - z.B. Apache https://httpd.apache.org/, lighttpd https://www.lighttpd.net/
 
 # Installation
 Kopiert einfach alle Dateien und Unterverzeichnisse aus dem Ordner [www/fhemapp](./www/fhemapp) auf das Arbeitsverzeichnis eures Webservers. Danach sollte folgende Verzeichnisstruktur auf eurem Webserver vorhanden sein.
