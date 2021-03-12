@@ -113,7 +113,22 @@ In **FHEMApp** werden *Templates* für viele Aktoren und Sensoren zur Verfügung
 - **der aktuelle Status** - wird in der Mitte dargestellt und kann abhängig von den unterschiedlichen Zuständen eines FHEM Devices individuell angepasst werden.
 - **die Systembar** - befindet sich am unteren Rand und liefert weitere Informationen zum jeweiligen *Device*. Das *StatusIcon* auf der linken Seite der *Systembar* kann ebenfalls individuell und abhängig vom Zustand des Devices angepasst werden. Die *Icons* auf der rechten Seite der *Systembar* zeigen bei Funk-Aktoren/Sensoren den Batteriezustand und den Verbindungsstatus an.
 
-Die individuellen Anpassungsmöglichenkeiten erfolgen über das FHEM-Attribut `appOptions` und werden im jeweiligen Device im Einzelnen beschrieben.
+### statusabhängige Anpassung von Templates
+Die individuellen Anpassungsmöglichenkeiten können über das FHEM-Attribut `appOptions` im Parameter `states` vorgenommen werden. Der Parameter `states` beinhaltet dabei eine oder mehrere Definitionen, die das Standardverhalten des jeweiligen Templates überschreiben. Die Definitionen werden der Reihenfolge nach geprüft ["def1", "def2", "def3", ...] Jede Definition muss im folgenden Schema angegeben werden `Reading:Wert:Statustext:Statuslevel:Statusfarbe:StatusIcon`
+- **Reading** - beinhaltet das Reading welches den Status des Templates verändern soll.
+- **Wert** (optional)- ist der Wert auf den das Reading geprüft werden soll. Hier können *Zeichenketten*, *RegExp* oder *numerische Werte* angegeben werden. Bei numerischen Werten greift die Definition immer ab dem Wert! Wird der Wert nicht angegeben, so greift die Definition fürr alle restlichen (nicht definierten) Fälle
+- **Statustext** (optional) - ist der Text der ausgegeben werden soll. Wird der Statustext nicht angegeben, so wird der Wert des *Readings* zurückgegeben.
+- **Statuslevel** (optional) - gibt an, wie breit der farbige Balken im oberen Teil des Templates angezeigt wird. (!!! hier geht es weiter mit der Doku!!!)
+
+Beispiel:
+```
+[
+  "Activity:^(?!alive):keine Verbindung:100:error:mdi-power-plug",
+  "state:on:an:100:success:mdi-power-plug",
+  "state:off:aus:0:success:mdi-power-plug-off"
+]
+```
+
 
 Grundsätzlich ist es möglich weitere Templates auf Basis des Vue-Frameworks zu entwickeln und in **FHEMApp** zu integrieren.   
 
@@ -140,19 +155,41 @@ Grundsätzlich ist es möglich weitere Templates auf Basis des Vue-Frameworks zu
 ## Template Switch
 Dieses Template kann für unterschiedliche Schaltaktoren verwendet werden. Dabei werden verschiedene Varianten unterstützt - Schaltaktoren mit und ohne Leistungsmessung sowie funkbasierende und fest installierte Schaltaktoren.
 
-### verwendete FHEM Parameter
-| Template | FHEM Parameter | separater Kanal (connected) |
-|---------|----------------|------------------|
-| Name | `Attributes: alias` | |
-| Sortierung | `Attributes: sortby` | |
-| Verbindung Status¹ | `Readings: Acitivty` | receiver |
-| Verbindung Qualität¹ | `Internals: xxx_RSSI` | receiver |
-| Verbindung letztes Siganal¹ | `Readings: state` (Zeitstempel) | receiver |
-| Leistungsanzeige² | `Readings: power` | power |
+### Beispielkonfiguration für Schaltaktor
+Das FHEM-Attribut `appOptions` sollte wie folgt aussehen.
+```
+{ "template": "switch" }
+```
 
-¹wird nur bei funkbasierenden Schaltaktoren verwendet
-²wird nur bei Schaltaktoren mit Leistungsmessung verwendet
-> HINWEIS: Wenn funkbasierende Schaltaktoren mehrere Kanäle nutzen, dann müssen diese explizit in `appOptions` über den Parameter `connected.receiver` bzw. `connected.power` defniert werden. Beispiel: { "template": "switch", "connected": { "receiver": "*Kanalname*", "power": "*Kanalname*" } }
+### Beispielkonfiguration für einen funkbasier Schaltaktor
+Wenn die Informationen zur Funkverbindung über einem separaten Kanal geliefert werden, behandelt FHEM diesen als eigenständiges Device. In diesem Fall muss das Device in `appOptions` über den Parameter `connected.receiver` definiert werden.
+> Hinweis: Informationen zur Funkverbindung liefern die FHEM-Parameter `Internals: xxx_RSSI` und `Readings: Activity`
+
+```
+{ "template": "switch", "connected": { "receiver": "Devicename" } }
+```
+
+### Beispielkonfiguration für einen funkbasier Schaltaktor mit separater Leistungsmessung
+Wenn die Informationen zur Leisutngsmessung über einem separaten Kanal geliefert werden, behandelt FHEM diesen als eigenständiges Device. In diesem Fall muss das Device in `appOptions` über den Parameter `connected.power` definiert werden.
+>Hinweis: Informationen zur Leistungsmessung liefert der FHEM-Parameter `Readings: power`
+
+```
+{ "template": "switch", "connected": { "receiver": "Devicename" } }
+```
+
+### Beispielkonfiguration für Schaltaktor mit separatem Kanal für Leistungsmessung
+Das FHEM-Attribut `appOptions` sollte wie folgt aussehen. Wenn die Leistungsmessung über einen separaten Kanal erfolgt
+
+Der separate Kanal, welcher in FHEM als eigenständiges Device behandelt wird, muss in `appOptions` über den Parameter `connected.power` definiert werden.
+```
+{ "template": "switch", "connected": { "receiver": "chn_akt.hm.dyn.sw2", "power": "chn_sen.hm.dyn.sw2_Pwr" } }
+```
+
+### Beispielkonfiguration für einen Schaltaktor mit individuellem Statusverhalten
+Die statusabhängige Anpassung von Templates erfolgt in `appOptions` über den Parameter `states`. [siehe auch](#statusabhängige-anpassung-von-templates)
+```
+{ "template": "switch", "states": ["state:off:aus:0:success:mdi-water-off","state:on:ein:100:success:mdi-water"] }
+```
 
 ### Standardverhalten
 | Reading | Wert | Statustext | Statuslevel | Statusfarbe | Statusicon |
@@ -161,18 +198,8 @@ Dieses Template kann für unterschiedliche Schaltaktoren verwendet werden. Dabei
 | state | on | an | 100 | success | mdi-power-plug |
 | state | off | aus | 0 | success | mdi-power-plug-off |
 
-> HINWEIS: Das Standardverhalten kann individuell in `appOptions` über den Parameter `states` verändert werden. Beispiel: { "template": "switch",  "states": ["def1", "def2", ...] } Die Definitionen müssen wie folgt angegeben werden:  "Reading:Wert:Statustext:Statuslevel:Statusfarbe:Statusicon"
-
 ### Aktionen
 | Button | Aktion | FHEM Kommando |
 |--------|--------|---------------|
-| links | ausschalten | set *[device]* off |
-| rechts | einschalten | set *[device]* on |
-
-### Beispielkonfigurationen für switch
-```
-{ "template": "switch" }
-{ "template": "switch", "connected": { "receiver": "chn_akt.hm.eg.sw3" } }
-{ "template": "switch", "connected": { "receiver": "chn_akt.hm.dyn.sw2", "power": "chn_sen.hm.dyn.sw2_Pwr" } }
-{ "template": "switch", "connected": { "receiver": "chn_akt.os.gah.sw1" }, "states": ["state:off:aus:0:success:mdi-water-off","state:on:ein:100:success:mdi-water" ] }
-```
+| links | ausschalten | set *Devicename* off |
+| rechts | einschalten | set *Devicename* on |
