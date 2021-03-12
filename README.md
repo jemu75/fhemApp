@@ -184,21 +184,13 @@ Wenn die Informationen zur Funkverbindung über einem separaten Kanal geliefert 
 > Hinweis: Informationen zur Funkverbindung liefern die FHEM-Parameter `Internals: xxx_RSSI` und `Readings: Activity`
 
 ```
-{ "template": "switch", "connected": { "receiver": "Devicename" } }
+{ "template": "switch", "connected": { "receiver": "chn_akt.hm.dyn.sw2" } }
 ```
 
 #### Beispielkonfiguration für einen funkbasier Schaltaktor mit separater Leistungsmessung
 Wenn die Informationen zur Leisutngsmessung über einem separaten Kanal geliefert werden, behandelt FHEM diesen als eigenständiges Device. In diesem Fall muss das Device in `appOptions` über den Parameter `connected.power` definiert werden.
 >Hinweis: Informationen zur Leistungsmessung liefert der FHEM-Parameter `Readings: power`
 
-```
-{ "template": "switch", "connected": { "receiver": "Devicename" } }
-```
-
-#### Beispielkonfiguration für Schaltaktor mit separatem Kanal für Leistungsmessung
-Das FHEM-Attribut `appOptions` sollte wie folgt aussehen. Wenn die Leistungsmessung über einen separaten Kanal erfolgt
-
-Der separate Kanal, welcher in FHEM als eigenständiges Device behandelt wird, muss in `appOptions` über den Parameter `connected.power` definiert werden.
 ```
 { "template": "switch", "connected": { "receiver": "chn_akt.hm.dyn.sw2", "power": "chn_sen.hm.dyn.sw2_Pwr" } }
 ```
