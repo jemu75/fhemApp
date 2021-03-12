@@ -195,7 +195,7 @@ Wenn die Informationen zur Leisutngsmessung über einem separaten Kanal geliefer
 { "template": "switch", "connected": { "receiver": "chn_akt.hm.dyn.sw2", "power": "chn_sen.hm.dyn.sw2_Pwr" } }
 ```
 
-### Beispielkonfiguration für einen Schaltaktor mit individuellem Statusverhalten
+#### Beispielkonfiguration für einen Schaltaktor mit individuellem Statusverhalten
 Die statusabhängige Anpassung von Templates erfolgt in `appOptions` über den Parameter `states`. [siehe auch](#templates-individuell-anpassen)
 ```
 { "template": "switch", "states": ["state:off:aus:0:success:mdi-water-off","state:on:ein:100:success:mdi-water"] }
