@@ -213,3 +213,6 @@ Die statusabhängige Anpassung von Templates erfolgt in `appOptions` über den P
 |--------|--------|---------------|
 | links | ausschalten | set *Devicename* off |
 | rechts | einschalten | set *Devicename* on |
+
+## Template Dimmer
+...
