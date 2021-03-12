@@ -390,32 +390,36 @@ export default class Fhem extends EventEmitter {
         let idx = 1;
         let target = [];
 
-        for(const item of res.Results) {
-          if('PossibleSets' in item) delete item.PossibleSets;
-          if('PossibleAttrs' in item) delete item.PossibleAttrs;
+        if(res.Results.length > 0) {
+          for(const item of res.Results) {
+            if('PossibleSets' in item) delete item.PossibleSets;
+            if('PossibleAttrs' in item) delete item.PossibleAttrs;
 
-          let options = this.createOptions(item);
+            let options = this.createOptions(item);
 
-          if(options) {
-            item.Options = options;
-            this.createConnected(item)
-              .then(async (connected) => {
-                item.Connected = await connected;
-                target.push(item);
+            if(options) {
+              item.Options = options;
+              this.createConnected(item)
+                .then(async (connected) => {
+                  item.Connected = await connected;
+                  target.push(item);
 
-                if(idx === res.Results.length) {
-                  this.app.data.deviceList = Object.assign([], target);
-                  this.app.options.loading = false
-                }
-                idx ++;
-              })
-              .catch((err) => {
-                this.log = { type: 'error', message: 'Add Connected Element failed.', meta: err };
-                this.app.options.loading = false;
-              });
-          } else {
-            this.app.options.loading = false;
+                  if(idx === res.Results.length) {
+                    this.app.data.deviceList = Object.assign([], target);
+                    this.app.options.loading = false
+                  }
+                  idx ++;
+                })
+                .catch((err) => {
+                  this.log = { type: 'error', message: 'Add Connected Element failed.', meta: err };
+                  this.app.options.loading = false;
+                });
+            } else {
+              this.app.options.loading = false;
+            }
           }
+        } else {
+          this.app.options.loading = false
         }
       })
       .catch((err) => {

@@ -100,7 +100,7 @@ Das Attribut `appOptions` kann mit unterschiedlichen Parametern befüllt werden,
   "connected": { object },          - bindet zusätzliche Devices in das Template ein
   "home": "true",                   - zeigt ein Device auf der Startseite an
   "dashboard": "true",              - zeigt ein Device im Dashboard an
-  "system":"true",                  - zeigt ein Device in den Systemeinstellungen an
+  "system": "true",                 - zeigt ein Device in den Systemeinstellungen an
   "chartDef": ["def1", "def2", ...],- legt die Datenquellen für Grafiken fest
   "link": "string",                 - gibt den URL-Pfad für Panels an  
   "toggle": ["def1", "def2", ...],  - ermöglicht die Definition von "Schaltern"für Panels     
