@@ -83,9 +83,10 @@
           let timestamp = this.$fhem.getEl(val, 'Readings', 'state', 'Time');
           let rssi = this.$fhem.getEl(val, 'Internals', 'myHMLAN_RSSI');
           let button = this.$fhem.getEl(val, 'Connected', 'button', 'Name');
+          let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
 
+          this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
           this.vals.order = this.$fhem.getEl(val, 'Attributes', 'sortby') || 'last';
-          this.vals.title = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
           this.vals.systemLastEvent = lastevent ? this.$fhem.getDateTime(lastevent) : '';
           this.vals.systemBatteryIcon = battery === 'ok' ? 'mdi-battery' : 'mdi-battery-10';
           this.vals.systemBatteryState = battery;

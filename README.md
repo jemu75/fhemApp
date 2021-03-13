@@ -90,14 +90,17 @@ attr global userattr appOptions:textField-long
 # Konfiguration der Geräte in FHEM
 Jedes SmartHome-Gerät (Device) welches in **FHEMApp** angezeigt werden soll, konfiguriert ihr nun direkt in FHEM. Dazu verwendet ihr das neu angelegte FHEM-Attribut `appOptions` sowie weitere FHEM-Attribute wie `alias`,`group`,`room` oder `sortby`.
 
-### Attribut `appOptions` allgemein
-Das Attribut `appOptions` kann mit unterschiedlichen Parametern befüllt werden, um die Darstellung des jeweiligen Devices in **FHEMApp** zu steuern. Es wird als Object im `JSON-Format` von **FHEMApp** verarbeitet und kann folgende Parameter beinhalten:
+### Attribut appOptions allgemein
+Das Attribut `appOptions` kann mit unterschiedlichen Parametern befüllt werden, um die Darstellung des jeweiligen Devices in **FHEMApp** zu steuern. Es wird von **FHEMApp** als Object im `JSON-Format` verarbeitet und kann folgende Parameter beinhalten:
 
 ```
 {
   "template": "string",             - steuert über welches Template das Device dargestellt wird
   "states": ["def1", "def2", ...],  - ermögliche zustandsabhängige Anpassungen des Templates
   "connected": { object },          - bindet zusätzliche Devices in das Template ein
+  "name":" "string",                - kann alternativ zum FHEM-Attribut 'alias' verwendet werden
+  "room": "string",                 - kann alternativ zum FHEM-Attribut 'room' verwendet werden
+  "group": "string",                - kann alternativ zum FHEM-Attribut 'group' verwendet werden
   "home": "true",                   - zeigt ein Device auf der Startseite an
   "dashboard": "true",              - zeigt ein Device im Dashboard an
   "system": "true",                 - zeigt ein Device in den Systemeinstellungen an
@@ -111,7 +114,7 @@ Das Attribut `appOptions` kann mit unterschiedlichen Parametern befüllt werden,
 Damit ein Gerät in der **FHEMApp** zur Verfügung steht, müsst ihr dem jeweiligen Device in FHEM einem *Template* zuordnen. In der **FHEMApp** stehen verschiedene [Templates](#übersicht-der-verfügbaren-templates) zur Verfügung. Dazu nutzt ihr das FHEM-Attribut `appOptions`  und definiert ein *Template* über folgenden Parameter  `{ "template": "switch" }` (Beispiel für einen Schalter)
 
 ### weitere FHEM Attribute verwenden
-Nachdem ihr dem Device ein *Template* zugeordnet habt, könnt ihr defnieren unter welchem *Name* und in welchen *Menüpunkten* euer Device in **FHEMApp** angezeigt wird. Dazu nutzt ihr das FHEM-Attribut `alias` für den Name des Gerätes, das FHEM-Attribut `group` für die Anzeige im Menüpunkt *Gruppen* und das FHEM-Attribut `room` für die Anzeige im Menüpunkt *Bereiche*.
+Nachdem ihr dem Device ein *Template* zugeordnet habt, könnt ihr defnieren unter welchem *Name* und in welchen *Menüpunkten* euer Device in **FHEMApp** angezeigt wird. Dazu nutzt ihr das FHEM-Attribut `alias` für den Name des Gerätes, das FHEM-Attribut `group` für die Anzeige im Menüpunkt *Gruppen* und das FHEM-Attribut `room` für die Anzeige im Menüpunkt *Bereiche*. Alternativ können diese Parameter auch über `appOptions` [siehe](#attribut-appoptions-allgemein) definiert werden, wenn ihr die FHEM-Attribute `alias`, `group` bzw `room` in eurer FHEM-Installation anderweitig verwendet.
 
 *Definition in FHEM*<br>
 ![Definition in FHEM](./docs/media/template_switch_fhem.png)

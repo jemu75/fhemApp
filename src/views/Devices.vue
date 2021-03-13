@@ -50,10 +50,17 @@ export default {
   methods: {
     subscribe() {
       if(!this.app.session.connect) return;
+      let fltr = 'appOptions!=:FILTER=';
 
-      let fltr = this.$route.params.filter ? this.$route.params.filter.split('&')[0] : '';
+      if(this.$route.params.filter) {
+        let parts = this.$route.params.filter.split('&');
 
-      fltr = 'appOptions!=:FILTER=' + fltr;
+        if(parts.indexOf('options=true') != -1) {
+          fltr = 'appOptions=.*' + parts[0].replace('=', '.:..') + '.*';
+        } else {
+          fltr += parts[0];
+        }
+      }
 
       if(this.$route.name == 'Dashboard') fltr = 'appOptions=.*dashboard.:..true.*';
       if(this.$route.name == 'System') fltr = 'appOptions=.*system.:..true.*';

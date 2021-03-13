@@ -2,7 +2,12 @@
   <v-alert :value="alert" :type="type" dense text outlined>
     <v-row align="center">
       <v-col>
-        {{ message }}
+        <div>
+          {{ message }}
+        </div>
+        <div>
+          {{ meta }}
+        </div>
       </v-col>
       <v-col class="shrink">
         <v-btn icon small @click="clearMessage()">
@@ -19,6 +24,7 @@ export default {
     alert: false,
     type: 'info',
     message: '',
+    meta: '',
     msgList: []
   }),
 
@@ -27,11 +33,13 @@ export default {
       if(this.msgList && this.msgList.length > 0) {
         this.type = this.msgList[0].type;
         this.message = this.msgList[0].message;
+        this.meta = this.msgList[0].meta;
         this.alert = true;
       } else {
         this.alert = false;
         this.type = 'info';
         this.message = '';
+        this.meta = '';
       }
     }
   },
@@ -48,8 +56,11 @@ export default {
     this.$fhem.on('message', (msg) => {
       let target = {
         type: 'warning',
-        message: 'no valid message received'
+        message: 'no valid message received',
+        meta: ''
       }
+
+      console.log(msg);
 
       Object.assign(target, msg);
 

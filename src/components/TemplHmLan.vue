@@ -114,9 +114,10 @@
           let watcher = this.$fhem.getEl(val, 'Connected', 'watcher', 'Readings');
           let opend = this.$fhem.getEl(val, 'Readings', 'cond', 'Time');
           let loadCurrent = this.$fhem.getEl(val, 'Internals', 'msgLoadCurrent');
+          let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
 
+          this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
           this.vals.order = this.$fhem.getEl(val, 'Attributes', 'sortby') || 'last';
-          this.vals.title = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
           this.vals.systemLastEvent = this.$fhem.getDateTime(opend);
           this.vals.systemIconValue = loadCurrent + '%';
           this.vals = this.$fhem.handleStates(val, this.vals, this.defaultSet);

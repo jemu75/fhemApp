@@ -145,9 +145,10 @@
           let currentTrack = this.$fhem.getEl(val, 'Readings', 'currentTrack', 'Value');
           let numOfTracks = this.$fhem.getEl(val, 'Readings', 'numberOfTracks', 'Value');
           let zone = this.$fhem.getEl(val, 'Readings', 'ZoneGroupNameDetails', 'Value');
+          let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
 
+          this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
           this.vals.order = this.$fhem.getEl(val, 'Attributes', 'sortby') || 'last';
-          this.vals.title = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
           this.vals = this.$fhem.handleStates(val, this.vals, this.defaultSet);
 
           if(zone) this.vals.title += ' (gruppiert)';

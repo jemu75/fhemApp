@@ -105,9 +105,10 @@
           let ram = parseFloat(this.$fhem.getEl(val, 'Readings','ram','Value').split(' ')[6]);
           let temp = parseFloat(this.$fhem.getEl(val, 'Readings','cpu_temp','Value'));
           let lastEvent = this.$fhem.getEl(val, 'Readings','ram','Time');
+          let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
 
+          this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
           this.vals.order = this.$fhem.getEl(val, 'Attributes', 'sortby') || 'last';
-          this.vals.title = this.$fhem.getEl(val, 'Attributes', 'alias') || '';
           this.vals.subTitle = this.$fhem.getEl(val, 'Readings','cpu_model_name','Value') || '';
           this.vals.cpuVal = cpu ? cpu.toFixed(1) : '';
           this.vals.cpuColor = cpu > 70 ? 'error' : 'success';

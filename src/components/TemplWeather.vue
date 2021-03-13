@@ -125,9 +125,10 @@
           let icon = this.$fhem.getEl(val, 'Readings', 'icon', 'Value');
           let press = this.$fhem.getEl(val, 'Readings', 'pressure', 'Value');
           let wind = this.$fhem.getEl(val, 'Readings', 'wind_condition', 'Value');
+          let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
 
+          this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
           this.vals.order = this.$fhem.getEl(val, 'Attributes', 'sortby') || 'last';
-          this.vals.title = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
           this.vals.mainState = this.$fhem.getEl(val, 'Readings', 'condition', 'Value') || '';
 
           this.vals.systemIcon = this.getIcon(icon);

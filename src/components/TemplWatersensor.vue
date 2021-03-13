@@ -75,10 +75,10 @@
           let activity = this.$fhem.getEl(val, 'Readings', 'Activity', 'Value');
           let timestamp = this.$fhem.getEl(val, 'Readings', 'state', 'Time');
           let rssi = this.$fhem.getEl(val, 'Internals', 'myHMLAN_RSSI');
+          let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
 
+          this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
           this.vals.order = this.$fhem.getEl(val, 'Attributes', 'sortby') || 'last';
-          this.vals.title = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
-
           this.vals.mainState = liter ? parseInt(liter).toLocaleString('de-DE') + ' Liter' : '';
           this.vals.level = level ? level+ '%' : '';
           this.vals = this.$fhem.handleStates(val, this.vals, this.defaultSet);

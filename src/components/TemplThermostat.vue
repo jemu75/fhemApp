@@ -98,12 +98,13 @@
           let activity = this.$fhem.getEl(val, 'Connected', 'receiver', 'Readings', 'Activity', 'Value');
           let battery = this.$fhem.getEl(val, 'Connected', 'receiver', 'Readings', 'batteryLevel', 'Value');
           let rssi = this.$fhem.getEl(val, 'Connected', 'receiver', 'Internals', 'myHMLAN_RSSI');
+          let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
 
           this.nightTemp = parseFloat(night);
           this.dayTemp = parseFloat(day);
 
+          this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
           this.vals.order = this.$fhem.getEl(val, 'Attributes', 'sortby') || 'last';
-          this.vals.title = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
           this.vals.mainState = desired + '°C'
           this.vals.mainLevel = parseFloat(measured) < parseFloat(desired) ? 100 : 0;
           this.vals.systemIcon = mode == 'auto' ? 'mdi-clock-time-four-outline' : '';

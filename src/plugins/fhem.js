@@ -62,7 +62,7 @@ export default class Fhem extends EventEmitter {
 
     this.app.session.logLast = target;
 
-    if(target.type === 'error') this.emit('message', { type: target.type, message: target.message });
+    if(target.type === 'error') this.emit('message', { type: target.type, message: target.message, meta: target.meta });
 
     if(this.app.options.logRecord) {
       this.app.session.logList.unshift(target);
@@ -261,15 +261,19 @@ export default class Fhem extends EventEmitter {
       let list = [];
       this.app.data.[listName].splice(0);
 
-      this.request({ param: 'cmd', value: 'jsonList2 appOptions!= ' + attr }, 'json')
+      this.request({ param: 'cmd', value: 'jsonList2 appOptions!= appOptions ' + attr }, 'json')
         .then((res) => {
           let idx = 1;
 
           for (const item of res.Results) {
-            if(item.Attributes[attr]) {
-              let vals = item.Attributes[attr].split(',');
+            let options = this.createOptions(item);
+            let defs = options[attr] || item.Attributes[attr];
+
+            if(defs) {
+              let vals = defs.split(',');
               for (let val of vals) {
                 let route = '/devices/' + attr + '=' + val.replaceAll(' ','\\s').replaceAll('&','.');
+                if(options[attr]) route += '&options=true';
 
                 if(list.map((e) => e.title).indexOf(val) == -1) {
                   list.push({ title: val, route: route });
