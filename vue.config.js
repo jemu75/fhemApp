@@ -4,5 +4,6 @@ module.exports = {
   ],
 
   outputDir: 'www/fhemapp',
-  publicPath: '/'
+  publicPath: '',
+  productionSourceMap: false
 }

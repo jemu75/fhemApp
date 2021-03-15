@@ -82,11 +82,11 @@
     data: () => ({
       name: 'hmlan',
       defaultSet: [
-        "cond:^(?!ok):offline:100:error:mdi-wifi-off",
-        "loadLvl:low:normal:100:success:mdi-wifi",
-        "loadLvl:batchLevel:hoch:50:success:mdi-wifi-star",
-        "loadLvl:high:sehr hoch:10:success:mdi-wifi-alert",
-        "loadLvl:suspended:überlastet:100:error:mdi-wifi-cancel"
+        "cond:^(?!ok):offline:100:error:mdi-access-point-network-off",
+        "loadLvl:low:normal:100:success:mdi-access-point-network",
+        "loadLvl:batchLevel:hoch:50:success:mdi-access-point-network",
+        "loadLvl:high:sehr hoch:10:success:mdi-access-point-network",
+        "loadLvl:suspended:überlastet:100:error:mdi-access-point-network"
       ],
       vals: {
         order: '',
@@ -95,9 +95,7 @@
         mainLevel: 0,
         mainColor: '',
         devCount: 0,
-        devCountIcon: 'mdi-check',
         devOffline: [],
-        devOfflineIcon: 'mdi-alert',
         systemIcon: '',
         systemIconValue: '',
         systemLastEvent: ''

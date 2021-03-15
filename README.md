@@ -13,15 +13,16 @@
 *Beispiele für die App in der Smartphoneansicht*
 
 # Systemanforderungen
-Für den Betrieb der **FHEMApp** wird FHEM(tm) und ein Web-Server benötigt.
-* Backendsystem - FHEM https://fhem.de/
-* Webserver - z.B. Apache https://httpd.apache.org/, lighttpd https://www.lighttpd.net/
+Für den Betrieb der **FHEMApp** wird FHEM(tm) benötigt.
+* FHEM https://fhem.de/
+* optional kann die App auch auf einem separaten Web-Server (z.B. Apache https://httpd.apache.org/, lighttpd https://www.lighttpd.net/) installiert werden
 
 # Installation
-Kopiert einfach alle Dateien und Unterverzeichnisse aus dem Ordner [www/fhemapp](./www/fhemapp) auf das Arbeitsverzeichnis eures Webservers. Danach sollte folgende Verzeichnisstruktur auf eurem Webserver vorhanden sein.
+Kopiert einfach alle Dateien und Unterverzeichnisse aus dem Ordner [www/fhemapp](./www/fhemapp) in eure FHEM-Installation unter **opt/fhem/www/fhemapp** bzw. in das gewünschte Verzeichnis auf eurem Webserver. Danach sollte folgende Verzeichnisstruktur auf eurem Webserver vorhanden sein.
 ```bash
 .
 └─ fhemapp
+    ├── apple-touch-icon.png
     ├── favicon.png
     ├── index.html
     ├── cfg

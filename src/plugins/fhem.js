@@ -298,6 +298,39 @@ export default class Fhem extends EventEmitter {
     }
   }
 
+  // mainfunction new solution for handleStates
+  checkVal(device, defs) {
+    let result = [];
+
+    if(typeof device === 'object' && defs.length > 0) {
+      for(const def of defs) {
+        let defSet = def.split(':');
+
+        if(defSet.length > 2) {
+          let value = defSet[0].match(/\./) ? defSet[0].split('.') : [ 'Readings', defSet[0], 'Value' ];
+          let state = this.getEl(device, ...value);
+
+          if(state) {
+            let found = false;
+
+            if(isNaN(parseFloat(defSet[1]))) {
+              if(RegExp(!defSet[1] ? '.' : defSet[1]).test(state)) found = true;
+            } else {
+              if(parseFloat(state) >= parseFloat(defSet[1])) found = true;
+            }
+
+            if(found) {
+              // hier müssen jetzt noch die Ersetzungen rein %s %n %n.1 %t
+              // schleife bauen, die defSet-Array ab idx 2 - x durchläuft und Ersetzungen vornimmt
+              break;
+            }
+          }
+        }
+      }
+    }
+    return result;
+  }
+
   // mainfuntion handle states and set mainValues
   handleStates(device, vals, defaultSet) {
     let defs = this.getEl(device, 'Options', 'states') || defaultSet;

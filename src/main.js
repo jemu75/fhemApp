@@ -12,7 +12,7 @@ Vue.config.productionTip = false
 
 Vue.prototype.$fhem = new fhem()
 
-fetch('/cfg/config.json')
+fetch('./cfg/config.json')
   .then(res => res.json())
   .catch(() => null)
   .then(cfg => {

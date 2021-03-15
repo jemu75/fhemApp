@@ -96,7 +96,8 @@
           let night = this.$fhem.getEl(val, 'Readings', 'R-nightTemp', 'Value');
           let desired = this.$fhem.getEl(val, 'Readings', 'desired-temp', 'Value');
           let activity = this.$fhem.getEl(val, 'Connected', 'receiver', 'Readings', 'Activity', 'Value');
-          let battery = this.$fhem.getEl(val, 'Connected', 'receiver', 'Readings', 'batteryLevel', 'Value');
+          let battery = this.$fhem.getEl(val, 'Connected', 'receiver', 'Readings', 'battery', 'Value');
+          let batlevel = this.$fhem.getEl(val, 'Connected', 'receiver', 'Readings', 'batteryLevel', 'Value');
           let rssi = this.$fhem.getEl(val, 'Connected', 'receiver', 'Internals', 'myHMLAN_RSSI');
           let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
 
@@ -111,8 +112,8 @@
           this.vals.systemDayNightIcon = parseFloat(desired) === parseFloat(day) ? 'mdi-weather-sunny' : parseFloat(desired) === parseFloat(night) ? 'mdi-weather-night' : '';
           this.vals.systemTempValue = measured + '°C';
           this.vals.systemHumValue = humidity +'%';
-          this.vals.systemBatteryIcon = parseFloat(battery) < 2.5 ? 'mdi-battery-10' : 'mdi-battery'
-          this.vals.systemBatteryState = battery + 'v';
+          this.vals.systemBatteryIcon = battery != 'ok' ? 'mdi-battery-10' : 'mdi-battery';
+          this.vals.systemBatteryState = batlevel + 'v';
           this.vals.systemActivityIcon = activity ? activity === 'alive' ? 'mdi-wifi' : 'mdi-wifi-off' : '';
           this.vals.systemActivityState = this.$fhem.getDateTime(timestamp);
           this.vals.systemActivityState += rssi ? ' ' + rssi +'dB' : '';

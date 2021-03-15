@@ -38,7 +38,8 @@ export default {
     templ_weather: () => import('@/components/TemplWeather.vue'),
     templ_scenes: () => import('@/components/TemplScenes.vue'),
     templ_sonos: () => import('@/components/TemplSonos.vue'),
-    templ_hmlan: () => import('@/components/TemplHmLan.vue')
+    templ_hmlan: () => import('@/components/TemplHmLan.vue'),
+    templ_custom: () => import('@/components/TemplCustom.vue')
   },
 
   watch: {
