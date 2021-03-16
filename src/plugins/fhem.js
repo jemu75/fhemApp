@@ -27,6 +27,7 @@ export default class Fhem extends EventEmitter {
         logRecord: true,
         logBuffer: 500
       },
+      custom: [],
       data: {
         roomList: [],
         groupList: [],
@@ -320,14 +321,31 @@ export default class Fhem extends EventEmitter {
             }
 
             if(found) {
-              // hier müssen jetzt noch die Ersetzungen rein %s %n %n.1 %t
-              // schleife bauen, die defSet-Array ab idx 2 - x durchläuft und Ersetzungen vornimmt
+              for (var i = 2; i < defSet.length; i ++) {
+                let val = defSet[i];
+
+                if(defSet[i].match('%s')) val = defSet[i].replace('%s', state);
+                if(defSet[i].match('%t')) val = defSet[i].replace('%t', this.getDateTime(state));
+                if(defSet[i].match('%n')) {
+                  let isDecimal = /%n../.exec(defSet[i]);
+                  let decimal = 0;
+                  if(isDecimal) {
+                    decimal = isDecimal[0].replace('%n.','');
+                  } else {
+                    isDecimal = ['%n'];
+                  }
+                  if(!isNaN(parseFloat(state))) val = defSet[i].replace(isDecimal[0], parseFloat(state).toFixed(decimal))
+                }
+
+                result.push(val);
+              }
               break;
             }
           }
         }
       }
     }
+
     return result;
   }
 

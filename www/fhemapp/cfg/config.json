@@ -12,9 +12,9 @@
     "dark": true,
     "themes": {
       "light": {
-        "primary": "#78909C",
-        "secondary": "#CFD8DC",
-        "accent": "#8bc34a",
+        "primary": "#616161",
+        "secondary": "#F5F5F5",
+        "accent": "#37474F",
         "error": "#e91e63",
         "warning": "#ffc107",
         "info": "#03a9f4",
@@ -23,5 +23,35 @@
       "dark": {
       }
     }
-  }
+  },
+  "custom": [
+    {
+      "name": "example",
+      "status": {
+        "line": ["reading:value:level:color"],
+        "error": ["reading:value:level:color:text"]
+      },
+      "main": [
+        {
+          "leftIcon": "string",
+          "leftClick": ["reading:value:set_param"],
+          "leftLong": ["reading:value:set_param"],
+          "leftLongRelease": ["reading:value:set_param"],
+          "text": ["reading:value:text"],
+          "rightIcon": "string",
+          "rightClick": ["reading:value:set_param"],
+          "rightLong": ["reading:value:set_param"],
+          "rightLongRelease": ["reading:value:set_param"]
+        }
+      ],
+      "info": {
+        "left1": ["reading:value:text:icon"],
+        "left2": ["reading:value:text:icon"],
+        "mid1": ["reading:value:text:icon"],
+        "mid2": ["reading:value:text:icon"],
+        "right1": ["reading:value:text:icon"],
+        "right2": ["reading:value:text:icon"]
+      }
+    }
+  ]
 }

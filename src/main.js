@@ -19,6 +19,7 @@ fetch('./cfg/config.json')
     if(cfg) {
       if(cfg.connection) Object.assign(Vue.prototype.$fhem.app.connection, cfg.connection)
       if(cfg.options) Object.assign(Vue.prototype.$fhem.app.options, cfg.options)
+      if(cfg.custom) Object.assign(Vue.prototype.$fhem.app.custom, cfg.custom)
       if(cfg.theme) {
         if(cfg.theme.dark != -1) Object.assign(vuetify.framework.theme, { dark: cfg.theme.dark })
         if(cfg.theme.themes) {
