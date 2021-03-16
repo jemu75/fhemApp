@@ -34,7 +34,36 @@ Damit individuelle erstellte Template-Definitionen nicht in jedem FHEM-Device ab
 
 
 ## Customizing Definition
-
+```
+{
+  "name": "example",
+  "status": {
+    "line": ["reading:value:level:color"],
+    "error": ["reading:value:level:color:text"]
+  },
+  "main": [
+    {
+      "leftIcon": "string",
+      "leftClick": ["reading:value:set_param"],
+      "leftLong": ["reading:value:set_param"],
+      "leftLongRelease": ["reading:value:set_param"],
+      "text": ["reading:value:text"],
+      "rightIcon": "string",
+      "rightClick": ["reading:value:set_param"],
+      "rightLong": ["reading:value:set_param"],
+      "rightLongRelease": ["reading:value:set_param"]
+    }
+  ],
+  "info": {
+    "left1": ["reading:value:text:icon"],
+    "left2": ["reading:value:text:icon"],
+    "mid1": ["reading:value:text:icon"],
+    "mid2": ["reading:value:text:icon"],
+    "right1": ["reading:value:text:icon"],
+    "right2": ["reading:value:text:icon"]
+  }
+}
+```
 
 #### Beispiel für shelly PM1
 ```
