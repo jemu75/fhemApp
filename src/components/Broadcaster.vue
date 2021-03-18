@@ -60,8 +60,6 @@ export default {
         meta: ''
       }
 
-      console.log(msg);
-
       Object.assign(target, msg);
 
       this.msgList.unshift(target);

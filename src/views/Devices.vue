@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row>
-      <component v-for="item in app.data.deviceList" v-bind:is="'templ_' + item.Options.template" :item="item" :key="item.Internals.FUUID"></component>
+      <component v-for="item in app.data.deviceList" v-bind:is="item.Options.component" :item="item" :key="item.Internals.FUUID"></component>
     </v-row>
   </div>
 </template>
@@ -22,24 +22,25 @@ export default {
 
   components: {
     templ_default: () => import('@/components/TemplDefault.vue'),
-    templ_switch: () => import('@/components/TemplSwitch.vue'),
-    templ_dimmer: () => import('@/components/TemplDimmer.vue'),
-    templ_light: () => import('@/components/TemplLight.vue'),
-    templ_thermostat: () => import('@/components/TemplThermostat.vue'),
-    templ_shutter: () => import('@/components/TemplShutter.vue'),
-    templ_sysmon: () => import('@/components/TemplSysmon.vue'),
-    templ_thermometer: () => import('@/components/TemplThermometer.vue'),
-    templ_smokedetect: () => import('@/components/TemplSmokedetect.vue'),
-    templ_contact: () => import('@/components/TemplContact.vue'),
-    templ_motiondetect: () => import('@/components/TemplMotiondetect.vue'),
-    templ_watersensor: () => import('@/components/TemplWatersensor.vue'),
+
+    //templ_switch: () => import('@/components/TemplSwitch.vue'),
+    //templ_dimmer: () => import('@/components/TemplDimmer.vue'),
+    //templ_light: () => import('@/components/TemplLight.vue'),
+    //templ_thermostat: () => import('@/components/TemplThermostat.vue'),
+    //templ_shutter: () => import('@/components/TemplShutter.vue'),
+    //templ_thermometer: () => import('@/components/TemplThermometer.vue'),
+    //templ_smokedetect: () => import('@/components/TemplSmokedetect.vue'),
+    //templ_contact: () => import('@/components/TemplContact.vue'),
+    //templ_motiondetect: () => import('@/components/TemplMotiondetect.vue'),
+    //templ_watersensor: () => import('@/components/TemplWatersensor.vue'),
+
     templ_panel: () => import('@/components/TemplPanel.vue'),
     templ_chart: () => import('@/components/TemplChart.vue'),
     templ_weather: () => import('@/components/TemplWeather.vue'),
     templ_scenes: () => import('@/components/TemplScenes.vue'),
     templ_sonos: () => import('@/components/TemplSonos.vue'),
-    templ_hmlan: () => import('@/components/TemplHmLan.vue'),
-    templ_custom: () => import('@/components/TemplCustom.vue')
+    templ_sysmon: () => import('@/components/TemplSysmon.vue'),
+    templ_hmlan: () => import('@/components/TemplHmLan.vue')
   },
 
   watch: {

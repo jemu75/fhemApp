@@ -15,7 +15,7 @@
 # Systemanforderungen
 Für den Betrieb der **FHEMApp** wird FHEM(tm) benötigt.
 * FHEM https://fhem.de/
-* optional kann die App auch auf einem separaten Web-Server (z.B. Apache https://httpd.apache.org/, lighttpd https://www.lighttpd.net/) installiert werden
+* optional kann die App auch auf einem separaten Web-Server (z.B. Apache https://httpd.apache.org/, lighttpd https://www.lighttpd.net/) betrieben werden.
 
 # Installation
 Kopiert einfach alle Dateien und Unterverzeichnisse aus dem Ordner [www/fhemapp](./www/fhemapp) in eure FHEM-Installation unter **opt/fhem/www/fhemapp** bzw. in das gewünschte Verzeichnis auf eurem Webserver. Danach sollte folgende Verzeichnisstruktur auf eurem Webserver vorhanden sein.
@@ -31,8 +31,8 @@ Kopiert einfach alle Dateien und Unterverzeichnisse aus dem Ordner [www/fhemapp]
     └── js
 ```
 
-# Konfiguration der Web-Application
-Die initiale Konfiguration von **FHEMApp** erfolgt über die Datei `config.json` welche sich im Verzeichnis `../fhemapp/cfg/` auf eurem Webserver befindet. Die Konfigurationsdatei könnt ihr über einen normalen Texteditor bearbeiten, um die folgenden Einstellungen vorzunehmen.
+# Grundkonfiguration der FHEMApp
+Die Grundkonfiguration von **FHEMApp** erfolgt über die Datei `config.json` welche sich im Verzeichnis `../fhemapp/cfg/` auf eurem Webserver befindet. Die Konfigurationsdatei könnt ihr über einen normalen Texteditor bearbeiten, um die folgenden Einstellungen vorzunehmen.
 
 ### Verbindungseinstellung für FHEM
 Hier wird festgelegt, wo sich die FHEM Installation befindet. Der Parameter `location` gibt die IP-Adresse bzw. URL von FHEM an. Die Parameter `port` und `path` entsprechen dem Standard eurer FHEM Installation und können bei Bedarf angepasst werden.
@@ -91,20 +91,20 @@ attr global userattr appOptions:textField-long
 # Konfiguration der Geräte in FHEM
 Jedes SmartHome-Gerät (Device) welches in **FHEMApp** angezeigt werden soll, konfiguriert ihr nun direkt in FHEM. Dazu verwendet ihr das neu angelegte FHEM-Attribut `appOptions` sowie weitere FHEM-Attribute wie `alias`,`group`,`room` oder `sortby`.
 
-### Attribut appOptions allgemein
+### appOptions
 Das Attribut `appOptions` kann mit unterschiedlichen Parametern befüllt werden, um die Darstellung des jeweiligen Devices in **FHEMApp** zu steuern. Es wird von **FHEMApp** als Object im `JSON-Format` verarbeitet und kann folgende Parameter beinhalten:
 
 ```
 {
   "template": "string",             - steuert über welches Template das Device dargestellt wird
-  "states": ["def1", "def2", ...],  - ermögliche zustandsabhängige Anpassungen des Templates
-  "connected": { object },          - bindet zusätzliche Devices in das Template ein
   "name":" "string",                - kann alternativ zum FHEM-Attribut 'alias' verwendet werden
   "room": "string",                 - kann alternativ zum FHEM-Attribut 'room' verwendet werden
   "group": "string",                - kann alternativ zum FHEM-Attribut 'group' verwendet werden
   "home": "true",                   - zeigt ein Device auf der Startseite an
   "dashboard": "true",              - zeigt ein Device im Dashboard an
   "system": "true",                 - zeigt ein Device in den Systemeinstellungen an
+  "setup": { object },              - ermöglicht zustandsabhängige Anpassungen des Templates
+  "connected": { object },          - bindet zusätzliche Devices in das Template ein
   "chartDef": ["def1", "def2", ...],- legt die Datenquellen für Grafiken fest
   "link": "string",                 - gibt den URL-Pfad für Panels an  
   "toggle": ["def1", "def2", ...],  - ermöglicht die Definition von "Schaltern"für Panels     
@@ -115,7 +115,7 @@ Das Attribut `appOptions` kann mit unterschiedlichen Parametern befüllt werden,
 Damit ein Gerät in der **FHEMApp** zur Verfügung steht, müsst ihr dem jeweiligen Device in FHEM einem *Template* zuordnen. In der **FHEMApp** stehen verschiedene [Templates](#übersicht-der-verfügbaren-templates) zur Verfügung. Dazu nutzt ihr das FHEM-Attribut `appOptions`  und definiert ein *Template* über folgenden Parameter  `{ "template": "switch" }` (Beispiel für einen Schalter)
 
 ### weitere FHEM Attribute verwenden
-Nachdem ihr dem Device ein *Template* zugeordnet habt, könnt ihr defnieren unter welchem *Name* und in welchen *Menüpunkten* euer Device in **FHEMApp** angezeigt wird. Dazu nutzt ihr das FHEM-Attribut `alias` für den Name des Gerätes, das FHEM-Attribut `group` für die Anzeige im Menüpunkt *Gruppen* und das FHEM-Attribut `room` für die Anzeige im Menüpunkt *Bereiche*. Alternativ können diese Parameter auch über `appOptions` [siehe](#attribut-appoptions-allgemein) definiert werden, wenn ihr die FHEM-Attribute `alias`, `group` bzw `room` in eurer FHEM-Installation anderweitig verwendet.
+Nachdem ihr dem Device ein *Template* zugeordnet habt, könnt ihr defnieren unter welchem *Name* und in welchen *Menüpunkten* euer Device in **FHEMApp** angezeigt wird. Dazu nutzt ihr das FHEM-Attribut `alias` für den Name des Gerätes, das FHEM-Attribut `group` für die Anzeige im Menüpunkt *Gruppen* und das FHEM-Attribut `room` für die Anzeige im Menüpunkt *Bereiche*. Alternativ können diese Parameter auch über `appOptions` [siehe](#appoptions) definiert werden, wenn ihr die FHEM-Attribute `alias`, `group` bzw `room` in eurer FHEM-Installation anderweitig verwendet.
 
 *Definition in FHEM*<br>
 ![Definition in FHEM](./docs/media/template_switch_fhem.png)
@@ -123,35 +123,100 @@ Nachdem ihr dem Device ein *Template* zugeordnet habt, könnt ihr defnieren unte
 *Anzeige in FHEMApp*<br>
 ![Anzeige in FHEMApp](./docs/media/template_switch_example.png)
 
-# Aufbau und Funktion von Templates
-In **FHEMApp** werden *Templates* für viele Aktoren und Sensoren zur Verfügung gestellt. Jedes *Template* besteht aus einer Grundstruktur mit einheitlichen Elementen.
+# Aufbau von Standard Templates
+In **FHEMApp** werden *Standard Templates* für viele Aktoren und Sensoren zur Verfügung gestellt. Jedes *Standard Template* besteht aus einer Grundstruktur mit einheitlichen Elementen.
 
-- **die Statusbar** - diese zeigt den aktuellen Status über einen farbigen Streifen am oberen Rand des *Templates* dar. Das Verhalten der *Statusbar* ist für jedes *Template* vordefiniert und kann abhängig von den unterschiedlichen Zuständen eines FHEM Devices individuell angepasst werden.
-- **die Gerätebezeichnung** - befindet sich direkt unter der *Statusbar* und zeigt entweder den Wert aus dem FHEM-Attribut `alias` oder den internen `NAME` des Devices an.
-- **die Schaltelemente** - befinden sich unter dem Gerätename und schalten den jeweiligen Aktor. Das Verhalten der *Schaltelemente* ist in jedem *Template* fest definiert.
-- **der aktuelle Status** - wird in der Mitte dargestellt und kann abhängig von den unterschiedlichen Zuständen eines FHEM Devices individuell angepasst werden.
-- **die Systembar** - befindet sich am unteren Rand und liefert weitere Informationen zum jeweiligen *Device*. Das *StatusIcon* auf der linken Seite der *Systembar* kann ebenfalls individuell und abhängig vom Zustand des Devices angepasst werden. Die *Icons* auf der rechten Seite der *Systembar* zeigen bei Funk-Aktoren/Sensoren den Batteriezustand und den Verbindungsstatus an.
+- **die Statusbar** - diese zeigt den aktuellen Status über einen farbigen Streifen am oberen Rand des *Templates* an.
+- **die Gerätebezeichnung** - befindet sich direkt unter der *Statusbar* und zeigt den Wert aus dem FHEM-Attribut `alias` oder den über `appOptions` definierten Wert an.
+- **der Steuerteil** - befindet sich unter der *Gerätebezeichnung* und enthält die im *Template* definierten Tasten bzw. Statuswerte. Der Steuerteil kann mehrere Ebenen enthalten, sodass mehrere Tasten oder Statuswerte angezeigt werden können. Verfügt das Template über mehrere Ebenen, so wird ein kleines Symbol für die Umschaltung der Ebenen rechts neben der Gerätebezeichnung ausgegeben.
+- **die Infobar** - befindet sich am unteren Rand und zeigt weitere Informationen zum jeweiligen *Device* an.
+
+Standard Templates können über `appOptions` individuell angepasst werden. Zudem können eigene Templates in der Datei `config.json` definiert werden. Die Anpassungsmöglichkeiten werden [hier](#standard-templates-anpassen) beschrieben.
 
 Grundsätzlich ist es möglich weitere Templates auf Basis des Vue/Vuetify-Frameworks [siehe](https://vuetifyjs.com/en/) zu entwickeln und in **FHEMApp** zu integrieren.   
 
+### Standard Templates anpassen
+Standard Templates enthalten eine Vielzahl von Elementen. Jedes Element kann dabei auf `Readings`, `Attribute` oder `Internals` von FHEM-Devices zugreifen und auf deren Werte reagieren.
 
-### Templates individuell anpassen
-Die individuellen Anpassungsmöglichenkeiten können über das FHEM-Attribut `appOptions` im Parameter `states` vorgenommen werden. Der Parameter `states` beinhaltet dabei eine oder mehrere Definitionen, die das Standardverhalten des jeweiligen Templates überschreiben. Die Definitionen werden der Reihenfolge nach geprüft ["def1", "def2", "def3", ...] Jede Definition muss im folgenden Schema angegeben werden `Reading:Wert:Statustext:Statuslevel:Statusfarbe:StatusIcon`
-- **Reading** - beinhaltet das Reading welches den Status des Templates verändern soll.
-- **Wert** (optional)- ist der Wert auf den das Reading geprüft werden soll. Hier können *Zeichenketten*, *RegExp* oder *numerische Werte* angegeben werden. Bei numerischen Werten greift die Definition immer ab dem Wert! Wird der Wert nicht angegeben, so greift die Definition fürr alle restlichen (nicht definierten) Fälle
-- **Statustext** (optional) - ist der Text der ausgegeben werden soll. Wird der Statustext nicht angegeben, so wird der Wert des *Readings* zurückgegeben.
-- **Statuslevel** (optional) - gibt an, wie breit der farbige Streifen im oberen Teil des Templates angezeigt wird. Hier können feste Werte zwischen 0 und 100 eingetragen werden. Trägt man alternativ den Name des *Reading* ein, so wird dieser Wert verwendet. Dies eignet sich beispielsweise für *Readings* wie `pct` oder `level`
-- **Statusfarbe** (optional) - legt fest welche Farbe der farbige Streifen im oberen Teil des Templates im jeweiligen Status hat. Hier können Farbcodes (z.B. #26A69A) oder Farbvorgaben aus den Themeneinstellungen (z.B. success, error, info) eingetragen werden.
-- **StatusIcon** (optional) - legt fest welches Icon unten links in der Systembar angezeigt wird. Hier kann auf alle Material Design Icons [siehe](https://materialdesignicons.com/) zugegriffen werden.      
+*Beispiel für ein Standard Template*<br>
+![Standard Template](./docs/media/template_default_example.png)
 
-Beispiel:
+#### Zuweisung von Elementen
+Jedes Element kann direkt über `appOptions` angepasst werden. Dies erfolgt über den Parameter `setup`
 ```
-[
-  "Activity:^(?!alive):keine Verbindung:100:error:mdi-power-plug",
-  "state:on:an:100:success:mdi-power-plug",
-  "state:off:aus:0:success:mdi-power-plug-off"
-]
+{ "template": "switch", "setup": { ... } }
 ```
+Alternativ können eigene Templates in der Datei `config.json` als Vorlage abgelegt werden. Dies erfolgt unter dem Parameter `custom`
+```
+{
+  "connection": { ... },
+  "options": { ... },
+  "theme": { ... },
+  "custom": [
+    {
+      "name": "example",
+      "status": {
+        "bar": ["reading:value:level:color:invert"],
+        "error": ["reading:value:level:color:text"]
+      },
+      "main": [
+        {
+          "leftIcon": "string",
+          "leftClick": ["reading:value:set_param"],
+          "leftLong": ["reading:value:set_param"],
+          "leftLongRelease": ["reading:value:set_param"],
+          "text": ["reading:value:text"],
+          "rightIcon": "string",
+          "rightClick": ["reading:value:set_param"],
+          "rightLong": ["reading:value:set_param"],
+          "rightLongRelease": ["reading:value:set_param"]
+        }
+      ],
+      "info": {
+        "left1": ["reading:value:text:icon"],
+        "left2": ["reading:value:text:icon"],
+        "mid1": ["reading:value:text:icon"],
+        "mid2": ["reading:value:text:icon"],
+        "right1": ["reading:value:text:icon"],
+        "right2": ["reading:value:text:icon"]
+      }
+    }
+  ]
+}
+```
+
+Damit ein Element auf den Wert eines bestimmten `Readings` reagieren kann, muss dies entsprechend definiert werden. Jede Zuweisung enthält mindestens ein *reading*, einen *wert* und einen bzw. mehrere *Parameter*.
+- **reading** kann sowohl auf `Readings`, `Attribute` als auch  `Internals` eines FHEM-Devices zeigen.
+- **wert** kann *strings*, *zahlen* oder *regexp* enthalten. Für Zahlen gilt *reading >= wert*
+- **parameter** betrifft das Element selbst, also z.B. das Icon, den Text oder die Farbe. *Hinweis:* Die Parameter sind je Element definiert und müssen ein der korrekten Reihenfolge angegeben werden. (siehe verfügbare Elemente)
+
+Beispiele:
+- `["state:on:an"]` prüft das FHEM-Reading `state` auf den Wert `on` und liefert für das Element den Text `an` zurück.
+- `["level:30:mdi-weather-sunny"]` prüft das FHEM-Reading `level` auf den Wert >=30 und gibt das Icon `*` zurück.
+- `["state:on:an","state:off:aus","state::Status %s"]` prüft das FHEM-Reading `state` der Reihenfolge nach zuerst auf den Wert `on`, danach `off` und zuletzt jeden beliebigen anderen Wert. Im letzten Fall wird *%s* durch den Wert des Readings ersetzt.
+
+Ersetzungsmöglichkeiten:
+- **%s** - liefert das *Reading* als Zeichenkette
+- **%n.2** - liefert das *Reading* als Zahlenwert mit der gewünschten Anzahl an Nachkommastellen. Sollte das Reading aus Text und Zahlen bestehen, so wird der erste Zahlenwert zurückgegeben
+- **i[wert]** - erhöht bzw. verringert das *Reading* um den Werte. Hierfür muss das *Reading* Zahlenwerte enthalten.
+- **%t** - liefert das *Reading* als Zeitstempel im Format TT.MM.JJJJ hh:mm:ss zurück
+
+#### verfügbare Elemente
+|Bereich|Element|Zuweisung|Beschreibung|
+|-------|-------|-----|-------------|
+|status|bar|reading:wert:level:color:invert|definiert mit welcher **Farbe** und mit welchem **Level** der Status angezeigt wird. Bei Angabe von invert wird *level* invertiert|
+|status|error|reading:wert:level:color:text|definiert mit welcher **Farbe** und mit welchem **Level** Fehler angezeigt werden. Weiterhin wird die **Fehlermeldung** definiert.|
+|main|leftIcon|Icon Bibliothek [siehe](https://materialdesignicons.com/)|**Icon** der linken Taste
+|main|leftClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die linke Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
+|main|leftLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der linken Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
+|main|leftLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der linken Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
+|main|text|reading:wert:text|definiert den **ersten Text** der im Steuerteil angezeigt wird|
+|main|text2|reading:wert:text|definiert den **zweiten Text** der im Steuerteil angezeigt wird *Hinweis:* bei Verwendung von Tasten sollte auf die Anzeige eines zweiten Wertes verzichtet werden, da die Breite des Templates im Normalfall nicht ausreicht|
+|main|rightIcon|Icon Bibliothek [siehe](https://materialdesignicons.com/)|**Icon** der rechten Taste
+|main|leftClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die rechte Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
+|main|rightLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der rechten Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
+|main|rightLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der rechten Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
+|info|left1..2,<br>mid1..2,<br>right1..2|reading:wert:text:icon|definiert welches **Icon** und welcher **Text** in der Infozeile anzeigeigt wird|
 
 # Übersicht der verfügbaren Templates
 | Template | Beschreibung | Beispiel |

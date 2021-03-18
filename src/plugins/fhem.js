@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import TemplateDefs from '@/assets/templates.json';
 
 export default class Fhem extends EventEmitter {
   constructor() {
@@ -27,7 +28,7 @@ export default class Fhem extends EventEmitter {
         logRecord: true,
         logBuffer: 500
       },
-      custom: [],
+      templates: TemplateDefs,
       data: {
         roomList: [],
         groupList: [],
@@ -299,11 +300,41 @@ export default class Fhem extends EventEmitter {
     }
   }
 
-  // mainfunction new solution for handleStates
-  checkVal(device, defs) {
+  // subfunction for handleVals
+  replaceVals(defSet, state) {
+    let chkNum = /[0-9]/.exec(state);
     let result = [];
 
-    if(typeof device === 'object' && defs.length > 0) {
+    for (var i = 2; i < defSet.length; i ++) {
+      let val = defSet[i];
+
+      if(defSet[i].match('%s')) val = defSet[i].replace('%s', state);
+      if(defSet[i].match('%t')) val = defSet[i].replace('%t', this.getDateTime(state));
+      if(defSet[i].match('%n') && chkNum) {
+        if(!/%n.[0-9]/.test(defSet[i])) defSet[i] = defSet[i].replace('%n','%n.0');
+        let isDecimal = /%n../.exec(defSet[i]);
+        let decimal = isDecimal[0].replace('%n.','');
+        val = defSet[i].replace(isDecimal[0], parseFloat(state.slice(chkNum.index)).toFixed(decimal))
+      }
+      if(defSet[i].match('%i') && chkNum) {
+        let inc = parseFloat(defSet[i].split('%i')[1]);
+        if(inc != 'isNaN') {
+          let newVal = parseFloat(state.slice(chkNum.index)) + inc;
+          val = defSet[i].replace('%i' + inc, newVal);
+        }
+      }
+
+      result.push(val);
+    }
+
+    return result;
+  }
+
+  // mainfunction new solution for handleStates
+  handleVals(device, defs) {
+    let result = [];
+
+    if(typeof device === 'object' && typeof defs === 'object' && defs.length > 0) {
       for(const def of defs) {
         let defSet = def.split(':');
 
@@ -321,24 +352,7 @@ export default class Fhem extends EventEmitter {
             }
 
             if(found) {
-              for (var i = 2; i < defSet.length; i ++) {
-                let val = defSet[i];
-
-                if(defSet[i].match('%s')) val = defSet[i].replace('%s', state);
-                if(defSet[i].match('%t')) val = defSet[i].replace('%t', this.getDateTime(state));
-                if(defSet[i].match('%n')) {
-                  let isDecimal = /%n../.exec(defSet[i]);
-                  let decimal = 0;
-                  if(isDecimal) {
-                    decimal = isDecimal[0].replace('%n.','');
-                  } else {
-                    isDecimal = ['%n'];
-                  }
-                  if(!isNaN(parseFloat(state))) val = defSet[i].replace(isDecimal[0], parseFloat(state).toFixed(decimal))
-                }
-
-                result.push(val);
-              }
+              result = this.replaceVals(defSet, state);
               break;
             }
           }
@@ -349,7 +363,7 @@ export default class Fhem extends EventEmitter {
     return result;
   }
 
-  // mainfuntion handle states and set mainValues
+  // deprecated - mainfuntion handle states and set mainValues
   handleStates(device, vals, defaultSet) {
     let defs = this.getEl(device, 'Options', 'states') || defaultSet;
 
@@ -420,6 +434,19 @@ export default class Fhem extends EventEmitter {
     return promise;
   }
 
+  // subfunction for createOptions, searches and return the component
+  getComponent(name) {
+    let result = { component: 'templ_default' };
+    let idx = this.app.templates.map((e) => e.name).indexOf(name);
+    if(idx != -1) {
+      let comp = this.app.templates[idx].component
+      if(comp) result.component = comp;
+    } else {
+      result.template = 'default';
+    }
+    return result;
+  }
+
   // subfunction for getDevices(), create Options Object
   createOptions(device) {
     let result = null;
@@ -427,6 +454,11 @@ export default class Fhem extends EventEmitter {
     if('appOptions' in device.Attributes) {
       try {
         result = JSON.parse(device.Attributes.appOptions);
+        if(result.template) {
+          let component = this.getComponent(result.template);
+          //console.log(component);
+          Object.assign(result, component);
+        }
       } catch(err) {
         this.log = { type: 'error', message: 'Read appOptions failed.', meta: err.message };
       }

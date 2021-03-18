@@ -19,7 +19,6 @@ fetch('./cfg/config.json')
     if(cfg) {
       if(cfg.connection) Object.assign(Vue.prototype.$fhem.app.connection, cfg.connection)
       if(cfg.options) Object.assign(Vue.prototype.$fhem.app.options, cfg.options)
-      if(cfg.custom) Object.assign(Vue.prototype.$fhem.app.custom, cfg.custom)
       if(cfg.theme) {
         if(cfg.theme.dark != -1) Object.assign(vuetify.framework.theme, { dark: cfg.theme.dark })
         if(cfg.theme.themes) {
@@ -27,6 +26,7 @@ fetch('./cfg/config.json')
           if(cfg.theme.themes.dark) Object.assign(vuetify.framework.theme.themes.dark, cfg.theme.themes.dark)
         }
       }
+      if(cfg.custom && cfg.custom.length > 0) Vue.prototype.$fhem.app.templates.push(...cfg.custom);
     }
 
     new Vue({

@@ -25,18 +25,15 @@ Damit individuelle erstellte Template-Definitionen nicht in jedem FHEM-Device ab
   ]
 }
 ```
-
 Über das FHEM-Attribut `appOptions` können die erstellten *Vorlagen* über den Parameter `customdef` eingebunden werden.
 ```
 { "template": "custom", "customdef": "myDef" }
 ```
 
-
-
 ## Customizing Definition
 ```
 {
-  "name": "example",
+  "name": "myDef",
   "status": {
     "line": ["reading:value:level:color"],
     "error": ["reading:value:level:color:text"]
