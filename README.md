@@ -143,7 +143,7 @@ Standard Templates enthalten eine Vielzahl von Elementen. Jedes Element kann dab
 
 Jedes Element kann direkt über `appOptions` angepasst werden. Dies erfolgt über den Parameter `setup`
 ```
-{ "template": "switch", "setup": { ... } }
+{ "template": "switch", "setup": { "status": {...}, "main": [...], "info": {...} } }
 ```
 Alternativ können eigene Templates in der Datei `config.json` als Vorlage abgelegt werden. Dies erfolgt unter dem Parameter `custom`
 ```
