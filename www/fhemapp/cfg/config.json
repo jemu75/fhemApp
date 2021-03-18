@@ -61,12 +61,12 @@
       },
       "main": [
         {
-          "leftIcon": "mdi-minus",
+          "leftIcon": "mdi-power-off",
           "leftClick": ["state::off"],
           "leftLong": [],
           "leftLongRelease": [],
           "text": ["state:on:an","state:off:aus"],
-          "rightIcon": "mdi-plus",
+          "rightIcon": "mdi-power-on",
           "rightClick": ["state::on"],
           "rightLong": [],
           "rightLongRelease": []
