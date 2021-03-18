@@ -238,49 +238,38 @@ Beispiele:
 | sysmon | Systemmonitor | ![](./docs/media/template_sysmon_example.png) |
 | hmlan | HMLAN-Adapter | ![](./docs/media/template_hmlan_example.png) |
 
-## Template Switch
+# Template Switch
 Dieses Template kann für unterschiedliche Schaltaktoren verwendet werden. Dabei werden verschiedene Varianten unterstützt - Schaltaktoren mit und ohne Leistungsmessung sowie funkbasierende und fest installierte Schaltaktoren.
 
-#### Beispielkonfiguration für Schaltaktor
-Das FHEM-Attribut `appOptions` sollte wie folgt aussehen.
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
 ```
 { "template": "switch" }
 ```
 
-#### Beispielkonfiguration für einen funkbasier Schaltaktor
-Wenn die Informationen zur Funkverbindung über einem separaten Kanal geliefert werden, behandelt FHEM diesen als eigenständiges Device. In diesem Fall muss das Device in `appOptions` über den Parameter `connected.receiver` definiert werden.
-> Hinweis: Informationen zur Funkverbindung liefern die FHEM-Parameter `Internals: xxx_RSSI` und `Readings: Activity`
-
+#### Konfiguration
 ```
-{ "template": "switch", "connected": { "receiver": "chn_akt.hm.dyn.sw2" } }
+{
+  "name": "switch",
+  "status": {
+    "bar": ["state:on:100:success","state:off:0:success"],
+    "error": ["Connected.receiver.Readings.Activity.Value:^(?!alive):100:error:keine Verbindung"]
+  },
+  "main": [
+    {
+      "leftIcon": "mdi-power-off",
+      "leftClick": ["state::off"],
+      "text": ["state:on:an","state:off:aus","state::%s"],
+      "rightIcon": "mdi-power-on",
+      "rightClick": ["state::on"]
+    }
+  ],
+  "info": {
+    "left1": ["state:on::mdi-power-plug","state:off::mdi-power-plug-off"],
+    "left2": ["power:0.1:%n.2w"],
+    "right2": ["Connected.receiver.Readings.Activity.Value:alive::mdi-wifi","Connected.receiver.Readings.Activity.Value:::mdi-wifi-off"]
+  }
+}
 ```
-
-#### Beispielkonfiguration für einen funkbasier Schaltaktor mit separater Leistungsmessung
-Wenn die Informationen zur Leisutngsmessung über einem separaten Kanal geliefert werden, behandelt FHEM diesen als eigenständiges Device. In diesem Fall muss das Device in `appOptions` über den Parameter `connected.power` definiert werden.
->Hinweis: Informationen zur Leistungsmessung liefert der FHEM-Parameter `Readings: power`
-
-```
-{ "template": "switch", "connected": { "receiver": "chn_akt.hm.dyn.sw2", "power": "chn_sen.hm.dyn.sw2_Pwr" } }
-```
-
-#### Beispielkonfiguration für einen Schaltaktor mit individuellem Statusverhalten
-Die statusabhängige Anpassung von Templates erfolgt in `appOptions` über den Parameter `states`. [siehe auch](#templates-individuell-anpassen)
-```
-{ "template": "switch", "states": ["state:off:aus:0:success:mdi-water-off","state:on:ein:100:success:mdi-water"] }
-```
-
-### Standardverhalten
-| Reading | Wert | Statustext | Statuslevel | Statusfarbe | Statusicon |
-|----------------|------|------------|-------------|-------------|------------|
-| Activity | ^(?!alive) | keine Verbindung | 100 | error | mdi-power-plug |
-| state | on | an | 100 | success | mdi-power-plug |
-| state | off | aus | 0 | success | mdi-power-plug-off |
-
-### Aktionen
-| Button | Aktion | FHEM Kommando |
-|--------|--------|---------------|
-| links | ausschalten | set *Devicename* off |
-| rechts | einschalten | set *Devicename* on |
-
-## Template Dimmer
+# Template Dimmer
 ...
