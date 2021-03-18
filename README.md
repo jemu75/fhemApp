@@ -183,7 +183,7 @@ Alternativ können eigene Templates in der Datei `config.json` als Vorlage abgel
   ]
 }
 ```
-#### Zuweisung von Elementen
+## Zuweisung von Elementen
 Damit ein Element auf den Wert eines bestimmten `Readings` reagieren kann, muss dies entsprechend definiert werden. Jede Zuweisung enthält mindestens ein *reading*, einen *wert* und einen bzw. mehrere *Parameter*.
 - **reading** kann sowohl auf `Readings`, `Attribute` als auch  `Internals` eines FHEM-Devices zeigen.
 - **wert** kann *strings*, *zahlen* oder *regexp* enthalten. Für Zahlen gilt *reading >= wert*
@@ -194,13 +194,13 @@ Beispiele:
 - `["level:30:mdi-weather-sunny"]` prüft das FHEM-Reading `level` auf den Wert >=30 und gibt das Icon `*` zurück.
 - `["state:on:an","state:off:aus","state::Status %s"]` prüft das FHEM-Reading `state` der Reihenfolge nach zuerst auf den Wert `on`, danach `off` und zuletzt jeden beliebigen anderen Wert. Im letzten Fall wird *%s* durch den Wert des Readings ersetzt.
 
-Ersetzungsmöglichkeiten:
+### Ersetzungsmöglichkeiten
 - **%s** - liefert das *Reading* als Zeichenkette
 - **%n.2** - liefert das *Reading* als Zahlenwert mit der gewünschten Anzahl an Nachkommastellen. Sollte das Reading aus Text und Zahlen bestehen, so wird der erste Zahlenwert zurückgegeben
 - **i[wert]** - erhöht bzw. verringert das *Reading* um den Werte. Hierfür muss das *Reading* Zahlenwerte enthalten.
 - **%t** - liefert das *Reading* als Zeitstempel im Format TT.MM.JJJJ hh:mm:ss zurück
 
-#### verfügbare Elemente
+## verfügbare Elemente
 |Bereich|Element|Zuweisung|Beschreibung|
 |-------|-------|-----|-------------|
 |status|bar|reading:wert:level:color:invert|definiert mit welcher **Farbe** und mit welchem **Level** der Status angezeigt wird. Bei Angabe von invert wird *level* invertiert|
