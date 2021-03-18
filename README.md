@@ -131,17 +131,16 @@ In **FHEMApp** werden *Standard Templates* für viele Aktoren und Sensoren zur V
 - **der Steuerteil** - befindet sich unter der *Gerätebezeichnung* und enthält die im *Template* definierten Tasten bzw. Statuswerte. Der Steuerteil kann mehrere Ebenen enthalten, sodass mehrere Tasten oder Statuswerte angezeigt werden können. Verfügt das Template über mehrere Ebenen, so wird ein kleines Symbol für die Umschaltung der Ebenen rechts neben der Gerätebezeichnung ausgegeben.
 - **die Infobar** - befindet sich am unteren Rand und zeigt weitere Informationen zum jeweiligen *Device* an.
 
+*Beispiel für ein Standard Template*<br>
+![Standard Template](./docs/media/template_default_example.png)
+
 Standard Templates können über `appOptions` individuell angepasst werden. Zudem können eigene Templates in der Datei `config.json` definiert werden. Die Anpassungsmöglichkeiten werden [hier](#standard-templates-anpassen) beschrieben.
 
 Grundsätzlich ist es möglich weitere Templates auf Basis des Vue/Vuetify-Frameworks [siehe](https://vuetifyjs.com/en/) zu entwickeln und in **FHEMApp** zu integrieren.   
 
-### Standard Templates anpassen
+# Standard Templates anpassen
 Standard Templates enthalten eine Vielzahl von Elementen. Jedes Element kann dabei auf `Readings`, `Attribute` oder `Internals` von FHEM-Devices zugreifen und auf deren Werte reagieren.
 
-*Beispiel für ein Standard Template*<br>
-![Standard Template](./docs/media/template_default_example.png)
-
-#### Zuweisung von Elementen
 Jedes Element kann direkt über `appOptions` angepasst werden. Dies erfolgt über den Parameter `setup`
 ```
 { "template": "switch", "setup": { ... } }
@@ -184,7 +183,7 @@ Alternativ können eigene Templates in der Datei `config.json` als Vorlage abgel
   ]
 }
 ```
-
+#### Zuweisung von Elementen
 Damit ein Element auf den Wert eines bestimmten `Readings` reagieren kann, muss dies entsprechend definiert werden. Jede Zuweisung enthält mindestens ein *reading*, einen *wert* und einen bzw. mehrere *Parameter*.
 - **reading** kann sowohl auf `Readings`, `Attribute` als auch  `Internals` eines FHEM-Devices zeigen.
 - **wert** kann *strings*, *zahlen* oder *regexp* enthalten. Für Zahlen gilt *reading >= wert*
