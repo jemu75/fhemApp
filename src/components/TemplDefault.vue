@@ -15,7 +15,7 @@
       <v-card-text>
         <v-row align="center">
           <v-col v-if="vals.main.leftIcon && isActive" class="col-3" align="center">
-            <v-btn icon @mousedown="clickStart('left')" @mouseup="clickEnd('left')" @touchstart="clickStart('left')" @touchend="clickEnd('left')">
+            <v-btn :disabled="vals.main.leftIconDisabled" icon @mousedown="clickStart('left')" @mouseup="clickEnd('left')" @touchstart="clickStart('left')" @touchend="clickEnd('left')">
               <v-icon large>{{ vals.main.leftIcon }}</v-icon>
             </v-btn>
           </v-col>
@@ -28,7 +28,7 @@
           </v-col>
           <v-divider v-if="vals.main.rightIcon && isActive" vertical></v-divider>
           <v-col v-if="vals.main.rightIcon && isActive" class="col-3" align="center">
-            <v-btn icon @mousedown="clickStart('right')" @mouseup="clickEnd('right')" @touchstart="clickStart('right')" @touchend="clickEnd('right')">
+            <v-btn :disabled="vals.main.rightIconDisabled" icon @mousedown="clickStart('right')" @mouseup="clickEnd('right')" @touchstart="clickStart('right')" @touchend="clickEnd('right')">
               <v-icon large>{{ vals.main.rightIcon }}</v-icon>
             </v-btn>
           </v-col>
@@ -36,13 +36,13 @@
       </v-card-text>
       <v-divider></v-divider>
       <v-system-bar color="secondary darken-1">
-        <v-icon class="mr-0">{{ vals.info.left1Icon }}</v-icon>{{ vals.info.left1Text }}
-        <v-icon class="mr-0">{{ vals.info.left2Icon }}</v-icon>{{ vals.info.left2Text }}
+        <v-icon class="ml-0">{{ vals.info.left1Icon }}</v-icon>{{ vals.info.left1Text }}
+        <v-icon>{{ vals.info.left2Icon }}</v-icon>{{ vals.info.left2Text }}
         <v-spacer></v-spacer>
-        <v-icon class="mr-0">{{ vals.info.mid1Icon }}</v-icon>{{ vals.info.mid1Text }}
-        <v-icon class="mr-0">{{ vals.info.mid2Icon }}</v-icon>{{ vals.info.mid2Text }}
+        <v-icon>{{ vals.info.mid1Icon }}</v-icon>{{ vals.info.mid1Text }}
+        <v-icon class="ml-2">{{ vals.info.mid2Icon }}</v-icon>{{ vals.info.mid2Text }}
         <v-spacer></v-spacer>
-        <v-icon class="mr-0">{{ vals.info.right1Icon }}</v-icon>{{ vals.info.right1Text }}
+        <v-icon>{{ vals.info.right1Icon }}</v-icon>{{ vals.info.right1Text }}
         <v-icon class="mr-0">{{ vals.info.right2Icon }}</v-icon>{{ vals.info.right2Text }}
       </v-system-bar>
     </v-card>
@@ -78,9 +78,11 @@
         },
         main: {
           leftIcon: '',
+          leftIconDisabled: false,
           text: '',
           text2: '',
-          rightIcon: ''
+          rightIcon: '',
+          rightIconDisabled: false
         },
         info: {
           left1Icon: '',
@@ -114,6 +116,7 @@
 
           this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
           this.vals.order = this.$fhem.getEl(val, 'Attributes', 'sortby') || 'last';
+
           this.setValues();
         }
       },
@@ -181,8 +184,16 @@
         let mainText = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].text);
         let mainText2 = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].text2);
 
+        let mainLeftIcon = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].leftIcon)
+        let mainRightIcon = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].rightIcon)
+
         this.vals.main.text = mainText[0] || '';
         this.vals.main.text2 = mainText2[0] || '';
+
+        this.vals.main.leftIcon = mainLeftIcon[0] || '';
+        this.vals.main.rightIcon = mainRightIcon[0] || '';
+        this.vals.main.leftIconDisabled = mainLeftIcon[1] ? true : false;
+        this.vals.main.rightIconDisabled = mainRightIcon[1] ? true : false;
       },
 
       setValues() {
@@ -191,6 +202,8 @@
           let errorVals = this.$fhem.handleVals(this.item, this.setup.status.error);
           let mainText = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].text);
           let mainText2 = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].text2);
+          let mainLeftIcon = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].leftIcon)
+          let mainRightIcon = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].rightIcon)
           let infoLeft1Vals = this.$fhem.handleVals(this.item, this.setup.info.left1);
           let infoLeft2Vals = this.$fhem.handleVals(this.item, this.setup.info.left2);
           let infoMid1Vals = this.$fhem.handleVals(this.item, this.setup.info.mid1);
@@ -222,6 +235,11 @@
 
           this.vals.main.text = mainText[0] || '';
           this.vals.main.text2 = mainText2[0] || '';
+
+          this.vals.main.leftIcon = mainLeftIcon[0] || '';
+          this.vals.main.rightIcon = mainRightIcon[0] || '';
+          this.vals.main.leftIconDisabled = mainLeftIcon[1] ? true : false;
+          this.vals.main.rightIconDisabled = mainRightIcon[1] ? true : false;
 
           if(errorVals.length > 0) {
             this.vals.status.level = errorVals[0] || '100';

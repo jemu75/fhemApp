@@ -160,12 +160,12 @@ Alternativ können eigene Templates in der Datei `config.json` als Vorlage abgel
       },
       "main": [
         {
-          "leftIcon": "string",
+          "leftIcon": ["reading:value:icon:disabled"],
           "leftClick": ["reading:value:set_param"],
           "leftLong": ["reading:value:set_param"],
           "leftLongRelease": ["reading:value:set_param"],
           "text": ["reading:value:text"],
-          "rightIcon": "string",
+          "rightIcon": ["reading:value:icon:disabled"],
           "rightClick": ["reading:value:set_param"],
           "rightLong": ["reading:value:set_param"],
           "rightLongRelease": ["reading:value:set_param"]
@@ -197,7 +197,7 @@ Beispiele:
 ### Ersetzungsmöglichkeiten
 - **%s** - liefert das *Reading* als Zeichenkette
 - **%n.2** - liefert das *Reading* als Zahlenwert mit der gewünschten Anzahl an Nachkommastellen. Sollte das Reading aus Text und Zahlen bestehen, so wird der erste Zahlenwert zurückgegeben
-- **i[wert]** - erhöht bzw. verringert das *Reading* um den Werte. Hierfür muss das *Reading* Zahlenwerte enthalten.
+- **%i1** - erhöht (%i1.5) bzw. verringert (%i-1.5) das *Reading* um den Wert. Hierfür muss das *Reading* Zahlenwerte enthalten.
 - **%t** - liefert das *Reading* als Zeitstempel im Format TT.MM.JJJJ hh:mm:ss zurück
 
 ## verfügbare Elemente
@@ -205,13 +205,13 @@ Beispiele:
 |-------|-------|-----|-------------|
 |status|bar|reading:wert:level:color:invert|definiert mit welcher **Farbe** und mit welchem **Level** der Status angezeigt wird. Bei Angabe von invert wird *level* invertiert|
 |status|error|reading:wert:level:color:text|definiert mit welcher **Farbe** und mit welchem **Level** Fehler angezeigt werden. Weiterhin wird die **Fehlermeldung** definiert.|
-|main|leftIcon|Icon Bibliothek [siehe](https://materialdesignicons.com/)|**Icon** der linken Taste
+|main|leftIcon|reading:wert:icon:disabled (alternativ: icon)|definiert welches *Icon* auf der linken Taste angezeigt wird. Optional kann das Flag *disabled* gesetzt werden. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
 |main|leftClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die linke Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
 |main|leftLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der linken Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
 |main|leftLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der linken Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
 |main|text|reading:wert:text|definiert den **ersten Text** der in der Mitte angezeigt wird|
 |main|text2|reading:wert:text|definiert den **zweiten Text** der in der Mitte angezeigt wird *Hinweis:* bei Verwendung von Tasten sollte auf die Anzeige eines zweiten Wertes verzichtet werden, da die Breite des Templates im Normalfall nicht ausreicht|
-|main|rightIcon|Icon Bibliothek [siehe](https://materialdesignicons.com/)|**Icon** der rechten Taste
+|main|rightIcon|reading:wert:icon:disabled (alternativ: icon)|definiert welches *Icon* auf der rechten Taste angezeigt wird. Optional kann das Flag *disabled* gesetzt werden. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
 |main|leftClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die rechte Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
 |main|rightLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der rechten Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
 |main|rightLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der rechten Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|

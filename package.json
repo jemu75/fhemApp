@@ -20,12 +20,14 @@
   "dependencies": {
     "apexcharts": "^3.25.0",
     "core-js": "^3.9.1",
+    "typeface-roboto": "^1.1.13",
     "vue": "^2.6.11",
     "vue-apexcharts": "^1.6.0",
     "vue-router": "^3.5.1",
     "vuetify": "^2.4.6"
   },
   "devDependencies": {
+    "@mdi/font": "^5.9.55",
     "@vue/cli-plugin-babel": "^4.5.11",
     "@vue/cli-plugin-eslint": "^4.5.11",
     "@vue/cli-plugin-router": "^4.5.11",
