@@ -1,3 +1,25 @@
+### Homematic Schaltaktor
+```
+{
+  "name": "light",
+  "status": {
+    "bar": ["state:on:100:success","state:off:0:success"],
+    "error": []
+  },
+  "main": [
+    {
+      "leftIcon": "mdi-power-off",
+      "leftClick": ["state::off"],
+      "text": ["state:on:an","state:off:aus","state::%s"],
+      "rightIcon": "mdi-power-on",
+      "rightClick": ["state::on"]
+    }
+  ],
+  "info": {
+    "left1": ["state:on::mdi-lightbulb","state:off::mdi-lightbulb-off"]
+  }
+}
+```
 ### Homematic Schaltaktor mit Leistungsmessung (optional als Funkzwischenstecker)
 ```
 {
@@ -22,25 +44,34 @@
   }
 }
 ```
-### Homematic Schaltaktor
+### Shelly Schaltaktor
 ```
 {
-  "name": "light",
+  "name": "shellySwitch",
   "status": {
     "bar": ["state:on:100:success","state:off:0:success"],
-    "error": []
+    "error": ["network:^(?!<html>connected):100:error:keine Verbindung"]
   },
   "main": [
     {
       "leftIcon": "mdi-power-off",
       "leftClick": ["state::off"],
-      "text": ["state:on:an","state:off:aus","state::%s"],
+      "leftLong": [],
+      "leftLongRelease": [],
+      "text": ["state:on:an","state:off:aus"],
       "rightIcon": "mdi-power-on",
-      "rightClick": ["state::on"]
+      "rightClick": ["state::on"],
+      "rightLong": [],
+      "rightLongRelease": []
     }
   ],
   "info": {
-    "left1": ["state:on::mdi-lightbulb","state:off::mdi-lightbulb-off"]
+    "left1": ["state:on::mdi-power-plug","state:::mdi-power-plug-off"],
+    "left2": ["power:0.1:%n.2w"],
+    "mid1": [],
+    "mid2": [],
+    "right1": [],
+    "right2": ["network:connected::mdi-wifi","network:::mdi-wifi-off"]
   }
 }
 ```
