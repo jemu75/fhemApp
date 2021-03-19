@@ -1,5 +1,5 @@
 <template>
-  <v-col :class="vals.gridSize" :order="vals.order">
+  <v-col :class="vals.gridSize">
     <v-card :dark="this.$vuetify.theme.dark" color="secondary">
       <v-progress-linear height="7" :value="vals.mainLevel" :color="vals.mainColor" background-color="secondary darken-1"></v-progress-linear>
 
@@ -87,7 +87,6 @@
     data: () => ({
       name: 'chart',
       vals: {
-        order: '',
         title: '',
         mainLevel: 0,
         mainColor: 'success',
@@ -142,7 +141,6 @@
           let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
 
           this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
-          this.vals.order = this.$fhem.getEl(val, 'Attributes', 'sortby') || 'last';
         }
       },
 

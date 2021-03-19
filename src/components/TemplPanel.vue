@@ -1,5 +1,5 @@
 <template>
-  <v-col class="col-12 col-sm-6 col-md-6 col-lg-6" :order="vals.order">
+  <v-col class="col-12 col-sm-6 col-md-6 col-lg-6">
     <v-card :dark="this.$vuetify.theme.dark" color="secondary">
       <v-progress-linear height="7" :value="vals.mainLevel" :color="vals.mainColor" background-color="secondary darken-1"></v-progress-linear>
 
@@ -48,7 +48,6 @@
       name: 'linkPanel',
       defaultSet: [],
       vals: {
-        order: '',
         title: '',
         mainLevel: 100,
         mainColor: 'success',
@@ -68,7 +67,6 @@
           let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
 
           this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
-          this.vals.order = this.$fhem.getEl(val, 'Attributes', 'sortby') || 'last';
           this.vals = this.$fhem.handleStates(val, this.vals);
           this.doList(val);
         }

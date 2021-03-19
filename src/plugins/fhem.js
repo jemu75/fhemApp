@@ -458,7 +458,6 @@ export default class Fhem extends EventEmitter {
         result = JSON.parse(device.Attributes.appOptions);
         if(result.template) {
           let component = this.getComponent(result.template);
-          //console.log(component);
           Object.assign(result, component);
         }
       } catch(err) {
@@ -488,12 +487,14 @@ export default class Fhem extends EventEmitter {
 
             if(options) {
               item.Options = options;
+              item.Options.order = item.Attributes.sortby || 'zzz';
               this.createConnected(item)
                 .then(async (connected) => {
                   item.Connected = await connected;
                   target.push(item);
 
                   if(idx === res.Results.length) {
+                    target.sort((a,b) => (a.Options.order > b.Options.order) ? 1 : ((b.Options.order > a.Options.order) ? -1 : 0));
                     this.app.data.deviceList = Object.assign([], target);
                     this.app.options.loading = false
                   }

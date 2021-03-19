@@ -1,10 +1,10 @@
 <template>
-  <v-col class="col-12 col-sm-6 col-md-4 col-lg-4" :order="vals.order">
+  <v-col class="col-12 col-sm-6 col-md-4 col-lg-4">
     <v-card :dark="this.$vuetify.theme.dark" color="secondary">
       <v-progress-linear height="7" :value="getLevel" :color="vals.status.color" background-color="secondary darken-1"></v-progress-linear>
 
       <v-card-title class="text-truncate">
-        {{ vals.title }}
+        {{ vals.title }}{{ vals.order }}
         <v-spacer></v-spacer>
         <v-btn v-if="multiLevel && isActive" small icon @click="setLevel()">
           <v-icon small>{{ multiLevelIcon }}</v-icon>
@@ -69,7 +69,6 @@
         }
       },
       vals: {
-        order: '',
         title: '',
         status: {
           level: 0,
@@ -115,8 +114,6 @@
           let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
 
           this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
-          this.vals.order = this.$fhem.getEl(val, 'Attributes', 'sortby') || 'last';
-
           this.setValues();
         }
       },

@@ -1,5 +1,5 @@
 <template>
-  <v-col class="col-12 col-sm-6 col-md-4 col-lg-4" :order="vals.order">
+  <v-col class="col-12 col-sm-6 col-md-4 col-lg-4">
     <v-card :dark="this.$vuetify.theme.dark" color="secondary">
       <v-progress-linear height="7" :value="vals.mainLevel" :color="vals.mainColor" background-color="secondary darken-1"></v-progress-linear>
 
@@ -98,7 +98,6 @@
         So: 'Sonntag'
       },
       vals: {
-        order: '',
         title: '',
         mainLevel: 0,
         mainColor: 'success',
@@ -128,7 +127,6 @@
           let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
 
           this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
-          this.vals.order = this.$fhem.getEl(val, 'Attributes', 'sortby') || 'last';
           this.vals.mainState = this.$fhem.getEl(val, 'Readings', 'condition', 'Value') || '';
 
           this.vals.systemIcon = this.getIcon(icon);
