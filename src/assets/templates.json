@@ -8,6 +8,8 @@
   { "name": "scenes", "component": "templ_scenes" },
   {
     "name": "default",
+    "author": "jemu75",
+    "stand": "2021-03-21",
     "status": {
       "error": ["state::100:error:Template unbekannt"]
     },
@@ -22,6 +24,8 @@
   },
   {
     "name": "switch",
+    "author": "jemu75",
+    "stand": "2021-03-21",
     "status": {
       "bar": ["state:on:100:success","state:off:0:success"],
       "error": ["Connected.receiver.Readings.Activity.Value:^(?!alive):100:error:keine Verbindung"]
@@ -43,6 +47,8 @@
   },
   {
     "name": "light",
+    "author": "jemu75",
+    "stand": "2021-03-21",
     "status": {
       "bar": ["state:on:100:success","state:off:0:success"],
       "error": []
@@ -62,6 +68,8 @@
   },
   {
     "name": "dimmer",
+    "author": "jemu75",
+    "stand": "2021-03-21",
     "status": {
       "bar": ["pct::%n:success"],
       "error": []
@@ -84,6 +92,8 @@
   },
   {
     "name": "shutter",
+    "author": "jemu75",
+    "stand": "2021-03-21",
     "status": {
       "bar": ["pct::%n:success:invert"],
       "error": []
@@ -108,6 +118,8 @@
   },
   {
     "name": "contact",
+    "author": "jemu75",
+    "stand": "2021-03-21",
     "status": {
       "bar": ["state:closed:100:success","state:open:0:success"],
       "error": ["Activity:^(?!alive):100:error:keine Verbindung","sabotageError:on:100:error:Fremdeingriff","cover:open:100:error:Fremdeingriff"]
@@ -126,6 +138,8 @@
   },
   {
     "name": "motiondetect",
+    "author": "jemu75",
+    "stand": "2021-03-21",
     "status": {
       "bar": ["motion:off:0:success","motion::100:success"],
       "error": ["Activity:^(?!alive):100:error:keine Verbindung","sabotageError:on:100:error:Fremdeingriff","cover:open:100:error:Fremdeingriff"]
@@ -144,6 +158,8 @@
   },
   {
     "name": "smokedetect",
+    "author": "jemu75",
+    "stand": "2021-03-21",
     "status": {
       "bar": ["level:2:%n:error","level::100:success"],
       "error": ["Activity:^(?!alive):100:error:keine Verbindung"]
@@ -164,6 +180,8 @@
   },
   {
     "name": "thermostat",
+    "author": "jemu75",
+    "stand": "2021-03-21",
     "status": {
       "bar": ["Connected.valve.Readings.pct.Value::%n:success"],
       "error": ["Connected.receiver.Readings.Activity.Value:^(?!alive):100:error:keine Verbindung"]
@@ -190,6 +208,8 @@
   },
   {
     "name": "thermometer",
+    "author": "jemu75",
+    "stand": "2021-03-21",
     "status": {
       "bar": [],
       "error": ["Activity:^(?!alive):100:error:keine Verbindung"]
@@ -208,6 +228,8 @@
   },
   {
     "name": "watersensor",
+    "author": "jemu75",
+    "stand": "2021-03-21",
     "status": {
       "bar": ["level::%n:success"],
       "error": ["Activity:^(?!alive):100:error:keine Verbindung"]
@@ -228,6 +250,8 @@
   },
   {
     "name": "door",
+    "author": "jemu75",
+    "stand": "2021-03-21",
     "status": {
       "bar": ["state:closed:100:success","state:open:0:success"],
       "error": ["Activity:^(?!alive):100:error:keine Verbindung","sabotageError:on:100:error:Fremdeingriff","cover:open:100:error:Fremdeingriff"]

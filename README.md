@@ -225,9 +225,9 @@ Beispiele:
 | Template | Beschreibung | Beispiel |
 |----------|--------------|----------|
 | [switch](#template-switch) | Schalteraktoren (optional mit Leistungsmessung) | ![](./docs/media/template_switch_example.png) |
-| dimmer | Dimmer | ![](./docs/media/template_dimmer_example.png) |
-| light | Lichtschalter | ![](./docs/media/template_light_example.png) |
-| thermostat | Raumthermostat | ![](./docs/media/template_thermostat_example.png) |
+| [dimmer](#template-dimmer) | Dimmer | ![](./docs/media/template_dimmer_example.png) |
+| [light](#template-light) | Lichtschalter | ![](./docs/media/template_light_example.png) |
+| [thermostat](#template-thermostat) | Raumthermostat | ![](./docs/media/template_thermostat_example.png) |
 | shutter | Jalousieschalter | ![](./docs/media/template_shutter_example.png) |
 | thermometer | Temperatursensor  | ![](./docs/media/template_thermometer_example.png) |
 | smokedetect | Rauchmelder | ![](./docs/media/template_smokedetect_example.png) |
@@ -255,6 +255,8 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
 ```
 {
   "name": "switch",
+  "author": "jemu75",
+  "stand": "2021-03-21",
   "status": {
     "bar": ["state:on:100:success","state:off:0:success"],
     "error": ["Connected.receiver.Readings.Activity.Value:^(?!alive):100:error:keine Verbindung"]
@@ -276,4 +278,111 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
 }
 ```
 # Template Dimmer
-...
+Dieses Template kann für Dimmer verwendet werden. Die Tasten `-` und `+` dimmen den Aktor um 10% nach oben bzw. unten. Bei langem Tastendruck wird der Aktor ein- bzw. ausgeschaltet.
+
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
+```
+{ "template": "dimmer" }
+```
+
+#### Konfiguration
+```
+{
+  "name": "dimmer",
+  "author": "jemu75",
+  "stand": "2021-03-21",
+  "status": {
+    "bar": ["pct::%n:success"],
+    "error": []
+  },
+  "main": [
+    {
+      "leftBtn": "mdi-minus",
+      "leftClick": ["pct:10:pct %i-10","pct::off"],
+      "leftLong": ["state::off"],
+      "text": ["pct:1:an:","pct::aus"],
+      "rightBtn": "mdi-plus",
+      "rightClick": ["pct:90:on","pct::pct %i10"],
+      "rightLong": ["state::on"]
+    }
+  ],
+  "info": {
+    "left1": ["pct:1::mdi-lightbulb","pct:::mdi-lightbulb-off"],
+    "left2": ["pct::%s%"]
+  }
+}
+```
+# Template Light
+Dieses Template kann für normale Lichtschalter verwendet werden.   
+
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
+```
+{ "template": "light" }
+```
+
+#### Konfiguration
+```
+{
+  "name": "light",
+  "author": "jemu75",
+  "stand": "2021-03-21",
+  "status": {
+    "bar": ["state:on:100:success","state:off:0:success"],
+    "error": []
+  },
+  "main": [
+    {
+      "leftBtn": "mdi-power-off",
+      "leftClick": ["state::off"],
+      "text": ["state:on:an","state:off:aus","state::%s"],
+      "rightBtn": "mdi-power-on",
+      "rightClick": ["state::on"]
+    }
+  ],
+  "info": {
+    "left1": ["state:on::mdi-lightbulb","state:off::mdi-lightbulb-off"]
+  }
+}
+```
+# Template Thermostat
+Dieses Template Funk-Wandthermostate von Homematic verwendet werden. Diese Geräte verwenden mehrere Funkkanäle, welche in FHEM über separate Devices abgebildet werden. Das Template muss in dem Device definiert werden, in dem die Solltemperatur über `desired-temp` gesetzt wird. Die weiteren für das Template benötigten Kanäle müssen über `appOptions` mit dem Parameter `connected` definiert werden. Im Kanal `receiver` muss das FHEM-Device eingetragen werden, in dem sich die Readings `Activity` und `battery` befinden. Im Kanal `valve` muss das FHEM-Device eingetragen werden, in dem sich das Reading `pct` (Ventilöffnung in %) befindet.  
+
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
+```
+{ "template": "thermostat", "connected": { "receiver": "<devicename>", "valve": "<devicename>" } }
+```
+
+#### Konfiguration
+```
+{
+  "name": "thermostat",
+  "author": "jemu75",
+  "stand": "2021-03-21",
+  "status": {
+    "bar": ["Connected.valve.Readings.pct.Value::%n:success"],
+    "error": ["Connected.receiver.Readings.Activity.Value:^(?!alive):100:error:keine Verbindung"]
+  },
+  "main": [
+    {
+      "leftBtn": "mdi-minus",
+      "leftClick": ["desired-temp:17.5:desired-temp %i-0.5","desired-temp::"],
+      "leftLong": ["R-nightTemp::desired-temp %n.1"],
+      "text": ["desired-temp::%n.1°C"],
+      "rightBtn": "mdi-plus",
+      "rightClick": ["desired-temp:25:","desired-temp::desired-temp %i0.5"],
+      "rightLong": ["R-dayTemp::desired-temp %n.1"]
+    }
+  ],
+  "info": {
+    "left1": ["tempState:day::mdi-weather-sunny","tempState:night::mdi-weather-night"],
+    "left2": ["controlMode:auto::mdi-clock-time-four-outline"],
+    "mid1": ["measured-temp::%n.1°C:mdi-thermometer"],
+    "mid2": ["humidity::%n%:mdi-water"],
+    "right1": ["Connected.receiver.Readings.battery.Value:ok::mdi-battery","Connected.receiver.Readings.battery.Value:::mdi-battery-10"],
+    "right2": ["Connected.receiver.Readings.Activity.Value:alive::mdi-wifi","Connected.receiver.Readings.Activity.Value:::mdi-wifi-off"]
+  }
+}
+```
