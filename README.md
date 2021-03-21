@@ -31,11 +31,11 @@ Kopiert einfach alle Dateien und Unterverzeichnisse aus dem Ordner [www/fhemapp]
     └── js
 ```
 
-# Grundkonfiguration der FHEMApp
-Die Grundkonfiguration von **FHEMApp** erfolgt über die Datei `config.json` welche sich im Verzeichnis `../fhemapp/cfg/` auf eurem Webserver befindet. Die Konfigurationsdatei könnt ihr über einen normalen Texteditor bearbeiten, um die folgenden Einstellungen vorzunehmen.
+# Grundkonfiguration der FHEMApp verändern
+Die Grundkonfiguration von **FHEMApp** könnt ihr über die Datei `config.json` welche sich im Verzeichnis `../fhemapp/cfg/` auf eurem Webserver befindet, anpassen. Die Konfigurationsdatei könnt ihr über einen normalen Texteditor bearbeiten, um die folgenden Einstellungen zu verändern.
 
-### Verbindungseinstellung für FHEM
-Hier wird festgelegt, wo sich die FHEM Installation befindet. Der Parameter `location` gibt die IP-Adresse bzw. URL von FHEM an. Die Parameter `port` und `path` entsprechen dem Standard eurer FHEM Installation und können bei Bedarf angepasst werden.
+### Verbindungseinstellung für FHEM (optional)
+Wenn ihr **FHEMApp** unter *opt/fhem/www/fhemapp* abgelegt habt, müssen keine Verbindungseinstellungen in der `config.json` hinterlegt werden. Solltet ihr **FHEMApp** auf einem separaten Webserver (z.B. apache) betreiben, dann sind diese Angaben notwendig. Das folgende Beispiel zeigt die Verbindungseinstellungen für eine Standard FHEM-Installation.
 ```
 "connection": {
   "location": "http://fhem",
@@ -97,7 +97,7 @@ Das Attribut `appOptions` kann mit unterschiedlichen Parametern befüllt werden,
 ```
 {
   "template": "string",             - steuert über welches Template das Device dargestellt wird
-  "name":" "string",                - kann alternativ zum FHEM-Attribut 'alias' verwendet werden
+  "name": "string",                - kann alternativ zum FHEM-Attribut 'alias' verwendet werden
   "room": "string",                 - kann alternativ zum FHEM-Attribut 'room' verwendet werden
   "group": "string",                - kann alternativ zum FHEM-Attribut 'group' verwendet werden
   "home": "true",                   - zeigt ein Device auf der Startseite an
@@ -160,12 +160,14 @@ Alternativ können eigene Templates in der Datei `config.json` als Vorlage abgel
       },
       "main": [
         {
-          "leftIcon": ["reading:value:icon:disabled"],
+          "leftBtn": ["reading:value:icon:disabled"],
           "leftClick": ["reading:value:set_param"],
           "leftLong": ["reading:value:set_param"],
           "leftLongRelease": ["reading:value:set_param"],
           "text": ["reading:value:text"],
-          "rightIcon": ["reading:value:icon:disabled"],
+          "text2": ["reading:value:text"],
+          "slider": ["reading:value:set_param:current:min:max"],
+          "rightBtn": ["reading:value:icon:disabled"],
           "rightClick": ["reading:value:set_param"],
           "rightLong": ["reading:value:set_param"],
           "rightLongRelease": ["reading:value:set_param"]
@@ -199,19 +201,21 @@ Beispiele:
 - **%n.2** - liefert das *Reading* als Zahlenwert mit der gewünschten Anzahl an Nachkommastellen. Sollte das Reading aus Text und Zahlen bestehen, so wird der erste Zahlenwert zurückgegeben
 - **%i1** - erhöht (%i1.5) bzw. verringert (%i-1.5) das *Reading* um den Wert. Hierfür muss das *Reading* Zahlenwerte enthalten.
 - **%t** - liefert das *Reading* als Zeitstempel im Format TT.MM.JJJJ hh:mm:ss zurück
+- **%v** - ausschließlich in Verbindung mit dem Element *slider* notwendig.
 
 ## verfügbare Elemente
 |Bereich|Element|Zuweisung|Beschreibung|
 |-------|-------|-----|-------------|
 |status|bar|reading:wert:level:color:invert|definiert mit welcher **Farbe** und mit welchem **Level** der Status angezeigt wird. Bei Angabe von invert wird *level* invertiert|
 |status|error|reading:wert:level:color:text|definiert mit welcher **Farbe** und mit welchem **Level** Fehler angezeigt werden. Weiterhin wird die **Fehlermeldung** definiert.|
-|main|leftIcon|reading:wert:icon:disabled (alternativ: icon)|definiert welches *Icon* auf der linken Taste angezeigt wird. Optional kann das Flag *disabled* gesetzt werden. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
+|main|leftBtn|reading:wert:icon:disabled (alternativ: icon)|definiert welches *Icon* auf der linken Taste angezeigt wird. Optional kann das Flag *disabled* gesetzt werden. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
 |main|leftClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die linke Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
 |main|leftLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der linken Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
 |main|leftLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der linken Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
 |main|text|reading:wert:text|definiert den **ersten Text** der in der Mitte angezeigt wird|
 |main|text2|reading:wert:text|definiert den **zweiten Text** der in der Mitte angezeigt wird *Hinweis:* bei Verwendung von Tasten sollte auf die Anzeige eines zweiten Wertes verzichtet werden, da die Breite des Templates im Normalfall nicht ausreicht|
-|main|rightIcon|reading:wert:icon:disabled (alternativ: icon)|definiert welches *Icon* auf der rechten Taste angezeigt wird. Optional kann das Flag *disabled* gesetzt werden. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
+|main|slider|reading:wert:cmd:current:min:max|stellt einen **Slider** in der Mitte dar. In diesem Fall werden die Elemente `text` und `text2` nicht angezeigt und evtl. definierte Tasten reagieren nur auf `leftClick` bzw. `rightClick`. *Wichtig:* `cmd` muss die Ersetzung *%v* (den aktuellen Wert des Sliders) enthalten. `current` sollte nur die Ersetzung *%n* enthalten, damit der Slider den aktuellen Wert des Readings anzeigt. `min` und `max` begrenzen die Sliderwerte. *Beispiel:* `["pct::pct %v:%n:0:100"]` verbindet das Reading `pct` mit einem Slider und begrenzt die Wert auf 0-100|
+|main|rightBtn|reading:wert:icon:disabled (alternativ: icon)|definiert welches *Icon* auf der rechten Taste angezeigt wird. Optional kann das Flag *disabled* gesetzt werden. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
 |main|leftClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die rechte Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
 |main|rightLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der rechten Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
 |main|rightLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der rechten Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|

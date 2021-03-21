@@ -17,7 +17,7 @@
           <v-col class="col-3" align="center">
             <v-menu bottom left transition="slide-y-transition">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn icon v-bind="attrs" v-on="on">
+                <v-btn small icon v-bind="attrs" v-on="on">
                   <v-icon large>{{ rightIcon }}</v-icon>
                 </v-btn>
               </template>

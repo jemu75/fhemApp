@@ -15,7 +15,7 @@
       <v-card-text>
         <v-row align="center">
           <v-col class="col-3" align="center">
-            <v-btn v-if="!expanded" icon v-on:click="setPlayer('VolumeD')">
+            <v-btn v-if="!expanded" icon v-on:click="setVolume('D')">
               <v-icon large>{{ leftIcon }}</v-icon>
             </v-btn>
             <v-btn v-if="expanded" icon :disabled="prevDisabled" v-on:click="setPlayer('Previous')">
@@ -30,7 +30,7 @@
           </v-col>
           <v-divider vertical></v-divider>
           <v-col class="col-3" align="center">
-            <v-btn v-if="!expanded" icon v-on:click="setPlayer('VolumeU')">
+            <v-btn v-if="!expanded" icon v-on:click="setVolume('U')">
               <v-icon large>{{ rightIcon }}</v-icon>
             </v-btn>
             <v-btn v-if="expanded" icon :disabled="nextDisabled" v-on:click="setPlayer('Next')">
@@ -45,7 +45,7 @@
       <v-card-text v-if="expanded">
         <v-row align="center">
           <v-col>
-            <v-slider v-model="vals.newVolume" hide-details color="accent">
+            <v-slider v-model="vals.volume" hide-details color="accent" @change="setVolume">
               <template v-slot:prepend>
                 <v-icon
                   @click="setMute()">{{ volumeIcon }}
@@ -103,12 +103,11 @@
         mainColor: '',
         play: false,
         volume: 0,
-        mute: false,
         volumeChanged: false,
+        mute: false,
         trackPosition: '',
         zones: [],
         tracks: '',
-        newVolume: 0,
         playInfo1: '',
         playInfo2: '',
         systemIcon: '',
@@ -123,7 +122,8 @@
       prevDisabled: true,
       nextIcon: 'mdi-skip-next',
       nextDisabled: true,
-      volumeIcon: 'mdi-volume-high'
+      volumeIcon: 'mdi-volume-high',
+      pendingClick: 0
     }),
 
     watch: {
@@ -131,6 +131,7 @@
         immediate: true,
         deep: true,
         handler(val) {
+
           let state = this.$fhem.getEl(val, 'Readings', 'transportState', 'Value');
           let trackHandle = this.$fhem.getEl(val, 'Readings', 'nextTrackHandle', 'Value') || '|';
           let volume = this.$fhem.getEl(val, 'Readings', 'Volume', 'Value');
@@ -157,9 +158,8 @@
 
           this.vals.trackPosition = this.$fhem.getEl(val, 'Readings', 'currentTrackPositionSimulated', 'Value');
 
-          this.vals.volume = parseInt(volume);
-          if(!this.vals.volumeChanged) this.vals.newVolume = this.vals.volume;
-          if(this.vals.volumeChanged && this.vals.volume === this.vals.newVolume) this.vals.volumeChanged = false;
+          if(this.vals.volumeChanged && this.vals.volume === parseInt(volume)) this.vals.volumeChanged = false;
+          if(!this.vals.volumeChanged) this.vals.volume = parseInt(volume);
 
           this.vals.mute = mute === '1' ? true : false;
           this.volumeIcon = this.vals.mute ? 'mdi-volume-mute' : 'mdi-volume-high';
@@ -174,29 +174,46 @@
           this.vals.play = state === 'PLAYING' ? true : false;
           this.playIcon = this.vals.play ? 'mdi-pause' : 'mdi-play';
         }
-      },
-
-      'vals.newVolume'(val) {
-        this.vals.volumeChanged = true;
-        let cmd = 'set ' + this.item.Name + ' Volume ' + val;
-        this.$fhem.request(cmd);
-      },
+      }
     },
 
     methods: {
+      sendCmd(cmd, delay) {
+        if(!delay) {
+          this.$fhem.request(cmd);
+        } else {
+          if (this.pendingClick) {
+            clearTimeout(this.pendingClick);
+            this.pendingClick = 0;
+          }
+
+          this.pendingClick = setTimeout(() => {
+            this.$fhem.request(cmd);
+          }, 1000);
+        }
+      },
+
+      setVolume(val) {
+        this.vals.volumeChanged = true;
+        let volume = this.vals.zones.length > 0 ? ' GroupVolume' : ' Volume';
+        if(val != 'D' && val != 'U') val = ' ' + val;
+        let cmd = 'set ' + this.item.Name + volume + val;
+        this.sendCmd(cmd);
+      },
+
       setPlayer(val) {
         let cmd = 'set ' + this.item.Name + ' ' + val;
-        this.$fhem.request(cmd)
+        this.sendCmd(cmd)
       },
 
       setPlay() {
         let cmd = 'set ' + this.item.Name + (this.vals.play ? ' Pause' : ' Play');
-        this.$fhem.request(cmd);
+        this.sendCmd(cmd)
       },
 
       setMute() {
         let cmd = 'set ' + this.item.Name + (this.vals.mute ? ' Mute 0' : ' Mute 1');
-        this.$fhem.request(cmd);
+        this.sendCmd(cmd)
       },
 
       expand() {

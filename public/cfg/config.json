@@ -33,12 +33,14 @@
       },
       "main": [
         {
-          "leftIcon": "string",
+          "leftBtn": ["reading:value:icon:disabled"],
           "leftClick": ["reading:value:set_param"],
           "leftLong": ["reading:value:set_param"],
           "leftLongRelease": ["reading:value:set_param"],
           "text": ["reading:value:text"],
-          "rightIcon": "string",
+          "text2": ["reading:value:text"],
+          "slider": ["reading:value:set_param:current:min:max"],
+          "rightBtn": ["reading:value:icon:disabled"],
           "rightClick": ["reading:value:set_param"],
           "rightLong": ["reading:value:set_param"],
           "rightLongRelease": ["reading:value:set_param"]
@@ -61,12 +63,12 @@
       },
       "main": [
         {
-          "leftIcon": "mdi-power-off",
+          "leftBtn": "mdi-power-off",
           "leftClick": ["state::off"],
           "leftLong": [],
           "leftLongRelease": [],
           "text": ["state:on:an","state:off:aus"],
-          "rightIcon": "mdi-power-on",
+          "rightBtn": "mdi-power-on",
           "rightClick": ["state::on"],
           "rightLong": [],
           "rightLongRelease": []

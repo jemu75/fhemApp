@@ -28,10 +28,10 @@
     },
     "main": [
       {
-        "leftIcon": "mdi-power-off",
+        "leftBtn": "mdi-power-off",
         "leftClick": ["state::off"],
         "text": ["state:on:an","state:off:aus","state::%s"],
-        "rightIcon": "mdi-power-on",
+        "rightBtn": "mdi-power-on",
         "rightClick": ["state::on"]
       }
     ],
@@ -49,10 +49,10 @@
     },
     "main": [
       {
-        "leftIcon": "mdi-power-off",
+        "leftBtn": "mdi-power-off",
         "leftClick": ["state::off"],
         "text": ["state:on:an","state:off:aus","state::%s"],
-        "rightIcon": "mdi-power-on",
+        "rightBtn": "mdi-power-on",
         "rightClick": ["state::on"]
       }
     ],
@@ -68,12 +68,12 @@
     },
     "main": [
       {
-        "leftIcon": "mdi-minus",
-        "leftClick": ["pct:100:pct 75","pct:75:pct 50","pct:50:pct 25","pct:25:off"],
+        "leftBtn": "mdi-minus",
+        "leftClick": ["pct:10:pct %i-10","pct::off"],
         "leftLong": ["state::off"],
         "text": ["pct:1:an:","pct::aus"],
-        "rightIcon": "mdi-plus",
-        "rightClick": ["pct:75:on","pct:50:pct 75","pct:25:pct 50","pct:0:pct 25"],
+        "rightBtn": "mdi-plus",
+        "rightClick": ["pct:90:on","pct::pct %i10"],
         "rightLong": ["state::on"]
       }
     ],
@@ -90,12 +90,12 @@
     },
     "main": [
       {
-        "leftIcon": "mdi-chevron-down",
+        "leftBtn": "mdi-chevron-down",
         "leftClick": ["motor:stop:off","motor::stop"],
         "leftLong": ["motor::off"],
         "leftLongRelease": ["motor::stop"],
         "text": ["motor:up:öffnet...","motor:down:schließt...","pct:1:offen","pct::geschlossen"],
-        "rightIcon": "mdi-chevron-up",
+        "rightBtn": "mdi-chevron-up",
         "rightClick": ["motor:stop:on","motor::stop"],
         "rightLong": ["motor::on"],
         "rightLongRelease": ["motor::stop"]
@@ -151,7 +151,7 @@
     "main": [
       {
         "text": ["level:2:Alarm","level::bereit"],
-        "rightIcon": "mdi-bell-off-outline",
+        "rightBtn": "mdi-bell-off-outline",
         "rightClick": ["peerList:self01:alarmOff","peerList::set %s alarmOff"]
       }
     ],
@@ -170,11 +170,11 @@
     },
     "main": [
       {
-        "leftIcon": "mdi-minus",
+        "leftBtn": "mdi-minus",
         "leftClick": ["desired-temp:17.5:desired-temp %i-0.5","desired-temp::"],
         "leftLong": ["R-nightTemp::desired-temp %n.1"],
         "text": ["desired-temp::%n.1°C"],
-        "rightIcon": "mdi-plus",
+        "rightBtn": "mdi-plus",
         "rightClick": ["desired-temp:25:","desired-temp::desired-temp %i0.5"],
         "rightLong": ["R-dayTemp::desired-temp %n.1"]
       }
@@ -235,7 +235,7 @@
     "main": [
       {
         "text": ["state:closed:geschlossen","state:open:offen","state::%s"],
-        "rightIcon": "mdi-unfold-more-horizontal",
+        "rightBtn": "mdi-unfold-more-horizontal",
         "rightClick": ["Connected.button.Internals.NAME::set %s on-for-timer 0.4"]
       }
     ],

@@ -74,6 +74,14 @@
             <v-list-item-title class="text-left">System</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-divider></v-divider>
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-subtitle>
+              {{ version }}
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -106,6 +114,7 @@
           groupList: []
         }
       },
+      version: 'v3.0.0',
       status: {
         color: 'secondary',
         icon: 'mdi-circle',

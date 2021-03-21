@@ -7,9 +7,9 @@ export default class Fhem extends EventEmitter {
 
     this.app = {
       connection: {
-        location: 'http://fhem',
-        port: '8083',
-        path: 'fhem'
+        location: window.location.protocol + '//' + window.location.hostname,
+        port: window.location.port,
+        path: window.location.pathname
       },
       socket: null,
       session: {
@@ -95,8 +95,8 @@ export default class Fhem extends EventEmitter {
     let conn = this.app.connection;
 
     let location = conn.location ? conn.location : '';
-    let port = conn.port ? ':' + conn.port : '';
-    let path = conn.path ? '/' + conn.path : '';
+    let port = conn.port ? ':' + conn.port.replace(':','') : '';
+    let path = conn.path ? '/' + conn.path.replace('/','') : '';
     let query = '';
 
     if(typeof params == 'object' && params.length > 0) {

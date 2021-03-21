@@ -12,28 +12,40 @@
       </v-card-title>
       <v-divider></v-divider>
 
-      <v-card-text>
+      <v-card-text v-if="!vals.main.slider || !isActive">
         <v-row align="center">
-          <v-col v-if="vals.main.leftIcon && isActive" class="col-3" align="center">
-            <v-btn :disabled="vals.main.leftIconDisabled" icon @mousedown="clickStart('left')" @mouseup="clickEnd('left')" @touchstart="clickStart('left')" @touchend="clickEnd('left')">
-              <v-icon large>{{ vals.main.leftIcon }}</v-icon>
+          <v-col v-if="vals.main.leftBtn && isActive" class="col-3" align="center">
+            <v-btn small icon :disabled="vals.main.leftBtnDisabled" @mousedown="clickStart('left')" @mouseup="clickEnd('left')" @touchstart="clickStart('left')" @touchend="clickEnd('left')">
+              <v-icon large>{{ vals.main.leftBtn }}</v-icon>
             </v-btn>
           </v-col>
-          <v-divider v-if="vals.main.leftIcon && isActive" vertical></v-divider>
+          <v-divider v-if="vals.main.leftBtn && isActive" vertical></v-divider>
           <v-col align="center">
             <div class="headline font-weight-bold">{{ vals.main.text }}</div>
           </v-col>
-          <v-col v-if="vals.main.text2" align="center">
+          <v-col v-if="vals.main.text2 && isActive" align="center">
             <div class="headline font-weight-bold">{{ vals.main.text2 }}</div>
           </v-col>
-          <v-divider v-if="vals.main.rightIcon && isActive" vertical></v-divider>
-          <v-col v-if="vals.main.rightIcon && isActive" class="col-3" align="center">
-            <v-btn :disabled="vals.main.rightIconDisabled" icon @mousedown="clickStart('right')" @mouseup="clickEnd('right')" @touchstart="clickStart('right')" @touchend="clickEnd('right')">
-              <v-icon large>{{ vals.main.rightIcon }}</v-icon>
+          <v-divider v-if="vals.main.rightBtn && isActive" vertical></v-divider>
+          <v-col v-if="vals.main.rightBtn && isActive" class="col-3" align="center">
+            <v-btn small icon :disabled="vals.main.rightBtnDisabled" @mousedown="clickStart('right')" @mouseup="clickEnd('right')" @touchstart="clickStart('right')" @touchend="clickEnd('right')">
+              <v-icon large>{{ vals.main.rightBtn }}</v-icon>
             </v-btn>
           </v-col>
         </v-row>
       </v-card-text>
+
+      <v-card-text v-if="vals.main.slider && isActive">
+        <v-slider v-model="vals.main.sliderCurrent" :min="vals.main.sliderMin" :max="vals.main.sliderMax" hide-details color="accent" @change="setSlider">
+          <template v-if="vals.main.leftBtn" v-slot:prepend>
+            <v-icon @click="clickEnd('left')">{{ vals.main.leftBtn }}</v-icon>
+          </template>
+          <template v-if="vals.main.rightBtn" v-slot:append>
+            <v-icon @click="clickEnd('right')">{{ vals.main.rightBtn }}</v-icon>
+          </template>
+        </v-slider>
+      </v-card-text>
+
       <v-divider></v-divider>
       <v-system-bar color="secondary darken-1">
         <v-icon class="ml-0">{{ vals.info.left1Icon }}</v-icon>{{ vals.info.left1Text }}
@@ -76,12 +88,16 @@
           invert: false,
         },
         main: {
-          leftIcon: '',
-          leftIconDisabled: false,
+          leftBtn: '',
+          leftBtnDisabled: false,
           text: '',
           text2: '',
-          rightIcon: '',
-          rightIconDisabled: false
+          slider: false,
+          sliderCurrent: 0,
+          sliderMin: 0,
+          sliderMax: 100,
+          rightBtn: '',
+          rightBtnDisabled: false
         },
         info: {
           left1Icon: '',
@@ -103,7 +119,8 @@
       mainLevel: 0,
       isActive: true,
       timer: false,
-      long: false
+      long: false,
+      pendingClick: 0
     }),
 
     watch: {
@@ -133,6 +150,31 @@
     },
 
     methods: {
+      sendCmd(cmd, delay) {
+        if(!delay) {
+          this.$fhem.request(cmd);
+        } else {
+          if (this.pendingClick) {
+            clearTimeout(this.pendingClick);
+            this.pendingClick = 0;
+          }
+
+          this.pendingClick = setTimeout(() => {
+            this.$fhem.request(cmd);
+          }, 1000);
+        }
+      },
+
+      updateReading(cmd) {
+        let cmdParts = cmd.split(' ');
+
+        if(cmdParts.length === 4) {
+          if(this.$fhem.getEl(this.item, 'Readings', cmdParts[2], 'Value')) {
+            this.item.Readings[cmdParts[2]].Value = cmdParts[3];
+          }
+        }
+      },
+
       clickStart(val) {
         this.long = false;
 
@@ -145,7 +187,7 @@
             let param = this.$fhem.handleVals(this.item, action);
             if(param[0]) {
               let cmd = param[0].match('set') ? param[0] : 'set ' + this.item.Name + ' ' + param[0];
-              this.$fhem.request(cmd);
+              this.sendCmd(cmd);
               this.timer = clearInterval(this.timer);
             }
           }
@@ -161,7 +203,22 @@
           let param = this.$fhem.handleVals(this.item, action);
           if(param[0]) {
             let cmd = param[0].match('set') ? param[0] : 'set ' + this.item.Name + ' ' + param[0];
-            this.$fhem.request(cmd);
+            let isIncrement = action.findIndex((e) => e.match('%i')) != -1 ? true : false;
+            if(!this.long && isIncrement) this.updateReading(cmd);
+            this.sendCmd(cmd, isIncrement);
+          }
+        }
+      },
+
+      setSlider(val) {
+        let action = this.setup.main[this.mainLevel].slider;
+
+        if(action) {
+          let param = this.$fhem.handleVals(this.item, action);
+          if(param[0]) {
+            let cmd = param[0].match('set') ? param[0] : 'set ' + this.item.Name + ' ' + param[0];
+            cmd = cmd.replace('%v', val);
+            this.sendCmd(cmd);
           }
         }
       },
@@ -175,22 +232,29 @@
           if(this.mainLevel > this.setup.main.length - 1) this.mainLevel = 0;
         }
 
-        this.vals.main.leftIcon = this.setup.main[this.mainLevel].leftIcon;
-        this.vals.main.rightIcon = this.setup.main[this.mainLevel].rightIcon;
+        this.vals.main.leftBtn = this.setup.main[this.mainLevel].leftBtn;
+        this.vals.main.rightBtn = this.setup.main[this.mainLevel].rightBtn;
 
         let mainText = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].text);
         let mainText2 = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].text2);
 
-        let mainLeftIcon = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].leftIcon)
-        let mainRightIcon = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].rightIcon)
+        let mainLeftBtn = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].leftBtn)
+        let mainRightBtn = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].rightBtn)
+
+        let mainSlider = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].slider);
 
         this.vals.main.text = mainText[0] || '';
         this.vals.main.text2 = mainText2[0] || '';
 
-        this.vals.main.leftIcon = mainLeftIcon[0] || '';
-        this.vals.main.rightIcon = mainRightIcon[0] || '';
-        this.vals.main.leftIconDisabled = mainLeftIcon[1] ? true : false;
-        this.vals.main.rightIconDisabled = mainRightIcon[1] ? true : false;
+        this.vals.main.leftBtn = mainLeftBtn[0] || '';
+        this.vals.main.rightBtn = mainRightBtn[0] || '';
+        this.vals.main.leftBtnDisabled = mainLeftBtn[1] ? true : false;
+        this.vals.main.rightBtnDisabled = mainRightBtn[1] ? true : false;
+
+        this.vals.main.slider = mainSlider[0] ? true : false;
+        this.vals.main.sliderCurrent = mainSlider[1] || 0;
+        this.vals.main.sliderMin = mainSlider[2] || 0;
+        this.vals.main.sliderMax = mainSlider[3] || 100;
       },
 
       setValues() {
@@ -199,8 +263,9 @@
           let errorVals = this.$fhem.handleVals(this.item, this.setup.status.error);
           let mainText = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].text);
           let mainText2 = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].text2);
-          let mainLeftIcon = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].leftIcon)
-          let mainRightIcon = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].rightIcon)
+          let mainSlider = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].slider);
+          let mainLeftBtn = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].leftBtn);
+          let mainRightBtn = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].rightBtn);
           let infoLeft1Vals = this.$fhem.handleVals(this.item, this.setup.info.left1);
           let infoLeft2Vals = this.$fhem.handleVals(this.item, this.setup.info.left2);
           let infoMid1Vals = this.$fhem.handleVals(this.item, this.setup.info.mid1);
@@ -233,10 +298,15 @@
           this.vals.main.text = mainText[0] || '';
           this.vals.main.text2 = mainText2[0] || '';
 
-          this.vals.main.leftIcon = mainLeftIcon[0] || '';
-          this.vals.main.rightIcon = mainRightIcon[0] || '';
-          this.vals.main.leftIconDisabled = mainLeftIcon[1] ? true : false;
-          this.vals.main.rightIconDisabled = mainRightIcon[1] ? true : false;
+          this.vals.main.slider = mainSlider[0] ? true : false;
+          this.vals.main.sliderCurrent = mainSlider[1] || 0;
+          this.vals.main.sliderMin = mainSlider[2] || 0;
+          this.vals.main.sliderMax = mainSlider[3] || 100;
+
+          this.vals.main.leftBtn = mainLeftBtn[0] || '';
+          this.vals.main.rightBtn = mainRightBtn[0] || '';
+          this.vals.main.leftBtnDisabled = mainLeftBtn[1] ? true : false;
+          this.vals.main.rightBtnDisabled = mainRightBtn[1] ? true : false;
 
           if(errorVals.length > 0) {
             this.vals.status.level = errorVals[0] || '100';
