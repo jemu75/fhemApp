@@ -154,6 +154,8 @@ Alternativ können eigene Templates in der Datei `config.json` als Vorlage abgel
   "custom": [
     {
       "name": "example",
+      "author": "name",
+      "date": "YYYY-MM-DD",
       "status": {
         "bar": ["reading:value:level:color:invert"],
         "error": ["reading:value:level:color:text"]
@@ -228,12 +230,12 @@ Beispiele:
 | [dimmer](#template-dimmer) | Dimmer | ![](./docs/media/template_dimmer_example.png) |
 | [light](#template-light) | Lichtschalter | ![](./docs/media/template_light_example.png) |
 | [thermostat](#template-thermostat) | Raumthermostat | ![](./docs/media/template_thermostat_example.png) |
-| shutter | Jalousieschalter | ![](./docs/media/template_shutter_example.png) |
-| thermometer | Temperatursensor  | ![](./docs/media/template_thermometer_example.png) |
-| smokedetect | Rauchmelder | ![](./docs/media/template_smokedetect_example.png) |
-| contact    | Tür/Fensterkontakt | ![](./docs/media/template_contact_example.png) |
-| motiondetect | Bewegungsmelder | ![](./docs/media/template_motiondetect_example.png) |
-| watersensor | Zisternensensor | ![](./docs/media/template_watersensor_example.png) |
+| [shutter](#template-shutter) | Jalousieschalter | ![](./docs/media/template_shutter_example.png) |
+| [thermometer](#template-thermometer) | Temperatursensor  | ![](./docs/media/template_thermometer_example.png) |
+| [smokedetect](#template-smokedetect) | Rauchmelder | ![](./docs/media/template_smokedetect_example.png) |
+| [contact](#template-contact)    | Tür/Fensterkontakt | ![](./docs/media/template_contact_example.png) |
+| [motiondetect](#template-motiondetect) | Bewegungsmelder | ![](./docs/media/template_motiondetect_example.png) |
+| [watersensor](#template-watersensor) | Zisternensensor | ![](./docs/media/template_watersensor_example.png) |
 | sonos | Sonosplayer | ![](./docs/media/template_sonos_example.png) |
 | scenes | LightScenes | ![](./docs/media/template_scenes_example.png) |
 | panel | Panel zur Gruppierung mehrerer Devices | ![](./docs/media/template_panel_example.png) |
@@ -256,7 +258,7 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
 {
   "name": "switch",
   "author": "jemu75",
-  "stand": "2021-03-21",
+  "date": "2021-03-21",
   "status": {
     "bar": ["state:on:100:success","state:off:0:success"],
     "error": ["Connected.receiver.Readings.Activity.Value:^(?!alive):100:error:keine Verbindung"]
@@ -291,7 +293,7 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
 {
   "name": "dimmer",
   "author": "jemu75",
-  "stand": "2021-03-21",
+  "date": "2021-03-21",
   "status": {
     "bar": ["pct::%n:success"],
     "error": []
@@ -327,7 +329,7 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
 {
   "name": "light",
   "author": "jemu75",
-  "stand": "2021-03-21",
+  "date": "2021-03-21",
   "status": {
     "bar": ["state:on:100:success","state:off:0:success"],
     "error": []
@@ -346,6 +348,44 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
   }
 }
 ```
+# Template Shutter
+Dieses Template kann für Jalousieaktoren verwendet werden. Bei langem Tastendruck wird die Jalousie nach dem Loslassen der Taste wieder gestoppt. Bei kurzem Tastendruck wird die Jalousie komplett geschlossen bzw. geöffnet. Zusätzlich wird der Wert für die *Statusbar* invertiert, damit das Template bei geschlossener Jalousie "grün" anzeigt. Die Invertierung erfolgt über das Flag invert z.B.  `["pct::%n:success:invert"]`.
+
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
+```
+{ "template": "shutter" }
+```
+
+#### Konfiguration
+```
+{
+  "name": "shutter",
+  "author": "jemu75",
+  "date": "2021-03-21",
+  "status": {
+    "bar": ["pct::%n:success:invert"],
+    "error": []
+  },
+  "main": [
+    {
+      "leftBtn": "mdi-chevron-down",
+      "leftClick": ["motor:stop:off","motor::stop"],
+      "leftLong": ["motor::off"],
+      "leftLongRelease": ["motor::stop"],
+      "text": ["motor:up:öffnet...","motor:down:schließt...","pct:1:offen","pct::geschlossen"],
+      "rightBtn": "mdi-chevron-up",
+      "rightClick": ["motor:stop:on","motor::stop"],
+      "rightLong": ["motor::on"],
+      "rightLongRelease": ["motor::stop"]
+    }
+  ],
+  "info": {
+    "left1": ["motor:up::mdi-window-shutter-alert","motor:down::mdi-window-shutter-alert","pct:1::mdi-window-shutter-open","pct:::mdi-window-shutter"],
+    "left2": ["pct::%s%"]
+  }
+}
+```
 # Template Thermostat
 Dieses Template Funk-Wandthermostate von Homematic verwendet werden. Diese Geräte verwenden mehrere Funkkanäle, welche in FHEM über separate Devices abgebildet werden. Das Template muss in dem Device definiert werden, in dem die Solltemperatur über `desired-temp` gesetzt wird. Die weiteren für das Template benötigten Kanäle müssen über `appOptions` mit dem Parameter `connected` definiert werden. Im Kanal `receiver` muss das FHEM-Device eingetragen werden, in dem sich die Readings `Activity` und `battery` befinden. Im Kanal `valve` muss das FHEM-Device eingetragen werden, in dem sich das Reading `pct` (Ventilöffnung in %) befindet.  
 
@@ -360,7 +400,7 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
 {
   "name": "thermostat",
   "author": "jemu75",
-  "stand": "2021-03-21",
+  "date": "2021-03-21",
   "status": {
     "bar": ["Connected.valve.Readings.pct.Value::%n:success"],
     "error": ["Connected.receiver.Readings.Activity.Value:^(?!alive):100:error:keine Verbindung"]
@@ -383,6 +423,170 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
     "mid2": ["humidity::%n%:mdi-water"],
     "right1": ["Connected.receiver.Readings.battery.Value:ok::mdi-battery","Connected.receiver.Readings.battery.Value:::mdi-battery-10"],
     "right2": ["Connected.receiver.Readings.Activity.Value:alive::mdi-wifi","Connected.receiver.Readings.Activity.Value:::mdi-wifi-off"]
+  }
+}
+```
+# Template Thermometer
+Dieses Template kann für Funkthermometer verwendet werden. Es zeigt zwei Werte (Temperatur und Luftfeuchte) an.
+
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
+```
+{ "template": "thermometer" }
+```
+
+#### Konfiguration
+```
+{
+  "name": "thermometer",
+  "author": "jemu75",
+  "date": "2021-03-21",
+  "status": {
+    "bar": [],
+    "error": ["Activity:^(?!alive):100:error:keine Verbindung"]
+  },
+  "main": [
+    {
+      "text": ["temperature::%n.1°C"],
+      "text2": ["humidity::%n%"]
+    }
+  ],
+  "info": {
+    "left1": ["temperature:0::mdi-thermometer","temperature:::mdi-snowflake"],
+    "right1": ["battery:ok::mdi-battery","battery:::mdi-battery-10"],
+    "right2": ["Activity:alive::mdi-wifi","Activity:::mdi-wifi-off"]
+  }
+}
+```
+# Template Smokedetect
+Dieses Template kann für Rauchmelder verwendet werden. Über die Taste kann ein Alarm deaktivert werden.
+
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
+```
+{ "template": "smokedetect" }
+```
+
+#### Konfiguration
+```
+{
+  "name": "smokedetect",
+  "author": "jemu75",
+  "date": "2021-03-21",
+  "status": {
+    "bar": ["level:2:%n:error","level::100:success"],
+    "error": ["Activity:^(?!alive):100:error:keine Verbindung"]
+  },
+  "main": [
+    {
+      "text": ["level:2:Alarm","level::bereit"],
+      "rightBtn": "mdi-bell-off-outline",
+      "rightClick": ["peerList:self01:alarmOff","peerList::set %s alarmOff"]
+    }
+  ],
+  "info": {
+    "left1": ["level:2::mdi-fire","level:::mdi-smoke-detector"],
+    "mid1": ["Readings.trigger_cnt.Time::%t"],
+    "right1": ["battery:ok::mdi-battery","battery:::mdi-battery-10"],
+    "right2": ["Activity:alive::mdi-wifi","Activity:::mdi-wifi-off"]
+  }
+}
+```
+# Template Contact
+Dieses Template kann für Tür-/Fensterkontakte verwendet werden.
+
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
+```
+{ "template": "contact" }
+```
+
+#### Konfiguration
+```
+{
+  "name": "contact",
+  "author": "jemu75",
+  "date": "2021-03-21",
+  "status": {
+    "bar": ["state:closed:100:success","state:open:0:success"],
+    "error": ["Activity:^(?!alive):100:error:keine Verbindung","sabotageError:on:100:error:Fremdeingriff","cover:open:100:error:Fremdeingriff"]
+  },
+  "main": [
+    {
+      "text": ["state:closed:geschlossen","state:open:offen","state::%s"]
+    }
+  ],
+  "info": {
+    "left1": ["state:closed::mdi-door","state:open::mdi-door-open"],
+    "mid1": ["Readings.trigger_cnt.Time::%t"],
+    "right1": ["battery:ok::mdi-battery","battery:::mdi-battery-10"],
+    "right2": ["Activity:alive::mdi-wifi","Activity:::mdi-wifi-off"]
+  }
+}
+```
+# Template Motiondetect
+Dieses Template kann für Bewegungsmelder verwendet werden.
+
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
+```
+{ "template": "motiondetect" }
+```
+
+#### Konfiguration
+```
+{
+  "name": "motiondetect",
+  "author": "jemu75",
+  "date": "2021-03-21",
+  "status": {
+    "bar": ["motion:off:0:success","motion::100:success"],
+    "error": ["Activity:^(?!alive):100:error:keine Verbindung","sabotageError:on:100:error:Fremdeingriff","cover:open:100:error:Fremdeingriff"]
+  },
+  "main": [
+    {
+      "text": ["motion:off:bereit","motion::Bewegung erkannt"]
+    }
+  ],
+  "info": {
+    "left1": ["motion:off::mdi-motion-sensor-off","motion:::mdi-motion-sensor"],
+    "mid1": ["Readings.trigger_cnt.Time::%t"],
+    "right1": ["battery:ok::mdi-battery","battery:::mdi-battery-10"],
+    "right2": ["Activity:alive::mdi-wifi","Activity:::mdi-wifi-off"]
+  }
+}
+```
+# Template Watersensor
+Dieses Template kann für einen Homematic Zisternensensor verwendet werden.
+
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
+```
+{ "template": "watersensor" }
+```
+
+#### Konfiguration
+```
+{
+  "name": "watersensor",
+  "author": "jemu75",
+  "date": "2021-03-21",
+  "status": {
+    "bar": ["level::%n:success"],
+    "error": ["Activity:^(?!alive):100:error:keine Verbindung"]
+  },
+  "main": [
+    {
+      "text": ["liter::%n Liter"]
+    },
+    {
+      "text": ["level::%n %"]
+    }
+  ],
+  "info": {
+    "left1": ["level:5::mdi-water","level:::mdi-water-off"],
+    "right1": ["battery:ok::mdi-battery","battery:::mdi-battery-10"],
+    "right2": ["Activity:alive::mdi-wifi","Activity:::mdi-wifi-off"]
   }
 }
 ```
