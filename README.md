@@ -596,14 +596,14 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
 Für die Anzeige von Panels muss sowohl das Panel selbst als auch die darin befindlichen Devices konfiguriert werden.
 
 ### Definition des Panels
-Zur Erstellung eines Panels legt ihr euch in FHEM am besten ein *dummy* Device an. In diesem definiert ihr unter `appOptions` das Template *panel*. Somit habt ihr ein leeres Panel erstellt. Nun müsst ihr dem Panel Devices zuordnen, die angezeigt werden sollen. *(sog. panelItems)* Dazu nutzt ihr in `appOptions` den Parameter `connected`.   
+Zur Erstellung eines Panels legt ihr euch in FHEM am besten ein *dummy* Device an. In diesem definiert ihr unter `appOptions` das Template *panel*. Somit habt ihr ein leeres Panel erstellt. Nun müsst ihr dem Panel die Devices zuordnen, die angezeigt werden sollen. *(sog. panelItems)* Dazu nutzt ihr in `appOptions` den Parameter `connected`. Im Ergebnis sieht das wie folgt aus:   
 ```
-{ "template": "panel", "connected": { "1": "<devicename1>", "2": "<devicename2>", ... } }
+{ "template": "panel", "connected": { "<bez1>": "<devicename1>", "<bez2>": "<devicename2>", ... } }
 ```
 *Hinweis:* Für *panelItems* bieten sich FHEM *structure* Devices an. Es kann aber auch jedes andere FHEM Device als *panelItem* definiert werden.
 
 ### Definition von panelItems
-Nachdem ihr ein Panel defniert und die panelItems zugewiesen habt, müsst ihr das *Verhalten* für jedes panelItem definieren. Dazu geht ihr in jedes FHEM-Device, welches ihr im Panel unter `connected` zugewiesen habt. Hier muss in `appOptions` über den Parameter `panel` folgendes definiert werden.
+Nachdem ihr ein Panel defniert und die *panelItems* zugewiesen habt, müsst ihr das *Verhalten* für jedes panelItem definieren. Dazu geht ihr in jedes Device, welches ihr im Panel über `connected` zugewiesen habt. Hier muss in `appOptions` über den Parameter `panel` folgendes definiert werden.
 1. **Statustext** sowie **Level** und **Farbe** des *Statuscircle*
 2. **Icon** für die Taste auf der rechten Seite (optional)
 3. **clickEvent** oder **Link** auf den die Taste reagiert (optional)   
