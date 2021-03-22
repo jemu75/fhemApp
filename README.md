@@ -105,9 +105,8 @@ Das Attribut `appOptions` kann mit unterschiedlichen Parametern befüllt werden,
   "system": "true",                 - zeigt ein Device in den Systemeinstellungen an
   "setup": { object },              - ermöglicht zustandsabhängige Anpassungen des Templates
   "connected": { object },          - bindet zusätzliche Devices in das Template ein
+  "panel": { object },              - definiert die Darstellung des Devices in einem Panel
   "chartDef": ["def1", "def2", ...],- legt die Datenquellen für Grafiken fest
-  "link": "string",                 - gibt den URL-Pfad für Panels an  
-  "toggle": ["def1", "def2", ...],  - ermöglicht die Definition von "Schaltern"für Panels     
 }
 ```
 
@@ -591,34 +590,23 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
 }
 ```
 # Template Panel
-Über dieses Template können mehrere FHEM-Devices angezeigt werden. Dabei dient das Template `panel` nur als *Rahmen*. Die Liste der FHEM-Devices die innerhalb des Panels angezeigt werden, definiert ihr über den Parameter `connected` in `appOptions`. Die einzelnen *PanelItems* müssen in den jeweiligen FHEM-Devices über den Parameter `panel` in `appOptions` konfiguriert werden.
+Über dieses Template können mehrere FHEM-Devices angezeigt werden.
+![](./docs/media/fhemapp_desk_main.png)*Beispiel für Panels auf dem Homescreen*
 
-Sinnvoll ist der Einsatz von Panels z.B. für den *Homescreen* in **FHEMApp** da Panels einen guten Gesamtüberblick über deine Hausautomation liefern. So ist die Verwendung von FHEM *structure* Komponenten z.B. gut geeignet um, in einem Panel den Zustand aller Heizungen, Fenster, Rauchmelder usw. im Haus zu bekommen.
+Für die Anzeige von Panels muss sowohl das Panel selbst als auch die darin befindlichen Devices konfiguriert werden.
 
-Zusätzlich können in jedem PanelItem entweder ein *Link* oder eine *Taste* aktiviert werden. Über *Link* könnt ihr innerhalb der **FHEMApp** auf einen anderen Screen navigieren. Über die *Taste* könnt ihr wiederum Kommandos an FHEM absenden.  
-
-Da *Panel* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften über den Parameter `setup` in `appOptions` anpassen. Folgende Eigenschaften könnt ihr individuell anpassen:
-```
-"setup": {
-  "info": {
-    "left1": ["reading:value:text:icon"],
-    "left2": ["reading:value:text:icon"],
-    "mid1": ["reading:value:text:icon"],
-    "mid2": ["reading:value:text:icon"],
-    "right1": ["reading:value:text:icon"],
-    "right2": ["reading:value:text:icon"]
-  }
-}
-```
-
-#### Definition von Panel
-Um das Panel selbst anzulegen ordnet ihr einem FHEM-Device (sinnvoller Weise einem *dummy*) in `appOptions` das Template *panel* zu. Weiterhin legt ihr fest, welche FHEM-Devices innerhalb des Panels angezeigt werden sollen. Dazu nutzt ihr in `appOptions` den Parameter `connected`.   
+### Definition des Panels
+Zur Erstellung eines Panels legt ihr euch in FHEM am besten ein *dummy* Device an. In diesem definiert ihr unter `appOptions` das Template *panel*. Somit habt ihr ein leeres Panel erstellt. Nun müsst ihr dem Panel Devices zuordnen, die angezeigt werden sollen. *(sog. panelItems)* Dazu nutzt ihr in `appOptions` den Parameter `connected`.   
 ```
 { "template": "panel", "connected": { "1": "<devicename1>", "2": "<devicename2>", ... } }
 ```
+*Hinweis:* Für *panelItems* bieten sich FHEM *structure* Devices an. Es kann aber auch jedes andere FHEM Device als *panelItem* definiert werden.
 
-#### Definition der einzelnen PanelItems
-Nachdem ihr das Panel selbst angelegt habt, müsst ihr jetzt in jedem unter `connected` definierten FHEM-Devices festlegen, wie sich dieses *PanelItem* verhalten soll. Dazu nutzt ihr in `appOptions` den Parameter `panel` (für PanelItems eignen sich insbesondere FHEM *structure* Devices. Grundsätzlich könnt ihr aber auch jedes andere FHEM-Device als PanelItem definieren.)
+### Definition von panelItems
+Nachdem ihr ein Panel defniert und die panelItems zugewiesen habt, müsst ihr das *Verhalten* für jedes panelItem definieren. Dazu geht ihr in jedes FHEM-Device, welches ihr im Panel unter `connected` zugewiesen habt. Hier muss in `appOptions` über den Parameter `panel` folgendes definiert werden.
+1. **Statustext** sowie **Level** und **Farbe** des *Statuscircle*
+2. **Icon** für die Taste auf der rechten Seite (optional)
+3. **clickEvent** oder **Link** auf den die Taste reagiert (optional)   
 ```
 {
   "panel": {
@@ -635,3 +623,32 @@ Nachdem ihr das Panel selbst angelegt habt, müsst ihr jetzt in jedem unter `con
 |btn|reading:wert:icon (alternativ: icon)|definiert welches *Icon* auf der Taste im PanelItem angezeigt wird. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
 |click|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
 |link|<route>|link kann alternativ zu click verwendet werden. In diesem Fall wird kein FHEM-Kommando gesendet sondern man kann auf einen anderen Screen in **FHEMApp** wechseln. Die *route* muss mit **/devices/** beginnen. Am besten schaut ihr euch dazu vorher die URL in **FHEMApp** auf den gewünschten Screen an.|
+
+### Konfiguration von Panels
+Da *Panel* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften über den Parameter `setup` in `appOptions` anpassen. Folgende Eigenschaften könnt ihr individuell anpassen:
+```
+"setup": {
+  "info": {
+    "left1": ["reading:value:text:icon"],
+    "left2": ["reading:value:text:icon"],
+    "mid1": ["reading:value:text:icon"],
+    "mid2": ["reading:value:text:icon"],
+    "right1": ["reading:value:text:icon"],
+    "right2": ["reading:value:text:icon"]
+  }
+}
+```
+
+### Beispiel für ein Panel
+FHEM-Device *(dummy)* in dem das Panel definiert ist:
+```
+define app.overview.comfort dummy
+attr app.overview.comfort alias Komfort
+attr app.overview.comfort appOptions { "template": "panel", "home": "true", "connected": { "light": "overview_light", "power": "overview_power", "heating": "overview_heating", "sonos": "overview_sonos" }, "setup": { "info": { "left1": ["Internals.STATE:::mdi-home-assistant"] } } }
+```
+FHEM-Device *(structure)* in dem ein panelItem definiert installiert
+```
+define overview_light structure room light.hm.eg.wh light.hm.eg.wh2 light.hm.eg.es light.os.eg.doo light.os.eg.ef light.hm.eg.car light.os.eg.ter light.os.eg.gw light.hm.eg.tv
+attr overview_light alias Licht
+attr overview_light appOptions { "panel": { "status": ["state:off:aus:0:success", "state:on:an:100:success", "state::teilweise an:50:success"], "btn": "mdi-chevron-right", "link": "/devices/group=Licht" } }
+```
