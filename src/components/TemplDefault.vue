@@ -4,7 +4,7 @@
       <v-progress-linear height="7" :value="getLevel" :color="vals.status.color" background-color="secondary darken-1"></v-progress-linear>
 
       <v-card-title class="text-truncate">
-        {{ vals.title }}{{ vals.order }}
+        {{ vals.title }}
         <v-spacer></v-spacer>
         <v-btn v-if="multiLevel && isActive" small icon @click="setLevel()">
           <v-icon small>{{ multiLevelIcon }}</v-icon>

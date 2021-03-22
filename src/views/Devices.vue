@@ -23,17 +23,6 @@ export default {
   components: {
     templ_default: () => import('@/components/TemplDefault.vue'),
 
-    //templ_switch: () => import('@/components/TemplSwitch.vue'),
-    //templ_dimmer: () => import('@/components/TemplDimmer.vue'),
-    //templ_light: () => import('@/components/TemplLight.vue'),
-    //templ_thermostat: () => import('@/components/TemplThermostat.vue'),
-    //templ_shutter: () => import('@/components/TemplShutter.vue'),
-    //templ_thermometer: () => import('@/components/TemplThermometer.vue'),
-    //templ_smokedetect: () => import('@/components/TemplSmokedetect.vue'),
-    //templ_contact: () => import('@/components/TemplContact.vue'),
-    //templ_motiondetect: () => import('@/components/TemplMotiondetect.vue'),
-    //templ_watersensor: () => import('@/components/TemplWatersensor.vue'),
-
     templ_panel: () => import('@/components/TemplPanel.vue'),
     templ_chart: () => import('@/components/TemplChart.vue'),
     templ_weather: () => import('@/components/TemplWeather.vue'),

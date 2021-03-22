@@ -26,38 +26,6 @@
   },
   "custom": [
     {
-      "name": "example",
-      "author": "name",
-      "date": "YYYY-MM-DD",
-      "status": {
-        "bar": ["reading:value:level:color:invert"],
-        "error": ["reading:value:level:color:text"]
-      },
-      "main": [
-        {
-          "leftBtn": ["reading:value:icon:disabled"],
-          "leftClick": ["reading:value:set_param"],
-          "leftLong": ["reading:value:set_param"],
-          "leftLongRelease": ["reading:value:set_param"],
-          "text": ["reading:value:text"],
-          "text2": ["reading:value:text"],
-          "slider": ["reading:value:set_param:current:min:max"],
-          "rightBtn": ["reading:value:icon:disabled"],
-          "rightClick": ["reading:value:set_param"],
-          "rightLong": ["reading:value:set_param"],
-          "rightLongRelease": ["reading:value:set_param"]
-        }
-      ],
-      "info": {
-        "left1": ["reading:value:text:icon"],
-        "left2": ["reading:value:text:icon"],
-        "mid1": ["reading:value:text:icon"],
-        "mid2": ["reading:value:text:icon"],
-        "right1": ["reading:value:text:icon"],
-        "right2": ["reading:value:text:icon"]
-      }
-    },
-    {
       "name": "shellySwitch",
       "author": "jemu75",
       "date": "2021-03-19",

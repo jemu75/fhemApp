@@ -238,7 +238,7 @@ Beispiele:
 | [watersensor](#template-watersensor) | Zisternensensor | ![](./docs/media/template_watersensor_example.png) |
 | sonos | Sonosplayer | ![](./docs/media/template_sonos_example.png) |
 | scenes | LightScenes | ![](./docs/media/template_scenes_example.png) |
-| panel | Panel zur Gruppierung mehrerer Devices | ![](./docs/media/template_panel_example.png) |
+| [panel](#template-panel) | Panel zur Gruppierung mehrerer Devices | ![](./docs/media/template_panel_example.png) |
 | chart | Diagramm zur Visualisierung von Log-Daten | ![](./docs/media/template_chart_example.png) |
 | weather | Wettervorhersage (darksky-API) | ![](./docs/media/template_weather_example.png) |
 | sysmon | Systemmonitor | ![](./docs/media/template_sysmon_example.png) |
@@ -590,3 +590,48 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
   }
 }
 ```
+# Template Panel
+Über dieses Template können mehrere FHEM-Devices angezeigt werden. Dabei dient das Template `panel` nur als *Rahmen*. Die Liste der FHEM-Devices die innerhalb des Panels angezeigt werden, definiert ihr über den Parameter `connected` in `appOptions`. Die einzelnen *PanelItems* müssen in den jeweiligen FHEM-Devices über den Parameter `panel` in `appOptions` konfiguriert werden.
+
+Sinnvoll ist der Einsatz von Panels z.B. für den *Homescreen* in **FHEMApp** da Panels einen guten Gesamtüberblick über deine Hausautomation liefern. So ist die Verwendung von FHEM *structure* Komponenten z.B. gut geeignet um, in einem Panel den Zustand aller Heizungen, Fenster, Rauchmelder usw. im Haus zu bekommen.
+
+Zusätzlich können in jedem PanelItem entweder ein *Link* oder eine *Taste* aktiviert werden. Über *Link* könnt ihr innerhalb der **FHEMApp** auf einen anderen Screen navigieren. Über die *Taste* könnt ihr wiederum Kommandos an FHEM absenden.  
+
+Da *Panel* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften über den Parameter `setup` in `appOptions` anpassen. Folgende Eigenschaften könnt ihr individuell anpassen:
+```
+"setup": {
+  "info": {
+    "left1": ["reading:value:text:icon"],
+    "left2": ["reading:value:text:icon"],
+    "mid1": ["reading:value:text:icon"],
+    "mid2": ["reading:value:text:icon"],
+    "right1": ["reading:value:text:icon"],
+    "right2": ["reading:value:text:icon"]
+  }
+}
+```
+
+#### Definition von Panel
+Um das Panel selbst anzulegen ordnet ihr einem FHEM-Device (sinnvoller Weise einem *dummy*) in `appOptions` das Template *panel* zu. Weiterhin legt ihr fest, welche FHEM-Devices innerhalb des Panels angezeigt werden sollen. Dazu nutzt ihr in `appOptions` den Parameter `connected`.   
+```
+{ "template": "panel", "connected": { "1": "<devicename1>", "2": "<devicename2>", ... } }
+```
+
+#### Definition der einzelnen PanelItems
+Nachdem ihr das Panel selbst angelegt habt, müsst ihr jetzt in jedem unter `connected` definierten FHEM-Devices festlegen, wie sich dieses *PanelItem* verhalten soll. Dazu nutzt ihr in `appOptions` den Parameter `panel` (für PanelItems eignen sich insbesondere FHEM *structure* Devices. Grundsätzlich könnt ihr aber auch jedes andere FHEM-Device als PanelItem definieren.)
+```
+{
+  "panel": {
+    "status": ["reading:wert:text:level:color"],
+    "btn": ["reading:wert:icon"],
+    "click": ["reading:wert:cmd"],
+    "link": "string",
+  }
+}
+```
+|Element|Zuweisung|Beschreibung|
+|-------|---------|------------|
+|status|reading:wert:text:level:color|definiert welcher **Statustext** im PanelItem angezeigt wird. Weiterhin mit welcher **Farbe** und mit welchem **Level** der Status in dem *Kreis* angezeigt wird.|
+|btn|reading:wert:icon (alternativ: icon)|definiert welches *Icon* auf der Taste im PanelItem angezeigt wird. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
+|click|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die Taste abgesendet wird. *Hinweis:* `set devicename` kann weggelassen werden|
+|link|<route>|link kann alternativ zu click verwendet werden. In diesem Fall wird kein FHEM-Kommando gesendet sondern man kann auf einen anderen Screen in **FHEMApp** wechseln. Die *route* muss mit **/devices/** beginnen. Am besten schaut ihr euch dazu vorher die URL in **FHEMApp** auf den gewünschten Screen an.|
