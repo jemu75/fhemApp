@@ -103,7 +103,7 @@ Das Attribut `appOptions` kann mit unterschiedlichen Parametern befüllt werden,
   "home": "true",                   - zeigt ein Device auf der Startseite an
   "dashboard": "true",              - zeigt ein Device im Dashboard an
   "system": "true",                 - zeigt ein Device in den Systemeinstellungen an
-  "setup": { object },              - ermöglicht zustandsabhängige Anpassungen des Templates
+  "setup": { object },              - ermöglicht individuelle Anpassungen des Templates
   "connected": { object },          - bindet zusätzliche Devices in das Template ein
   "panel": { object },              - definiert die Darstellung des Devices in einem Panel
   "chartDef": ["def1", "def2", ...],- legt die Datenquellen für Grafiken fest
@@ -144,46 +144,43 @@ Jedes Element kann direkt über `appOptions` angepasst werden. Dies erfolgt übe
 ```
 { "template": "switch", "setup": { "status": {...}, "main": [...], "info": {...} } }
 ```
-Alternativ können eigene Templates in der Datei `config.json` als Vorlage abgelegt werden. Dies erfolgt unter dem Parameter `custom`
+# eigene Templates erstellen
+Alternativ können eigene Templates erstellt und im Verzeichnis `.../fhemapp/cfg/` als JSON-Datei in folgender Form `templ_<templatename>.json` abgelegt werden. Der Dateiname muss mit `templ_` beginnen. Danach folgt der **Name** des Templates, so wie er auch in `appOptions` angegeben wird. *(Achtung: Groß/Kleinschreibung ist zu beachten)*.
+
+In den Template-Dateien können folgende Eigenschaften definiert werden. Die Zuweisung der einzelnen Eigenschaften wird [hier](#zuweisung-von-elementen) beschrieben. 
 ```
 {
-  "connection": { ... },
-  "options": { ... },
-  "theme": { ... },
-  "custom": [
+  "name": "example",
+  "description": "kurze Beschreibung"
+  "author": "name",
+  "date": "YYYY-MM-DD",
+  "status": {
+    "bar": ["reading:value:level:color:invert"],
+    "error": ["reading:value:level:color:text"]
+  },
+  "main": [
     {
-      "name": "example",
-      "author": "name",
-      "date": "YYYY-MM-DD",
-      "status": {
-        "bar": ["reading:value:level:color:invert"],
-        "error": ["reading:value:level:color:text"]
-      },
-      "main": [
-        {
-          "leftBtn": ["reading:value:icon:disabled"],
-          "leftClick": ["reading:value:set_param"],
-          "leftLong": ["reading:value:set_param"],
-          "leftLongRelease": ["reading:value:set_param"],
-          "text": ["reading:value:text"],
-          "text2": ["reading:value:text"],
-          "slider": ["reading:value:set_param:current:min:max"],
-          "rightBtn": ["reading:value:icon:disabled"],
-          "rightClick": ["reading:value:set_param"],
-          "rightLong": ["reading:value:set_param"],
-          "rightLongRelease": ["reading:value:set_param"]
-        }
-      ],
-      "info": {
-        "left1": ["reading:value:text:icon"],
-        "left2": ["reading:value:text:icon"],
-        "mid1": ["reading:value:text:icon"],
-        "mid2": ["reading:value:text:icon"],
-        "right1": ["reading:value:text:icon"],
-        "right2": ["reading:value:text:icon"]
-      }
+      "leftBtn": ["reading:value:icon:disabled"],
+      "leftClick": ["reading:value:set_param"],
+      "leftLong": ["reading:value:set_param"],
+      "leftLongRelease": ["reading:value:set_param"],
+      "text": ["reading:value:text"],
+      "text2": ["reading:value:text"],
+      "slider": ["reading:value:set_param:current:min:max"],
+      "rightBtn": ["reading:value:icon:disabled"],
+      "rightClick": ["reading:value:set_param"],
+      "rightLong": ["reading:value:set_param"],
+      "rightLongRelease": ["reading:value:set_param"]
     }
-  ]
+  ],
+  "info": {
+    "left1": ["reading:value:text:icon"],
+    "left2": ["reading:value:text:icon"],
+    "mid1": ["reading:value:text:icon"],
+    "mid2": ["reading:value:text:icon"],
+    "right1": ["reading:value:text:icon"],
+    "right2": ["reading:value:text:icon"]
+  }
 }
 ```
 ## Zuweisung von Elementen

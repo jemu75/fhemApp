@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row>
-      <component v-for="item in app.data.deviceList" v-bind:is="item.Options.component" :item="item" :key="item.Internals.FUUID"></component>
+      <component v-for='item in app.data.deviceList' v-bind:is='item.Options.component' :item='item' :key='item.Internals.FUUID'></component>
     </v-row>
   </div>
 </template>
@@ -22,7 +22,6 @@ export default {
 
   components: {
     templ_default: () => import('@/components/TemplDefault.vue'),
-
     templ_panel: () => import('@/components/TemplPanel.vue'),
     templ_chart: () => import('@/components/TemplChart.vue'),
     templ_weather: () => import('@/components/TemplWeather.vue'),
@@ -65,6 +64,16 @@ export default {
     this.app.session = this.$fhem.app.session;
     this.app.options = this.$fhem.app.options;
     this.app.data = this.$fhem.app.data;
+
+    this.$fhem.app.componentMap = [
+      { name: 'panel', component: 'templ_panel' },
+      { name: 'chart', component: 'templ_chart' },
+      { name: 'weather', component: 'templ_weather' },
+      { name: 'sysmon', component: 'templ_sysmon' },
+      { name: 'hmlan', component: 'templ_hmlan' },
+      { name: 'sonos', component: 'templ_sonos' },
+      { name: 'scenes', component: 'templ_scenes' }
+    ];
 
     this.$fhem.on('connect', () => this.subscribe());
     this.subscribe();

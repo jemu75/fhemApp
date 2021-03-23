@@ -1,0 +1,24 @@
+{
+  "name": "dimmer",
+  "author": "jemu75",
+  "date": "2021-03-21",
+  "status": {
+    "bar": ["pct::%n:success"],
+    "error": []
+  },
+  "main": [
+    {
+      "leftBtn": "mdi-minus",
+      "leftClick": ["pct:10:pct %i-10","pct::off"],
+      "leftLong": ["state::off"],
+      "text": ["pct:1:an:","pct::aus"],
+      "rightBtn": "mdi-plus",
+      "rightClick": ["pct:90:on","pct::pct %i10"],
+      "rightLong": ["state::on"]
+    }
+  ],
+  "info": {
+    "left1": ["pct:1::mdi-lightbulb","pct:::mdi-lightbulb-off"],
+    "left2": ["pct::%s%"]
+  }
+}

@@ -70,7 +70,13 @@
           bar: [],
           error: []
         },
-        main: [],
+        main: [
+          {
+            btnLeft: '',
+            text: 'Template unbekannt',
+            btnRight: ''
+          }
+        ],
         info: {
           left1: [],
           left2: [],
@@ -324,14 +330,10 @@
       item: {}, // jsonObject from FHEM Device
     },
 
-    created() {
-      let name = this.$fhem.getEl(this.item, 'Options', 'template');
-      let idx = this.$fhem.app.templates.map((e) => e.name).indexOf(name);
-      let cfg = idx != -1 ? this.$fhem.app.templates[idx] : {};
-
-      let status = this.$fhem.getEl(this.item, 'Options', 'setup', 'status') || cfg.status;
-      let main = this.$fhem.getEl(this.item, 'Options', 'setup', 'main') || cfg.main;
-      let info = this.$fhem.getEl(this.item, 'Options', 'setup', 'info') || cfg.info;
+    mounted() {
+      let status = this.$fhem.getEl(this.item, 'Options', 'setup', 'status');
+      let main = this.$fhem.getEl(this.item, 'Options', 'setup', 'main');
+      let info = this.$fhem.getEl(this.item, 'Options', 'setup', 'info');
 
       if(status) Object.assign(this.setup.status, status);
       if(main) Object.assign(this.setup.main, main);

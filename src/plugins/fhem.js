@@ -1,5 +1,4 @@
 import EventEmitter from 'events';
-import TemplateDefs from '@/assets/templates.json';
 
 export default class Fhem extends EventEmitter {
   constructor() {
@@ -28,7 +27,8 @@ export default class Fhem extends EventEmitter {
         logRecord: true,
         logBuffer: 500
       },
-      templates: TemplateDefs,
+      templates: [], // only the fallback for v3.1
+      componentMap: [],
       data: {
         roomList: [],
         groupList: [],
@@ -264,11 +264,11 @@ export default class Fhem extends EventEmitter {
       this.app.data.[listName].splice(0);
 
       this.request({ param: 'cmd', value: 'jsonList2 appOptions!= appOptions ' + attr }, 'json')
-        .then((res) => {
+        .then(async (res) => {
           let idx = 1;
 
           for (const item of res.Results) {
-            let options = this.createOptions(item);
+            let options = await this.createOptions(item, true);
             let defs = options[attr] || item.Attributes[attr];
 
             if(defs) {
@@ -417,12 +417,12 @@ export default class Fhem extends EventEmitter {
 
         for (const item of list) {
           this.request({ param: 'cmd', value: 'jsonlist2 ' + device.Options.connected[item] }, 'json')
-            .then((res) => {
+            .then(async (res) => {
               result[item] = res.Results[0];
               if('PossibleSets' in result[item]) delete result[item].PossibleSets;
               if('PossibleAttrs' in result[item]) delete result[item].PossibleAttrs;
 
-              let options = this.createOptions(result[item]);
+              let options = await this.createOptions(result[item]);
               if(options) result[item].Options = options;
               if(idx === list.length) resolve(result);
               idx ++;
@@ -436,36 +436,81 @@ export default class Fhem extends EventEmitter {
     return promise;
   }
 
-  // subfunction for createOptions, searches and return the component
-  getComponent(name) {
-    let result = { component: 'templ_default' };
-    let idx = this.app.templates.map((e) => e.name).indexOf(name);
-    if(idx != -1) {
-      let comp = this.app.templates[idx].component
-      if(comp) result.component = comp;
-    } else {
-      result.template = 'default';
+  // subfunction for getDevices(), create the
+  async getSetup(template) {
+    let result = null;
+
+    //only the fallback for v3.1
+    if(!result) {
+      let idx = this.app.templates.map((e) => e.name).indexOf(template);
+
+      if(idx != -1) {
+        let templDef = this.app.templates[idx];
+        let setup = {}
+
+        if(templDef.status) Object.assign(setup, { status: templDef.status });
+        if(templDef.main) Object.assign(setup, { main: templDef.main });
+        if(templDef.info) Object.assign(setup, { info: templDef.info});
+
+        result = setup;
+      }
     }
+
+    if(!result) {
+      result = await fetch('./cfg/templ_' + template + '.json')
+        .then(async (res) => {
+          let templDef = await res.json();
+          let setup = {};
+
+          if(templDef.status) Object.assign(setup, { status: templDef.status });
+          if(templDef.main) Object.assign(setup, { main: templDef.main });
+          if(templDef.info) Object.assign(setup, { info: templDef.info});
+
+          return setup;
+        })
+        .catch((err) => {
+          this.log = { type: 'error', message: 'Loading Template ' + template + ' failed.', meta: err };
+          return {};
+        })
+    }
+
+    return result;
+  }
+
+  // subfunction for createOptions, searches and return the component
+  getComponent(template) {
+    let result = { component: 'templ_default' };
+    let idx = this.app.componentMap.map((e) => e.name).indexOf(template);
+    if(idx != -1) {
+      let comp = this.app.componentMap[idx].component
+      if(comp) result.component = comp;
+    }
+
     return result;
   }
 
   // subfunction for getDevices(), create Options Object
-  createOptions(device) {
+  async createOptions(device, onlyOpts) {
     let result = null;
 
     if('appOptions' in device.Attributes) {
       try {
         result = JSON.parse(device.Attributes.appOptions);
-        if(result.template) {
+        if(!onlyOpts && result.template) {
           let component = this.getComponent(result.template);
           Object.assign(result, component);
         }
+        if(!onlyOpts && result.template && result.component === 'templ_default') {
+          let setup = await this.getSetup(result.template);
+          if(result.setup) Object.assign(setup, result.setup);
+          result.setup = setup;
+        }
       } catch(err) {
-        this.log = { type: 'error', message: 'Read appOptions failed.', meta: err.message };
+        this.log = { type: 'error', message: 'Read appOptions from ' + device.Name + ' failed.', meta: err.message };
       }
     }
 
-    return result;
+    return await result;
   }
 
   // mainfunction fill array with devices
@@ -474,7 +519,7 @@ export default class Fhem extends EventEmitter {
     this.app.data.deviceList.splice(0);
 
     this.request({ param: 'cmd', value: 'jsonlist2 ' + fltr }, 'json')
-      .then((res) => {
+      .then(async (res) => {
         let idx = 1;
         let target = [];
 
@@ -483,14 +528,17 @@ export default class Fhem extends EventEmitter {
             if('PossibleSets' in item) delete item.PossibleSets;
             if('PossibleAttrs' in item) delete item.PossibleAttrs;
 
-            let options = this.createOptions(item);
+            let options = await this.createOptions(item);
+
+            //let setup = await this.createSetup('shellyswitch');
+            //console.log(setup);
 
             if(options) {
               item.Options = options;
               item.Options.order = item.Attributes.sortby || 'zzz';
               this.createConnected(item)
-                .then(async (connected) => {
-                  item.Connected = await connected;
+                .then((connected) => {
+                  item.Connected = connected;
                   target.push(item);
 
                   if(idx === res.Results.length) {

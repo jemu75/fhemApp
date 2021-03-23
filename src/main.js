@@ -28,7 +28,7 @@ fetch('./cfg/config.json')
           if(cfg.theme.themes.dark) Object.assign(vuetify.framework.theme.themes.dark, cfg.theme.themes.dark)
         }
       }
-      if(cfg.custom && cfg.custom.length > 0) Vue.prototype.$fhem.app.templates.push(...cfg.custom);
+      if(cfg.custom && cfg.custom.length > 0) Vue.prototype.$fhem.app.templates.push(...cfg.custom); // only the fallback for v3.1
     }
 
     new Vue({

@@ -1,0 +1,22 @@
+{
+  "name": "smokedetect",
+  "author": "jemu75",
+  "date": "2021-03-21",
+  "status": {
+    "bar": ["level:2:%n:error","level::100:success"],
+    "error": ["Activity:^(?!alive):100:error:keine Verbindung"]
+  },
+  "main": [
+    {
+      "text": ["level:2:Alarm","level::bereit"],
+      "rightBtn": "mdi-bell-off-outline",
+      "rightClick": ["peerList:self01:alarmOff","peerList::set %s alarmOff"]
+    }
+  ],
+  "info": {
+    "left1": ["level:2::mdi-fire","level:::mdi-smoke-detector"],
+    "mid1": ["Readings.trigger_cnt.Time::%t"],
+    "right1": ["battery:ok::mdi-battery","battery:::mdi-battery-10"],
+    "right2": ["Activity:alive::mdi-wifi","Activity:::mdi-wifi-off"]
+  }
+}

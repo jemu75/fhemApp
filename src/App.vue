@@ -114,7 +114,7 @@
           groupList: []
         }
       },
-      version: 'v3.1.0',
+      version: 'v3.2.0',
       status: {
         color: 'secondary',
         icon: 'mdi-circle',

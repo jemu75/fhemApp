@@ -23,30 +23,5 @@
       "dark": {
       }
     }
-  },
-  "custom": [
-    {
-      "name": "shellySwitch",
-      "author": "jemu75",
-      "date": "2021-03-19",
-      "status": {
-        "bar": ["state:on:100:success","state:off:0:success"],
-        "error": ["network:^(?!<html>connected):100:error:keine Verbindung"]
-      },
-      "main": [
-        {
-          "leftBtn": "mdi-power-off",
-          "leftClick": ["state::off"],
-          "text": ["state:on:an","state:off:aus"],
-          "rightBtn": "mdi-power-on",
-          "rightClick": ["state::on"]
-        }
-      ],
-      "info": {
-        "left1": ["state:on::mdi-power-plug","state:::mdi-power-plug-off"],
-        "left2": ["power:0.1:%n.2w"],
-        "right2": ["network:connected::mdi-wifi","network:::mdi-wifi-off"]
-      }
-    }
-  ]
+  }
 }

@@ -1,0 +1,22 @@
+{
+  "name": "door",
+  "author": "jemu75",
+  "date": "2021-03-21",
+  "status": {
+    "bar": ["state:closed:100:success","state:open:0:success"],
+    "error": ["Activity:^(?!alive):100:error:keine Verbindung","sabotageError:on:100:error:Fremdeingriff","cover:open:100:error:Fremdeingriff"]
+  },
+  "main": [
+    {
+      "text": ["state:closed:geschlossen","state:open:offen","state::%s"],
+      "rightBtn": "mdi-unfold-more-horizontal",
+      "rightClick": ["Connected.button.Internals.NAME::set %s on-for-timer 0.4"]
+    }
+  ],
+  "info": {
+    "left1": ["state:closed::mdi-garage-variant","state:open::mdi-garage-open-variant"],
+    "mid1": ["Readings.trigger_cnt.Time::%t"],
+    "right1": ["battery:ok::mdi-battery","battery:::mdi-battery-10"],
+    "right2": ["Activity:alive::mdi-wifi","Activity:::mdi-wifi-off"]
+  }
+}
