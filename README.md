@@ -238,7 +238,7 @@ Beispiele:
 | sonos | Sonosplayer | ![](./docs/media/template_sonos_example.png) |
 | scenes | LightScenes | ![](./docs/media/template_scenes_example.png) |
 | [panel](#template-panel) | Panel zur Gruppierung mehrerer Devices | ![](./docs/media/template_panel_example.png) |
-| chart | Diagramm zur Visualisierung von Log-Daten | ![](./docs/media/template_chart_example.png) |
+| [chart](#template-chart) | Diagramm zur Visualisierung von Log-Daten | ![](./docs/media/template_chart_example.png) |
 | weather | Wettervorhersage (darksky-API) | ![](./docs/media/template_weather_example.png) |
 | sysmon | Systemmonitor | ![](./docs/media/template_sysmon_example.png) |
 | hmlan | HMLAN-Adapter | ![](./docs/media/template_hmlan_example.png) |
@@ -651,4 +651,35 @@ FHEM-Device *(structure)* in dem ein panelItem definiert installiert
 define overview_light structure room light.hm.eg.wh light.hm.eg.wh2 light.hm.eg.es light.os.eg.doo light.os.eg.ef light.hm.eg.car light.os.eg.ter light.os.eg.gw light.hm.eg.tv
 attr overview_light alias Licht
 attr overview_light appOptions { "panel": { "status": ["state:off:aus:0:success", "state:on:an:100:success", "state::teilweise an:50:success"], "btn": "mdi-chevron-right", "link": "/devices/group=Licht" } }
+```
+# Template Chart
+Über dieses Template können Daten aus FHEM-Logfiles in Charts dargestellt werden. Am besten legt ihr dieses Template direkt in den *FHEM-Devices* vom Typ *FileLog* an, aus denen ihr Daten visualisieren möchtet. Das Chart-Template kann auf die volle Bildschirmbreite vergrößert werden. In diesem Modus kann zusätzlich auch der Zeitraum verändert werden. Standardmäßig werden in Charts die letzten 7 Tage geladen.
+
+![](./docs/media/fhemapp_desk_charts.png)*Beispiel für Charts*
+
+![](./docs/media/template_chart_expand_example.png)*Beispiel für vergrößertes Chart*
+
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
+```
+{ "template": "chart", "chartDef": ["<def1>", "<def2>", ...] }
+```
+### Konfiguration von Charts
+Über den Parameter `chartDef` legt ihr fest, welche Daten im Chart angezeigt werden. Jede Linie entspricht dabei einer Definition. Folgende Eigenschaften stehen zur Verfügung:
+```
+"chartDef": ["logfile:reading:text:präfix:axis"],
+```
+1. **logfile** - dieser Parameter kann freigelassen werden. Wenn ihr in eurem Chart jedoch Daten aus verschiedenen *FileLog-Devices* anzeigen wollt, dann könnt ihr hier den Name des jeweiligen *FileLog-Device* eintragen.
+2. **reading** - bezeichnet das Reading aus dem *FileLog* welches ihr anzeigen wollt. (z.B. measured-temp)
+3. **text** - hier tragt iht den gewünschten Achsenname ein. (z.B. Temperatur)   
+4. **präfix** - hier tragt ihr die Einheit der Werte ein. (z.B. °C)
+5. **axis** - wenn dieser Parameter weggelassen wird, dann bezieht sich die Linie im Chart auf die linke Achse. Tragt ihr hier **secondary** ein, so bezieht sich die Linie im Chart auf die rechte Achse. Das ist z.B. sinnvoll, wenn ihr in einem Chart die Temperatur und die Luftfeuchte auf unterschiedlichen Skalen anzeigen wollt.
+
+### Beispiel für eine Chartkonfiguration
+Es wird ein Chart im Menüpunkt *Dashboard* angezeigt. Aus dem Logfile werden die Readings *humidity* (rechte Achse) und *measured-temp* (linke Achse) im Chart dargestellt.
+```
+define chn_sen.hm.eg.fl_Climate_FileLog FileLog ./log/chn_sen.hm.eg.fl_Climate.log heat.hm.eg.fl:pct:.*|chn_sen.hm.eg.fl_Climate:humidity:.*|chn_sen.hm.eg.fl_Climate:measured-temp:.*
+attr chn_sen.hm.eg.fl_Climate_FileLog alias Thermostat Flur
+attr chn_sen.hm.eg.fl_Climate_FileLog appOptions { "template": "chart", "dashboard": "true", "chartDef": [":humidity:Luftfeuchte:%:secondary",":measured-temp:Temperatur:°C"] }
+attr chn_sen.hm.eg.fl_Climate_FileLog sortby 2
 ```

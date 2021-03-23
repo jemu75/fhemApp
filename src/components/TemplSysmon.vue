@@ -126,7 +126,6 @@
           this.$fhem.emit('message', { type: 'success', message: 'Update war erfolgreich. Das System sollte neu gestartet werden.' })
           this.updateText = 'system aktuell';
           this.restart = true;
-          this.$fhem.loading = false;
         }
       }
     },
@@ -167,7 +166,6 @@
       },
 
       fhemUpdate() {
-        this.$fhem.loading = true;
         this.restart = false;
         this.update = false;
         this.updateText ='update läuft...';

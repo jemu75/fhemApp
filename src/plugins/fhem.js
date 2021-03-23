@@ -300,7 +300,7 @@ export default class Fhem extends EventEmitter {
     }
   }
 
-  // subfunction for handleVals
+  // subfunction for handleVals %s %n %i %t
   replaceVals(defSet, state) {
     let chkNum = /[0-9]/.exec(state);
     let result = [];
@@ -650,7 +650,7 @@ export default class Fhem extends EventEmitter {
   }
 
   // mainfunction, create websocket and listen for updates from FHEM
-  async init() {
+  init() {
     let options = [ { param: 'inform', value: 'type=status;filter=.*;fmt=JSON' }, { param: 'XHR', value: '1' } ];
     let url = this.createURL(options).replace('http','ws');
 
