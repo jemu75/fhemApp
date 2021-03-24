@@ -165,13 +165,15 @@ In den Template-Dateien können folgende Eigenschaften definiert werden. Die Zuw
       "leftClick": ["reading:value:set_param"],
       "leftLong": ["reading:value:set_param"],
       "leftLongRelease": ["reading:value:set_param"],
+      "leftMenu": ["text:set_param"],
       "text": ["reading:value:text"],
       "text2": ["reading:value:text"],
       "slider": ["reading:value:set_param:current:min:max"],
       "rightBtn": ["reading:value:icon:disabled"],
       "rightClick": ["reading:value:set_param"],
       "rightLong": ["reading:value:set_param"],
-      "rightLongRelease": ["reading:value:set_param"]
+      "rightLongRelease": ["reading:value:set_param"],
+      "rightMenu": ["text:set_param"]
     }
   ],
   "info": {
@@ -211,6 +213,7 @@ Beispiele:
 |main|leftClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die linke Taste abgesendet wird. *Hinweis:* `set <devicename>` kann weggelassen werden|
 |main|leftLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der linken Taste abgesendet wird. *Hinweis:* `set <devicename>` kann weggelassen werden|
 |main|leftLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der linken Taste abgesendet wird. *Hinweis:* `set <devicename>` kann weggelassen werden|
+|main|leftMenu|text:cmd|definiert für das **linke Menü** die Texte und FHEM-Kommandos. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die linke Taste ein Menü auf. *Hinweis:* leftClick, leftLong und leftLongRelease stehen bei Zuweisung des Menüs nicht zur Verfügung.|
 |main|text|reading:wert:text|definiert den **ersten Text** der in der Mitte angezeigt wird|
 |main|text2|reading:wert:text|definiert den **zweiten Text** der in der Mitte angezeigt wird *Hinweis:* bei Verwendung von Tasten sollte auf die Anzeige eines zweiten Wertes verzichtet werden, da die Breite des Templates im Normalfall nicht ausreicht|
 |main|slider|reading:wert:cmd:current:min:max|stellt einen **Slider** in der Mitte dar. In diesem Fall werden die Elemente `text` und `text2` nicht angezeigt und evtl. definierte Tasten reagieren nur auf `leftClick` bzw. `rightClick`. *Wichtig:* `cmd` muss die Ersetzung *%v* (den aktuellen Wert des Sliders) enthalten. `current` sollte nur die Ersetzung *%n* enthalten, damit der Slider den aktuellen Wert des Readings anzeigt. `min` und `max` begrenzen die Sliderwerte. *Beispiel:* `["pct::pct %v:%n:0:100"]` verbindet das Reading `pct` mit einem Slider und begrenzt die Werte auf 0-100|
@@ -218,6 +221,7 @@ Beispiele:
 |main|leftClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die rechte Taste abgesendet wird. *Hinweis:* `set <devicename>` kann weggelassen werden|
 |main|rightLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der rechten Taste abgesendet wird. *Hinweis:* `set <devicename>` kann weggelassen werden|
 |main|rightLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der rechten Taste abgesendet wird. *Hinweis:* `set <devicename>` kann weggelassen werden|
+|main|rightMenu|text:cmd|definiert für das **rechte Menü** die Texte und FHEM-Kommandos. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die rechte Taste ein Menü auf. *Hinweis:* rightClick, rightLong und rightLongRelease stehen bei Zuweisung des Menüs nicht zur Verfügung.|
 |info|left1..2,<br>mid1..2,<br>right1..2|reading:wert:text:icon|definiert welches **Icon** und welcher **Text** in der Infozeile anzeigeigt wird|
 
 # Übersicht der verfügbaren Templates

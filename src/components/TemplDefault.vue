@@ -14,10 +14,29 @@
 
       <v-card-text v-if="!vals.main.slider || !isActive">
         <v-row align="center">
-          <v-col v-if="vals.main.leftBtn && isActive" class="col-3" align="center">
+          <v-col v-if="vals.main.leftMenu.length == 0 && vals.main.leftBtn && isActive" class="col-3" align="center">
             <v-btn small icon :disabled="vals.main.leftBtnDisabled" @mousedown="clickStart('left')" @mouseup="clickEnd('left')" @touchstart="clickStart('left')" @touchend="clickEnd('left')">
               <v-icon large>{{ vals.main.leftBtn }}</v-icon>
             </v-btn>
+          </v-col>
+          <v-col v-if="vals.main.leftMenu.length > 0 && vals.main.leftBtn && isActive" class="col-3" align="center">
+            <v-menu bottom left transition="slide-y-transition">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn small icon v-bind="attrs" v-on="on">
+                  <v-icon large>{{ vals.main.leftBtn }}</v-icon>
+                </v-btn>
+              </template>
+
+              <v-list dense color="secondary lighten-2">
+                <v-list-item-group>
+                  <v-list-item v-for="(menu, i) in vals.main.leftMenu" :key="i" @click="sendCmd(menu.cmd)">
+                    <v-list-item-content>
+                      <v-list-item-title class="text-subtitle-1">{{ menu.name }}</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list-item-group>
+              </v-list>
+            </v-menu>
           </v-col>
           <v-divider v-if="vals.main.leftBtn && isActive" vertical></v-divider>
           <v-col align="center">
@@ -27,10 +46,29 @@
             <div class="headline font-weight-bold">{{ vals.main.text2 }}</div>
           </v-col>
           <v-divider v-if="vals.main.rightBtn && isActive" vertical></v-divider>
-          <v-col v-if="vals.main.rightBtn && isActive" class="col-3" align="center">
+          <v-col v-if="vals.main.rightMenu.length == 0 && vals.main.rightBtn && isActive" class="col-3" align="center">
             <v-btn small icon :disabled="vals.main.rightBtnDisabled" @mousedown="clickStart('right')" @mouseup="clickEnd('right')" @touchstart="clickStart('right')" @touchend="clickEnd('right')">
               <v-icon large>{{ vals.main.rightBtn }}</v-icon>
             </v-btn>
+          </v-col>
+          <v-col v-if="vals.main.rightMenu.length > 0 && vals.main.rightBtn && isActive" class="col-3" align="center">
+            <v-menu bottom left transition="slide-y-transition">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn small icon v-bind="attrs" v-on="on">
+                  <v-icon large>{{ vals.main.rightBtn }}</v-icon>
+                </v-btn>
+              </template>
+
+              <v-list dense color="secondary lighten-2">
+                <v-list-item-group>
+                  <v-list-item v-for="(menu, i) in vals.main.rightMenu" :key="i" @click="sendCmd(menu.cmd)">
+                    <v-list-item-content>
+                      <v-list-item-title class="text-subtitle-1">{{ menu.name }}</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list-item-group>
+              </v-list>
+            </v-menu>
           </v-col>
         </v-row>
       </v-card-text>
@@ -72,9 +110,9 @@
         },
         main: [
           {
-            btnLeft: '',
+            leftBtn: '',
             text: 'Template unbekannt',
-            btnRight: ''
+            rightBtn: '',
           }
         ],
         info: {
@@ -96,6 +134,7 @@
         main: {
           leftBtn: '',
           leftBtnDisabled: false,
+          leftMenu: [],
           text: '',
           text2: '',
           slider: false,
@@ -103,7 +142,8 @@
           sliderMin: 0,
           sliderMax: 100,
           rightBtn: '',
-          rightBtnDisabled: false
+          rightBtnDisabled: false,
+          rightMenu: []
         },
         info: {
           left1Icon: '',
@@ -229,6 +269,23 @@
         }
       },
 
+      createMenu(arr) {
+        let result = [];
+
+        if(arr && arr.length > 0) {
+          for(let item of arr) {
+            let vals = item.split(':');
+
+            if(vals.length > 1) {
+              let cmd = vals[1].match('set') ? vals[1] : 'set ' + this.item.Name + ' ' + vals[1];
+              result.push({ name: vals[0], cmd });
+            }
+          }
+        }
+
+        return result;
+      },
+
       setLevel(lvl) {
         if(!isNaN(lvl)) {
           this.multiLevel = this.setup.main.length > 1 ? true : false;
@@ -244,10 +301,13 @@
         let mainText = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].text);
         let mainText2 = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].text2);
 
-        let mainLeftBtn = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].leftBtn)
-        let mainRightBtn = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].rightBtn)
+        let mainLeftBtn = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].leftBtn);
+        let mainRightBtn = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].rightBtn);
 
         let mainSlider = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].slider);
+
+        let mainLeftMenu = this.createMenu(this.setup.main[this.mainLevel].leftMenu);
+        let mainRightMenu = this.createMenu(this.setup.main[this.mainLevel].rightMenu);
 
         this.vals.main.text = mainText[0] || '';
         this.vals.main.text2 = mainText2[0] || '';
@@ -256,6 +316,8 @@
         this.vals.main.rightBtn = mainRightBtn[0] || '';
         this.vals.main.leftBtnDisabled = mainLeftBtn[1] ? true : false;
         this.vals.main.rightBtnDisabled = mainRightBtn[1] ? true : false;
+        this.vals.main.leftMenu = mainLeftMenu;
+        this.vals.main.rightMenu = mainRightMenu;
 
         this.vals.main.slider = mainSlider[0] ? true : false;
         this.vals.main.sliderCurrent = mainSlider[1] || 0;
@@ -272,6 +334,8 @@
           let mainSlider = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].slider);
           let mainLeftBtn = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].leftBtn);
           let mainRightBtn = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].rightBtn);
+          let mainLeftMenu = this.createMenu(this.setup.main[this.mainLevel].leftMenu);
+          let mainRightMenu = this.createMenu(this.setup.main[this.mainLevel].rightMenu);
           let infoLeft1Vals = this.$fhem.handleVals(this.item, this.setup.info.left1);
           let infoLeft2Vals = this.$fhem.handleVals(this.item, this.setup.info.left2);
           let infoMid1Vals = this.$fhem.handleVals(this.item, this.setup.info.mid1);
@@ -313,6 +377,9 @@
           this.vals.main.rightBtn = mainRightBtn[0] || '';
           this.vals.main.leftBtnDisabled = mainLeftBtn[1] ? true : false;
           this.vals.main.rightBtnDisabled = mainRightBtn[1] ? true : false;
+
+          this.vals.main.leftMenu = mainLeftMenu;
+          this.vals.main.rightMenu = mainRightMenu;
 
           if(errorVals.length > 0) {
             this.vals.status.level = errorVals[0] || '100';
