@@ -16,11 +16,15 @@ Vue.prototype.$fhem = new fhem()
 
 fetch('./cfg/config.json')
   .then(res => res.json())
-  .catch(() => null)
+  .catch((err) =>{
+    Vue.prototype.$fhem.log = { type: 'error', message: 'Loading config.json failed.', meta: err }
+  })
   .then(cfg => {
+
     if(cfg) {
       if(cfg.connection) Object.assign(Vue.prototype.$fhem.app.connection, cfg.connection)
       if(cfg.options) Object.assign(Vue.prototype.$fhem.app.options, cfg.options)
+      if(cfg.custom && cfg.custom.length > 0) Vue.prototype.$fhem.app.templates.push(...cfg.custom); // only the fallback for v3.1
       if(cfg.theme) {
         if(cfg.theme.dark != -1) Object.assign(vuetify.framework.theme, { dark: cfg.theme.dark })
         if(cfg.theme.themes) {
@@ -28,8 +32,10 @@ fetch('./cfg/config.json')
           if(cfg.theme.themes.dark) Object.assign(vuetify.framework.theme.themes.dark, cfg.theme.themes.dark)
         }
       }
-      if(cfg.custom && cfg.custom.length > 0) Vue.prototype.$fhem.app.templates.push(...cfg.custom); // only the fallback for v3.1
     }
+
+    Vue.prototype.$fhem.log = { type: 'info', message: 'Config: ' + JSON.stringify(cfg) }
+    Vue.prototype.$fhem.log = { type: 'info', message: 'Connection: ' + JSON.stringify(Vue.prototype.$fhem.app.connection) }
 
     new Vue({
       vuetify,

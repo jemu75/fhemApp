@@ -8,7 +8,7 @@ export default class Fhem extends EventEmitter {
       connection: {
         location: window.location.protocol + '//' + window.location.hostname,
         port: window.location.port,
-        path: window.location.pathname
+        path: 'fhem'
       },
       socket: null,
       session: {
