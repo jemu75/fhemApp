@@ -57,22 +57,23 @@ Wenn ihr in **FHEMApp** Daten aus FHEM-Logs in Charts darstellt, ist es ggf. sin
 Zusätzlich könnt ihr das Farbschema von **FHEMApp** individuell anpassen. Grundsätzlich könnt ihr zwischen einem *dunklen* und einem *hellen* Layout über den Parameter `dark` (`true` bzw. `false`) wechseln. Weiterhin könnt ihr die einzelnen Farben für die beiden Farbschemen unter dem Parameter `themes` individuell anpassen. Siehe dazu auch [(Vuetify Customizing)](https://vuetifyjs.com/en/features/theme/#customizing)    
 ```
 "theme": {
-  "dark": true,
-  "themes": {
-    "light": {
-      "primary": "#78909C",
-      "secondary": "#CFD8DC",
-      "accent": "#8bc34a",
-      "error": "#e91e63",
-      "warning": "#ffc107",
-      "info": "#03a9f4",
-      "success": "#4caf50"
-    },
-    "dark": {
+    "dark": false,
+    "themes": {
+      "light": {
+        "primary": "#00695C",
+        "secondary": "#ECEFF1",
+        "accent": "#80CBC4",
+        "error": "#e91e63",
+        "warning": "#ffc107",
+        "info": "#03a9f4",
+        "success": "#80CBC4"
+      },
+      "dark": {
+      }
     }
   }
-}
 ```
+![](./docs/media/fhemapp_theme_teal_light.png)*Beispiel für helles Layout*
 
 # Grundeinstellung in FHEM
 Bevor ihr die gewünschten Geräte für die Anzeige in der **FHEMApp** konfiguriert sind zwei Grundeinstellungen in FHEM notwendig.
@@ -147,7 +148,7 @@ Jedes Element kann direkt über `appOptions` angepasst werden. Dies erfolgt übe
 # eigene Templates erstellen
 Alternativ können eigene Templates erstellt und im Verzeichnis `.../fhemapp/cfg/` als JSON-Datei in folgender Form `templ_<templatename>.json` abgelegt werden. Der Dateiname muss mit `templ_` beginnen. Danach folgt der **Name** des Templates, so wie er auch in `appOptions` angegeben wird. *(Achtung: Groß/Kleinschreibung ist zu beachten)*.
 
-In den Template-Dateien können folgende Eigenschaften definiert werden. Die Zuweisung der einzelnen Eigenschaften wird [hier](#zuweisung-von-elementen) beschrieben. 
+In den Template-Dateien können folgende Eigenschaften definiert werden. Die Zuweisung der einzelnen Eigenschaften wird [hier](#zuweisung-von-elementen) beschrieben.
 ```
 {
   "name": "example",
