@@ -346,11 +346,13 @@ export default class Fhem extends EventEmitter {
 
           if(state) {
             let found = false;
-
             if(isNaN(parseFloat(defSet[1]))) {
               if(RegExp(!defSet[1] ? '.' : defSet[1]).test(state)) found = true;
             } else {
-              if(parseFloat(state) >= parseFloat(defSet[1])) found = true;
+              let chkNum = /[0-9]/.exec(state);
+              if(chkNum.index != -1) {
+                if(parseFloat(state.slice(chkNum.index)) >= parseFloat(defSet[1])) found = true;
+              }
             }
 
             if(found) {
