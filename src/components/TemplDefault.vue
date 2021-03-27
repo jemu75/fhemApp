@@ -139,6 +139,7 @@
           text2: '',
           slider: false,
           sliderCurrent: 0,
+          sliderPrevent: false,
           sliderMin: 0,
           sliderMax: 100,
           rightBtn: '',
@@ -262,6 +263,7 @@
         if(action) {
           let param = this.$fhem.handleVals(this.item, action);
           if(param[0]) {
+            this.vals.main.sliderPrevent = true;
             let cmd = param[0].match('set') ? param[0] : 'set ' + this.item.Name + ' ' + param[0];
             cmd = cmd.replace('%v', val);
             this.sendCmd(cmd);
@@ -320,9 +322,17 @@
         this.vals.main.rightMenu = mainRightMenu;
 
         this.vals.main.slider = mainSlider[0] ? true : false;
-        this.vals.main.sliderCurrent = mainSlider[1] || 0;
         this.vals.main.sliderMin = mainSlider[2] || 0;
         this.vals.main.sliderMax = mainSlider[3] || 100;
+
+        if(!this.vals.main.sliderPrevent) {
+          this.vals.main.sliderCurrent = mainSlider[1] || 0;
+        } else {
+          if(this.vals.main.sliderCurrent === mainSlider[1]) {
+            this.vals.main.sliderPrevent = false;
+            this.vals.main.sliderCurrent = mainSlider[1] || 0;
+          }
+        }
       },
 
       setValues() {
@@ -369,9 +379,17 @@
           this.vals.main.text2 = mainText2[0] || '';
 
           this.vals.main.slider = mainSlider[0] ? true : false;
-          this.vals.main.sliderCurrent = mainSlider[1] || 0;
           this.vals.main.sliderMin = mainSlider[2] || 0;
           this.vals.main.sliderMax = mainSlider[3] || 100;
+
+          if(!this.vals.main.sliderPrevent) {
+            this.vals.main.sliderCurrent = mainSlider[1] || 0;
+          } else {
+            if(this.vals.main.sliderCurrent === mainSlider[1]) {
+              this.vals.main.sliderPrevent = false;
+              this.vals.main.sliderCurrent = mainSlider[1] || 0;
+            }
+          }
 
           this.vals.main.leftBtn = mainLeftBtn[0] || '';
           this.vals.main.rightBtn = mainRightBtn[0] || '';

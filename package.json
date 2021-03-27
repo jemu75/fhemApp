@@ -18,20 +18,20 @@
   },
   "homepage": "https://github.com/jemu75/fhemApp#readme",
   "dependencies": {
-    "apexcharts": "^3.25.0",
+    "apexcharts": "^3.26.0",
     "core-js": "^3.9.1",
     "typeface-roboto": "^1.1.13",
     "vue": "^2.6.11",
     "vue-apexcharts": "^1.6.0",
     "vue-router": "^3.5.1",
-    "vuetify": "^2.4.6"
+    "vuetify": "^2.4.8"
   },
   "devDependencies": {
     "@mdi/font": "^5.9.55",
-    "@vue/cli-plugin-babel": "^4.5.11",
-    "@vue/cli-plugin-eslint": "^4.5.11",
-    "@vue/cli-plugin-router": "^4.5.11",
-    "@vue/cli-service": "^4.5.11",
+    "@vue/cli-plugin-babel": "^4.5.12",
+    "@vue/cli-plugin-eslint": "^4.5.12",
+    "@vue/cli-plugin-router": "^4.5.12",
+    "@vue/cli-service": "^4.5.12",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",

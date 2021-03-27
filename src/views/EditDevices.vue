@@ -56,6 +56,7 @@
 export default {
   name: 'EditDevices',
   data: () => ({
+    mytest: 20,
     search: '',
     headers: [
       { text: 'Name', value: 'Name' },

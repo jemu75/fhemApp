@@ -529,19 +529,20 @@ export default class Fhem extends EventEmitter {
           for(const item of res.Results) {
             if('PossibleSets' in item) delete item.PossibleSets;
             if('PossibleAttrs' in item) delete item.PossibleAttrs;
-
+            let blockItem = false;
             let options = await this.createOptions(item);
-
-            //let setup = await this.createSetup('shellyswitch');
-            //console.log(setup);
 
             if(options) {
               item.Options = options;
               item.Options.order = item.Attributes.sortby || 'zzz';
+
+              if(!fltr.match('options=true') && item.Options.room && !fltr.match('room.:..' + item.Options.room)) blockItem = true;
+              if(!fltr.match('options=true') && item.Options.group && !fltr.match('group.:..' + item.Options.group)) blockItem = true;
+
               this.createConnected(item)
                 .then((connected) => {
                   item.Connected = connected;
-                  target.push(item);
+                  if(!blockItem) target.push(item);
 
                   if(idx === res.Results.length) {
                     target.sort((a,b) => (a.Options.order > b.Options.order) ? 1 : ((b.Options.order > a.Options.order) ? -1 : 0));
