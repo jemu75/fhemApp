@@ -3,20 +3,20 @@
   "author": "tomspatz",
   "date": "2021-03-26",
   "status": {
-    "bar": ["state:on:100:success","state:off:0:success","state::%n:success"],
+    "bar": ["pct::%n:success"],
     "error": []
   },
   "main": [
     {
       "leftBtn": "mdi-lightbulb-off",
       "leftClick": ["state::off"],
-      "slider": ["state::dim %v:%n:0:100"],
+      "slider": ["pct::%v:%n:0:100"],
       "rightBtn": "mdi-lightbulb",
       "rightClick": ["state::on"]
     }
   ],
   "info": {
-    "left1": ["state:off::mdi-lightbulb-off","state:::mdi-lightbulb"],
-    "left2": ["state:off:::","state:on:::","state::%n%"]
+    "left1": ["pct:1::mdi-lightbulb","pct:::mdi-lightbulb-off"],
+    "left2": ["pct:1:%n%"]
   }
 }
