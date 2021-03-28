@@ -275,7 +275,7 @@ export default class Fhem extends EventEmitter {
               let vals = defs.split(',');
               for (let val of vals) {
                 let route = '/devices/' + attr + '=' + val.replaceAll(' ','\\s').replaceAll('&','.');
-                if(options[attr]) route += '&options=true';
+                if(options[attr]) route += '&appOptions='+attr;
 
                 if(list.map((e) => e.title).indexOf(val) == -1) {
                   list.push({ title: val, route: route });
@@ -536,8 +536,8 @@ export default class Fhem extends EventEmitter {
               item.Options = options;
               item.Options.order = item.Attributes.sortby || 'zzz';
 
-              if(!fltr.match('options=true') && item.Options.room && !fltr.match('room.:..' + item.Options.room)) blockItem = true;
-              if(!fltr.match('options=true') && item.Options.group && !fltr.match('group.:..' + item.Options.group)) blockItem = true;
+              if(fltr.match('FILTER=group') && item.Options.group) blockItem = true;
+              if(fltr.match('FILTER=room') && item.Options.room) blockItem =true;
 
               this.createConnected(item)
                 .then((connected) => {

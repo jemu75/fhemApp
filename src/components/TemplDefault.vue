@@ -249,6 +249,7 @@
         if(action) {
           let param = this.$fhem.handleVals(this.item, action);
           if(param[0]) {
+            this.vals.main.sliderPrevent = false;
             let cmd = param[0].match('set') ? param[0] : 'set ' + this.item.Name + ' ' + param[0];
             let isIncrement = action.findIndex((e) => e.match('%i')) != -1 ? true : false;
             if(!this.long && isIncrement) this.updateReading(cmd);
