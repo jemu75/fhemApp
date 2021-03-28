@@ -84,13 +84,14 @@ attr WEB CORS 1
 attr WEB longpoll websocket
 attr WEB stylesheetPrefix default
 ```
-2. Müsst ihr unter `Global` ein neues User-Attribut `appOptions` definieren. [(siehe auch)](https://fhem.de/commandref_DE.html#global) Das folgende Beispiel zeigt einen Auszug aus der Datei *fhem.cfg* nachdem das User-Attribut hinzugefügt wurde.
+2. Müsst ihr ein neues globales User-Attribut mit dem Name `appOptions` im FHEM Device `global` hinzufügen. [(siehe auch)](https://fhem.de/commandref_DE.html#global) **Wichtig:** achtet bitte darauf, dass bestehende user-Attribute dabei nicht entfernt werden!
+Damit ihr das Attribut `appOptions` später gut pflegen könnt, empfielt es sich das Attribut wie folgt zu hinterlegen.
 ```
-attr global userattr appOptions:textField-long
+appOptions:textField-long
 ```
 
 # Aufruf der App
-Nachdem du **FHEMApp** wie beschrieben installiert hast, kannst du diese über *http://<deine-ip>:8083/fhem/fhemapp/index.html* bzw. über die von dir gewählten URL deines Webservers aufrufen. 
+Nachdem du **FHEMApp** wie beschrieben installiert hast, kannst du diese über *http://<deine-ip>:8083/fhem/fhemapp/index.html* bzw. über die von dir gewählten URL deines Webservers aufrufen.
 
 # Konfiguration der Geräte in FHEM
 Jedes SmartHome-Gerät (Device) welches in **FHEMApp** angezeigt werden soll, konfiguriert ihr nun direkt in FHEM. Dazu verwendet ihr das neu angelegte FHEM-Attribut `appOptions` sowie weitere FHEM-Attribute wie `alias`,`group`,`room` oder `sortby`.

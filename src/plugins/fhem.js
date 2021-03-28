@@ -275,7 +275,7 @@ export default class Fhem extends EventEmitter {
               let vals = defs.split(',');
               for (let val of vals) {
                 let route = '/devices/' + attr + '=' + val.replaceAll(' ','\\s').replaceAll('&','.');
-                if(options[attr]) route += '&appOptions='+attr;
+                if(options[attr]) route += '&appOptions=' + attr;
 
                 if(list.map((e) => e.title).indexOf(val) == -1) {
                   list.push({ title: val, route: route });
@@ -330,7 +330,7 @@ export default class Fhem extends EventEmitter {
     return result;
   }
 
-  // mainfunction new solution for handleStates
+  // mainfunction to handle reading states and get back properties for elements
   handleVals(device, defs) {
     let result = [];
 
@@ -442,7 +442,7 @@ export default class Fhem extends EventEmitter {
   async getSetup(template) {
     let result = null;
 
-    //only the fallback for v3.1
+    //only the fallback for v3.1 an lower
     if(!result) {
       let idx = this.app.templates.map((e) => e.name).indexOf(template);
 
