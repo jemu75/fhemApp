@@ -89,6 +89,9 @@ attr WEB stylesheetPrefix default
 attr global userattr appOptions:textField-long
 ```
 
+# Aufruf der App
+Nachdem du **FHEMApp** wie beschrieben installiert hast, kannst du diese über *http://<deine-ip>:8083/fhem/fhemapp/index.html* bzw. über die von dir gewählten URL deines Webservers aufrufen. 
+
 # Konfiguration der Geräte in FHEM
 Jedes SmartHome-Gerät (Device) welches in **FHEMApp** angezeigt werden soll, konfiguriert ihr nun direkt in FHEM. Dazu verwendet ihr das neu angelegte FHEM-Attribut `appOptions` sowie weitere FHEM-Attribute wie `alias`,`group`,`room` oder `sortby`.
 
