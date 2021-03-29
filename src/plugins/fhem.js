@@ -271,7 +271,7 @@ export default class Fhem extends EventEmitter {
             let options = await this.createOptions(item, true);
             let defs = options[attr] || item.Attributes[attr];
 
-            if(defs) {
+            if(defs && options.template) {
               let vals = defs.split(',');
               for (let val of vals) {
                 let route = '/devices/' + attr + '=' + val.replaceAll(' ','\\s').replaceAll('&','.');
