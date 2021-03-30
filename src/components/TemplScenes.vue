@@ -1,7 +1,7 @@
 <template>
   <v-col class="col-12 col-sm-6 col-md-4 col-lg-4">
     <v-card :dark="this.$vuetify.theme.dark" color="secondary">
-      <v-progress-linear height="7" :value="vals.mainLevel" :color="vals.mainColor" background-color="secondary darken-1"></v-progress-linear>
+      <v-progress-linear height="7" :value="vals.status.level" :color="vals.status.color" background-color="secondary darken-1"></v-progress-linear>
 
       <v-card-title class="text-truncate">
         {{ vals.title }}
@@ -11,14 +11,14 @@
       <v-card-text>
         <v-row align="center">
           <v-col align="center">
-            <div class="headline font-weight-bold text-truncate">{{ vals.mainState | scene_text }}</div>
+            <div class="headline font-weight-bold text-truncate">{{ vals.main.text | scene_text }}</div>
           </v-col>
           <v-divider vertical></v-divider>
           <v-col class="col-3" align="center">
             <v-menu bottom left transition="slide-y-transition">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn small icon v-bind="attrs" v-on="on">
-                  <v-icon large>{{ rightIcon }}</v-icon>
+                  <v-icon large>{{ vals.main.rightIcon }}</v-icon>
                 </v-btn>
               </template>
 
@@ -28,7 +28,7 @@
                     <v-list-item-content>
                       <v-list-item-title class="text-subtitle-1">{{ scene | scene_text }}</v-list-item-title>
                     </v-list-item-content>
-                    <v-list-item-icon v-if="scene === vals.mainState">
+                    <v-list-item-icon v-if="scene === vals.main.text">
                       <v-icon>mdi-check</v-icon>
                     </v-list-item-icon>
                   </v-list-item>
@@ -41,7 +41,7 @@
 
       <v-divider></v-divider>
       <v-system-bar color="secondary darken-1">
-        <v-icon>{{ vals.systemIcon }}</v-icon>{{ vals.systemIconValue }}
+        <v-icon>{{ vals.info.left1Icon }}</v-icon>{{ vals.info.left1Text }}
       </v-system-bar>
     </v-card>
   </v-col>
@@ -51,21 +51,38 @@
   export default {
     data: () => ({
       name: 'scene',
-      defaultSet: [
-        "state:unknown:...:0:success:mdi-movie-open",
-        "state::state:100:success:mdi-movie-open-check"
-      ],
+
+      setup: {
+        status: {
+          bar: ["state:unknown:0:success","state::100:success"]
+        },
+        main: [
+          {
+            text: ["state:unknown:...","state::%s"]
+          }
+        ],
+        info: {
+          left1: ["state:unknown::mdi-movie-open","state:::mdi-movie-open-check"]
+        }
+      },
+
       vals: {
         title: '',
-        mainState: '',
-        mainLevel: 0,
-        mainColor: '',
+        status: {
+          level: 0,
+          color: ''
+        },
+        main: {
+          text: '',
+          rightIcon: 'mdi-dots-vertical'
+        },
+        info: {
+          left1Icon: '',
+          left1Text: ''
+        },
         scenes: [],
-        sceneSelected: -1,
-        systemIcon: 'mdi-movie-open-check',
-        systemIconValue: ''
+        sceneSelected: -1
       },
-      rightIcon: 'mdi-dots-vertical',
     }),
 
     watch: {
@@ -76,11 +93,9 @@
           let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
 
           this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
-          this.vals.mainState = this.$fhem.getEl(val, 'Readings', 'state', 'Value');
+          this.setValues();
 
-          this.vals = this.$fhem.handleStates(val, this.vals, this.defaultSet);
-
-          this.vals.sceneSelected = this.vals.scenes.indexOf(this.vals.mainState);
+          this.vals.sceneSelected = this.vals.scenes.indexOf(this.vals.main.text);
         }
       },
     },
@@ -92,6 +107,20 @@
     },
 
     methods: {
+      setValues() {
+        let statusVals = this.$fhem.handleVals(this.item, this.setup.status.bar);
+        let mainText = this.$fhem.handleVals(this.item, this.setup.main[0].text);
+        let infoLeft1Vals = this.$fhem.handleVals(this.item, this.setup.info.left1);
+
+        this.vals.status.level = statusVals[0] || '100';
+        this.vals.status.color = statusVals[1] || 'success';
+
+        this.vals.main.text = mainText[0] || '';
+
+        this.vals.info.left1Icon = infoLeft1Vals[1] || '';
+        this.vals.info.left1Text = infoLeft1Vals[0] || '';
+      },
+
       loadScenes() {
         let params = [
           { param: 'cmd', value: 'get ' + this.item.Name + ' scenes' },
@@ -106,7 +135,7 @@
               let scenes = res.replace('\n\n','').split('\n');
               this.vals.scenes.push(...scenes);
             }
-            this.vals.sceneSelected = this.vals.scenes.indexOf(this.vals.mainState);
+            this.vals.sceneSelected = this.vals.scenes.indexOf(this.vals.main.text);
           })
       },
 
@@ -121,6 +150,15 @@
     },
 
     created() {
+      let status = this.$fhem.getEl(this.item, 'Options', 'setup', 'status');
+      let main = this.$fhem.getEl(this.item, 'Options', 'setup', 'main');
+      let info = this.$fhem.getEl(this.item, 'Options', 'setup', 'info');
+
+      if(status) Object.assign(this.setup.status, status);
+      if(main) Object.assign(this.setup.main, main);
+      if(info) Object.assign(this.setup.info, info);
+
+      this.setValues();
       this.loadScenes();
     },
 

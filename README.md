@@ -91,7 +91,7 @@ appOptions:textField-long
 ```
 
 # Aufruf der App
-Nachdem du **FHEMApp** wie beschrieben installiert hast, kannst du diese über `http://<deine-ip>:8083/fhem/fhemapp/index.html` bzw. über die von dir gewählten URL deines Webservers aufrufen.
+Nachdem du **FHEMApp** wie beschrieben installiert hast, kannst du diese über `http://<deine_ip>:8083/fhem/fhemapp/index.html` bzw. über die von dir gewählten URL deines Webservers aufrufen.
 
 # Konfiguration der Geräte in FHEM
 Jedes SmartHome-Gerät (Device) welches in **FHEMApp** angezeigt werden soll, konfiguriert ihr nun direkt in FHEM. Dazu verwendet ihr das neu angelegte FHEM-Attribut `appOptions` sowie weitere FHEM-Attribute wie `alias`,`group`,`room` oder `sortby`.
@@ -242,7 +242,7 @@ Beispiele:
 | [motiondetect](#template-motiondetect) | Bewegungsmelder | ![](./docs/media/template_motiondetect_example.png) |
 | [watersensor](#template-watersensor) | Zisternensensor | ![](./docs/media/template_watersensor_example.png) |
 | sonos | Sonosplayer | ![](./docs/media/template_sonos_example.png) |
-| scenes | LightScenes | ![](./docs/media/template_scenes_example.png) |
+| [scenes](#template-scenes) | LightScenes | ![](./docs/media/template_scenes_example.png) |
 | [panel](#template-panel) | Panel zur Gruppierung mehrerer Devices | ![](./docs/media/template_panel_example.png) |
 | [chart](#template-chart) | Diagramm zur Visualisierung von Log-Daten | ![](./docs/media/template_chart_example.png) |
 | weather | Wettervorhersage (darksky-API) | ![](./docs/media/template_weather_example.png) |
@@ -688,4 +688,29 @@ define chn_sen.hm.eg.fl_Climate_FileLog FileLog ./log/chn_sen.hm.eg.fl_Climate.l
 attr chn_sen.hm.eg.fl_Climate_FileLog alias Thermostat Flur
 attr chn_sen.hm.eg.fl_Climate_FileLog appOptions { "template": "chart", "dashboard": "true", "chartDef": [":humidity:Luftfeuchte:%:secondary",":measured-temp:Temperatur:°C"] }
 attr chn_sen.hm.eg.fl_Climate_FileLog sortby 2
+```
+# Template scenes
+Dieses Template steht speziell für den Einstz von *LightScene* [siehe](https://fhem.de/commandref_DE.html#LightScene) zur Verfügung. Es zeigt die aktuelle Szene an und gibt die Möglichkeit zwischen den in FHEM gespeicherten Szenen umuzschalten.
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
+```
+{ "template": "scenes" }
+```
+
+#### Konfiguration
+Da *Scenes* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften über den Parameter `setup` in `appOptions` anpassen. Folgende Eigenschaften könnt ihr individuell anpassen:
+```
+"setup": {
+  "status": {
+    "bar": ["reading:value:level:color"]
+  },
+  "main": [
+    {
+      "text": ["reading:value:text"]
+    }
+  ],
+  "info": {
+    "left1": ["reading:value:text:icon"],
+  }
+}
 ```
