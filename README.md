@@ -105,6 +105,7 @@ Das Attribut `appOptions` kann mit unterschiedlichen Parametern befüllt werden,
   "name": "string",                - kann alternativ zum FHEM-Attribut 'alias' verwendet werden
   "room": "string",                 - kann alternativ zum FHEM-Attribut 'room' verwendet werden
   "group": "string",                - kann alternativ zum FHEM-Attribut 'group' verwendet werden
+  "sortby": "string",               - kann alternativ zum FHEM-Attribut 'sortby' verwendet werden
   "home": "true",                   - zeigt ein Device auf der Startseite an
   "dashboard": "true",              - zeigt ein Device im Dashboard an
   "system": "true",                 - zeigt ein Device in den Systemeinstellungen an
@@ -119,7 +120,15 @@ Das Attribut `appOptions` kann mit unterschiedlichen Parametern befüllt werden,
 Damit ein Gerät in der **FHEMApp** zur Verfügung steht, müsst ihr dem jeweiligen Device in FHEM einem *Template* zuordnen. In der **FHEMApp** stehen verschiedene [Templates](#übersicht-der-verfügbaren-templates) zur Verfügung. Dazu nutzt ihr das FHEM-Attribut `appOptions`  und definiert ein *Template* über folgenden Parameter  `{ "template": "switch" }` (Beispiel für einen Schalter)
 
 ### weitere FHEM Attribute verwenden
-Nachdem ihr dem Device ein *Template* zugeordnet habt, könnt ihr defnieren unter welchem *Name* und in welchen *Menüpunkten* euer Device in **FHEMApp** angezeigt wird. Dazu nutzt ihr das FHEM-Attribut `alias` für den Name des Gerätes, das FHEM-Attribut `group` für die Anzeige im Menüpunkt *Gruppen* und das FHEM-Attribut `room` für die Anzeige im Menüpunkt *Bereiche*. Alternativ können diese Parameter auch über `appOptions` [siehe](#appoptions) definiert werden, wenn ihr die FHEM-Attribute `alias`, `group` bzw `room` in eurer FHEM-Installation anderweitig verwendet.
+Nachdem ihr dem Device ein *Template* zugeordnet habt, könnt ihr defnieren unter welchem *Name* und in welchen *Menüpunkten* euer Device in **FHEMApp** angezeigt wird. Dazu nutzt ihr das FHEM-Attribut `alias` für den Name des Gerätes, das FHEM-Attribut `group` für die Anzeige im Menüpunkt *Gruppen* und das FHEM-Attribut `room` für die Anzeige im Menüpunkt *Bereiche*. Weiterhin könnt ihr das FHEM-Attribut `sortby` nutzen um die Reihenfolge der Templates in **FHEMApp** festzulegen. Alternativ können diese Parameter auch über `appOptions` [siehe](#appoptions) definiert werden, wenn ihr die FHEM-Attribute `alias`, `group`, `room` oder `sortby` in eurer FHEM-Installation anderweitig verwendet.
+Wenn die FHEM-Attribute `room`, `group` oder `sortby` in **FHEMApp** komplett ignoriert werden sollen, dann muss dies in der Datei `config.json` unter dem Parameter `options` wie folgt eingestellt werden.
+```
+  "options": {
+    "ignoreFhemGroup": true,
+    "ignoreFhemRoom": true,
+    "ignoreFhemSortby": true
+  }
+```
 
 *Definition in FHEM*<br>
 ![Definition in FHEM](./docs/media/template_switch_fhem.png)

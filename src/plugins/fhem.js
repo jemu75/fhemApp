@@ -25,7 +25,10 @@ export default class Fhem extends EventEmitter {
         maxChartPoints: 100,
         updateProcess: false,
         logRecord: true,
-        logBuffer: 500
+        logBuffer: 500,
+        ignoreFhemRoom: false,
+        ignoreFhemGroup: false,
+        ignoreFhemSortby: false
       },
       templates: [], // only the fallback for v3.1
       componentMap: [],
@@ -269,7 +272,11 @@ export default class Fhem extends EventEmitter {
 
           for (const item of res.Results) {
             let options = await this.createOptions(item, true);
-            let defs = options[attr] || item.Attributes[attr];
+            let defs = options[attr];
+            let ignoreAttr = false;
+            if(this.app.options.ignoreFhemRoom && attr === 'room') ignoreAttr = true;
+            if(this.app.options.ignoreFhemGroup && attr === 'group') ignoreAttr = true;
+            if(!defs && !ignoreAttr) defs = item.Attributes[attr];
 
             if(defs && options.template) {
               let vals = defs.split(',');
@@ -534,7 +541,8 @@ export default class Fhem extends EventEmitter {
 
             if(options) {
               item.Options = options;
-              item.Options.order = item.Attributes.sortby || 'zzz';
+              if(!item.Options.sortby && !this.app.options.ignoreFhemSortby) item.Options.sortby = item.Attributes.sortby;
+              if(!item.Options.sortby) item.Options.sortby = 'zzz';
 
               if(fltr.match('FILTER=group') && item.Options.group) blockItem = true;
               if(fltr.match('FILTER=room') && item.Options.room) blockItem =true;
@@ -545,7 +553,7 @@ export default class Fhem extends EventEmitter {
                   if(!blockItem) target.push(item);
 
                   if(idx === res.Results.length) {
-                    target.sort((a,b) => (a.Options.order > b.Options.order) ? 1 : ((b.Options.order > a.Options.order) ? -1 : 0));
+                    target.sort((a,b) => (a.Options.sortby > b.Options.sortby) ? 1 : ((b.Options.sortby > a.Options.sortby) ? -1 : 0));
                     this.app.data.deviceList = Object.assign([], target);
                     this.app.options.loading = false
                   }
