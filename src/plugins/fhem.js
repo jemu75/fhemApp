@@ -87,7 +87,11 @@ export default class Fhem extends EventEmitter {
   getDateTime(val) {
     let timestamp = val ? val : Date.now();
 
-    return new Date(timestamp).toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'medium' }).replace(',','');
+    let options = { dateStyle: 'short', timeStyle: 'medium' };
+    let dateFormatter = new Intl.DateTimeFormat('de-DE', options);
+    let date = new Date(timestamp);
+
+    return dateFormatter.format(date).replace(',','');
   }
 
   // mainfunction get element from deep nested objects
@@ -285,7 +289,8 @@ export default class Fhem extends EventEmitter {
             if(defs && options.template) {
               let vals = defs.split(',');
               for (let val of vals) {
-                let route = '/devices/' + attr + '=' + val.replaceAll(' ','\\s').replaceAll('&','.');
+                let route = '/devices/' + attr + '=' + val.replace(/\s/g,'\\s').replace(/&/g,'.');
+
                 if(options[attr]) route += '&appOptions=' + attr;
 
                 if(list.map((e) => e.title).indexOf(val) == -1) {

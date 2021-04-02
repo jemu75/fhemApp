@@ -61,7 +61,7 @@ export default {
         let parts = this.$route.params.filter.split('&');
 
         if(parts.indexOf('appOptions=room') != -1 || parts.indexOf('appOptions=group') != -1) {
-          fltr = 'appOptions=.*' + parts[0].replace('=', '.:..') + '.*';
+          fltr = 'appOptions=.*' + parts[0].replace('=', '.*') + '.*';
         } else {
           fltr += parts[0];
         }
