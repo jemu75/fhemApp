@@ -14,9 +14,13 @@
       </div>
       <h2 class="hidden-md-and-down">{{ app.options.clock }}</h2>
       <v-spacer></v-spacer>
+      <div class="hidden-lg-and-up text-h5">
+        {{ app.data.header }}
+      </div>
+      <v-spacer></v-spacer>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-icon small :color="status.color" v-text="status.icon" v-bind="attrs" v-on="on"></v-icon>
+          <v-icon class="ml-3" small :color="status.color" v-text="status.icon" v-bind="attrs" v-on="on"></v-icon>
         </template>
         <div v-text="status.text"></div>
         <div v-text="status.time"></div>
@@ -111,10 +115,11 @@
         },
         data: {
           roomList: [],
-          groupList: []
+          groupList: [],
+          header: ''
         }
       },
-      version: 'v3.4.0',
+      version: 'v3.5.0',
       status: {
         color: 'secondary',
         icon: 'mdi-circle',

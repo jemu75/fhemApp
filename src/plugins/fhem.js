@@ -28,14 +28,16 @@ export default class Fhem extends EventEmitter {
         logBuffer: 500,
         ignoreFhemRoom: false,
         ignoreFhemGroup: false,
-        ignoreFhemSortby: false
+        ignoreFhemSortby: false,
+        mobileHeader: false
       },
       templates: [], // only the fallback for v3.1
       componentMap: [],
       data: {
         roomList: [],
         groupList: [],
-        deviceList: []
+        deviceList: [],
+        header: ''
       }
     }
   }
@@ -199,13 +201,15 @@ export default class Fhem extends EventEmitter {
         let idx = 0;
 
         for(const def of obj.defs) {
-          let defPart = def.split(':'); // definiton  [ file : regex : name : suffix : axis ]
+          let select = /\(.*\)/.exec(def);
+          if(select) def.replace(select[0],'_');
 
+          let defPart = def.split(':'); // definiton  [ source : (regex) : name : suffix : axis ]
           let cmd = 'get ';
           cmd += defPart[0] ? defPart[0] : obj.deviceName;
           cmd += obj.from ? ' - - ' + obj.from : '';
           cmd += obj.to ? ' ' + obj.to : '';
-          cmd += defPart[1] ? ' 4:' + defPart[1] : '';
+          cmd += select ? ' ' + select[0].replace(/\(|\)/g,'') : ' 4:' + defPart[1];
 
           this.request([{ param: 'cmd', value: cmd }, { param: 'XHR', value: '1' }],'text', { id: idx })
             .then((res) => {

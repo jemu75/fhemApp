@@ -53,6 +53,14 @@ Wenn ihr in **FHEMApp** Daten aus FHEM-Logs in Charts darstellt, ist es ggf. sin
 },
 ```
 
+### Anzeigeeinstellungen fürFHEMApp (optional)
+Wenn ihr in **FHEMApp** bei der mobilen Ansicht (1-spaltiges Layout) im Header sehen wollt, in welcher Bereich bzw. in welche Gruppe euch gerade befindet, dann könnt ihr unter Options den Paremeter `mobileHeader` setzen.
+```
+"options": {
+  "mobileHeader": true
+},
+```
+
 ### Themeneinstellungen für FHEMApp (optional)
 Zusätzlich könnt ihr das Farbschema von **FHEMApp** individuell anpassen. Grundsätzlich könnt ihr zwischen einem *dunklen* und einem *hellen* Layout über den Parameter `dark` (`true` bzw. `false`) wechseln. Weiterhin könnt ihr die einzelnen Farben für die beiden Farbschemen unter dem Parameter `themes` individuell anpassen. Siehe dazu auch [(Vuetify Customizing)](https://vuetifyjs.com/en/features/theme/#customizing)    
 ```
@@ -76,7 +84,7 @@ Zusätzlich könnt ihr das Farbschema von **FHEMApp** individuell anpassen. Grun
 ![](./docs/media/fhemapp_theme_teal_light.png)*Beispiel für helles Layout*
 
 # Grundeinstellung in FHEM
-Bevor ihr die gewünschten Geräte für die Anzeige in der **FHEMApp** konfiguriert sind zwei Grundeinstellungen in FHEM notwendig.
+Bevor ihr die gewünschten Geräte für die Anzeige in der **FHEMApp** konfiguriert sind sind folgende Grundeinstellungen in FHEM notwendig.
 1. Müsst ihr in eurem *FHEM-Device* `FHEMWEB` die beiden Attribute `CORS` auf `1` und `longpoll` auf `websocket` setzen. [(siehe auch)](https://fhem.de/commandref_DE.html#FHEMWEB) Das folgende Beispiel zeigt einen Auszug aus der Datei *fhem.cfg* nachdem die Grundeinstellung vorgenommen wurde.
 ```
 define WEB FHEMWEB 8083 global
@@ -682,13 +690,15 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
 ### Konfiguration von Charts
 Über den Parameter `chartDef` legt ihr fest, welche Daten im Chart angezeigt werden. Jede Linie entspricht dabei einer Definition. Folgende Eigenschaften stehen zur Verfügung:
 ```
-"chartDef": ["logfile:reading:text:präfix:axis"],
+"chartDef": ["logsource:reading:text:präfix:axis"],
 ```
-1. **logfile** - dieser Parameter kann freigelassen werden. Wenn ihr in eurem Chart jedoch Daten aus verschiedenen *FileLog-Devices* anzeigen wollt, dann könnt ihr hier den Name des jeweiligen *FileLog-Device* eintragen.
-2. **reading** - bezeichnet das Reading aus dem *FileLog* welches ihr anzeigen wollt. (z.B. measured-temp)
+1. **logsource** - dieser Parameter enthält entweder den Name des *FileLog-Devices* oder den Name eures *DbLog-Devices*.
+2. **reading** - wenn ihr auf ein *FileLog-Device* zugreift, genügt hier im Normalfall der Name des *Readings* welches dargestellt werden soll. Wenn euer *FileLog* Readings in mehreren Spalten enthält, dann müsst ihr den Parameter in runde Klammern setzen und *<spalte:reading>* angeben z.B. `(4:temperature)`. Wenn Daten von einem *DbLog-Device* anzeigen wollt, dann müsst ihr den Parameter in runde Klammern setzen und *<device>:<reading>* angeben z.B. `(myTempSensor:temperature)`
 3. **text** - hier tragt iht den gewünschten Achsenname ein. (z.B. Temperatur)   
 4. **präfix** - hier tragt ihr die Einheit der Werte ein. (z.B. °C)
 5. **axis** - wenn dieser Parameter weggelassen wird, dann bezieht sich die Linie im Chart auf die linke Achse. Tragt ihr hier **secondary** ein, so bezieht sich die Linie im Chart auf die rechte Achse. Das ist z.B. sinnvoll, wenn ihr in einem Chart die Temperatur und die Luftfeuchte auf unterschiedlichen Skalen anzeigen wollt.
+
+| Hinweis: Wenn ihr eure Daten über *DbLog* erfasst, dann habt ihr in FHEM dafür im Normalfall nur ein Device angelegt. Damit ihr verschiedene Charts in **FHEMApp** anzeigen könnt, empfielt es sich, je Chart ein *dummy* in FHEM anzulegen und hier die entsprechenden `appOptions` für das Chart zu hinterlegen. Wenn ihr eure Daten in einzelnen *FileLog-Dateien* erfasst, dann könnt ihr `appOptions` an dem jeweiligen *FileLog-Device* hinterlegen.
 
 ### Beispiel für eine Chartkonfiguration
 Es wird ein Chart im Menüpunkt *Dashboard* angezeigt. Aus dem Logfile werden die Readings *humidity* (rechte Achse) und *measured-temp* (linke Achse) im Chart dargestellt.

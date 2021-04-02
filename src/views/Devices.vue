@@ -14,8 +14,12 @@ export default {
       session: {
         connect: false
       },
+      options: {
+        mobileHeader: false
+      },
       data: {
-        deviceList: []
+        deviceList: [],
+        header: ''
       }
     }
   }),
@@ -38,6 +42,17 @@ export default {
   },
 
   methods: {
+    setHeader() {
+      if(this.app.options.mobileHeader) {
+        if(this.$route.name === 'Devices') {
+          let part = this.$route.params.filter.split('&')[0].split('=')[1];
+          this.app.data.header = part.replace(/\\s.\\s/g,' & ');
+        } else {
+          this.app.data.header = this.$route.name;
+        }
+      }
+    },
+
     subscribe() {
       if(!this.app.session.connect) return;
       let fltr = 'appOptions!=:FILTER=';
@@ -56,6 +71,7 @@ export default {
       if(this.$route.name == 'System') fltr = 'appOptions=.*system.:..true.*';
       if(this.$route.name == 'Home') fltr = 'appOptions=.*home.:..true.*';
 
+      this.setHeader();
       this.$fhem.getDevices(fltr);
     }
   },
