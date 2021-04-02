@@ -208,7 +208,7 @@
                   let select = /\(.*\)/.exec(item);
                   if(select) item = item.replace(select[0],'_');
 
-                  let values = []
+                  let values = [];
                   let logData = res.data[res.data.map((e) => e.id).indexOf(idx)].data;
                   let secAxis = item.split(':')[4] === 'secondary' ? true : false;
 

@@ -197,7 +197,7 @@ export default class Fhem extends EventEmitter {
     return result;
   }
 
-  // mainfunction { deviceName: '', from: timestamp, to: timestamp, defs: [] }
+  // mainfunction { deviceName: '', from: timestamp, to: timestamp, defs: [def1, def2] }
   async readLogFile(obj) {
     let promise = new Promise((resolve, reject) => {
       if(obj.defs && obj.defs.length > 0) {
