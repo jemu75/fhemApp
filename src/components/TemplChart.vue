@@ -204,7 +204,7 @@
                 this.chart.options.yaxis.splice(0);
                 this.chart.series.splice(0);
 
-                for(let item of res.defs) {
+                for(var item of res.defs) {
                   let select = /\(.*\)/.exec(item);
                   if(select) item = item.replace(select[0],'_');
 

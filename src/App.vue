@@ -119,7 +119,7 @@
           header: ''
         }
       },
-      version: 'v3.5.1',
+      version: 'v3.5.2',
       status: {
         color: 'secondary',
         icon: 'mdi-circle',

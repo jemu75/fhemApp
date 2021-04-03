@@ -204,7 +204,7 @@ export default class Fhem extends EventEmitter {
         let data = [];
         let idx = 0;
 
-        for(let def of obj.defs) {
+        for(var def of obj.defs) {
           let select = /\(.*\)/.exec(def);
           if(select) def = def.replace(select[0],'_');
 
