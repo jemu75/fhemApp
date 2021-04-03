@@ -204,33 +204,35 @@
                 this.chart.options.yaxis.splice(0);
                 this.chart.series.splice(0);
 
-                for(var item of res.defs) {
+                for(const item of res.defs) {
                   let select = /\(.*\)/.exec(item);
-                  if(select) item = item.replace(select[0],'_');
+                  let parts = select ? item.replace(select[0], '_').split(':') : item.split(':');
 
                   let values = [];
                   let logData = res.data[res.data.map((e) => e.id).indexOf(idx)].data;
-                  let secAxis = item.split(':')[4] === 'secondary' ? true : false;
+                  let secAxis = parts[4] === 'secondary' ? true : false;
 
                   if((!priAxisDef && !secAxis) || (!secAxisDef && secAxis)) {
                     if(!secAxis) priAxisDef = true;
                     if(secAxis) secAxisDef = true;
+
                     let yOptions = {
-                      seriesName: item.split(':')[2] || '',
+                      seriesName: parts[2] || '',
                       opposite: secAxis,
                       labels: {
                         formatter: (val) => {
                           let result = ''
-                          if(val) result = val.toFixed(1) + item.split(':')[3]
+                          if(val) result = val.toFixed(1) + parts[3]
                           return result
                         }
                       }
                     }
+
                     this.chart.options.yaxis.push(yOptions);
                   }
 
                   for(const vals of logData) values.push([vals.timestamp, vals.value]);
-                  this.chart.series.push({ name: item.split(':')[2], data: values });
+                  this.chart.series.push({ name: parts[2], data: values });
 
                   idx ++;
                 }

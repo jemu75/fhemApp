@@ -204,11 +204,10 @@ export default class Fhem extends EventEmitter {
         let data = [];
         let idx = 0;
 
-        for(var def of obj.defs) {
+        for(const def of obj.defs) {
           let select = /\(.*\)/.exec(def);
-          if(select) def = def.replace(select[0],'_');
 
-          let defPart = def.split(':'); // definiton  [ source : (regex) : name : suffix : axis ]
+          let defPart = select ? def.replace(select[0], '_').split(':') : def.split(':'); // definiton  [ source : (regex) : name : suffix : axis ]
           let cmd = 'get ';
           cmd += defPart[0] ? defPart[0] : obj.deviceName;
           cmd += obj.from ? ' - - ' + obj.from : '';
