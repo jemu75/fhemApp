@@ -174,7 +174,7 @@
       },
 
       goTo() {
-        this.$router.push('/devices/' + this.vals.devOffline);
+        this.$router.push('/devices/device=' + this.vals.devOffline);
       }
     },
 

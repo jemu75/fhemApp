@@ -174,7 +174,7 @@
         if(this.vals.maxSize) {
           this.$router.go(-1);
         } else {
-          this.$router.push('/devices/' + this.item.Name + '&size=max');
+          this.$router.push('/devices/device=' + this.item.Name + '&size=max');
         }
       },
 
@@ -196,7 +196,7 @@
 
           let def = { deviceName: this.item.Name, from: this.vals.from, to: this.vals.to, defs: this.item.Options.chartDef };
 
-          this.$fhem.readLogFile(def)
+          this.$fhem.readLogData(def)
             .then((res) => {
               if(res.defs.length > 0) {
                 let idx = 0;

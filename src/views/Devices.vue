@@ -45,8 +45,11 @@ export default {
     setHeader() {
       if(this.app.options.mobileHeader) {
         if(this.$route.name === 'Devices') {
-          let part = this.$route.params.filter.split('&')[0].split('=')[1];
-          this.app.data.header = part.replace(/\\s.\\s/g,' & ');
+          if(this.$route.params.filter.match('device=')) {
+            this.app.data.header = ''
+          } else {
+            this.app.data.header = this.$route.params.filter.split('=')[1];
+          }
         } else {
           this.app.data.header = this.$route.name;
         }
@@ -55,25 +58,17 @@ export default {
 
     subscribe() {
       if(!this.app.session.connect) return;
-      let fltr = 'appOptions!=:FILTER=';
+      let fltr = '';
 
-      if(this.$route.params.filter) {
-        let parts = this.$route.params.filter.split('&');
+      if(this.$route.params.filter) fltr = this.$route.params.filter;
 
-        if(parts.indexOf('appOptions=room') != -1 || parts.indexOf('appOptions=group') != -1) {
-          fltr = 'appOptions=.*' + parts[0].replace('=', '.*') + '.*';
-        } else {
-          fltr += parts[0];
-        }
-      }
-
-      if(this.$route.name == 'Dashboard') fltr = 'appOptions=.*dashboard.:..true.*';
-      if(this.$route.name == 'System') fltr = 'appOptions=.*system.:..true.*';
-      if(this.$route.name == 'Home') fltr = 'appOptions=.*home.:..true.*';
+      if(this.$route.name == 'Dashboard') fltr = 'app=dashboard';
+      if(this.$route.name == 'System') fltr = 'app=system';
+      if(this.$route.name == 'Home') fltr = 'app=home';
 
       this.setHeader();
       this.$fhem.getDevices(fltr);
-    }
+    },
   },
 
   mounted() {

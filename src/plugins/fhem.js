@@ -198,7 +198,7 @@ export default class Fhem extends EventEmitter {
   }
 
   // mainfunction { deviceName: '', from: timestamp, to: timestamp, defs: [def1, def2] }
-  async readLogFile(obj) {
+  async readLogData(obj) {
     let promise = new Promise((resolve, reject) => {
       if(obj.defs && obj.defs.length > 0) {
         let data = [];
@@ -273,24 +273,19 @@ export default class Fhem extends EventEmitter {
       let list = [];
       this.app.data.[listName].splice(0);
 
-      this.request({ param: 'cmd', value: 'jsonList2 appOptions!= appOptions ' + attr }, 'json')
+      this.request({ param: 'cmd', value: 'jsonList2 appOptions!= appOptions room group' }, 'json')
         .then(async (res) => {
           let idx = 1;
 
           for (const item of res.Results) {
-            let options = await this.createOptions(item, true);
+            let options = await this.createOptions(item);
             let defs = options[attr];
-            let ignoreAttr = false;
-            if(this.app.options.ignoreFhemRoom && attr === 'room') ignoreAttr = true;
-            if(this.app.options.ignoreFhemGroup && attr === 'group') ignoreAttr = true;
-            if(!defs && !ignoreAttr) defs = item.Attributes[attr];
 
             if(defs && options.template) {
               let vals = defs.split(',');
               for (let val of vals) {
-                let route = '/devices/' + attr + '=' + val.replace(/\s/g,'\\s').replace(/&/g,'.');
-
-                if(options[attr]) route += '&appOptions=' + attr;
+                //let route = '/devices/' + attr + '=' + val.replace(/\s/g,'\\s').replace(/&/g,'.');
+                let route = '/devices/' + attr + '=' + val;
 
                 if(list.map((e) => e.title).indexOf(val) == -1) {
                   list.push({ title: val, route: route });
@@ -424,36 +419,33 @@ export default class Fhem extends EventEmitter {
     return vals;
   }
 
-  // subfunction for getDevices(), create Connected Object
   async createConnected(device) {
-    let promise = new Promise((resolve, reject) => {
-      if('connected' in device.Options) {
-        let list = Object.keys(device.Options.connected);
-        let result = {};
-        let idx = 1;
+    let result = {};
 
-        for (const item of list) {
-          this.request({ param: 'cmd', value: 'jsonlist2 ' + device.Options.connected[item] }, 'json')
-            .then(async (res) => {
-              result[item] = res.Results[0];
-              if('PossibleSets' in result[item]) delete result[item].PossibleSets;
-              if('PossibleAttrs' in result[item]) delete result[item].PossibleAttrs;
+    if('connected' in device.Options) {
+      let deviceList = Object.keys(device.Options.connected);
 
-              let options = await this.createOptions(result[item]);
-              if(options) result[item].Options = options;
-              if(idx === list.length) resolve(result);
-              idx ++;
-            })
-            .catch((err) => reject(err));
-        }
-      } else {
-        resolve({});
+      for (const item of deviceList) {
+        result[item] = await this.request({ param: 'cmd', value: 'jsonlist2 ' + device.Options.connected[item] }, 'json')
+          .then(async (res) => {
+            if('PossibleSets' in res.Results[0]) delete res.Results[0].PossibleSets;
+            if('PossibleAttrs' in res.Results[0]) delete res.Results[0].PossibleAttrs;
+
+            let options = await this.createOptions(res.Results[0]);
+            if(options) res.Results[0].Options = options;
+
+            return res.Results[0];
+          })
+          .catch((err) => {
+            this.log = { type: 'error', message: 'Request to FHEM failed.', meta: err };
+          })
       }
-    })
-    return promise;
+    }
+
+    return result;
   }
 
-  // subfunction for getDevices(), create the
+  // subfunction for getDevices(), create the setup
   async getSetup(template) {
     let result = null;
 
@@ -506,83 +498,107 @@ export default class Fhem extends EventEmitter {
     return result;
   }
 
-  // subfunction for getDevices(), create Options Object
-  async createOptions(device, onlyOpts) {
+  // core function for validation json strings
+  createJson(string) {
+    let result = {};
+
+    if(string) {
+      try {
+        result = JSON.parse(string);
+      } catch(err) {
+        this.log = { type: 'error', message: 'Json Data is no valid. ' + string, meta: err.message };
+      }
+    }
+    return result;
+  }
+
+  // subfunction for getDevices(), create the Options Object for device
+  async createOptions(device) {
     let result = null;
 
     if('appOptions' in device.Attributes) {
-      try {
-        result = JSON.parse(device.Attributes.appOptions);
-        if(!onlyOpts && result.template) {
-          let component = this.getComponent(result.template);
-          Object.assign(result, component);
-        }
-        if(!onlyOpts && result.template && result.component === 'templ_default') {
-          let setup = await this.getSetup(result.template);
-          if(result.setup) Object.assign(setup, result.setup);
-          result.setup = setup;
-        }
-      } catch(err) {
-        this.log = { type: 'error', message: 'Read appOptions from ' + device.Name + ' failed.', meta: err.message };
+      result = this.createJson(device.Attributes.appOptions);
+      if(result) {
+        result.device = device.Name;
+        if(!result.name) result.name = this.getEl(device, 'Attributes', 'alias') || device.Name;
+        if(!result.sortby && !this.app.options.ignoreFhemSortby) result.sortby = this.getEl(device, 'Attributes', 'sortby') || 'zzz';
+        if(!result.room && !this.app.options.ignoreFhemRoom) result.room = this.getEl(device, 'Attributes', 'room') || '';
+        if(!result.group && !this.app.options.ignoreFhemGroup) result.group = this.getEl(device, 'Attributes', 'group') || '';
+        if(result.room === 'hidden') result.room = '';
+        if(result.group === 'hidden') result.group = '';
       }
     }
 
     return await result;
   }
 
-  // mainfunction fill array with devices
+  // subfunction for getDevices(), checking filter in jsonlist2 result
+  checkFilter(fltr, options) {
+    let result = false;
+
+    if(fltr === 'app=home' && options.home) result = true;
+    if(fltr === 'app=dashboard' && options.dashboard) result = true;
+    if(fltr === 'app=system' && options.system) result = true;
+    if(fltr.match('room=') || fltr.match('group=')) {
+      let fltrPart = fltr.split('=');
+      if(options[fltrPart[0]]) {
+        let defs = options[fltrPart[0]].split(',');
+        let search = fltrPart[1].replace('%20',' ');
+        if(defs.indexOf(search) != -1) result = true;
+      }
+    }
+    if(fltr.match('device=')) {
+      let defs = fltr.split('=')[1].split('&')[0].split(',');
+      if(defs.indexOf(options.device) != -1) result = true;
+    }
+
+    return(result);
+  }
+
+  // mainfunction fill array with Devices
   getDevices(fltr) {
     this.app.options.loading = true;
     this.app.data.deviceList.splice(0);
 
-    this.request({ param: 'cmd', value: 'jsonlist2 ' + fltr }, 'json')
+    this.request({ param: 'cmd', value: 'jsonlist2 appOptions!=' }, 'json')
       .then(async (res) => {
-        let idx = 1;
         let target = [];
+        let idx = 1;
 
-        if(res.Results.length > 0) {
-          for(const item of res.Results) {
+        for(const item of res.Results) {
+          let options = await this.createOptions(item);
+
+          if(this.checkFilter(fltr, options) && options.template) {
             if('PossibleSets' in item) delete item.PossibleSets;
             if('PossibleAttrs' in item) delete item.PossibleAttrs;
-            let blockItem = false;
-            let options = await this.createOptions(item);
 
-            if(options) {
-              item.Options = options;
-              if(!item.Options.sortby && !this.app.options.ignoreFhemSortby) item.Options.sortby = item.Attributes.sortby;
-              if(!item.Options.sortby) item.Options.sortby = 'zzz';
+            let component = this.getComponent(options.template);
+            Object.assign(options, component);
 
-              if(fltr.match('FILTER=group') && item.Options.group) blockItem = true;
-              if(fltr.match('FILTER=room') && item.Options.room) blockItem =true;
-
-              this.createConnected(item)
-                .then((connected) => {
-                  item.Connected = connected;
-                  if(!blockItem) target.push(item);
-
-                  if(idx === res.Results.length) {
-                    target.sort((a,b) => (a.Options.sortby > b.Options.sortby) ? 1 : ((b.Options.sortby > a.Options.sortby) ? -1 : 0));
-                    this.app.data.deviceList = Object.assign([], target);
-                    this.app.options.loading = false
-                  }
-                  idx ++;
-                })
-                .catch((err) => {
-                  this.log = { type: 'error', message: 'Add Connected Element failed.', meta: err };
-                  this.app.options.loading = false;
-                });
-            } else {
-              this.app.options.loading = false;
+            if(options.component === 'templ_default') {
+              let setup = await this.getSetup(options.template);
+              if(options.setup) Object.assign(setup, options.setup);
+              options.setup = setup;
             }
+
+            item.Options = options;
+            if(item.Options.connected) item.Connected = await this.createConnected(item);
+            target.push(item);
           }
-        } else {
-          this.app.options.loading = false
+
+          if(idx === res.Results.length) {
+            target.sort((a,b) => (a.Options.sortby > b.Options.sortby) ? 1 : ((b.Options.sortby > a.Options.sortby) ? -1 : 0));
+            this.app.data.deviceList = Object.assign([], target);
+            this.app.options.loading = false
+          }
+          idx ++;
+
         }
       })
       .catch((err) => {
         this.log = { type: 'error', message: 'Request to FHEM failed.', meta: err };
         this.app.options.loading = false;
-      });
+      })
   }
 
   // subfunction for doUpdate(), return Data from update as Object
