@@ -312,7 +312,7 @@ export default class Fhem extends EventEmitter {
 
   // subfunction for handleVals %s %n %i %t
   replaceVals(defSet, state) {
-    let chkNum = /[0-9]/.exec(state);
+    let chkNum = /-?[0-9]/.exec(state);
     let result = [];
 
     for (var i = 2; i < defSet.length; i ++) {
@@ -359,7 +359,7 @@ export default class Fhem extends EventEmitter {
             if(isNaN(parseFloat(defSet[1]))) {
               if(RegExp(!defSet[1] ? '.' : defSet[1]).test(state)) found = true;
             } else {
-              let chkNum = /[0-9]/.exec(state);
+              let chkNum = /-?[0-9]/.exec(state);
               if(chkNum.index != -1) {
                 if(parseFloat(state.slice(chkNum.index)) >= parseFloat(defSet[1])) found = true;
               }
@@ -506,7 +506,7 @@ export default class Fhem extends EventEmitter {
       try {
         result = JSON.parse(string);
       } catch(err) {
-        this.log = { type: 'error', message: 'Json Data is no valid. ' + string, meta: err.message };
+        this.log = { type: 'error', message: 'Json-Object is no valid. ' + string, meta: err.message };
       }
     }
     return result;
@@ -526,6 +526,7 @@ export default class Fhem extends EventEmitter {
         if(!result.group && !this.app.options.ignoreFhemGroup) result.group = this.getEl(device, 'Attributes', 'group') || '';
         if(result.room === 'hidden') result.room = '';
         if(result.group === 'hidden') result.group = '';
+        if(!result.sortby) result.sortby = 'zzz';
       }
     }
 

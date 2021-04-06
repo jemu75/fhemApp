@@ -1,0 +1,26 @@
+{
+  "name": "shutter2",
+  "author": "jemu75",
+  "date": "2021-04-06",
+  "status": {
+    "bar": ["pct::%n:success"],
+    "error": []
+  },
+  "main": [
+    {
+      "leftBtn": "mdi-chevron-down",
+      "leftClick": ["motor:stop:off","motor::stop"],
+      "leftLong": ["motor::off"],
+      "leftLongRelease": ["motor::stop"],
+      "text": ["motor:up:schließt...","motor:down:öffnet...","pct:100:geschlossen","pct::offen"],
+      "rightBtn": "mdi-chevron-up",
+      "rightClick": ["motor:stop:on","motor::stop"],
+      "rightLong": ["motor::on"],
+      "rightLongRelease": ["motor::stop"]
+    }
+  ],
+  "info": {
+    "left1": ["motor:up::mdi-window-shutter-alert","motor:down::mdi-window-shutter-alert","pct:1::mdi-window-shutter-open","pct:::mdi-window-shutter"],
+    "left2": ["pct::%s%"]
+  }
+}

@@ -114,9 +114,9 @@ Das Attribut `appOptions` kann mit unterschiedlichen Parametern befüllt werden,
   "room": "string",                 - kann alternativ zum FHEM-Attribut 'room' verwendet werden
   "group": "string",                - kann alternativ zum FHEM-Attribut 'group' verwendet werden
   "sortby": "string",               - kann alternativ zum FHEM-Attribut 'sortby' verwendet werden
-  "home": "true",                   - zeigt ein Device auf der Startseite an
-  "dashboard": "true",              - zeigt ein Device im Dashboard an
-  "system": "true",                 - zeigt ein Device in den Systemeinstellungen an
+  "home": true,                   - zeigt ein Device auf der Startseite an
+  "dashboard": true,              - zeigt ein Device im Dashboard an
+  "system": true,                 - zeigt ein Device in den Systemeinstellungen an
   "setup": { object },              - ermöglicht individuelle Anpassungen des Templates
   "connected": { object },          - bindet zusätzliche Devices in das Template ein
   "panel": { object },              - definiert die Darstellung des Devices in einem Panel
