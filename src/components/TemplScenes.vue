@@ -1,32 +1,68 @@
 <template>
-  <v-col class="col-12 col-sm-6 col-md-4 col-lg-4">
-    <v-card :dark="this.$vuetify.theme.dark" color="secondary">
-      <v-progress-linear height="7" :value="vals.status.level" :color="vals.status.color" background-color="secondary darken-1"></v-progress-linear>
+  <v-col :class="setup.size">
+    <v-card
+      :dark="this.$vuetify.theme.dark"
+      color="secondary"
+    >
+      <v-progress-linear
+        height="7"
+        :value="vals.status.level"
+        :color="vals.status.color"
+        background-color="secondary darken-1"
+      />
 
       <v-card-title class="text-truncate">
         {{ vals.title }}
       </v-card-title>
-      <v-divider></v-divider>
+      <v-divider />
 
       <v-card-text>
         <v-row align="center">
           <v-col align="center">
-            <div class="headline font-weight-bold text-truncate">{{ vals.main.text | scene_text }}</div>
+            <div class="headline font-weight-bold text-truncate">
+              {{ vals.main.text | scene_text }}
+            </div>
           </v-col>
-          <v-divider vertical></v-divider>
-          <v-col class="col-3" align="center">
-            <v-menu bottom left transition="slide-y-transition">
+          <v-divider vertical />
+          <v-col
+            class="col-3"
+            align="center"
+          >
+            <v-menu
+              bottom
+              left
+              transition="slide-y-transition"
+            >
               <template v-slot:activator="{ on, attrs }">
-                <v-btn small icon v-bind="attrs" v-on="on">
-                  <v-icon large>{{ vals.main.rightIcon }}</v-icon>
+                <v-btn
+                  small
+                  icon
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-icon large>
+                    {{ vals.main.rightIcon }}
+                  </v-icon>
                 </v-btn>
               </template>
 
-              <v-list dense color="secondary lighten-2">
-                <v-list-item-group v-model="vals.sceneSelected" active-class="accent--text">
-                  <v-list-item v-for="(scene, i) in vals.scenes" :key="i" @click="setScene(scene)">
+              <v-list
+                dense
+                color="secondary lighten-2"
+              >
+                <v-list-item-group
+                  v-model="vals.sceneSelected"
+                  active-class="accent--text"
+                >
+                  <v-list-item
+                    v-for="(scene, i) in vals.scenes"
+                    :key="i"
+                    @click="setScene(scene)"
+                  >
                     <v-list-item-content>
-                      <v-list-item-title class="text-subtitle-1">{{ scene | scene_text }}</v-list-item-title>
+                      <v-list-item-title class="text-subtitle-1">
+                        {{ scene | scene_text }}
+                      </v-list-item-title>
                     </v-list-item-content>
                     <v-list-item-icon v-if="scene === vals.main.text">
                       <v-icon>mdi-check</v-icon>
@@ -39,7 +75,7 @@
         </v-row>
       </v-card-text>
 
-      <v-divider></v-divider>
+      <v-divider />
       <v-system-bar color="secondary darken-1">
         <v-icon>{{ vals.info.left1Icon }}</v-icon>{{ vals.info.left1Text }}
       </v-system-bar>
@@ -49,10 +85,25 @@
 
 <script>
   export default {
+
+    filters: {
+      scene_text(val) {
+        return val.replace('_', ' ');
+      }
+    },
+
+    props: {
+      item: {
+        type: Object,
+        default: () => { return { name: 'scene' } }
+      }
+    },
+
     data: () => ({
       name: 'scene',
 
       setup: {
+        size: 'col-12 col-sm-6 col-md-4 col-lg-4',
         status: {
           bar: ["state:unknown:0:success","state::100:success"]
         },
@@ -100,10 +151,19 @@
       },
     },
 
-    filters: {
-      scene_text(val) {
-        return val.replace('_', ' ');
-      }
+    created() {
+      let size = this.$fhem.getEl(this.item, 'Options', 'setup', 'size');
+      let status = this.$fhem.getEl(this.item, 'Options', 'setup', 'status');
+      let main = this.$fhem.getEl(this.item, 'Options', 'setup', 'main');
+      let info = this.$fhem.getEl(this.item, 'Options', 'setup', 'info');
+
+      if(size) this.setup.size = size;
+      if(status) Object.assign(this.setup.status, status);
+      if(main) Object.assign(this.setup.main, main);
+      if(info) Object.assign(this.setup.info, info);
+
+      this.setValues();
+      this.loadScenes();
     },
 
     methods: {
@@ -147,23 +207,6 @@
           this.$fhem.request(cmd);
         }
       },
-    },
-
-    created() {
-      let status = this.$fhem.getEl(this.item, 'Options', 'setup', 'status');
-      let main = this.$fhem.getEl(this.item, 'Options', 'setup', 'main');
-      let info = this.$fhem.getEl(this.item, 'Options', 'setup', 'info');
-
-      if(status) Object.assign(this.setup.status, status);
-      if(main) Object.assign(this.setup.main, main);
-      if(info) Object.assign(this.setup.info, info);
-
-      this.setValues();
-      this.loadScenes();
-    },
-
-    props: {
-      item: {}, // jsonObject from FHEM Device
     }
   }
 </script>

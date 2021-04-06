@@ -1,69 +1,173 @@
 <template>
-  <v-col class="col-12 col-sm-6 col-md-4 col-lg-4">
-    <v-card :dark="this.$vuetify.theme.dark" color="secondary">
-      <v-progress-linear height="7" :value="getLevel" :color="vals.status.color" background-color="secondary darken-1"></v-progress-linear>
+  <v-col :class="setup.size">
+    <v-card
+      :dark="this.$vuetify.theme.dark"
+      color="secondary"
+    >
+      <v-progress-linear
+        height="7"
+        :value="getLevel"
+        :color="vals.status.color"
+        background-color="secondary darken-1"
+      />
 
       <v-card-title class="text-truncate">
         {{ vals.title }}
-        <v-spacer></v-spacer>
-        <v-btn v-if="multiLevel && isActive" small icon @click="setLevel()">
-          <v-icon small>{{ multiLevelIcon }}</v-icon>
+        <v-spacer />
+        <v-btn
+          v-if="multiLevel && isActive"
+          small
+          icon
+          @click="setLevel()"
+        >
+          <v-icon small>
+            {{ multiLevelIcon }}
+          </v-icon>
         </v-btn>
       </v-card-title>
-      <v-divider></v-divider>
+      <v-divider />
 
       <v-card-text v-if="!vals.main.slider || !isActive">
         <v-row align="center">
-          <v-col v-if="vals.main.leftMenu.length == 0 && vals.main.leftBtn && isActive" class="col-3" align="center">
-            <v-btn small icon :disabled="vals.main.leftBtnDisabled" @mousedown="clickStart('left')" @mouseup="clickEnd('left')" @touchstart="clickStart('left')" @touchend="clickEnd('left')">
-              <v-icon large>{{ vals.main.leftBtn }}</v-icon>
+          <v-col
+            v-if="vals.main.leftMenu.length == 0 && vals.main.leftBtn && isActive"
+            class="col-3"
+            align="center"
+          >
+            <v-btn
+              small
+              icon
+              :disabled="vals.main.leftBtnDisabled"
+              @mousedown="clickStart('left')"
+              @mouseup="clickEnd('left')"
+              @touchstart="clickStart('left')"
+              @touchend="clickEnd('left')"
+            >
+              <v-icon large>
+                {{ vals.main.leftBtn }}
+              </v-icon>
             </v-btn>
           </v-col>
-          <v-col v-if="vals.main.leftMenu.length > 0 && vals.main.leftBtn && isActive" class="col-3" align="center">
-            <v-menu bottom left transition="slide-y-transition">
+          <v-col
+            v-if="vals.main.leftMenu.length > 0 && vals.main.leftBtn && isActive"
+            class="col-3"
+            align="center"
+          >
+            <v-menu
+              bottom
+              left
+              transition="slide-y-transition"
+            >
               <template v-slot:activator="{ on, attrs }">
-                <v-btn small icon v-bind="attrs" v-on="on">
-                  <v-icon large>{{ vals.main.leftBtn }}</v-icon>
+                <v-btn
+                  small
+                  icon
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-icon large>
+                    {{ vals.main.leftBtn }}
+                  </v-icon>
                 </v-btn>
               </template>
 
-              <v-list dense color="secondary lighten-2">
+              <v-list
+                dense
+                color="secondary lighten-2"
+              >
                 <v-list-item-group>
-                  <v-list-item v-for="(menu, i) in vals.main.leftMenu" :key="i" @click="sendCmd(menu.cmd)">
+                  <v-list-item
+                    v-for="(menu, i) in vals.main.leftMenu"
+                    :key="i"
+                    @click="sendCmd(menu.cmd)"
+                  >
                     <v-list-item-content>
-                      <v-list-item-title class="text-subtitle-1">{{ menu.name }}</v-list-item-title>
+                      <v-list-item-title class="text-subtitle-1">
+                        {{ menu.name }}
+                      </v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
                 </v-list-item-group>
               </v-list>
             </v-menu>
           </v-col>
-          <v-divider v-if="vals.main.leftBtn && isActive" vertical></v-divider>
+          <v-divider
+            v-if="vals.main.leftBtn && isActive"
+            vertical
+          />
           <v-col align="center">
-            <div class="headline font-weight-bold">{{ vals.main.text }}</div>
+            <div class="headline font-weight-bold">
+              {{ vals.main.text }}
+            </div>
           </v-col>
-          <v-col v-if="vals.main.text2 && isActive" align="center">
-            <div class="headline font-weight-bold">{{ vals.main.text2 }}</div>
+          <v-col
+            v-if="vals.main.text2 && isActive"
+            align="center"
+          >
+            <div class="headline font-weight-bold">
+              {{ vals.main.text2 }}
+            </div>
           </v-col>
-          <v-divider v-if="vals.main.rightBtn && isActive" vertical></v-divider>
-          <v-col v-if="vals.main.rightMenu.length == 0 && vals.main.rightBtn && isActive" class="col-3" align="center">
-            <v-btn small icon :disabled="vals.main.rightBtnDisabled" @mousedown="clickStart('right')" @mouseup="clickEnd('right')" @touchstart="clickStart('right')" @touchend="clickEnd('right')">
-              <v-icon large>{{ vals.main.rightBtn }}</v-icon>
+          <v-divider
+            v-if="vals.main.rightBtn && isActive"
+            vertical
+          />
+          <v-col
+            v-if="vals.main.rightMenu.length == 0 && vals.main.rightBtn && isActive"
+            class="col-3"
+            align="center"
+          >
+            <v-btn
+              small
+              icon
+              :disabled="vals.main.rightBtnDisabled"
+              @mousedown="clickStart('right')"
+              @mouseup="clickEnd('right')"
+              @touchstart="clickStart('right')"
+              @touchend="clickEnd('right')"
+            >
+              <v-icon large>
+                {{ vals.main.rightBtn }}
+              </v-icon>
             </v-btn>
           </v-col>
-          <v-col v-if="vals.main.rightMenu.length > 0 && vals.main.rightBtn && isActive" class="col-3" align="center">
-            <v-menu bottom left transition="slide-y-transition">
+          <v-col
+            v-if="vals.main.rightMenu.length > 0 && vals.main.rightBtn && isActive"
+            class="col-3"
+            align="center"
+          >
+            <v-menu
+              bottom
+              left
+              transition="slide-y-transition"
+            >
               <template v-slot:activator="{ on, attrs }">
-                <v-btn small icon v-bind="attrs" v-on="on">
-                  <v-icon large>{{ vals.main.rightBtn }}</v-icon>
+                <v-btn
+                  small
+                  icon
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-icon large>
+                    {{ vals.main.rightBtn }}
+                  </v-icon>
                 </v-btn>
               </template>
 
-              <v-list dense color="secondary lighten-2">
+              <v-list
+                dense
+                color="secondary lighten-2"
+              >
                 <v-list-item-group>
-                  <v-list-item v-for="(menu, i) in vals.main.rightMenu" :key="i" @click="sendCmd(menu.cmd)">
+                  <v-list-item
+                    v-for="(menu, i) in vals.main.rightMenu"
+                    :key="i"
+                    @click="sendCmd(menu.cmd)"
+                  >
                     <v-list-item-content>
-                      <v-list-item-title class="text-subtitle-1">{{ menu.name }}</v-list-item-title>
+                      <v-list-item-title class="text-subtitle-1">
+                        {{ menu.name }}
+                      </v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
                 </v-list-item-group>
@@ -74,26 +178,49 @@
       </v-card-text>
 
       <v-card-text v-if="vals.main.slider && isActive">
-        <v-slider v-model="vals.main.sliderCurrent" :min="vals.main.sliderMin" :max="vals.main.sliderMax" hide-details color="accent" @change="setSlider">
-          <template v-if="vals.main.leftBtn" v-slot:prepend>
-            <v-icon @click="clickEnd('left')">{{ vals.main.leftBtn }}</v-icon>
+        <v-slider
+          v-model="vals.main.sliderCurrent"
+          :min="vals.main.sliderMin"
+          :max="vals.main.sliderMax"
+          hide-details
+          color="accent"
+          @change="setSlider"
+        >
+          <template
+            v-if="vals.main.leftBtn"
+            v-slot:prepend
+          >
+            <v-icon @click="clickEnd('left')">
+              {{ vals.main.leftBtn }}
+            </v-icon>
           </template>
-          <template v-if="vals.main.rightBtn" v-slot:append>
-            <v-icon @click="clickEnd('right')">{{ vals.main.rightBtn }}</v-icon>
+          <template
+            v-if="vals.main.rightBtn"
+            v-slot:append
+          >
+            <v-icon @click="clickEnd('right')">
+              {{ vals.main.rightBtn }}
+            </v-icon>
           </template>
         </v-slider>
       </v-card-text>
 
-      <v-divider></v-divider>
+      <v-divider />
       <v-system-bar color="secondary darken-1">
-        <v-icon class="ml-0">{{ vals.info.left1Icon }}</v-icon>{{ vals.info.left1Text }}
+        <v-icon class="ml-0">
+          {{ vals.info.left1Icon }}
+        </v-icon>{{ vals.info.left1Text }}
         <v-icon>{{ vals.info.left2Icon }}</v-icon>{{ vals.info.left2Text }}
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-icon>{{ vals.info.mid1Icon }}</v-icon>{{ vals.info.mid1Text }}
-        <v-icon class="ml-2">{{ vals.info.mid2Icon }}</v-icon>{{ vals.info.mid2Text }}
-        <v-spacer></v-spacer>
+        <v-icon class="ml-2">
+          {{ vals.info.mid2Icon }}
+        </v-icon>{{ vals.info.mid2Text }}
+        <v-spacer />
         <v-icon>{{ vals.info.right1Icon }}</v-icon>{{ vals.info.right1Text }}
-        <v-icon class="mr-0">{{ vals.info.right2Icon }}</v-icon>{{ vals.info.right2Text }}
+        <v-icon class="mr-0">
+          {{ vals.info.right2Icon }}
+        </v-icon>{{ vals.info.right2Text }}
       </v-system-bar>
     </v-card>
   </v-col>
@@ -101,9 +228,18 @@
 
 <script>
   export default {
+
+    props: {
+      item: {
+        type: Object,
+        default: () => { return { name: 'default' } }
+      }
+    },
+
     data: () => ({
       name: 'default',
       setup: {
+        size: 'col-12 col-sm-6 col-md-4 col-lg-4',
         status: {
           bar: [],
           error: []
@@ -170,6 +306,12 @@
       pendingClick: 0
     }),
 
+    computed: {
+      getLevel() {
+        return this.vals.status.invert ? 100 - this.vals.status.level : this.vals.status.level;
+      }
+    },
+
     watch: {
       item: {
         immediate: true,
@@ -190,10 +332,18 @@
       }
     },
 
-    computed: {
-      getLevel() {
-        return this.vals.status.invert ? 100 - this.vals.status.level : this.vals.status.level;
-      }
+    mounted() {
+      let size = this.$fhem.getEl(this.item, 'Options', 'setup', 'size');
+      let status = this.$fhem.getEl(this.item, 'Options', 'setup', 'status');
+      let main = this.$fhem.getEl(this.item, 'Options', 'setup', 'main');
+      let info = this.$fhem.getEl(this.item, 'Options', 'setup', 'info');
+
+      if(size) this.setup.size = size;
+      if(status) Object.assign(this.setup.status, status);
+      if(main) Object.assign(this.setup.main, main);
+      if(info) Object.assign(this.setup.info, info);
+
+      this.setLevel(0);
     },
 
     methods: {
@@ -410,22 +560,6 @@
           }
         }
       }
-    },
-
-    props: {
-      item: {}, // jsonObject from FHEM Device
-    },
-
-    mounted() {
-      let status = this.$fhem.getEl(this.item, 'Options', 'setup', 'status');
-      let main = this.$fhem.getEl(this.item, 'Options', 'setup', 'main');
-      let info = this.$fhem.getEl(this.item, 'Options', 'setup', 'info');
-
-      if(status) Object.assign(this.setup.status, status);
-      if(main) Object.assign(this.setup.main, main);
-      if(info) Object.assign(this.setup.info, info);
-
-      this.setLevel(0);
     }
   }
 </script>

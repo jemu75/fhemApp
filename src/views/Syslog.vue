@@ -1,40 +1,94 @@
 <template>
-  <v-card :dark="this.$vuetify.theme.dark" color="secondary" v-resize="onResize">
-    <v-progress-linear height="7" :value="vals.mainLevel" :color="vals.mainColor" background-color="secondary darken-1"></v-progress-linear>
+  <v-card
+    v-resize="onResize"
+    :dark="this.$vuetify.theme.dark"
+    color="secondary"
+  >
+    <v-progress-linear
+      height="7"
+      :value="vals.mainLevel"
+      :color="vals.mainColor"
+      background-color="secondary darken-1"
+    />
 
-    <v-card-title class="text-truncate">{{ vals.title }}{{ log.recordStatus }}</v-card-title>
-    <v-divider></v-divider>
+    <v-card-title class="text-truncate">
+      {{ vals.title }}{{ log.recordStatus }}
+    </v-card-title>
+    <v-divider />
 
     <v-card-text>
       <v-row align="center">
         <v-col>
-          <v-text-field v-model="log.search" append-icon="mdi-magnify" clearable clear-icon="mdi-close" @click:clear="clearFilter" label="Filter" single-line></v-text-field>
+          <v-text-field
+            v-model="log.search"
+            append-icon="mdi-magnify"
+            clearable
+            clear-icon="mdi-close"
+            label="Filter"
+            single-line
+            @click:clear="clearFilter"
+          />
         </v-col>
-        <v-col class="shrink" align="center">
-          <v-btn icon small @click="options.logRecord = !options.logRecord">
+        <v-col
+          class="shrink"
+          align="center"
+        >
+          <v-btn
+            icon
+            small
+            @click="options.logRecord = !options.logRecord"
+          >
             <v-icon>{{ log.recordIcon }}</v-icon>
           </v-btn>
         </v-col>
-        <v-col class="shrink" align="center">
-          <v-btn icon small @click="setPage(-1)" :disabled="log.lastPage">
+        <v-col
+          class="shrink"
+          align="center"
+        >
+          <v-btn
+            icon
+            small
+            :disabled="log.lastPage"
+            @click="setPage(-1)"
+          >
             <v-icon>{{ log.lastPageIcon }}</v-icon>
           </v-btn>
         </v-col>
-        <v-col class="shrink" align="center">
-          <v-btn icon small @click="setPage(1)" :disabled="log.nextPage">
+        <v-col
+          class="shrink"
+          align="center"
+        >
+          <v-btn
+            icon
+            small
+            :disabled="log.nextPage"
+            @click="setPage(1)"
+          >
             <v-icon>{{ log.nextPageIcon }}</v-icon>
           </v-btn>
         </v-col>
       </v-row>
 
-      <v-data-table dense :headers="log.headers" :items="session.logList" :search="log.search" :items-per-page="log.itemsPerPage" :page.sync="log.page" @page-count="log.pageCount = $event" hide-default-header hide-default-footer>
+      <v-data-table
+        dense
+        :headers="log.headers"
+        :items="session.logList"
+        :search="log.search"
+        :items-per-page="log.itemsPerPage"
+        :page.sync="log.page"
+        hide-default-header
+        hide-default-footer
+        @page-count="log.pageCount = $event"
+      >
         <template v-slot:item.icon="{ item }">
-          <v-icon :color="item.color">{{ item.icon }}</v-icon>
+          <v-icon :color="item.color">
+            {{ item.icon }}
+          </v-icon>
         </template>
       </v-data-table>
     </v-card-text>
 
-    <v-divider></v-divider>
+    <v-divider />
     <v-system-bar color="secondary darken-1">
       <v-icon>{{ vals.systemIcon }}</v-icon>
       {{ vals.systemIconValue }}
@@ -103,6 +157,11 @@
       }
     },
 
+    mounted() {
+      this.session = this.$fhem.app.session;
+      this.options = this.$fhem.app.options;
+    },
+
     methods: {
       onResize () {
         this.log.itemsPerPage = parseInt((window.innerHeight - 300) / 32);
@@ -118,11 +177,6 @@
         this.log.lastPage = this.log.page === 1 ? true : false;
         this.log.nextPage = this.log.page === this.log.pageCount ? true : false;
       }
-    },
-
-    mounted() {
-      this.session = this.$fhem.app.session;
-      this.options = this.$fhem.app.options;
     }
   }
 </script>

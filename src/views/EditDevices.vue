@@ -3,24 +3,41 @@
     <v-card light>
       <v-card-title>
         <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="Search"
-            single-line
-            hide-details
-          ></v-text-field>
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        />
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="app.deviceList" :items-per-page="10" :search="search">
+      <v-data-table
+        :headers="headers"
+        :items="app.deviceList"
+        :items-per-page="10"
+        :search="search"
+      >
         <template v-slot:item.actions="{ item }">
-          <v-icon class="mr-2" @click="editItem(item)">mdi-pencil</v-icon>
+          <v-icon
+            class="mr-2"
+            @click="editItem(item)"
+          >
+            mdi-pencil
+          </v-icon>
         </template>
       </v-data-table>
     </v-card>
 
-    <v-dialog v-model="dialog" light max-width="50%">
+    <v-dialog
+      v-model="dialog"
+      light
+      max-width="50%"
+    >
       <v-card>
-        <v-card-title class="headline" primary-title>
+        <v-card-title
+          class="headline"
+          primary-title
+        >
           {{ editedItem.Name }}
         </v-card-title>
 
@@ -28,27 +45,44 @@
           <v-form>
             <v-row>
               <v-col>
-                <v-text-field v-model="editedItem.Attributes.group" label="Gruppe" @change="update('group')"></v-text-field>
+                <v-text-field
+                  v-model="editedItem.Attributes.group"
+                  label="Gruppe"
+                  @change="update('group')"
+                />
               </v-col>
               <v-col>
-                <v-text-field v-model="editedItem.Attributes.room" label="Raum" @change="update('room')"></v-text-field>
+                <v-text-field
+                  v-model="editedItem.Attributes.room"
+                  label="Raum"
+                  @change="update('room')"
+                />
               </v-col>
               <v-col>
-                <v-text-field v-model="editedItem.Attributes.alias" label="Alias" @change="update('alias')"></v-text-field>
+                <v-text-field
+                  v-model="editedItem.Attributes.alias"
+                  label="Alias"
+                  @change="update('alias')"
+                />
               </v-col>
             </v-row>
           </v-form>
         </v-card-text>
 
-        <v-divider></v-divider>
+        <v-divider />
 
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="dialog = false">SCHLIESSEN</v-btn>
+          <v-spacer />
+          <v-btn
+            color="primary"
+            text
+            @click="dialog = false"
+          >
+            SCHLIESSEN
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-
   </div>
 </template>
 
@@ -71,6 +105,11 @@ export default {
     editedItem: { Attributes: { group: '', room: '', alias: '' } },
     dialog: false,
   }),
+
+  mounted() {
+    this.app = this.$fhem.app.data;
+    this.getData();
+  },
 
   methods: {
     getData(restart) {
@@ -101,11 +140,6 @@ export default {
       this.$fhem.request(cmd)
         .then(() => this.$fhem.request('save'));
     }
-  },
-
-  mounted() {
-    this.app = this.$fhem.app.data;
-    this.getData();
   }
 }
 </script>

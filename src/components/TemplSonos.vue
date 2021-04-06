@@ -1,84 +1,152 @@
 <template>
   <v-col class="col-12 col-sm-6 col-md-4 col-lg-4">
-    <v-card :dark="this.$vuetify.theme.dark" color="secondary">
-      <v-progress-linear height="7" :value="vals.mainLevel" :color="vals.mainColor" background-color="secondary darken-1"></v-progress-linear>
+    <v-card
+      :dark="this.$vuetify.theme.dark"
+      color="secondary"
+    >
+      <v-progress-linear
+        height="7"
+        :value="vals.mainLevel"
+        :color="vals.mainColor"
+        background-color="secondary darken-1"
+      />
 
       <v-card-title class="text-truncate">
         {{ vals.title }}
-        <v-spacer></v-spacer>
-        <v-btn small icon @click="expand">
-          <v-icon small>{{ maxIcon }}</v-icon>
+        <v-spacer />
+        <v-btn
+          small
+          icon
+          @click="expand"
+        >
+          <v-icon small>
+            {{ maxIcon }}
+          </v-icon>
         </v-btn>
       </v-card-title>
-      <v-divider></v-divider>
+      <v-divider />
 
       <v-card-text>
         <v-row align="center">
-          <v-col class="col-3" align="center">
-            <v-btn v-if="!expanded" icon v-on:click="setVolume('D')">
-              <v-icon large>{{ leftIcon }}</v-icon>
+          <v-col
+            class="col-3"
+            align="center"
+          >
+            <v-btn
+              v-if="!expanded"
+              icon
+              @click="setVolume('D')"
+            >
+              <v-icon large>
+                {{ leftIcon }}
+              </v-icon>
             </v-btn>
-            <v-btn v-if="expanded" icon :disabled="prevDisabled" v-on:click="setPlayer('Previous')">
-              <v-icon large>{{ prevIcon }}</v-icon>
+            <v-btn
+              v-if="expanded"
+              icon
+              :disabled="prevDisabled"
+              @click="setPlayer('Previous')"
+            >
+              <v-icon large>
+                {{ prevIcon }}
+              </v-icon>
             </v-btn>
           </v-col>
-          <v-divider vertical></v-divider>
+          <v-divider vertical />
           <v-col align="center">
-            <v-btn icon v-on:click="setPlay()">
-              <v-icon large>{{ playIcon }}</v-icon>
+            <v-btn
+              icon
+              @click="setPlay()"
+            >
+              <v-icon large>
+                {{ playIcon }}
+              </v-icon>
             </v-btn>
           </v-col>
-          <v-divider vertical></v-divider>
-          <v-col class="col-3" align="center">
-            <v-btn v-if="!expanded" icon v-on:click="setVolume('U')">
-              <v-icon large>{{ rightIcon }}</v-icon>
+          <v-divider vertical />
+          <v-col
+            class="col-3"
+            align="center"
+          >
+            <v-btn
+              v-if="!expanded"
+              icon
+              @click="setVolume('U')"
+            >
+              <v-icon large>
+                {{ rightIcon }}
+              </v-icon>
             </v-btn>
-            <v-btn v-if="expanded" icon :disabled="nextDisabled" v-on:click="setPlayer('Next')">
-              <v-icon large>{{ nextIcon }}</v-icon>
+            <v-btn
+              v-if="expanded"
+              icon
+              :disabled="nextDisabled"
+              @click="setPlayer('Next')"
+            >
+              <v-icon large>
+                {{ nextIcon }}
+              </v-icon>
             </v-btn>
           </v-col>
         </v-row>
       </v-card-text>
 
-      <v-divider v-if="expanded"></v-divider>
+      <v-divider v-if="expanded" />
 
       <v-card-text v-if="expanded">
         <v-row align="center">
           <v-col>
-            <v-slider v-model="vals.volume" hide-details color="accent" @change="setVolume">
+            <v-slider
+              v-model="vals.volume"
+              hide-details
+              color="accent"
+              @change="setVolume"
+            >
               <template v-slot:prepend>
                 <v-icon
-                  @click="setMute()">{{ volumeIcon }}
+                  @click="setMute()"
+                >
+                  {{ volumeIcon }}
                 </v-icon>
               </template>
-
             </v-slider>
           </v-col>
         </v-row>
         <v-row align="center">
-          <v-col class="col-4">
-          </v-col>
-          <v-col class="col-4 text-h6" align="center">
+          <v-col class="col-4" />
+          <v-col
+            class="col-4 text-h6"
+            align="center"
+          >
             {{ vals.trackPosition }}
           </v-col>
-          <v-col class="col-4" align="center">
+          <v-col
+            class="col-4"
+            align="center"
+          >
             {{ vals.tracks }}
           </v-col>
         </v-row>
       </v-card-text>
 
-      <v-divider v-if="expanded && vals.zones.length > 0"></v-divider>
+      <v-divider v-if="expanded && vals.zones.length > 0" />
       <v-card-text v-if="expanded && vals.zones.length > 0">
         <v-row>
           <v-col>
-            <span v-for="zone in vals.zones" :key="zone">
-              <v-chip small class="mr-2">{{ zone }}</v-chip>
+            <span
+              v-for="zone in vals.zones"
+              :key="zone"
+            >
+              <v-chip
+                small
+                class="mr-2"
+              >{{ zone }}</v-chip>
             </span>
           </v-col>
         </v-row>
       </v-card-text>
 
-      <v-divider></v-divider>
+      <v-divider />
       <v-system-bar color="secondary darken-1">
         <v-icon>{{ vals.systemIcon }}</v-icon>
         <span class="text-truncate">{{ vals.systemIconValue }}</span>
@@ -89,6 +157,13 @@
 
 <script>
   export default {
+    props: {
+      item: {
+        type: Object,
+        default: () => { return { name: 'sonos' } }
+      }
+    },
+
     data: () => ({
       name: 'sonos',
       defaultSet: [
@@ -177,6 +252,12 @@
       }
     },
 
+    mounted() {
+      setInterval(() => {
+        this.vals.systemIconValue = this.vals.systemIconValue === this.vals.playInfo1 ? this.vals.playInfo2 : this.vals.playInfo1;
+      }, 3000)
+    },
+
     methods: {
       sendCmd(cmd, delay) {
         if(!delay) {
@@ -225,16 +306,6 @@
           this.maxIcon = 'mdi-arrow-collapse';
         }
       }
-    },
-
-    mounted() {
-      setInterval(() => {
-        this.vals.systemIconValue = this.vals.systemIconValue === this.vals.playInfo1 ? this.vals.playInfo2 : this.vals.playInfo1;
-      }, 3000)
-    },
-
-    props: {
-      item: {}, // jsonObject from FHEM Device
     }
   }
 </script>

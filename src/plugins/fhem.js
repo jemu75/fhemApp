@@ -87,11 +87,7 @@ export default class Fhem extends EventEmitter {
   getDateTime(val) {
     let timestamp = val ? val : Date.now();
 
-    let options = { dateStyle: 'short', timeStyle: 'medium' };
-    let dateFormatter = new Intl.DateTimeFormat('de-DE', options);
-    let date = new Date(timestamp);
-
-    return dateFormatter.format(date).replace(',','');
+    return new Date(timestamp).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'medium' }).replace(',','');
   }
 
   // mainfunction get element from deep nested objects
@@ -471,6 +467,7 @@ export default class Fhem extends EventEmitter {
           let templDef = await res.json();
           let setup = {};
 
+          if(templDef.size) setup.size = templDef.size; 
           if(templDef.status) Object.assign(setup, { status: templDef.status });
           if(templDef.main) Object.assign(setup, { main: templDef.main });
           if(templDef.info) Object.assign(setup, { info: templDef.info});

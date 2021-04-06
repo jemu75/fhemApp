@@ -1,5 +1,11 @@
 <template>
-  <v-alert :value="alert" :type="type" dense text outlined>
+  <v-alert
+    :value="alert"
+    :type="type"
+    dense
+    text
+    outlined
+  >
     <v-row align="center">
       <v-col>
         <div>
@@ -10,8 +16,14 @@
         </div>
       </v-col>
       <v-col class="shrink">
-        <v-btn icon small @click="clearMessage()">
-          <v-icon :color="type">mdi-close-circle</v-icon>
+        <v-btn
+          icon
+          small
+          @click="clearMessage()"
+        >
+          <v-icon :color="type">
+            mdi-close-circle
+          </v-icon>
         </v-btn>
       </v-col>
     </v-row>
@@ -44,14 +56,6 @@ export default {
     }
   },
 
-  methods: {
-    clearMessage() {
-      if(this.msgList.length > 0) {
-        this.msgList.splice(0, 1)
-      }
-    }
-  },
-
   mounted() {
     this.$fhem.on('message', (msg) => {
       let target = {
@@ -64,6 +68,14 @@ export default {
 
       this.msgList.unshift(target);
     })
+  },
+
+  methods: {
+    clearMessage() {
+      if(this.msgList.length > 0) {
+        this.msgList.splice(0, 1)
+      }
+    }
   }
 }
 </script>

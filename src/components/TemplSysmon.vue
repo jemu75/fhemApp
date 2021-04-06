@@ -1,12 +1,20 @@
 <template>
   <v-col class="col-12 col-sm-12 col-md-6 col-lg-6">
-    <v-card :dark="this.$vuetify.theme.dark" color="secondary">
-      <v-progress-linear height="7" :value="vals.mainLevel" :color="vals.mainColor" background-color="secondary darken-1"></v-progress-linear>
+    <v-card
+      :dark="this.$vuetify.theme.dark"
+      color="secondary"
+    >
+      <v-progress-linear
+        height="7"
+        :value="vals.mainLevel"
+        :color="vals.mainColor"
+        background-color="secondary darken-1"
+      />
 
       <v-card-title class="text-truncate">
         {{ vals.title }}
       </v-card-title>
-      <v-divider></v-divider>
+      <v-divider />
       <v-card-subtitle>
         {{ vals.subTitle }}
       </v-card-subtitle>
@@ -14,52 +22,85 @@
       <v-card-text>
         <v-row>
           <v-col>
-            <div class="text-truncate">CPU Auslastung:</div>
-            <v-progress-linear height="7" :value="vals.cpuVal" :color="vals.cpuColor" background-color="secondary lighten-4"></v-progress-linear>
+            <div class="text-truncate">
+              CPU Auslastung:
+            </div>
+            <v-progress-linear
+              height="7"
+              :value="vals.cpuVal"
+              :color="vals.cpuColor"
+              background-color="secondary lighten-4"
+            />
             <div>{{ vals.cpuVal + " %" }}</div>
           </v-col>
           <v-col>
-            <div class="text-truncate">RAM Auslastung:</div>
-            <v-progress-linear height="7" :value="vals.ramVal" :color="vals.ramColor" background-color="secondary lighten-4"></v-progress-linear>
+            <div class="text-truncate">
+              RAM Auslastung:
+            </div>
+            <v-progress-linear
+              height="7"
+              :value="vals.ramVal"
+              :color="vals.ramColor"
+              background-color="secondary lighten-4"
+            />
             <div>{{ vals.ramVal + " %" }}</div>
           </v-col>
           <v-col>
-            <div class="text-truncate">CPU Temperatur:</div>
-            <v-progress-linear height="7" :value="vals.tempVal" :color="vals.tempColor" background-color="secondary lighten-4"></v-progress-linear>
-            <div>{{ vals.tempVal + " C&deg;"}}</div>
+            <div class="text-truncate">
+              CPU Temperatur:
+            </div>
+            <v-progress-linear
+              height="7"
+              :value="vals.tempVal"
+              :color="vals.tempColor"
+              background-color="secondary lighten-4"
+            />
+            <div>{{ vals.tempVal + " C&deg;" }}</div>
           </v-col>
         </v-row>
         <v-row>
           <v-col>
             <div>Server läuft seit:</div>
-            <div class="text-truncate">{{ vals.startServer }}</div>
+            <div class="text-truncate">
+              {{ vals.startServer }}
+            </div>
           </v-col>
           <v-col>
             <div>FHEM läuft seit:</div>
-            <div class="text-truncate">{{ vals.startFhem }}</div>
+            <div class="text-truncate">
+              {{ vals.startFhem }}
+            </div>
           </v-col>
-          <v-col align="right">
-          </v-col>
+          <v-col align="right" />
         </v-row>
       </v-card-text>
       <v-card-actions>
-        <v-btn class="mr-2" @click="goTo()">
+        <v-btn
+          class="mr-2"
+          @click="goTo()"
+        >
           <v-icon>mdi-format-list-bulleted</v-icon>
         </v-btn>
-        <v-spacer></v-spacer>
-        <v-btn :disabled="!update" @click="fhemUpdate">
+        <v-spacer />
+        <v-btn
+          :disabled="!update"
+          @click="fhemUpdate"
+        >
           {{ updateText }}
         </v-btn>
-        <v-btn :disabled="!restart" @click="fhemRestart">
+        <v-btn
+          :disabled="!restart"
+          @click="fhemRestart"
+        >
           Restart
         </v-btn>
       </v-card-actions>
-      <v-divider></v-divider>
+      <v-divider />
       <v-system-bar color="secondary darken-1">
         <v-icon>{{ vals.systemIcon }}</v-icon>
-        <v-spacer></v-spacer>
+        <v-spacer />
         {{ vals.systemLastEvent }}
-        <v-spacer></v-spacer>
+        <v-spacer />
       </v-system-bar>
     </v-card>
   </v-col>
@@ -67,6 +108,13 @@
 
 <script>
   export default {
+    props: {
+      item: {
+        type: Object,
+        default: () => { return { name: 'sysmon' } }
+      }
+    },
+
     data: () => ({
       name: 'sysmon',
       vals: {
@@ -104,6 +152,8 @@
           let ram = parseFloat(this.$fhem.getEl(val, 'Readings','ram','Value').split(' ')[6]);
           let temp = parseFloat(this.$fhem.getEl(val, 'Readings','cpu_temp','Value'));
           let lastEvent = this.$fhem.getEl(val, 'Readings','ram','Time');
+          let serverStartTime = this.$fhem.getEl(val, 'Readings','starttime_text','Value');
+          let fhemStartTime = this.$fhem.getEl(val, 'Readings','fhemstarttime_text','Value');
           let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
 
           this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
@@ -115,8 +165,8 @@
           this.vals.tempVal = temp ? temp.toFixed(1) : '';
           this.vals.tempColor = temp > 60 ? 'error' : 'success';
           this.vals.mainColor = cpu > 70 || ram > 70 || temp > 60 ? 'error' : 'success';
-          this.vals.startServer = this.$fhem.getEl(val, 'Readings','starttime_text','Value') || '';
-          this.vals.startFhem = this.$fhem.getEl(val, 'Readings','fhemstarttime_text','Value') || '';
+          this.vals.startServer = this.$fhem.getDateTime(serverStartTime);
+          this.vals.startFhem = this.$fhem.getDateTime(fhemStartTime);
           this.vals.systemLastEvent =  this.$fhem.getDateTime(lastEvent);
         }
       },
@@ -130,8 +180,9 @@
       }
     },
 
-    props: {
-      item: {},
+    mounted() {
+      this.app.options = this.$fhem.app.options;
+      this.fhemUpdateCheck();
     },
 
     methods: {
@@ -176,11 +227,6 @@
       goTo() {
         this.$router.push('syslog');
       }
-    },
-
-    mounted() {
-      this.app.options = this.$fhem.app.options;
-      this.fhemUpdateCheck();
     }
   }
 </script>

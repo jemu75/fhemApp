@@ -1,63 +1,103 @@
 <template>
   <v-col class="col-12 col-sm-6 col-md-4 col-lg-4">
-    <v-card :dark="this.$vuetify.theme.dark" color="secondary">
-      <v-progress-linear height="7" :value="vals.mainLevel" :color="vals.mainColor" background-color="secondary darken-1"></v-progress-linear>
+    <v-card
+      :dark="this.$vuetify.theme.dark"
+      color="secondary"
+    >
+      <v-progress-linear
+        height="7"
+        :value="vals.mainLevel"
+        :color="vals.mainColor"
+        background-color="secondary darken-1"
+      />
 
       <v-card-title class="text-truncate">
         {{ vals.title }}
-        <v-spacer></v-spacer>
-        <v-btn small icon @click="expand">
-          <v-icon small>{{ maxIcon }}</v-icon>
+        <v-spacer />
+        <v-btn
+          small
+          icon
+          @click="expand"
+        >
+          <v-icon small>
+            {{ maxIcon }}
+          </v-icon>
         </v-btn>
       </v-card-title>
-      <v-divider></v-divider>
+      <v-divider />
 
       <v-card-text>
         <v-row align="center">
           <v-col align="center">
-            <div class="headline font-weight-bold">{{ vals.mainState }}</div>
+            <div class="headline font-weight-bold">
+              {{ vals.mainState }}
+            </div>
           </v-col>
         </v-row>
 
-        <v-row v-if="expanded" align="center">
+        <v-row
+          v-if="expanded"
+          align="center"
+        >
           <v-col align="center">
             <div>Luftdruck</div>
-            <div class="headline font-weight-bold">{{ vals.pressure }}</div>
+            <div class="headline font-weight-bold">
+              {{ vals.pressure }}
+            </div>
           </v-col>
           <v-col align="center">
             <div>Wind</div>
-            <div class="headline font-weight-bold">{{ vals.wind }}</div>
+            <div class="headline font-weight-bold">
+              {{ vals.wind }}
+            </div>
           </v-col>
         </v-row>
       </v-card-text>
 
-      <v-divider v-if="expanded"></v-divider>
+      <v-divider v-if="expanded" />
 
       <v-card-text v-if="expanded">
-        <v-row v-for="day in vals.forecast" :key="day.weekday" align="center">
-          <v-col class="col-2" align="center">
-            <v-icon large>{{ day.icon }}</v-icon>
+        <v-row
+          v-for="day in vals.forecast"
+          :key="day.weekday"
+          align="center"
+        >
+          <v-col
+            class="col-2"
+            align="center"
+          >
+            <v-icon large>
+              {{ day.icon }}
+            </v-icon>
           </v-col>
           <v-col class="text-truncate">
             <h3>{{ day.weekday }}</h3>
             <span>{{ day.condition }}</span>
           </v-col>
-          <v-col class="col-2 pl-0" align="center">
+          <v-col
+            class="col-2 pl-0"
+            align="center"
+          >
             <div>{{ day.temp_max }}</div>
             <div>{{ day.temp_min }}</div>
           </v-col>
         </v-row>
       </v-card-text>
 
-      <v-divider></v-divider>
+      <v-divider />
       <v-system-bar color="secondary darken-1">
         <v-icon>{{ vals.systemIcon }}</v-icon>{{ vals.systemIconValue }}
-        <v-spacer></v-spacer>
+        <v-spacer />
         {{ vals.systemLastEvent }}
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-icon v-bind="attrs" v-on="on">{{ vals.systemActivityIcon }}</v-icon>
+            <v-icon
+              v-bind="attrs"
+              v-on="on"
+            >
+              {{ vals.systemActivityIcon }}
+            </v-icon>
           </template>
           {{ vals.systemActivityState }}
         </v-tooltip>
@@ -68,6 +108,13 @@
 
 <script>
   export default {
+    props: {
+      item: {
+        type: Object,
+        default: () => { return { name: 'weather' } }
+      }
+    },
+
     data: () => ({
       name: 'weather',
       iconSet: {
@@ -189,10 +236,6 @@
           this.loadForecast();
         }
       }
-    },
-
-    props: {
-      item: {}, // jsonObject from FHEM Device
     }
   }
 </script>

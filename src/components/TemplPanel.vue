@@ -1,46 +1,94 @@
 <template>
-  <v-col class="col-12 col-sm-6 col-md-6 col-lg-6">
-    <v-card :dark="this.$vuetify.theme.dark" color="secondary">
-      <v-progress-linear height="7" :value="getLevel" :color="vals.status.color" background-color="secondary darken-1"></v-progress-linear>
+  <v-col :class="setup.size">
+    <v-card
+      :dark="this.$vuetify.theme.dark"
+      color="secondary"
+    >
+      <v-progress-linear
+        height="7"
+        :value="getLevel"
+        :color="vals.status.color"
+        background-color="secondary darken-1"
+      />
 
-      <v-card-title class="text-truncate">{{ vals.title }}</v-card-title>
-      <v-divider></v-divider>
+      <v-card-title class="text-truncate">
+        {{ vals.title }}
+      </v-card-title>
+      <v-divider />
 
       <v-card-text class="pa-0">
-        <div v-for="el in list" :key="el.Name" align="center">
-          <v-row dense class="ma-1" align="center">
+        <div
+          v-for="el in list"
+          :key="el.Name"
+          align="center"
+        >
+          <v-row
+            dense
+            class="ma-1"
+            align="center"
+          >
             <v-col class="col-2">
-              <v-progress-circular :value="el.level" :color="el.color">
-              </v-progress-circular>
+              <v-progress-circular
+                :value="el.level"
+                :color="el.color"
+              />
             </v-col>
-            <v-col class="text-truncate" align="left">
-              <div class="text-truncate headline">{{ el.title }}</div>
-              <div class="text-truncate">{{ el.text }}</div>
+            <v-col
+              class="text-truncate"
+              align="left"
+            >
+              <div class="text-truncate headline">
+                {{ el.title }}
+              </div>
+              <div class="text-truncate">
+                {{ el.text }}
+              </div>
             </v-col>
-            <v-col class="col-2" align="center">
-              <v-btn v-if="el.route && !el.click && el.icon" icon link :to="el.route">
-                <v-icon large>{{ el.icon }}</v-icon>
+            <v-col
+              class="col-2"
+              align="center"
+            >
+              <v-btn
+                v-if="el.route && !el.click && el.icon"
+                icon
+                link
+                :to="el.route"
+              >
+                <v-icon large>
+                  {{ el.icon }}
+                </v-icon>
               </v-btn>
               <div v-if="el.click && !el.route && el.icon">
-                <v-btn icon @click="set(el.device, el.click)">
-                  <v-icon large>{{ el.icon }}</v-icon>
+                <v-btn
+                  icon
+                  @click="set(el.device, el.click)"
+                >
+                  <v-icon large>
+                    {{ el.icon }}
+                  </v-icon>
                 </v-btn>
               </div>
             </v-col>
           </v-row>
-          <v-divider></v-divider>
+          <v-divider />
         </div>
       </v-card-text>
 
       <v-system-bar color="secondary darken-1">
-        <v-icon class="ml-0">{{ vals.info.left1Icon }}</v-icon>{{ vals.info.left1Text }}
+        <v-icon class="ml-0">
+          {{ vals.info.left1Icon }}
+        </v-icon>{{ vals.info.left1Text }}
         <v-icon>{{ vals.info.left2Icon }}</v-icon>{{ vals.info.left2Text }}
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-icon>{{ vals.info.mid1Icon }}</v-icon>{{ vals.info.mid1Text }}
-        <v-icon class="ml-2">{{ vals.info.mid2Icon }}</v-icon>{{ vals.info.mid2Text }}
-        <v-spacer></v-spacer>
+        <v-icon class="ml-2">
+          {{ vals.info.mid2Icon }}
+        </v-icon>{{ vals.info.mid2Text }}
+        <v-spacer />
         <v-icon>{{ vals.info.right1Icon }}</v-icon>{{ vals.info.right1Text }}
-        <v-icon class="mr-0">{{ vals.info.right2Icon }}</v-icon>{{ vals.info.right2Text }}
+        <v-icon class="mr-0">
+          {{ vals.info.right2Icon }}
+        </v-icon>{{ vals.info.right2Text }}
       </v-system-bar>
     </v-card>
   </v-col>
@@ -48,9 +96,17 @@
 
 <script>
   export default {
+    props: {
+      item: {
+        type: Object,
+        default: () => { return { name: 'panel' } }
+      }
+    },
+
     data: () => ({
       name: 'panel',
       setup: {
+        size: 'col-12 col-sm-6 col-md-6 col-lg-6',
         status: {
           bar: [],
           error: []
@@ -89,6 +145,12 @@
       list: []
     }),
 
+    computed: {
+      getLevel() {
+        return this.vals.status.invert ? 100 - this.vals.status.level : this.vals.status.level;
+      }
+    },
+
     watch: {
       item: {
         immediate: true,
@@ -110,10 +172,14 @@
       }
     },
 
-    computed: {
-      getLevel() {
-        return this.vals.status.invert ? 100 - this.vals.status.level : this.vals.status.level;
-      }
+    created() {
+      let size = this.$fhem.getEl(this.item, 'Options', 'setup', 'size');
+      let status = this.$fhem.getEl(this.item, 'Options', 'setup', 'status');
+      let info = this.$fhem.getEl(this.item, 'Options', 'setup', 'info');
+
+      if(size) this.setup.size = size;
+      if(status) Object.assign(this.setup.status, status);
+      if(info) Object.assign(this.setup.info, info);
     },
 
     methods: {
@@ -216,18 +282,6 @@
           }
         }
       }
-    },
-
-    created() {
-      let status = this.$fhem.getEl(this.item, 'Options', 'setup', 'status');
-      let info = this.$fhem.getEl(this.item, 'Options', 'setup', 'info');
-
-      if(status) Object.assign(this.setup.status, status);
-      if(info) Object.assign(this.setup.info, info);
-    },
-
-    props: {
-      item: {}, // jsonObject from FHEM Device
     }
   }
 </script>

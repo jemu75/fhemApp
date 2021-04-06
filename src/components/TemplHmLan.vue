@@ -1,23 +1,42 @@
 <template>
   <v-col class="col-12 col-sm-12 col-md-6 col-lg-6">
-    <v-card :dark="this.$vuetify.theme.dark" color="secondary">
-      <v-progress-linear height="7" :value="vals.mainLevel" :color="vals.mainColor" background-color="secondary darken-1"></v-progress-linear>
+    <v-card
+      :dark="this.$vuetify.theme.dark"
+      color="secondary"
+    >
+      <v-progress-linear
+        height="7"
+        :value="vals.mainLevel"
+        :color="vals.mainColor"
+        background-color="secondary darken-1"
+      />
 
-      <v-card-title class="text-truncate">{{ vals.title }}</v-card-title>
-      <v-divider></v-divider>
+      <v-card-title class="text-truncate">
+        {{ vals.title }}
+      </v-card-title>
+      <v-divider />
 
       <v-card-text>
         <v-row align="center">
-          <v-col class="col-4" align="center">
+          <v-col
+            class="col-4"
+            align="center"
+          >
             Auslastung
           </v-col>
-          <v-col class="col-8" align="center">
+          <v-col
+            class="col-8"
+            align="center"
+          >
             Geräte
           </v-col>
         </v-row>
 
         <v-row align="center">
-          <v-col class="col-4" align="center">
+          <v-col
+            class="col-4"
+            align="center"
+          >
             <v-progress-circular
               rotate="90"
               size="70"
@@ -29,7 +48,10 @@
             </v-progress-circular>
           </v-col>
 
-          <v-col class="col-4" align="center">
+          <v-col
+            class="col-4"
+            align="center"
+          >
             <v-progress-circular
               rotate="90"
               size="70"
@@ -41,7 +63,10 @@
             </v-progress-circular>
           </v-col>
 
-          <v-col class="col-4" align="center">
+          <v-col
+            class="col-4"
+            align="center"
+          >
             <v-progress-circular
               rotate="90"
               size="70"
@@ -49,29 +74,44 @@
               :value="devOfflinePercent"
               color="error"
             >
-              <v-btn :disabled="vals.devOffline.length < 1" plain @click="goTo()">{{ vals.devOffline.length }}</v-btn>
+              <v-btn
+                :disabled="vals.devOffline.length < 1"
+                plain
+                @click="goTo()"
+              >
+                {{ vals.devOffline.length }}
+              </v-btn>
             </v-progress-circular>
           </v-col>
         </v-row>
 
         <v-row align="center">
-          <v-col class="col-4" align="center">
+          <v-col
+            class="col-4"
+            align="center"
+          >
             {{ vals.mainState }}
           </v-col>
-          <v-col class="col-4" align="center">
+          <v-col
+            class="col-4"
+            align="center"
+          >
             aktiv
           </v-col>
-          <v-col class="col-4" align="center">
+          <v-col
+            class="col-4"
+            align="center"
+          >
             inaktiv
           </v-col>
         </v-row>
       </v-card-text>
-      <v-divider></v-divider>
+      <v-divider />
       <v-system-bar color="secondary darken-1">
         <v-icon>{{ vals.systemIcon }}</v-icon>
-        <v-spacer></v-spacer>
+        <v-spacer />
         {{ vals.systemLastEvent }}
-        <v-spacer></v-spacer>
+        <v-spacer />
       </v-system-bar>
     </v-card>
   </v-col>
@@ -79,6 +119,13 @@
 
 <script>
   export default {
+    props: {
+      item: {
+        type: Object,
+        default: () => { return { name: 'hmlan' } }
+      }
+    },
+
     data: () => ({
       name: 'hmlan',
       defaultSet: [
@@ -102,6 +149,22 @@
       active: true
     }),
 
+    computed: {
+      workLoadColor() {
+        return parseInt(this.vals.systemIconValue) > 80 ? 'error' : 'success';
+      },
+
+      devOnlinePercent() {
+        let count = parseInt(this.vals.devCount) + this.vals.devOffline.length;
+        return count > 0 ? (parseInt(this.vals.devCount) / count * 100).toFixed(1) : 0;
+      },
+
+      devOfflinePercent() {
+        let count = parseInt(this.vals.devCount) + this.vals.devOffline.length;
+        return count > 0 ? ((1 - (parseInt(this.vals.devCount) / count)) * 100).toFixed(1) : 0;
+      }
+    },
+
     watch: {
       item: {
         immediate: true,
@@ -121,22 +184,6 @@
           this.vals.devCount = alive.split(' ')[0].split(':')[1];
           this.checkDevices(watcher);
         }
-      }
-    },
-
-    computed: {
-      workLoadColor() {
-        return parseInt(this.vals.systemIconValue) > 80 ? 'error' : 'success';
-      },
-
-      devOnlinePercent() {
-        let count = parseInt(this.vals.devCount) + this.vals.devOffline.length;
-        return count > 0 ? (parseInt(this.vals.devCount) / count * 100).toFixed(1) : 0;
-      },
-
-      devOfflinePercent() {
-        let count = parseInt(this.vals.devCount) + this.vals.devOffline.length;
-        return count > 0 ? ((1 - (parseInt(this.vals.devCount) / count)) * 100).toFixed(1) : 0;
       }
     },
 
@@ -176,10 +223,6 @@
       goTo() {
         this.$router.push('/devices/device=' + this.vals.devOffline);
       }
-    },
-
-    props: {
-      item: {}, // jsonObject from FHEM Device
     }
   }
 </script>

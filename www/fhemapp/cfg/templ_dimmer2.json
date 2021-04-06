@@ -1,0 +1,22 @@
+{
+  "name": "dimmer_fibaro_FGD212",
+  "author": "tomspatz",
+  "date": "2021-03-26",
+  "status": {
+    "bar": ["pct::%n:success"],
+    "error": []
+  },
+  "main": [
+    {
+      "leftBtn": "mdi-lightbulb-off",
+      "leftClick": ["state::off"],
+      "slider": ["pct::%v:%n:0:100"],
+      "rightBtn": "mdi-lightbulb",
+      "rightClick": ["state::on"]
+    }
+  ],
+  "info": {
+    "left1": ["pct:1::mdi-lightbulb","pct:::mdi-lightbulb-off"],
+    "left2": ["pct:1:%n%"]
+  }
+}

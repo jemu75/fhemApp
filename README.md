@@ -176,6 +176,7 @@ In den Template-Dateien können folgende Eigenschaften definiert werden. Die Zuw
   "description": "kurze Beschreibung"
   "author": "name",
   "date": "YYYY-MM-DD",
+  "size": "col-12 col-sm-6 col-md-4 col-lg-4",
   "status": {
     "bar": ["reading:value:level:color:invert"],
     "error": ["reading:value:level:color:text"]
@@ -244,6 +245,22 @@ Beispiele:
 |main|rightLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der rechten Taste abgesendet wird. *Hinweis:* `set <devicename>` kann weggelassen werden|
 |main|rightMenu|text:cmd|definiert für das **rechte Menü** die Texte und FHEM-Kommandos. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die rechte Taste ein Menü auf. *Hinweis:* rightClick, rightLong und rightLongRelease stehen bei Zuweisung des Menüs nicht zur Verfügung.|
 |info|left1..2,<br>mid1..2,<br>right1..2|reading:wert:text:icon|definiert welches **Icon** und welcher **Text** in der Infozeile anzeigeigt wird|
+
+## Breite von Templates
+Die Templates von **FHEMApp** sind optimal an die verschiedenen Displayformate angepasst. Es gibt dennoch die Möglichkeit, die relative Breite von Templates anzupassen. Der Anzeigebereich von **FHEMApp** ist dabei in 12 gleiche "Teile" untergliedert. Wenn man einem Template z.B. alle 12 Teile zuweist, dann nimmt es die volle Breite ein. Wieviele "Teile" ein Template einnehmen soll, kann zusätzlich unter Berücksichtigung des Displayformates definiert werden. z.B. alle 12 Teile bei schmalen Displays und 3 Teile (25%) bei breiten Displays. Folgende Displayformate werden unterschieden.
+
+|Device|Code|Type|Range|
+|-----------|----|------------------------|---------|
+Extra small	| xs |	Small to large phone	| < 600px |
+Small	| sm |	Small to medium tablet | 600px > < 960px |
+Medium	| md | Large tablet to laptop | 960px > < 1264px |
+Large	| lg | Desktop | 1264px > < 1904px |
+Extra large |	xl | 4k and ultra-wide | > 1904px |
+
+Die Definition der Templatebreite erfolgt mit dem Parameter `size`. Der String muss mind. 1 Definition enhalten. Eine Definition beginnt jeweils mit `col-`. Danach folgt (optional) der Displaycode (s.o.) und endet mit den "Teilen" (1-12) Folgendes Beispiel zeigt die voreingestellte Definition für Standard Templates.   
+```
+  "size": "col-12 col-sm-6 col-md-4 col-lg-4"
+```
 
 # Übersicht der verfügbaren Templates
 | Template | Beschreibung | Beispiel |

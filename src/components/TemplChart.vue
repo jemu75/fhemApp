@@ -1,19 +1,37 @@
 <template>
   <v-col :class="vals.gridSize">
-    <v-card :dark="this.$vuetify.theme.dark" color="secondary">
-      <v-progress-linear height="7" :value="vals.mainLevel" :color="vals.mainColor" background-color="secondary darken-1"></v-progress-linear>
+    <v-card
+      :dark="this.$vuetify.theme.dark"
+      color="secondary"
+    >
+      <v-progress-linear
+        height="7"
+        :value="vals.mainLevel"
+        :color="vals.mainColor"
+        background-color="secondary darken-1"
+      />
 
       <v-card-title class="text-truncate">
         {{ vals.title }}
-        <v-spacer></v-spacer>
-        <v-btn small icon @click="goTo">
-          <v-icon small>{{ vals.linkIcon }}</v-icon>
+        <v-spacer />
+        <v-btn
+          small
+          icon
+          @click="goTo"
+        >
+          <v-icon small>
+            {{ vals.linkIcon }}
+          </v-icon>
         </v-btn>
       </v-card-title>
-      <v-divider></v-divider>
+      <v-divider />
 
       <v-card-text class="pa-0">
-        <v-row class="ma-3" align="center" v-if="vals.maxSize">
+        <v-row
+          v-if="vals.maxSize"
+          class="ma-3"
+          align="center"
+        >
           <v-col>
             <v-menu
               v-model="vals.fromPicker"
@@ -31,13 +49,13 @@
                   prepend-icon="mdi-calendar"
                   v-bind="attrs"
                   v-on="on"
-                ></v-text-field>
+                />
               </template>
               <v-date-picker
                 v-model="vals.from"
                 no-title
                 @input="loadChartData"
-              ></v-date-picker>
+              />
             </v-menu>
           </v-col>
           <v-col>
@@ -58,23 +76,27 @@
                   prepend-icon="mdi-calendar"
                   v-bind="attrs"
                   v-on="on"
-                ></v-text-field>
+                />
               </template>
               <v-date-picker
                 v-model="vals.to"
                 no-title
                 @input="loadChartData"
-              ></v-date-picker>
+              />
             </v-menu>
           </v-col>
         </v-row>
-        <apexchart :options="chart.options" :series="chart.series" @zoomed="afterZoom"></apexchart>
+        <apexchart
+          :options="chart.options"
+          :series="chart.series"
+          @zoomed="afterZoom"
+        />
       </v-card-text>
-      <v-divider></v-divider>
+      <v-divider />
 
       <v-system-bar color="secondary darken-1">
         <v-icon>{{ vals.systemIcon }}</v-icon>
-        <v-spacer></v-spacer>
+        <v-spacer />
       </v-system-bar>
     </v-card>
   </v-col>
@@ -82,7 +104,12 @@
 
 <script>
   export default {
-    props: ['item'],
+    props: {
+      item: {
+        type: Object,
+        default: () => { return { name: 'chart' } }
+      }
+    },
 
     data: () => ({
       name: 'chart',
@@ -113,7 +140,7 @@
             }
           },
           stroke: {
-            curve: 'smooth'
+            curve: 'smooth',
           },
           tooltip: {
             x: {
@@ -153,12 +180,19 @@
       }
     },
 
+    created() {
+      this.init();
+    },
+
     methods: {
       init() {
         if(this.$route.params.filter && this.$route.params.filter.match('&size=max')) {
           this.vals.maxSize = true;
           this.vals.gridSize = 'col-12';
           this.vals.linkIcon = 'mdi-arrow-collapse';
+        } else {
+          let size = this.$fhem.getEl(this.item, 'Options', 'setup', 'size');
+          if(size) this.vals.gridSize = size;
         }
 
         this.vals.from = this.$fhem.getDate(-7);
@@ -246,10 +280,6 @@
           this.$fhem.emit('message', { type: 'error', message: 'no valid device defined' } );
         }
       }
-    },
-
-    created() {
-      this.init();
     }
   }
 </script>
