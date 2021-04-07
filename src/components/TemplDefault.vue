@@ -38,8 +38,6 @@
               small
               icon
               :disabled="vals.main.leftBtnDisabled"
-              @mousedown="clickStart('left')"
-              @mouseup="clickEnd('left')"
               @touchstart="clickStart('left')"
               @touchend="clickEnd('left')"
             >
@@ -121,8 +119,6 @@
               small
               icon
               :disabled="vals.main.rightBtnDisabled"
-              @mousedown="clickStart('right')"
-              @mouseup="clickEnd('right')"
               @touchstart="clickStart('right')"
               @touchend="clickEnd('right')"
             >

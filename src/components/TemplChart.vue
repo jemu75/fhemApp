@@ -1,5 +1,5 @@
 <template>
-  <v-col :class="vals.gridSize">
+  <v-col :class="setup.size">
     <v-card
       :dark="this.$vuetify.theme.dark"
       color="secondary"
@@ -113,12 +113,16 @@
 
     data: () => ({
       name: 'chart',
+      setup: {
+        size: 'col-12 col-sm-12 col-md-6 col-lg-4',
+        daysAgo: -7,
+        daysTo: 1
+      },
       vals: {
         title: '',
         mainLevel: 0,
         mainColor: 'success',
         maxSize: false,
-        gridSize: 'col-12 col-sm-12 col-md-6 col-lg-4',
         linkIcon: 'mdi-arrow-expand',
         fromPicker: false,
         from: '',
@@ -140,7 +144,7 @@
             }
           },
           stroke: {
-            curve: 'smooth',
+            curve: 'smooth'
           },
           tooltip: {
             x: {
@@ -191,12 +195,13 @@
           this.vals.gridSize = 'col-12';
           this.vals.linkIcon = 'mdi-arrow-collapse';
         } else {
-          let size = this.$fhem.getEl(this.item, 'Options', 'setup', 'size');
-          if(size) this.vals.gridSize = size;
+          let setup = this.$fhem.getEl(this.item, 'Options', 'setup');
+          if(setup) Object.assign(this.setup, setup);
+          if (this.setup.lineWidth) this.chart.options.stroke.width = this.setup.lineWidth;
         }
 
-        this.vals.from = this.$fhem.getDate(-7);
-        this.vals.to = this.$fhem.getDate(1);
+        this.vals.from = this.$fhem.getDate(this.setup.daysAgo);
+        this.vals.to = this.$fhem.getDate(this.setup.daysTo);
 
         this.chart.options.chart.height = window.innerHeight > 600 && this.vals.maxSize ? parseInt((window.innerHeight - 320)) : 'auto';
         this.chart.options.theme.mode = this.$vuetify.theme.dark ? 'dark' : 'light';

@@ -702,12 +702,18 @@ attr overview_light appOptions { "panel": { "status": ["state:off:aus:0:success"
 #### Definition
 Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
 ```
-{ "template": "chart", "chartDef": ["<def1>", "<def2>", ...] }
+{ "template": "chart", "chartDef": ["<def1>", "<def2>", ...], "setup": { } }
 ```
+
 ### Konfiguration von Charts
-Über den Parameter `chartDef` legt ihr fest, welche Daten im Chart angezeigt werden. Jede Linie entspricht dabei einer Definition. Folgende Eigenschaften stehen zur Verfügung:
+Da *Chart* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften über den Parameter `setup` in `appOptions` anpassen. Über den Paramter `size` kann die Templatebreite [siehe](#breite-von-templates) verändert werden. Der Parameter `daysAgo` legt ihr fest, wieviele Tage das Chart beim Laden zurückschaut. Als Standard werden die Daten der letzten 7 Tage `"daysAgo": -7` geladen. Über den Parameter `lineWidth` könnt ihr die Linienbreite der Chartlinien verändern. Als Standard ist `"lineWidth": 3` festgelegt. Über den Parameter `chartDef` legt ihr fest, welche Daten im Chart angezeigt werden. Jede Linie entspricht dabei einer Definition. 
 ```
 "chartDef": ["logsource:reading:text:präfix:axis"],
+"setup": {
+    "size": "string",
+    "daysAgo": number,
+    "lineWidth": number
+}
 ```
 1. **logsource** - dieser Parameter enthält entweder den Name des *FileLog-Devices* oder den Name eures *DbLog-Devices*.
 2. **reading** - wenn ihr auf ein *FileLog-Device* zugreift, genügt hier im Normalfall der Name des *Readings* welches dargestellt werden soll. Wenn euer *FileLog* Readings in mehreren Spalten enthält, dann müsst ihr den Parameter in runde Klammern setzen und *<spalte:reading>* angeben z.B. `(4:temperature)`. Wenn Daten von einem *DbLog-Device* anzeigen wollt, dann müsst ihr den Parameter in runde Klammern setzen und *<device>:<reading>* angeben z.B. `(myTempSensor:temperature)`
