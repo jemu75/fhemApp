@@ -190,14 +190,14 @@
 
     methods: {
       init() {
+        let setup = this.$fhem.getEl(this.item, 'Options', 'setup');
+        if(setup) Object.assign(this.setup, setup);
+        if (this.setup.lineWidth) this.chart.options.stroke.width = this.setup.lineWidth;
+
         if(this.$route.params.filter && this.$route.params.filter.match('&size=max')) {
           this.vals.maxSize = true;
-          this.vals.gridSize = 'col-12';
+          this.setup.size = 'col-12';
           this.vals.linkIcon = 'mdi-arrow-collapse';
-        } else {
-          let setup = this.$fhem.getEl(this.item, 'Options', 'setup');
-          if(setup) Object.assign(this.setup, setup);
-          if (this.setup.lineWidth) this.chart.options.stroke.width = this.setup.lineWidth;
         }
 
         this.vals.from = this.$fhem.getDate(this.setup.daysAgo);

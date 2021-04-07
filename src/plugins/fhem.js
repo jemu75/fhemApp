@@ -19,6 +19,8 @@ export default class Fhem extends EventEmitter {
         logLast: {}
       },
       options: {
+        debugMode: false,
+        debugLevel: 3, // 1 = fehler, 2 = status, 3 = requests, 4 = informChannel, 5 = internals
         loading: false,
         loadCount: 0,
         clock: null,
@@ -53,6 +55,7 @@ export default class Fhem extends EventEmitter {
       type: 'info',
       timestamp: Date.now(),
       timeFlag: null,
+      debugLevel: this.app.options.debugLevel,
       message: '',
       icon: '',
       color: ''
@@ -64,14 +67,17 @@ export default class Fhem extends EventEmitter {
     let miSecs = new Date(target.timestamp).getMilliseconds();
 
     target.timeFlag = time + ':' + ('000' + miSecs).slice(-3);
-    target.icon = target.type === 'error' ? 'mdi-alert' : target.type === 'info' ? 'mdi-information' : 'mdi-sync-circle';
-    target.color = target.type;
+    if(target.type === 'error') { target.icon = 'mdi-alert-outline'; target.color = 'error' } // debugLevel 1 error
+    if(target.type === 'status') { target.icon = 'mdi-connection'; target.color = 'info' } // debugLevel 2 status
+    if(target.type === 'request') { target.icon = 'mdi-send-circle-outline'; target.color = 'success' } // debugLevel 3 request
+    if(target.type === 'warning') { target.icon = 'mdi-help-circle-outline'; target.color = 'warning' } // debugLevel 3 request
+    if(target.type === 'info') { target.icon = 'mdi-sync'; target.color = 'success' } // debugLevel 4 request
 
     this.app.session.logLast = target;
 
     if(target.type === 'error') this.emit('message', { type: target.type, message: target.message, meta: target.meta });
 
-    if(this.app.options.logRecord) {
+    if(this.app.options.logRecord && target.debugLevel <= this.app.options.debugLevel) {
       this.app.session.logList.unshift(target);
       if(this.app.session.logList.length > this.app.options.logBuffer) this.app.session.logList.length = this.app.options.logBuffer;
     }
@@ -136,7 +142,7 @@ export default class Fhem extends EventEmitter {
       if(typeof cmd === 'string') options.push({ param: 'cmd', value: cmd });
       let req = this.createURL(options);
 
-      this.log = { type: 'info', message: 'Request: ' + req };
+      this.log = { type: 'request', message: 'Request: ' + req, debugLevel: 3 };
 
       fetch(req)
         .then((res) => {
@@ -220,14 +226,14 @@ export default class Fhem extends EventEmitter {
               }
             })
             .catch((err) => {
-              this.log = { type: 'error', message: 'Fetch data from FHEM Logfile failed.', meta: err };
+              this.log = { type: 'error', message: 'Fetch data from FHEM Logfile failed.', meta: err, debugLevel: 1 };
               reject();
             });
 
           idx ++;
         }
       } else {
-        this.log = { type: 'error', message: 'No Definitions for Chart found.', meta: obj };
+        this.log = { type: 'error', message: 'No Definitions for Chart found.', meta: obj, debugLevel: 1 };
         reject();
       }
     });
@@ -254,7 +260,7 @@ export default class Fhem extends EventEmitter {
           }
         })
         .catch((err) => {
-          this.log = { type: 'error', message: 'FHEM check for Updates failed.', meta: err };
+          this.log = { type: 'error', message: 'FHEM check for Updates failed.', meta: err, debugLevel: 1 };
           reject(err);
         })
     });
@@ -297,11 +303,11 @@ export default class Fhem extends EventEmitter {
           }
         })
         .catch((err) => {
-          this.log = { type: 'error', message: 'Loading ' + attr + 's from FHEM failed.', meta: err };
+          this.log = { type: 'error', message: 'Loading ' + attr + 's from FHEM failed.', meta: err, debugLevel: 1 };
           this.app.options.loading = false;
         });
     } else {
-      this.log = { type: 'error', message: 'Creating Routes failed.', meta: attr };
+      this.log = { type: 'error', message: 'Creating Routes failed.', meta: attr, debugLevel: 1 };
       this.app.options.loading = false;
     }
   }
@@ -407,7 +413,7 @@ export default class Fhem extends EventEmitter {
             }
           }
         } else {
-          this.log = { type: 'error', message: 'Wrong Definition for Device-States.', meta: device }
+          this.log = { type: 'error', message: 'Wrong Definition for Device-States.', meta: device, debugLevel: 1 }
         }
       }
     }
@@ -433,7 +439,7 @@ export default class Fhem extends EventEmitter {
             return res.Results[0];
           })
           .catch((err) => {
-            this.log = { type: 'error', message: 'Request to FHEM failed.', meta: err };
+            this.log = { type: 'error', message: 'Request to FHEM failed.', meta: err, debugLevel: 1 };
           })
       }
     }
@@ -467,7 +473,7 @@ export default class Fhem extends EventEmitter {
           let templDef = await res.json();
           let setup = {};
 
-          if(templDef.size) setup.size = templDef.size; 
+          if(templDef.size) setup.size = templDef.size;
           if(templDef.status) Object.assign(setup, { status: templDef.status });
           if(templDef.main) Object.assign(setup, { main: templDef.main });
           if(templDef.info) Object.assign(setup, { info: templDef.info});
@@ -475,7 +481,7 @@ export default class Fhem extends EventEmitter {
           return setup;
         })
         .catch((err) => {
-          this.log = { type: 'error', message: 'Loading Template ' + template + ' failed.', meta: err };
+          this.log = { type: 'error', message: 'Loading Template ' + template + ' failed.', meta: err, debugLevel: 1 };
           return {};
         })
     }
@@ -503,7 +509,7 @@ export default class Fhem extends EventEmitter {
       try {
         result = JSON.parse(string);
       } catch(err) {
-        this.log = { type: 'error', message: 'Json-Object is no valid. ' + string, meta: err.message };
+        this.log = { type: 'error', message: 'Json-Object is no valid. ' + string, meta: err.message, debugLevel: 1 };
       }
     }
     return result;
@@ -594,7 +600,7 @@ export default class Fhem extends EventEmitter {
         }
       })
       .catch((err) => {
-        this.log = { type: 'error', message: 'Request to FHEM failed.', meta: err };
+        this.log = { type: 'error', message: 'Request to FHEM failed.', meta: err, debugLevel: 1 };
         this.app.options.loading = false;
       })
   }
@@ -606,7 +612,7 @@ export default class Fhem extends EventEmitter {
 
     if(!arr[2].match('<div')) {
       if(!arr[0].match('-ts')) {
-        this.log = { type: 'success', message: arr[0].replace('-',': ') + ': ' + arr[1] };
+        this.log = { type: 'info', message: arr[0].replace('-',': ') + ': ' + arr[1], debugLevel: 4 };
       }
 
       if(arr[0].match('global-UPDATE')) {
@@ -630,7 +636,7 @@ export default class Fhem extends EventEmitter {
         }
       } else {
         // alles was nicht verarbeitet werden kann
-        this.log = { type: 'warning', message: 'No Handling for this FHEM data.', meta: arr };
+        this.log = { type: 'warning', message: 'No Handling for this FHEM data. ' + arr, meta: arr, debugLevel: 3 };
       }
     }
 
@@ -696,8 +702,9 @@ export default class Fhem extends EventEmitter {
     }
 
     this.log = {
-      type: 'info',
+      type: 'status',
       message: 'Connection with FHEM was closed. Try to Reconnect in 3 seconds...',
+      debugLevel: 2
     }
   }
 
@@ -711,9 +718,10 @@ export default class Fhem extends EventEmitter {
         this.emit('connect');
 
         this.log = {
-          type: 'info',
+          type: 'status',
           message: 'Connection with FHEM is opened.',
-          meta: this.session
+          meta: this.session,
+          debugLevel: 2
         }
         this.app.options.loading = false;
       })
@@ -724,7 +732,8 @@ export default class Fhem extends EventEmitter {
         this.log = {
           type: 'error',
           message: 'Retrieve csrf-Token failed.',
-          meta: err
+          meta: err,
+          debugLevel: 1
         };
       })
       .finally(() => this.app.options.loading = false);

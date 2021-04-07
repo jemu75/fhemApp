@@ -165,8 +165,8 @@
           this.vals.tempVal = temp ? temp.toFixed(1) : '';
           this.vals.tempColor = temp > 60 ? 'error' : 'success';
           this.vals.mainColor = cpu > 70 || ram > 70 || temp > 60 ? 'error' : 'success';
-          this.vals.startServer = this.$fhem.getDateTime(serverStartTime);
-          this.vals.startFhem = this.$fhem.getDateTime(fhemStartTime);
+          this.vals.startServer = serverStartTime;
+          this.vals.startFhem = fhemStartTime;
           this.vals.systemLastEvent =  this.$fhem.getDateTime(lastEvent);
         }
       },

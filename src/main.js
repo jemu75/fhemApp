@@ -17,7 +17,7 @@ Vue.prototype.$fhem = new fhem()
 fetch('./cfg/config.json')
   .then(res => res.json())
   .catch((err) =>{
-    Vue.prototype.$fhem.log = { type: 'error', message: 'Loading config.json failed.', meta: err }
+    Vue.prototype.$fhem.log = { type: 'error', message: 'Loading config.json failed.', meta: err, debugLevel: 1 }
   })
   .then(cfg => {
 
@@ -34,8 +34,8 @@ fetch('./cfg/config.json')
       }
     }
 
-    Vue.prototype.$fhem.log = { type: 'info', message: 'Config: ' + JSON.stringify(cfg) }
-    Vue.prototype.$fhem.log = { type: 'info', message: 'Connection: ' + JSON.stringify(Vue.prototype.$fhem.app.connection) }
+    Vue.prototype.$fhem.log = { type: 'status', message: 'Config: ' + JSON.stringify(cfg), debugLevel: 2 }
+    Vue.prototype.$fhem.log = { type: 'status', message: 'Connection: ' + JSON.stringify(Vue.prototype.$fhem.app.connection), debugLevel: 2 }
 
     new Vue({
       vuetify,

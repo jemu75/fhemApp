@@ -38,8 +38,8 @@
               small
               icon
               :disabled="vals.main.leftBtnDisabled"
-              @touchstart="clickStart('left')"
-              @touchend="clickEnd('left')"
+              @mousedown="clickStart('left')"
+              @mouseup="clickEnd('left')"
             >
               <v-icon large>
                 {{ vals.main.leftBtn }}
@@ -119,8 +119,8 @@
               small
               icon
               :disabled="vals.main.rightBtnDisabled"
-              @touchstart="clickStart('right')"
-              @touchend="clickEnd('right')"
+              @mousedown="clickStart('right')"
+              @mouseup="clickEnd('right')"
             >
               <v-icon large>
                 {{ vals.main.rightBtn }}

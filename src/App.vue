@@ -34,6 +34,19 @@
         {{ app.data.header }}
       </div>
       <v-spacer />
+      <v-btn
+        v-if="app.options.debugMode"
+        small
+        icon
+        link
+        to="/syslog"
+      >
+        <v-icon
+          small
+        >
+          mdi-format-list-bulleted
+        </v-icon>
+      </v-btn>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-icon
@@ -194,7 +207,7 @@
           header: ''
         }
       },
-      version: 'v3.7.0',
+      version: 'v3.7.1',
       status: {
         color: 'secondary',
         icon: 'mdi-circle',
