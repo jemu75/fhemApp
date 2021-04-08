@@ -14,6 +14,10 @@
       <v-card-title class="text-truncate">
         {{ vals.title }}
         <v-spacer />
+        <jsonList
+          v-if="app.options.debugMode"
+          :item="item"
+        />
         <v-btn
           small
           icon
@@ -156,7 +160,13 @@
 </template>
 
 <script>
+  import jsonList from '@/components/Jsonlist.vue'
+
   export default {
+    components: {
+      jsonList
+    },
+
     props: {
       item: {
         type: Object,
@@ -166,6 +176,11 @@
 
     data: () => ({
       name: 'sonos',
+      app: {
+        options: {
+          debugMode: false
+        }
+      },
       defaultSet: [
         "Volume:^[0]$:stumm::success:mdi-volume-off",
         "transportState:PLAYING:an:100:success:mdi-play",
@@ -253,6 +268,8 @@
     },
 
     mounted() {
+      this.app.options = this.$fhem.app.options;
+
       setInterval(() => {
         this.vals.systemIconValue = this.vals.systemIconValue === this.vals.playInfo1 ? this.vals.playInfo2 : this.vals.playInfo1;
       }, 3000)

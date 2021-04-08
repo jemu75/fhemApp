@@ -9,7 +9,7 @@
 
     <v-app-bar
       app
-      color="primary"
+      :color="appBarColor"
       dark
       clipped-left
     >
@@ -30,6 +30,10 @@
         {{ app.options.clock }}
       </h2>
       <v-spacer />
+      <div v-if="app.options.debugMode">
+        DebugMode - Level {{ app.options.debugLevel }}
+      </div>
+
       <div class="hidden-lg-and-up text-h5">
         {{ app.data.header }}
       </div>
@@ -193,6 +197,7 @@
     data: () => ({
       drawer: null,
       back: false,
+      appBarColor: 'primary',
       app: {
         options: {
           loading: false,
@@ -207,7 +212,7 @@
           header: ''
         }
       },
-      version: 'v3.7.1',
+      version: 'v3.7.2',
       status: {
         color: 'secondary',
         icon: 'mdi-circle',
@@ -244,6 +249,8 @@
       this.$fhem.on('connect', () => this.loadRoutes())
       this.$fhem.init();
       this.loadRoutes();
+
+      if(this.app.options.debugMode) this.appBarColor = 'pink darken-4'
     },
 
     methods: {

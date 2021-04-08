@@ -23,6 +23,7 @@
     "typeface-roboto": "^1.1.13",
     "vue": "^2.6.11",
     "vue-apexcharts": "^1.6.0",
+    "vue-json-pretty": "^1.7.1",
     "vue-router": "^3.5.1",
     "vuetify": "^2.4.8"
   },

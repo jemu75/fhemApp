@@ -14,6 +14,10 @@
       <v-card-title class="text-truncate">
         {{ vals.title }}
         <v-spacer />
+        <jsonList
+          v-if="app.options.debugMode"
+          :item="item"
+        />
         <v-btn
           v-if="multiLevel && isActive"
           small
@@ -38,8 +42,10 @@
               small
               icon
               :disabled="vals.main.leftBtnDisabled"
-              @mousedown="clickStart('left')"
-              @mouseup="clickEnd('left')"
+              @touchstart="clickStart('left','touch')"
+              @touchend="clickEnd('left','touch')"
+              @mousedown="clickStart('left','mouse')"
+              @mouseup="clickEnd('left','mouse')"
             >
               <v-icon large>
                 {{ vals.main.leftBtn }}
@@ -119,8 +125,10 @@
               small
               icon
               :disabled="vals.main.rightBtnDisabled"
-              @mousedown="clickStart('right')"
-              @mouseup="clickEnd('right')"
+              @touchstart="clickStart('right','touch')"
+              @touchend="clickEnd('right','touch')"
+              @mousedown="clickStart('right','mouse')"
+              @mouseup="clickEnd('right','mouse')"
             >
               <v-icon large>
                 {{ vals.main.rightBtn }}
@@ -223,7 +231,12 @@
 </template>
 
 <script>
+  import jsonList from '@/components/Jsonlist.vue'
+
   export default {
+    components: {
+      jsonList
+    },
 
     props: {
       item: {
@@ -234,6 +247,11 @@
 
     data: () => ({
       name: 'default',
+      app: {
+        options: {
+          debugMode: false
+        }
+      },
       setup: {
         size: 'col-12 col-sm-6 col-md-4 col-lg-4',
         status: {
@@ -299,7 +317,8 @@
       isActive: true,
       timer: false,
       long: false,
-      pendingClick: 0
+      pendingClick: 0,
+      touchFirst: false
     }),
 
     computed: {
@@ -329,6 +348,8 @@
     },
 
     mounted() {
+      this.app.options = this.$fhem.app.options;
+
       let size = this.$fhem.getEl(this.item, 'Options', 'setup', 'size');
       let status = this.$fhem.getEl(this.item, 'Options', 'setup', 'status');
       let main = this.$fhem.getEl(this.item, 'Options', 'setup', 'main');
@@ -368,13 +389,20 @@
         }
       },
 
-      clickStart(val) {
+      clickStart(val, evt) {
         this.long = false;
+
+        this.$fhem.log = { type: 'intern', message: 'ClickStart: type ' + val + ':' + evt, debugLevel: 5 };
+
+        if(this.touchFirst && evt === 'mouse') return;
+        if(evt === 'touch') this.touchFirst = true;
 
         this.timer = setInterval(() => {
           this.long = true;
 
           let action = this.setup.main[this.mainLevel].[val + 'Long'];
+
+          this.$fhem.log = { type: 'intern', message: 'ClickEvent: Long ' + ' [' + action + ']', debugLevel: 5 };
 
           if(action) {
             let param = this.$fhem.handleVals(this.item, action);
@@ -387,10 +415,17 @@
         }, 1000)
       },
 
-      clickEnd(val) {
+      clickEnd(val, evt) {
+        this.$fhem.log = { type: 'intern', message: 'ClickEnd: type ' + val + ':' + evt, debugLevel: 5 };
+
+        if(this.touchFirst && evt === 'mouse') return;
+        if(evt === 'touch') this.touchFirst = true;
+
         this.timer = clearInterval(this.timer);
 
         let action = this.setup.main[this.mainLevel].[val + (this.long ? 'LongRelease' : 'Click')];
+
+        this.$fhem.log = { type: 'intern', message: 'ClickEvent: ' + (this.long ? 'LongRelease' : 'Click') + ' [' + action + ']', debugLevel: 5 };
 
         if(action) {
           let param = this.$fhem.handleVals(this.item, action);
@@ -399,6 +434,7 @@
             let cmd = param[0].match('set') ? param[0] : 'set ' + this.item.Name + ' ' + param[0];
             let isIncrement = action.findIndex((e) => e.match('%i')) != -1 ? true : false;
             if(!this.long && isIncrement) this.updateReading(cmd);
+
             this.sendCmd(cmd, isIncrement);
           }
         }

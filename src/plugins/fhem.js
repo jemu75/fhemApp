@@ -72,6 +72,7 @@ export default class Fhem extends EventEmitter {
     if(target.type === 'request') { target.icon = 'mdi-send-circle-outline'; target.color = 'success' } // debugLevel 3 request
     if(target.type === 'warning') { target.icon = 'mdi-help-circle-outline'; target.color = 'warning' } // debugLevel 3 request
     if(target.type === 'info') { target.icon = 'mdi-sync'; target.color = 'success' } // debugLevel 4 request
+    if(target.type === 'intern') { target.icon = 'mdi-hexagon-multiple-outline'; target.color = 'warning' } // debugLevel 5 internals
 
     this.app.session.logLast = target;
 
@@ -196,6 +197,8 @@ export default class Fhem extends EventEmitter {
       idx ++;
     }
 
+    this.log = { type: 'intern', message: 'handle Chartdata (Lines: ' + items.length + ')', debugLevel: 5 };
+
     return result;
   }
 
@@ -215,6 +218,8 @@ export default class Fhem extends EventEmitter {
           cmd += obj.from ? ' - - ' + obj.from : '';
           cmd += obj.to ? ' ' + obj.to : '';
           cmd += select ? ' ' + select[0].replace(/\(|\)/g,'') : ' 4:' + defPart[1];
+
+          this.log = { type: 'intern', message: 'Loading Chartdata - ' + cmd, debugLevel: 5 };
 
           this.request([{ param: 'cmd', value: cmd }, { param: 'XHR', value: '1' }],'text', { id: idx })
             .then((res) => {
