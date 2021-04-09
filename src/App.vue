@@ -206,7 +206,7 @@
           header: ''
         }
       },
-      version: 'v3.8.0', // Datum in Header, Hamburger immer da -> back button ausgebaut
+      version: 'v3.8.1',
       status: {
         color: 'secondary',
         icon: 'mdi-circle',

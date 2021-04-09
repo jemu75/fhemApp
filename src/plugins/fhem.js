@@ -94,9 +94,9 @@ export default class Fhem extends EventEmitter {
 
   // mainfunction, Format Date and Time from FHEM
   getDateTime(val) {
-    let timestamp = val ? val : (new Date);
+    let timestamp = val ? val : new Date().toISOString();
 
-    return new Date(timestamp).toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'medium' }).replace(',','');
+    return new Date(timestamp.replace(' ','T')).toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'medium' }).replace(',','');
   }
 
   // mainfunction get element from deep nested objects
@@ -338,8 +338,10 @@ export default class Fhem extends EventEmitter {
       if(defSet[i].match('%i') && chkNum) {
         let inc = parseFloat(defSet[i].split('%i')[1]);
         if(inc != 'isNaN') {
+          let isDecimal = inc.toString().split('.')[1] || '';
+          let decimal = isDecimal.length;
           let newVal = parseFloat(state.slice(chkNum.index)) + inc;
-          val = defSet[i].replace('%i' + inc, newVal);
+          val = defSet[i].replace('%i' + inc, newVal.toFixed(decimal));
         }
       }
 
