@@ -23,7 +23,9 @@ export default class Fhem extends EventEmitter {
         debugLevel: 3, // 1 = fehler, 2 = status, 3 = requests, 4 = informChannel, 5 = internals
         loading: false,
         loadCount: 0,
+        clockInterval: 5000,
         clock: null,
+        date: null,
         maxChartPoints: 100,
         updateProcess: false,
         logRecord: true,
@@ -92,9 +94,9 @@ export default class Fhem extends EventEmitter {
 
   // mainfunction, Format Date and Time from FHEM
   getDateTime(val) {
-    let timestamp = val ? val : Date.now();
+    let timestamp = val ? val : (new Date);
 
-    return new Date(timestamp).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'medium' }).replace(',','');
+    return new Date(timestamp).toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'medium' }).replace(',','');
   }
 
   // mainfunction get element from deep nested objects
@@ -744,10 +746,18 @@ export default class Fhem extends EventEmitter {
       .finally(() => this.app.options.loading = false);
   }
 
+  // subfunction, set the actual timestamp for menubar
+  setClock() {
+    let timestamp = new Date();
+
+    this.app.options.clock = timestamp.toLocaleString('de-DE', { hour: '2-digit', minute: '2-digit' })
+    this.app.options.date = timestamp.toLocaleString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+  }
+
   // mainfunction, create websocket and listen for updates from FHEM
   init() {
     let options = [ { param: 'inform', value: 'type=status;filter=.*;fmt=JSON' }, { param: 'XHR', value: '1' } ];
-    let url = this.createURL(options).replace('http','ws');
+    let url = this.createURL(options).replace(/^http/i,'ws');
 
     this.app.socket = new WebSocket(url);
 
@@ -755,8 +765,8 @@ export default class Fhem extends EventEmitter {
     this.app.socket.onmessage = (message) => this.doUpdate(message);
     this.app.socket.onclose = () => this.connClose();
 
-    setInterval(() => {
-      this.app.options.clock = new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
-    }, 1000)
+    this.setClock();
+
+    setInterval(() => this.setClock(), this.app.options.clockInterval);
   }
 }

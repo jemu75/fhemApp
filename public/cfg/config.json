@@ -6,9 +6,7 @@
   },
   "options": {
     "maxChartPoints": 100,
-    "logBuffer": 500,
-    "debugMode": true,
-    "debugLevel": 5
+    "logBuffer": 500
   },
   "theme": {
     "dark": true,

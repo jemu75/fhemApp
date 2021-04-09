@@ -15,42 +15,36 @@
     >
       <div class="hidden-lg-and-up">
         <v-app-bar-nav-icon
-          v-if="!back"
           @click.stop="drawer = !drawer"
         />
-        <v-btn
-          v-if="back"
-          icon
-          @click.stop="goTo"
-        >
-          <v-icon>mdi-chevron-left</v-icon>
-        </v-btn>
       </div>
-      <h2 class="hidden-md-and-down">
+      <div class="hidden-md-and-down text-h5">
         {{ app.options.clock }}
-      </h2>
+      </div>
       <v-spacer />
-      <div v-if="app.options.debugMode">
-        DebugMode - Level {{ app.options.debugLevel }}
+      <div class="hidden-md-and-down text-h5">
+        {{ app.options.date }}
       </div>
 
       <div class="hidden-lg-and-up text-h5">
         {{ app.data.header }}
       </div>
       <v-spacer />
-      <v-btn
-        v-if="app.options.debugMode"
-        small
-        icon
-        link
-        to="/syslog"
-      >
-        <v-icon
+      <div v-if="app.options.debugMode">
+        <v-btn
           small
+          icon
+          link
+          to="/syslog"
         >
-          mdi-format-list-bulleted
-        </v-icon>
-      </v-btn>
+          <v-icon
+            small
+          >
+            mdi-format-list-bulleted
+          </v-icon>
+        </v-btn>
+      </div>
+
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-icon
@@ -196,12 +190,12 @@
     },
     data: () => ({
       drawer: null,
-      back: false,
       appBarColor: 'primary',
       app: {
         options: {
           loading: false,
-          clock: null
+          clock: null,
+          date: null
         },
         session: {
           connect: false,
@@ -212,7 +206,7 @@
           header: ''
         }
       },
-      version: 'v3.7.2',
+      version: 'v3.8.0', // Datum in Header, Hamburger immer da -> back button ausgebaut
       status: {
         color: 'secondary',
         icon: 'mdi-circle',
@@ -235,10 +229,6 @@
         this.status.color = val ? 'success' : 'error';
         this.status.text = val ? 'online' : 'offline';
         this.status.time = this.$fhem.getDateTime();
-      },
-
-      $route(val) {
-        this.back = val.path === '/' ? false : true;
       }
     },
 
@@ -259,11 +249,7 @@
 
         this.$fhem.getRoutes('room');
         this.$fhem.getRoutes('group');
-      },
-
-      goTo() {
-        this.$router.go(-1);
-      },
+      }
     }
-  };
+  }
 </script>
