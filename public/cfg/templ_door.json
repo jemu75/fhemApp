@@ -10,7 +10,7 @@
     {
       "text": ["state:closed:geschlossen","state:open:offen","state::%s"],
       "rightBtn": "mdi-unfold-more-horizontal",
-      "rightClick": ["Connected.button.Internals.NAME::set %s on-for-timer 0.4"]
+      "rightClick": ["state::set Connected.button on-for-timer 0.4"]
     }
   ],
   "info": {

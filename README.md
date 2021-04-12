@@ -53,11 +53,21 @@ Wenn ihr in **FHEMApp** Daten aus FHEM-Logs in Charts darstellt, ist es ggf. sin
 },
 ```
 
-### Anzeigeeinstellungen fürFHEMApp (optional)
+### Anzeigeeinstellungen für FHEMApp (optional)
 Wenn ihr in **FHEMApp** bei der mobilen Ansicht (1-spaltiges Layout) im Header sehen wollt, in welcher Bereich bzw. in welche Gruppe euch gerade befindet, dann könnt ihr unter Options den Paremeter `mobileHeader` setzen.
 ```
 "options": {
   "mobileHeader": true
+},
+```
+
+### Debug-Modus für FHEMApp (optional)
+Bei aktiviertem DebugModus könnt ihr oben rechts im Header direkt das "Systemlog-Protokoll aufrufen". Weiterhin wird in diesem Modus beim Standard-Template oben rechts ein **{...}** Symbol angezeigt. Bei Klick auf dieses Symbol könnt ihr die interne Datenstruktur des jeweiligen Templates anzeigen. Für die Fehlersuche wird das *debugLevel* 5 empfohlen.
+
+```
+"options": {
+  "debugMode": true,
+  "debugLevel": 5
 },
 ```
 
@@ -232,19 +242,27 @@ Beispiele:
 |status|bar|reading:wert:level:color:invert|definiert mit welcher **Farbe** und mit welchem **Level** der Status angezeigt wird. Bei Angabe von invert wird *level* invertiert|
 |status|error|reading:wert:level:color:text|definiert mit welcher **Farbe** und mit welchem **Level** Fehler angezeigt werden. Weiterhin wird die **Fehlermeldung** definiert.|
 |main|leftBtn|reading:wert:icon:disabled (alternativ: icon)|definiert welches *Icon* auf der linken Taste angezeigt wird. Optional kann das Flag *disabled* gesetzt werden. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
-|main|leftClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die linke Taste abgesendet wird. *Hinweis:* `set <devicename>` kann weggelassen werden|
-|main|leftLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der linken Taste abgesendet wird. *Hinweis:* `set <devicename>` kann weggelassen werden|
-|main|leftLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der linken Taste abgesendet wird. *Hinweis:* `set <devicename>` kann weggelassen werden|
+|main|leftClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die linke Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
+|main|leftLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der linken Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
+|main|leftLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der linken Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|leftMenu|text:cmd|definiert für das **linke Menü** die Texte und FHEM-Kommandos. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die linke Taste ein Menü auf. *Hinweis:* leftClick, leftLong und leftLongRelease stehen bei Zuweisung des Menüs nicht zur Verfügung.|
 |main|text|reading:wert:text|definiert den **ersten Text** der in der Mitte angezeigt wird|
 |main|text2|reading:wert:text|definiert den **zweiten Text** der in der Mitte angezeigt wird *Hinweis:* bei Verwendung von Tasten sollte auf die Anzeige eines zweiten Wertes verzichtet werden, da die Breite des Templates im Normalfall nicht ausreicht|
 |main|slider|reading:wert:cmd:current:min:max|stellt einen **Slider** in der Mitte dar. In diesem Fall werden die Elemente `text` und `text2` nicht angezeigt und evtl. definierte Tasten reagieren nur auf `leftClick` bzw. `rightClick`. *Wichtig:* `cmd` muss die Ersetzung *%v* (den aktuellen Wert des Sliders) enthalten. `current` sollte nur die Ersetzung *%n* enthalten, damit der Slider den aktuellen Wert des Readings anzeigt. `min` und `max` begrenzen die Sliderwerte. *Beispiel:* `["pct::pct %v:%n:0:100"]` verbindet das Reading `pct` mit einem Slider und begrenzt die Werte auf 0-100|
 |main|rightBtn|reading:wert:icon:disabled (alternativ: icon)|definiert welches *Icon* auf der rechten Taste angezeigt wird. Optional kann das Flag *disabled* gesetzt werden. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
-|main|leftClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die rechte Taste abgesendet wird. *Hinweis:* `set <devicename>` kann weggelassen werden|
-|main|rightLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der rechten Taste abgesendet wird. *Hinweis:* `set <devicename>` kann weggelassen werden|
-|main|rightLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der rechten Taste abgesendet wird. *Hinweis:* `set <devicename>` kann weggelassen werden|
+|main|leftClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die rechte Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
+|main|rightLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der rechten Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
+|main|rightLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der rechten Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|rightMenu|text:cmd|definiert für das **rechte Menü** die Texte und FHEM-Kommandos. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die rechte Taste ein Menü auf. *Hinweis:* rightClick, rightLong und rightLongRelease stehen bei Zuweisung des Menüs nicht zur Verfügung.|
 |info|left1..2,<br>mid1..2,<br>right1..2|reading:wert:text:icon|definiert welches **Icon** und welcher **Text** in der Infozeile anzeigeigt wird|
+
+## Hinweis zur Definition von FHEM-Kommandos
+Bei Definition der FHEM-Kommandos kann `set <devicename>` weggelassen werden. Alternativ kann der Name eines bestimmten FHEM-Devices angegeben oder auf ein *Connected-Device* verwiesen werden.
+
+*Varianten:*
+- normale Definition: `["state::on"]` - schaltet das Device dem das Template zugeordnet ist ein.
+- alternative Definition: `["state::set mein_device on"]` - schaltet *mein_device* ein.
+- Definition über Connected: `["state::set Connected.button on"]` - schaltet das Device welches im Template als `"connected": { "button": "<device>" }` definiert ist ein.
 
 ## Breite von Templates
 Die Templates von **FHEMApp** sind optimal an die verschiedenen Displayformate angepasst. Es gibt dennoch die Möglichkeit, die relative Breite von Templates anzupassen. Der Anzeigebereich von **FHEMApp** ist dabei in 12 gleiche "Teile" untergliedert. Wenn man einem Template z.B. alle 12 Teile zuweist, dann nimmt es die volle Breite ein. Wieviele "Teile" ein Template einnehmen soll, kann zusätzlich unter Berücksichtigung des Displayformates definiert werden. z.B. alle 12 Teile bei schmalen Displays und 3 Teile (25%) bei breiten Displays. Folgende Displayformate werden unterschieden.
@@ -261,6 +279,19 @@ Die Definition der Templatebreite erfolgt mit dem Parameter `size`. Der String m
 ```
   "size": "col-12 col-sm-6 col-md-4 col-lg-4"
 ```
+
+## Verwendung des Parameters connected innerhalb von appOptions
+Im Normalfall verbindest du ein Template immer mit genau einem Device. Somit kannst du erstmal alle Readings/Internals/Attribute von diesem "abgreifen" und im Standard Template verwenden. Wenn du jedoch komplexere Templates erstellen möchtest, die Daten aus unterschiedlichen Devices darstellen sollen, dann kommt `connected` zum Einsatz. Das bietet sich z.B. bei Thermostaten an, wenn du im Template zusätzlich sehen möchtest, was das zugehörige Heizungsventil macht. Oder wenn, wie bei Homematic-Thermostaten, mehrere Kanäle vorhanden sind.
+
+Mit dem Parameter `connected` definierst du in `appOptions` also die Devices, die du noch im Template benötigst. Die Angabe erfolgt mit `"connected: { "name1": "device1", "name2": "device2", ... }`. *name* ist ein von dir gewählter Name, über den du später in der Templatedefinition auf dieses verbundene Device zugreifen kannst. Der "connected-Teil" in `appOptions` könnte damit wie folgt aussehen:
+```
+"connected": { "ventil": "fhem.heizung.ventil.wohnzimmer", "empfängerkanal": "fhem.thermostate.wohnzimmer.empfänger" }
+```
+Wenn du jetzt mehrere Devices in einem Template hast, würden ja "Dopplungen" von Readings/Internals/Attributen entstehen. Damit du nun bei der Zuweisung auf das richtige Reading zugreifst, muss das Reading in deiner Wertzuweisung genauer spezifiziert werden, indem du den kompletten "JSon-Objectpfad" angibst. Im o.g. Beispiel wäre das dann z.B.
+```
+["Connected.ventil.Readings.state.Value::%n % geöffnet"]
+```
+*Wichtig:* in der appOptions-Definition wird der Parameter "connected" klein geschrieben. Im "JSon-Object" musst du "Connected" schreiben.
 
 # Übersicht der verfügbaren Templates
 | Template | Beschreibung | Beispiel |
@@ -654,6 +685,7 @@ Nachdem ihr ein Panel defniert und die *panelItems* zugewiesen habt, müsst ihr 
     "btn": ["reading:wert:icon"],
     "click": ["reading:wert:cmd"],
     "link": "string",
+    "menu": ["name:cmd"]
   }
 }
 ```
@@ -663,6 +695,7 @@ Nachdem ihr ein Panel defniert und die *panelItems* zugewiesen habt, müsst ihr 
 |btn|reading:wert:icon (alternativ: icon)|definiert welches *Icon* auf der Taste im PanelItem angezeigt wird. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
 |click|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die Taste abgesendet wird. *Hinweis:* `set <devicename>` kann weggelassen werden|
 |link|<route>|link kann alternativ zu click verwendet werden. In diesem Fall wird kein FHEM-Kommando gesendet sondern man kann auf einen anderen Screen in **FHEMApp** wechseln. Die *route* muss mit **/devices/** beginnen. Am besten schaut ihr euch dazu vorher die URL in **FHEMApp** auf den gewünschten Screen an.|
+|menu|name:cmd|menu kann alternativ zu link bzw. click verwendet werden. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die rechte Taste ein Menü auf. Über dieses können unterschiedliche FHEM-Kommandos gesendet werden. Hinweis:* `set <devicename>` kann weggelassen werden|
 
 ### Konfiguration von Panels
 Da *Panel* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften über den Parameter `setup` in `appOptions` anpassen. Folgende Eigenschaften könnt ihr individuell anpassen:
@@ -706,7 +739,7 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
 ```
 
 ### Konfiguration von Charts
-Da *Chart* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften über den Parameter `setup` in `appOptions` anpassen. Über den Paramter `size` kann die Templatebreite [siehe](#breite-von-templates) verändert werden. Der Parameter `daysAgo` legt ihr fest, wieviele Tage das Chart beim Laden zurückschaut. Als Standard werden die Daten der letzten 7 Tage `"daysAgo": -7` geladen. Über den Parameter `lineWidth` könnt ihr die Linienbreite der Chartlinien verändern. Als Standard ist `"lineWidth": 3` festgelegt. Über den Parameter `chartDef` legt ihr fest, welche Daten im Chart angezeigt werden. Jede Linie entspricht dabei einer Definition. 
+Da *Chart* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften über den Parameter `setup` in `appOptions` anpassen. Über den Paramter `size` kann die Templatebreite [siehe](#breite-von-templates) verändert werden. Der Parameter `daysAgo` legt ihr fest, wieviele Tage das Chart beim Laden zurückschaut. Als Standard werden die Daten der letzten 7 Tage `"daysAgo": -7` geladen. Über den Parameter `lineWidth` könnt ihr die Linienbreite der Chartlinien verändern. Als Standard ist `"lineWidth": 3` festgelegt. Über den Parameter `chartDef` legt ihr fest, welche Daten im Chart angezeigt werden. Jede Linie entspricht dabei einer Definition.
 ```
 "chartDef": ["logsource:reading:text:präfix:axis"],
 "setup": {

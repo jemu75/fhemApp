@@ -68,6 +68,47 @@
                   </v-icon>
                 </v-btn>
               </div>
+
+              <div
+                v-if="el.menu && !el.route && !el.click && el.icon"
+              >
+                <v-menu
+                  bottom
+                  left
+                  transition="slide-y-transition"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      icon
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      <v-icon large>
+                        {{ el.icon }}
+                      </v-icon>
+                    </v-btn>
+                  </template>
+
+                  <v-list
+                    dense
+                    color="secondary lighten-2"
+                  >
+                    <v-list-item-group>
+                      <v-list-item
+                        v-for="(menu, i) in el.menu"
+                        :key="i"
+                        @click="set(el.device, menu.cmd)"
+                      >
+                        <v-list-item-content>
+                          <v-list-item-title class="text-subtitle-1">
+                            {{ menu.name }}
+                          </v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list-item-group>
+                  </v-list>
+                </v-menu>
+              </div>
             </v-col>
           </v-row>
           <v-divider />
@@ -238,6 +279,15 @@
         let state = this.$fhem.handleVals(obj, this.$fhem.getEl(obj, 'Options', 'panel', 'status')) || [];
         let btn = this.$fhem.handleVals(obj, this.$fhem.getEl(obj, 'Options', 'panel', 'btn')) || [];
         let cmd = this.$fhem.handleVals(obj, this.$fhem.getEl(obj, 'Options', 'panel', 'click')) || [];
+        let menu = this.$fhem.getEl(obj, 'Options', 'panel', 'menu') || [];
+
+        let menuItems = [];
+        if(menu.length > 0) {
+          for(const el of menu) {
+            let parts = el.split(':');
+            if(parts.length == 2) menuItems.push({ name: parts[0], cmd: parts[1] })
+          }
+        }
 
         let result = {
           device: device,
@@ -247,7 +297,8 @@
           color: state[2] || 'success',
           icon: btn[0] || '',
           route: route,
-          click: cmd[0] || ''
+          click: cmd[0] || '',
+          menu: menuItems
         }
 
         return result;
@@ -269,7 +320,8 @@
               text: data.text,
               icon: data.icon,
               route: data.route,
-              click: data.click
+              click: data.click,
+              menu: data.menu
             };
 
             if(data.color != 'success') this.vals.status.color = data.color;

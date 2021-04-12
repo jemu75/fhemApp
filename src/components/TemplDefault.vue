@@ -389,6 +389,30 @@
         }
       },
 
+      createCmd(param) {
+        let result = '';
+
+        if(param.match('set')) {
+          let parts = param.split(' ');
+          if(parts[1].match('Connected')) {
+            let device = parts[1].replace('Connected.','');
+            parts[1] = this.$fhem.getEl(this.item, 'Connected', device, 'Internals', 'NAME');
+
+            if(parts[1]) {
+              result = parts.join(' ');
+            } else {
+              this.log = { type: 'error', message: 'Connected Device not found. ' + this.item.Options, debugLevel: 1 };
+            }
+          } else {
+            result = param;
+          }
+        } else {
+          result = 'set ' + this.item.Name + ' ' + param;
+        }
+
+        return result;
+      },
+
       clickStart(val, evt) {
         this.long = false;
 
@@ -407,7 +431,7 @@
           if(action) {
             let param = this.$fhem.handleVals(this.item, action);
             if(param[0]) {
-              let cmd = param[0].match('set') ? param[0] : 'set ' + this.item.Name + ' ' + param[0];
+              let cmd = this.createCmd(param[0]);
               this.sendCmd(cmd);
               this.timer = clearInterval(this.timer);
             }
@@ -431,7 +455,7 @@
           let param = this.$fhem.handleVals(this.item, action);
           if(param[0]) {
             this.vals.main.sliderPrevent = false;
-            let cmd = param[0].match('set') ? param[0] : 'set ' + this.item.Name + ' ' + param[0];
+            let cmd = this.createCmd(param[0]);
             let isIncrement = action.findIndex((e) => e.match('%i')) != -1 ? true : false;
             if(!this.long && isIncrement) this.updateReading(cmd);
 
@@ -447,7 +471,7 @@
           let param = this.$fhem.handleVals(this.item, action);
           if(param[0]) {
             this.vals.main.sliderPrevent = true;
-            let cmd = param[0].match('set') ? param[0] : 'set ' + this.item.Name + ' ' + param[0];
+            let cmd = this.createCmd(param[0]);
             cmd = cmd.replace('%v', val);
             this.sendCmd(cmd);
           }
@@ -462,7 +486,7 @@
             let vals = item.split(':');
 
             if(vals.length > 1) {
-              let cmd = vals[1].match('set') ? vals[1] : 'set ' + this.item.Name + ' ' + vals[1];
+              let cmd = this.createCmd(vals[1]);
               result.push({ name: vals[0], cmd });
             }
           }
