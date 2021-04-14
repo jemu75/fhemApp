@@ -35,7 +35,7 @@
               :value="itm.value"
               :color="itm.color"
               :min="itm.min"
-              :max="listItem.max"
+              :max="itm.max"
               background-color="secondary lighten-4"
             />
             <div>{{ itm.subText }}</div>
