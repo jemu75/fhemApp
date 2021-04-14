@@ -11,6 +11,8 @@
   "theme": {
     "dark": true,
     "themes": {
+      "dark": {
+      },
       "light": {
         "primary": "#616161",
         "secondary": "#F5F5F5",
@@ -19,8 +21,6 @@
         "warning": "#ffc107",
         "info": "#03a9f4",
         "success": "#4caf50"
-      },
-      "dark": {
       }
     }
   }

@@ -15,6 +15,7 @@ export default class Fhem extends EventEmitter {
         connect: false,
         csrf: null,
         restart: false,
+        restartCnt: 0,
         logList: [],
         logLast: {}
       },
@@ -703,11 +704,14 @@ export default class Fhem extends EventEmitter {
     this.app.session.socket = null;
 
     if(!this.app.session.restart) {
+      let msecs = this.app.session.restartCnt == 0 ? 0 : 3000;
+
       this.app.session.restart = true;
       setTimeout(() => {
         this.app.session.restart = false;
+        this.app.session.restartCnt ++;
         this.init()
-      }, 3000);
+      }, msecs);
     }
 
     this.log = {
@@ -720,6 +724,7 @@ export default class Fhem extends EventEmitter {
   // subfunction for init(), open Connection with FHEM
   connOpen() {
     this.app.options.loading = true;
+    this.app.session.restartCnt = 0;
     this.getCsrfToken()
       .then((res) => {
         this.app.session.csrf = res;

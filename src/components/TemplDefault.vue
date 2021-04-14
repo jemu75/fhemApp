@@ -183,11 +183,13 @@
 
       <v-card-text v-if="vals.main.slider && isActive">
         <v-slider
+          class="ml-5 mr-5"
           v-model="vals.main.sliderCurrent"
           :min="vals.main.sliderMin"
           :max="vals.main.sliderMax"
           hide-details
-          color="accent"
+          thumb-label
+          color="success"
           @change="setSlider"
         >
           <template

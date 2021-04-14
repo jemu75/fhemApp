@@ -54,10 +54,11 @@ Wenn ihr in **FHEMApp** Daten aus FHEM-Logs in Charts darstellt, ist es ggf. sin
 ```
 
 ### Anzeigeeinstellungen für FHEMApp (optional)
-Wenn ihr in **FHEMApp** bei der mobilen Ansicht (1-spaltiges Layout) im Header sehen wollt, in welcher Bereich bzw. in welche Gruppe euch gerade befindet, dann könnt ihr unter Options den Paremeter `mobileHeader` setzen.
+Wenn ihr in **FHEMApp** bei der mobilen Ansicht (1-spaltiges Layout) im Header sehen wollt, in welcher Bereich bzw. in welche Gruppe euch gerade befindet, dann könnt ihr unter Options den Parameter `mobileHeader` setzen. Weiterhin könnt ihr über den Parameter `reloadBtn` einen Button für einen kompletten Browser-Refresh im Header aktivieren.
 ```
 "options": {
-  "mobileHeader": true
+  "mobileHeader": true,
+  "reloadBtn": true
 },
 ```
 
@@ -311,7 +312,7 @@ Wenn du jetzt mehrere Devices in einem Template hast, würden ja "Dopplungen" vo
 | [panel](#template-panel) | Panel zur Gruppierung mehrerer Devices | ![](./docs/media/template_panel_example.png) |
 | [chart](#template-chart) | Diagramm zur Visualisierung von Log-Daten | ![](./docs/media/template_chart_example.png) |
 | weather | Wettervorhersage (darksky-API) | ![](./docs/media/template_weather_example.png) |
-| sysmon | Systemmonitor | ![](./docs/media/template_sysmon_example.png) |
+| [sysmon](#template-sysmon) | Systemmonitor | ![](./docs/media/template_sysmon_example.png) |
 | hmlan | HMLAN-Adapter | ![](./docs/media/template_hmlan_example.png) |
 
 # Template Switch
@@ -788,4 +789,55 @@ Da *Scenes* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschafte
     "left1": ["reading:value:text:icon"],
   }
 }
+```
+# Template Sysmon
+Dieses Template steht speziell für den Einstz von *SYSMON* [siehe](https://fhem.de/commandref_DE.html#SYSMON) zur Verfügung. Es liefert diverse Informationen und Statistiken zu dem System, auf dem FHEM-Server ausgeführt wird.
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
+```
+{ "template": "sysmon" }
+```
+
+#### Konfiguration
+Da *sysmon* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften über den Parameter `setup` in `appOptions` anpassen. Über den Parameter `subTitle` könnt ihr einen Text z.B. den CPU Model Name anzeigen. Im Hauptteil des Templates können über den Parameter `main` beliebig viele Blöcke definiert werden. Jeder Block enthält einen **Name**, eine Definition für eine **Statusbar** (optional) und einen **Text** (optional) welcher unter dem Name bzw. unter der Statusbar angezeigt wird. Weiterhin könnt ihr über den Parameter `fhemBtns` festlegen ob die Buttons für ein Update von FHEM, für den Restart von FHEM und für die Anzeige des Systemprotokolls angezeigt werden sollen. Folgende Eigenschaften könnt ihr individuell anpassen:
+```
+"setup": {
+  "status": {
+    "bar": ["reading:value:level:color"],
+    "error": ["reading:value:level:color:text"]
+  },
+  subTitle: ["reading:value:text"],
+  "main": [
+    {
+      "name": string,
+      "bar": ["reading:value:level:color:min:max"],
+      "subText": ["reading:value:text"]
+    }
+  ],
+  fhemBtns: true,
+  "info": {
+    "left1": ["reading:value:text:icon"],
+    "left2": ["reading:value:text:icon"],
+    "mid1": ["reading:value:text:icon"],
+    "mid2": ["reading:value:text:icon"],
+    "right1": ["reading:value:text:icon"],
+    "right2": ["reading:value:text:icon"]
+  }
+}
+```
+### Beispiel für eine Sysmon-Konfiguration
+In diesem Beispiel wird das Template im Menüpunkt *System* von **FHEMApp** angezeigt. Im Hauptteil des Templates werden 5 Blöcke angezeigt. Für die Blöcke CPU Auslastung, RAM Auslastung und CPU Temperatur wird zusätzlich eine Statusbar angezeigt. Weiterhin wurde in diesem Beispiel jeweils ein *userreading* für die CPU Auslastung und die RAM Auslastung in FHEM angelegt, da diese Readings nicht separat zur Verfügung standen.
+```
+define sysmon SYSMON 1 1 1 10
+attr sysmon alias FHEM Server
+attr sysmon appOptions { "template": "sysmon", "system": true, "setup": { "subTitle": ["cpu_model_name::%s"], "fhemBtns": true, "main": [ \
+  { "name": "CPU Auslastung:", "bar": ["cpu_app::%n:success:0:100"], "subText": ["cpu_app::%n.1 %"] }, \
+  { "name": "RAM Auslastung:", "bar": ["ram_app::%n:success:0:100"], "subText": ["ram_app::%n.1 %"] },\
+  { "name": "CPU Temperatur:", "bar": ["cpu_temp::%n:success:0:100"], "subText": ["cpu_temp::%n.1 °C"] },\
+  { "name": "Server läuft seit:", "subText": ["starttime_text::%s"] },\
+  { "name": "FHEM läuft seit:", "subText": ["fhemstarttime_text::%s"] } \
+] } }
+attr sysmon network-interfaces enp3s0
+attr sysmon sortby 1
+attr sysmon userReadings cpu_app { 100 - (split ' ',ReadingsVal("$name", "cpu_idle_stat", 0))[2] }, ram_app { (split ' ',ReadingsVal("$name", "ram", 0))[6] }
 ```

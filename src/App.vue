@@ -45,6 +45,18 @@
         </v-btn>
       </div>
 
+      <div v-if="app.options.reloadBtn">
+        <v-btn
+          small
+          icon
+          @click="reload"
+        >
+          <v-icon>
+            mdi-reload
+          </v-icon>
+        </v-btn>
+      </div>
+
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-icon
@@ -194,6 +206,7 @@
       app: {
         options: {
           loading: false,
+          reloadBtn: false,
           clock: null,
           date: null
         },
@@ -206,7 +219,7 @@
           header: ''
         }
       },
-      version: 'v3.9.0',
+      version: 'v3.10.0',
       status: {
         color: 'secondary',
         icon: 'mdi-circle',
@@ -249,6 +262,10 @@
 
         this.$fhem.getRoutes('room');
         this.$fhem.getRoutes('group');
+      },
+
+      reload() {
+        location.reload(true);
       }
     }
   }

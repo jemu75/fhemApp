@@ -1,13 +1,13 @@
 <template>
-  <v-col class="col-12 col-sm-12 col-md-6 col-lg-6">
+  <v-col :class="setup.size">
     <v-card
       :dark="this.$vuetify.theme.dark"
       color="secondary"
     >
       <v-progress-linear
         height="7"
-        :value="vals.mainLevel"
-        :color="vals.mainColor"
+        :value="vals.status.level"
+        :color="vals.status.color"
         background-color="secondary darken-1"
       />
 
@@ -21,60 +21,28 @@
 
       <v-card-text>
         <v-row>
-          <v-col>
+          <v-col
+            v-for="itm of vals.list"
+            :key="itm.name"
+            class="col-12 col-md-4 col-lg-4"
+          >
             <div class="text-truncate">
-              CPU Auslastung:
+              {{ itm.name }}
             </div>
             <v-progress-linear
+              v-if="itm.isBar"
               height="7"
-              :value="vals.cpuVal"
-              :color="vals.cpuColor"
+              :value="itm.value"
+              :color="itm.color"
+              :min="itm.min"
+              :max="listItem.max"
               background-color="secondary lighten-4"
             />
-            <div>{{ vals.cpuVal + " %" }}</div>
+            <div>{{ itm.subText }}</div>
           </v-col>
-          <v-col>
-            <div class="text-truncate">
-              RAM Auslastung:
-            </div>
-            <v-progress-linear
-              height="7"
-              :value="vals.ramVal"
-              :color="vals.ramColor"
-              background-color="secondary lighten-4"
-            />
-            <div>{{ vals.ramVal + " %" }}</div>
-          </v-col>
-          <v-col>
-            <div class="text-truncate">
-              CPU Temperatur:
-            </div>
-            <v-progress-linear
-              height="7"
-              :value="vals.tempVal"
-              :color="vals.tempColor"
-              background-color="secondary lighten-4"
-            />
-            <div>{{ vals.tempVal + " C&deg;" }}</div>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <div>Server läuft seit:</div>
-            <div class="text-truncate">
-              {{ vals.startServer }}
-            </div>
-          </v-col>
-          <v-col>
-            <div>FHEM läuft seit:</div>
-            <div class="text-truncate">
-              {{ vals.startFhem }}
-            </div>
-          </v-col>
-          <v-col align="right" />
         </v-row>
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions v-if="setup.fhemBtns">
         <v-btn
           class="mr-2"
           @click="goTo()"
@@ -97,10 +65,20 @@
       </v-card-actions>
       <v-divider />
       <v-system-bar color="secondary darken-1">
-        <v-icon>{{ vals.systemIcon }}</v-icon>
+        <v-icon class="ml-0">
+          {{ vals.info.left1Icon }}
+        </v-icon>{{ vals.info.left1Text }}
+        <v-icon>{{ vals.info.left2Icon }}</v-icon>{{ vals.info.left2Text }}
         <v-spacer />
-        {{ vals.systemLastEvent }}
+        <v-icon>{{ vals.info.mid1Icon }}</v-icon>{{ vals.info.mid1Text }}
+        <v-icon class="ml-2">
+          {{ vals.info.mid2Icon }}
+        </v-icon>{{ vals.info.mid2Text }}
         <v-spacer />
+        <v-icon>{{ vals.info.right1Icon }}</v-icon>{{ vals.info.right1Text }}
+        <v-icon class="mr-0">
+          {{ vals.info.right2Icon }}
+        </v-icon>{{ vals.info.right2Text }}
       </v-system-bar>
     </v-card>
   </v-col>
@@ -117,20 +95,46 @@
 
     data: () => ({
       name: 'sysmon',
+      setup: {
+        size: 'col-12 col-sm-12 col-md-6 col-lg-6',
+        status: {
+          bar: [],
+          error: [],
+        },
+        subTitle: [],
+        main: [],
+        fhemBtns: true,
+        info: {
+          left1: [],
+          left2: [],
+          mid1: [],
+          mid2: [],
+          right1: [],
+          right2: []
+        }
+      },
       vals: {
         title: '',
-        mainLevel: 100,
-        mainColor: 'success',
-        cpuVal: 0,
-        cpuColor: '',
-        ramVal: 0,
-        ramColor: 'success',
-        tempVal: 0,
-        tempColor: 'success',
-        startServer: '',
-        startFhem: '',
-        systemIcon: 'mdi-server',
-        systemLastEvent: ''
+        subTitle: '',
+        status: {
+          level: 0,
+          color: 'success'
+        },
+        list: [],
+        info: {
+          left1Icon: '',
+          left1Text: '',
+          left2Icon: '',
+          left2Text: '',
+          mid1Icon: '',
+          mid1Text: '',
+          mid2Icon: '',
+          mid2Text: '',
+          right1Icon: '',
+          right1Text: '',
+          right2Icon: '',
+          right2Text: ''
+        },
       },
       restart: true,
       update: true,
@@ -148,26 +152,19 @@
         immediate: true,
         deep: true,
         handler(val) {
-          let cpu = parseFloat(100 - this.$fhem.getEl(val, 'Readings','cpu_idle_stat','Value').split(' ')[2]);
-          let ram = parseFloat(this.$fhem.getEl(val, 'Readings','ram','Value').split(' ')[6]);
-          let temp = parseFloat(this.$fhem.getEl(val, 'Readings','cpu_temp','Value'));
-          let lastEvent = this.$fhem.getEl(val, 'Readings','ram','Time');
-          let serverStartTime = this.$fhem.getEl(val, 'Readings','starttime_text','Value');
-          let fhemStartTime = this.$fhem.getEl(val, 'Readings','fhemstarttime_text','Value');
           let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
 
           this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
-          this.vals.subTitle = this.$fhem.getEl(val, 'Readings','cpu_model_name','Value') || '';
-          this.vals.cpuVal = cpu ? cpu.toFixed(1) : '';
-          this.vals.cpuColor = cpu > 70 ? 'error' : 'success';
-          this.vals.ramVal = ram ? ram.toFixed(1) : '';
-          this.vals.ramColor = ram > 70 ? 'error' : 'success';
-          this.vals.tempVal = temp ? temp.toFixed(1) : '';
-          this.vals.tempColor = temp > 60 ? 'error' : 'success';
-          this.vals.mainColor = cpu > 70 || ram > 70 || temp > 60 ? 'error' : 'success';
-          this.vals.startServer = serverStartTime;
-          this.vals.startFhem = fhemStartTime;
-          this.vals.systemLastEvent =  this.$fhem.getDateTime(lastEvent);
+          this.setValues();
+          this.doList();
+        }
+      },
+
+      setup: {
+        deep: true,
+        handler() {
+          this.setValues();
+          this.doList();
         }
       },
 
@@ -183,9 +180,91 @@
     mounted() {
       this.app.options = this.$fhem.app.options;
       this.fhemUpdateCheck();
+
+      let size = this.$fhem.getEl(this.item, 'Options', 'setup', 'size');
+      let subTitle = this.$fhem.getEl(this.item, 'Options', 'setup', 'subTitle');
+      let fhemBtns = this.$fhem.getEl(this.item, 'Options', 'setup', 'fhemBtns');
+      let status = this.$fhem.getEl(this.item, 'Options', 'setup', 'status');
+      let main = this.$fhem.getEl(this.item, 'Options', 'setup', 'main');
+      let info = this.$fhem.getEl(this.item, 'Options', 'setup', 'info');
+
+      if(size) this.setup.size = size;
+      if(subTitle) this.setup.subTitle = subTitle;
+      if(status) Object.assign(this.setup.status, status);
+      if(main) Object.assign(this.setup.main, main);
+      if(info) Object.assign(this.setup.info, info);
+      this.setup.fhemBtns = fhemBtns;
+
     },
 
     methods: {
+      setValues() {
+        let statusVals = this.$fhem.handleVals(this.item, this.setup.status.bar);
+        let errorVals = this.$fhem.handleVals(this.item, this.setup.status.error);
+        let subTitle = this.$fhem.handleVals(this.item, this.setup.subTitle);
+
+        let infoLeft1Vals = this.$fhem.handleVals(this.item, this.setup.info.left1);
+        let infoLeft2Vals = this.$fhem.handleVals(this.item, this.setup.info.left2);
+        let infoMid1Vals = this.$fhem.handleVals(this.item, this.setup.info.mid1);
+        let infoMid2Vals = this.$fhem.handleVals(this.item, this.setup.info.mid2);
+        let infoRight1Vals = this.$fhem.handleVals(this.item, this.setup.info.right1);
+        let infoRight2Vals = this.$fhem.handleVals(this.item, this.setup.info.right2);
+
+        this.vals.status.level = statusVals[0] || '100';
+        this.vals.status.color = statusVals[1] || 'success';
+        this.vals.subTitle = subTitle[0] || '';
+
+        this.vals.info.left1Icon = infoLeft1Vals[1] || '';
+        this.vals.info.left1Text = infoLeft1Vals[0] || '';
+
+        this.vals.info.left2Icon = infoLeft2Vals[1] || '';
+        this.vals.info.left2Text = infoLeft2Vals[0] || '';
+
+        this.vals.info.mid1Icon = infoMid1Vals[1] || '';
+        this.vals.info.mid1Text = infoMid1Vals[0] || '';
+
+        this.vals.info.mid2Icon = infoMid2Vals[1] || '';
+        this.vals.info.mid2Text = infoMid2Vals[0] || '';
+
+        this.vals.info.right1Icon = infoRight1Vals[1] || '';
+        this.vals.info.right1Text = infoRight1Vals[0] || '';
+
+        this.vals.info.right2Icon = infoRight2Vals[1] || '';
+        this.vals.info.right2Text = infoRight2Vals[0] || '';
+
+        if(errorVals.length > 0) {
+          this.vals.status.level = errorVals[0] || '100';
+          this.vals.status.color = errorVals[1] || 'error';
+        }
+      },
+
+      doList() {
+        for(var el of this.setup.main) {
+          let idx = this.vals.list.map((e) => e.name).indexOf(el.name);
+
+          let bar = this.$fhem.handleVals(this.item, el.bar);
+          let subText = this.$fhem.handleVals(this.item, el.subText);
+
+          let listItem = {
+            name: el.name,
+            isBar: bar.length > 0 ? true : false,
+            value: bar[0] || 0,
+            color: bar[1] || 'success',
+            min: bar[2] || 0,
+            max: bar[3] || 100,
+            subText: subText[0] || '',
+          }
+
+          if(listItem.isBar && listItem.color != 'success') this.vals.status.color = el.color;
+
+          if(idx != -1) {
+            this.vals.list.splice(idx, 1, listItem);
+          } else {
+            this.vals.list.push(listItem);
+          }
+        }
+      },
+
       fhemRestart() {
         this.restart = false;
         this.$fhem.request({ param: 'cmd', value: 'shutdown restart' });
