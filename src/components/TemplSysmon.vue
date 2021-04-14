@@ -13,6 +13,11 @@
 
       <v-card-title class="text-truncate">
         {{ vals.title }}
+        <v-spacer />
+        <jsonList
+          v-if="app.options.debugMode"
+          :item="item"
+        />
       </v-card-title>
       <v-divider />
       <v-card-subtitle>
@@ -85,7 +90,13 @@
 </template>
 
 <script>
+  import jsonList from '@/components/Jsonlist.vue'
+
   export default {
+    components: {
+      jsonList
+    },
+
     props: {
       item: {
         type: Object,
@@ -95,6 +106,12 @@
 
     data: () => ({
       name: 'sysmon',
+      app: {
+        options: {
+          updateProcess: false,
+          debugMode: false
+        }
+      },
       setup: {
         size: 'col-12 col-sm-12 col-md-6 col-lg-6',
         status: {
@@ -139,12 +156,6 @@
       restart: true,
       update: true,
       updateText: 'prüfe updates...',
-
-      app: {
-        options: {
-          updateProcess: false,
-        }
-      }
     }),
 
     watch: {
@@ -255,7 +266,7 @@
             subText: subText[0] || '',
           }
 
-          if(listItem.isBar && listItem.color != 'success') this.vals.status.color = el.color;
+          if(listItem.isBar && listItem.color != 'success') this.vals.status.color = listItem.color;
 
           if(idx != -1) {
             this.vals.list.splice(idx, 1, listItem);

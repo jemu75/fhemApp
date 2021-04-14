@@ -704,7 +704,9 @@ export default class Fhem extends EventEmitter {
     this.app.session.socket = null;
 
     if(!this.app.session.restart) {
-      let msecs = this.app.session.restartCnt == 0 ? 0 : 3000;
+      let msecs = this.app.session.restartCnt == 0 ? 1 : 3000;
+
+      this.log = { type: 'intern', message: 'Restart-Sequence is started. (restart counter: ' +  this.app.session.restartCnt +  ' - restart on: '+ msecs + ' milliseconds)' , debugLevel: 5 };
 
       this.app.session.restart = true;
       setTimeout(() => {
@@ -712,12 +714,12 @@ export default class Fhem extends EventEmitter {
         this.app.session.restartCnt ++;
         this.init()
       }, msecs);
-    }
 
-    this.log = {
-      type: 'status',
-      message: 'Connection with FHEM was closed. Try to Reconnect in 3 seconds...',
-      debugLevel: 2
+      this.log = {
+        type: 'status',
+        message: 'Connection with FHEM was closed. Try to Reconnect in ' + (msecs / 1000) + ' seconds...',
+        debugLevel: 2
+      }
     }
   }
 
