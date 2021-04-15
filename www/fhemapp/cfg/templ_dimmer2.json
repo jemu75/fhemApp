@@ -13,6 +13,12 @@
       "slider": ["pct::%v:%n:0:100"],
       "rightBtn": "mdi-lightbulb",
       "rightClick": ["state::on"]
+    },
+    {
+      "text": ["pct::%s % &#058;"],
+      "rightBtn": "mdi-dots-vertical",
+      "rightMenu": ["aus:off","25 %:pct 25","50 %:pct 50","75 %:pct 75","an:on"]
+
     }
   ],
   "info": {

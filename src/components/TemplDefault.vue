@@ -79,7 +79,7 @@
                 dense
                 color="secondary lighten-2"
               >
-                <v-list-item-group>
+                <v-list-item-group active-class="success--text">
                   <v-list-item
                     v-for="(menu, i) in vals.main.leftMenu"
                     :key="i"
@@ -162,7 +162,7 @@
                 dense
                 color="secondary lighten-2"
               >
-                <v-list-item-group>
+                <v-list-item-group active-class="success--text">
                   <v-list-item
                     v-for="(menu, i) in vals.main.rightMenu"
                     :key="i"

@@ -320,7 +320,7 @@ export default class Fhem extends EventEmitter {
     }
   }
 
-  // subfunction for handleVals %s %n %i %t
+  // subfunction for handleVals %s %n %i %t &#058;
   replaceVals(defSet, state) {
     let chkNum = /-?[0-9]/.exec(state);
     let result = [];
@@ -345,6 +345,8 @@ export default class Fhem extends EventEmitter {
           val = defSet[i].replace('%i' + inc, newVal.toFixed(decimal));
         }
       }
+
+      val = val.replace('&#058;',':');
 
       result.push(val);
     }

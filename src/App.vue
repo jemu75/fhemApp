@@ -30,32 +30,30 @@
         {{ app.data.header }}
       </div>
       <v-spacer />
-      <div v-if="app.options.debugMode">
-        <v-btn
-          small
-          icon
-          link
-          to="/syslog"
-        >
-          <v-icon
-            small
-          >
-            mdi-format-list-bulleted
-          </v-icon>
-        </v-btn>
-      </div>
+      <v-btn
+        v-if="app.options.debugMode"
+        icon
+        @click="goTo('/syslog')"
+      >
+        <v-icon>mdi-format-list-bulleted</v-icon>
+      </v-btn>
 
-      <div v-if="app.options.reloadBtn">
-        <v-btn
-          small
-          icon
-          @click="reload"
-        >
-          <v-icon>
-            mdi-reload
-          </v-icon>
-        </v-btn>
-      </div>
+      <v-btn
+        v-if="app.options.reloadBtn"
+        icon
+        @click="reload()"
+      >
+        <v-icon>mdi-reload</v-icon>
+      </v-btn>
+
+      <v-btn
+        class="hidden-lg-and-up text-h5"
+        v-if="app.options.homeBtn"
+        icon
+        @click="goTo()"
+      >
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
 
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
@@ -219,7 +217,7 @@
           header: ''
         }
       },
-      version: 'v3.10.0',
+      version: 'v3.11.0',
       status: {
         color: 'secondary',
         icon: 'mdi-circle',
@@ -266,6 +264,12 @@
 
       reload() {
         location.reload(true);
+      },
+
+      goTo(val) {
+        let route = val || '/';
+
+        if(this.$router.currentRoute.path != route) this.$router.push(route);
       }
     }
   }

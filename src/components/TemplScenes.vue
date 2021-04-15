@@ -52,7 +52,7 @@
               >
                 <v-list-item-group
                   v-model="vals.sceneSelected"
-                  active-class="accent--text"
+                  active-class="success--text"
                 >
                   <v-list-item
                     v-for="(scene, i) in vals.scenes"
