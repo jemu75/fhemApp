@@ -54,7 +54,7 @@ Wenn ihr in **FHEMApp** Daten aus FHEM-Logs in Charts darstellt, ist es ggf. sin
 ```
 
 ### Anzeigeeinstellungen für FHEMApp (optional)
-Wenn ihr in **FHEMApp** bei der mobilen Ansicht (1-spaltiges Layout) im Header sehen wollt, in welcher Bereich bzw. in welche Gruppe euch gerade befindet, dann könnt ihr unter Options den Parameter `mobileHeader` setzen. Ebenfalls in der mobilen Ansicht könnt ihr über den Parameter `homeBtn` einen Home-Button auf der rechten Seite im Header einblenden. Weiterhin könnt ihr über den Parameter `reloadBtn` einen Button für einen kompletten Browser-Refresh im Header aktivieren. 
+Wenn ihr in **FHEMApp** bei der mobilen Ansicht (1-spaltiges Layout) im Header sehen wollt, in welcher Bereich bzw. in welche Gruppe euch gerade befindet, dann könnt ihr unter Options den Parameter `mobileHeader` setzen. Ebenfalls in der mobilen Ansicht könnt ihr über den Parameter `homeBtn` einen Home-Button auf der rechten Seite im Header einblenden. Weiterhin könnt ihr über den Parameter `reloadBtn` einen Button für einen kompletten Browser-Refresh im Header aktivieren.
 ```
 "options": {
   "mobileHeader": true,
@@ -237,7 +237,7 @@ Beispiele:
 - **%i1** - erhöht (%i1.5) bzw. verringert (%i-1.5) das *Reading* um den Wert. Hierfür muss das *Reading* Zahlenwerte enthalten.
 - **%t** - liefert das *Reading* als Zeitstempel im Format TT.MM.JJJJ hh:mm:ss zurück
 - **%v** - ausschließlich in Verbindung mit dem Element *slider* notwendig.
-- **&#058;** - HTML-entity wenn ein Doppelpunkt ausgegeben werden soll
+- **\&#058;** - HTML-entity wenn ein Doppelpunkt ausgegeben werden soll
 
 ## verfügbare Elemente
 |Bereich|Element|Zuweisung|Beschreibung|
