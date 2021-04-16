@@ -6,6 +6,7 @@ import router from './router'
 import vuetify from './plugins/vuetify'
 import fhem from './plugins/fhem'
 import VueApexCharts from 'vue-apexcharts'
+import i18n from './plugins/i18n'
 
 Vue.use(VueApexCharts)
 Vue.component('apexchart', VueApexCharts)
@@ -34,12 +35,15 @@ fetch('./cfg/config.json')
       }
     }
 
+    i18n.locale = Vue.prototype.$fhem.app.options.lang
+
     Vue.prototype.$fhem.log = { type: 'status', message: 'Config: ' + JSON.stringify(cfg), debugLevel: 2 }
     Vue.prototype.$fhem.log = { type: 'status', message: 'Connection: ' + JSON.stringify(Vue.prototype.$fhem.app.connection), debugLevel: 2 }
 
     new Vue({
       vuetify,
       router,
+      i18n,
       render: h => h(App)
     }).$mount('#app')
   })

@@ -1,0 +1,11 @@
+{
+  "app": {
+    "navigation": {
+      "home": "Home",
+      "group": "Groups",
+      "room": "Area",
+      "dashboard": "Dashboard",
+      "system": "System"
+    }
+  }
+}

@@ -5,5 +5,14 @@ module.exports = {
 
   outputDir: 'www/fhemapp',
   publicPath: '',
-  productionSourceMap: false
+  productionSourceMap: false,
+
+  pluginOptions: {
+    i18n: {
+      locale: 'de',
+      fallbackLocale: 'en',
+      localeDir: 'locales',
+      enableInSFC: false
+    }
+  }
 }

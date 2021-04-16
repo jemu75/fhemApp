@@ -10,7 +10,7 @@
     {
       "leftBtn": "mdi-lightbulb-off",
       "leftClick": ["state::off"],
-      "slider": ["pct::%v:%n:0:100"],
+      "slider": ["pct::%v:%n:0:100:0.5"],
       "rightBtn": "mdi-lightbulb",
       "rightClick": ["state::on"]
     },

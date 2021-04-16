@@ -195,7 +195,9 @@
           @change="setSlider"
         >
           <template v-slot:thumb-label="{ value }">
-            <div class="text-h6">{{ value }}</div>
+            <div class="text-h6">
+              {{ value }}
+            </div>
           </template>
 
           <template

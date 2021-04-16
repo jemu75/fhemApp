@@ -20,6 +20,7 @@ export default class Fhem extends EventEmitter {
         logLast: {}
       },
       options: {
+        lang: 'de', // default language
         debugMode: false,
         debugLevel: 3, // 1 = fehler, 2 = status, 3 = requests, 4 = informChannel, 5 = internals
         loading: false,
@@ -66,7 +67,7 @@ export default class Fhem extends EventEmitter {
 
     Object.assign(target, data);
 
-    let time = new Date(target.timestamp).toLocaleTimeString('de-DE');
+    let time = new Date(target.timestamp).toLocaleTimeString(this.app.options.lang);
     let miSecs = new Date(target.timestamp).getMilliseconds();
 
     target.timeFlag = time + ':' + ('000' + miSecs).slice(-3);
@@ -97,7 +98,7 @@ export default class Fhem extends EventEmitter {
   getDateTime(val) {
     let timestamp = val ? val : new Date().toISOString();
 
-    return new Date(timestamp.replace(' ','T')).toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'medium' }).replace(',','');
+    return new Date(timestamp.replace(' ','T')).toLocaleString(this.app.options.lang, { dateStyle: 'short', timeStyle: 'medium' }).replace(',','');
   }
 
   // mainfunction get element from deep nested objects
@@ -761,8 +762,8 @@ export default class Fhem extends EventEmitter {
   setClock() {
     let timestamp = new Date();
 
-    this.app.options.clock = timestamp.toLocaleString('de-DE', { hour: '2-digit', minute: '2-digit' })
-    this.app.options.date = timestamp.toLocaleString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+    this.app.options.clock = timestamp.toLocaleString(this.app.options.lang, { hour: '2-digit', minute: '2-digit' })
+    this.app.options.date = timestamp.toLocaleString(this.app.options.lang, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
   }
 
   // mainfunction, create websocket and listen for updates from FHEM

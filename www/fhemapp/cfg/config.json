@@ -1,9 +1,4 @@
 {
-  "connection": {
-    "location": "http://fhem",
-    "port": "8083",
-    "path": "fhem"
-  },
   "options": {
     "maxChartPoints": 100,
     "logBuffer": 500,

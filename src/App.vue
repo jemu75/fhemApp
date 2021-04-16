@@ -93,7 +93,7 @@
 
           <v-list-item-content>
             <v-list-item-title class="text-left">
-              Home
+              {{ $t('app.navigation.home') }}
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -105,7 +105,7 @@
           prepend-icon="mdi-lightbulb-group"
         >
           <template v-slot:activator>
-            <v-list-item-title>Gruppen</v-list-item-title>
+            <v-list-item-title>{{ $t('app.navigation.group') }}</v-list-item-title>
           </template>
           <v-chip
             v-for="group in app.data.groupList"
@@ -124,7 +124,7 @@
           prepend-icon="mdi-floor-plan"
         >
           <template v-slot:activator>
-            <v-list-item-title>Bereiche</v-list-item-title>
+            <v-list-item-title>{{ $t('app.navigation.room') }}</v-list-item-title>
           </template>
           <v-chip
             v-for="room in app.data.roomList"
@@ -149,7 +149,7 @@
 
           <v-list-item-content>
             <v-list-item-title class="text-left">
-              Dashboard
+              {{ $t('app.navigation.dashboard') }}
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -166,7 +166,7 @@
 
           <v-list-item-content>
             <v-list-item-title class="text-left">
-              System
+              {{ $t('app.navigation.system') }}
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
