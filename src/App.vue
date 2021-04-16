@@ -217,7 +217,7 @@
           header: ''
         }
       },
-      version: 'v3.11.0',
+      version: 'v' + require('../package.json').version,
       status: {
         color: 'secondary',
         icon: 'mdi-circle',

@@ -189,9 +189,15 @@
           :max="vals.main.sliderMax"
           hide-details
           thumb-label
+          thumb-size="48"
           color="success"
+          :step="vals.main.sliderStep"
           @change="setSlider"
         >
+          <template v-slot:thumb-label="{ value }">
+            <div class="text-h6">{{ value }}</div>
+          </template>
+
           <template
             v-if="vals.main.leftBtn"
             v-slot:prepend
@@ -294,6 +300,7 @@
           sliderPrevent: false,
           sliderMin: 0,
           sliderMax: 100,
+          sliderStep: 1,
           rightBtn: '',
           rightBtnDisabled: false,
           rightMenu: []
@@ -533,6 +540,7 @@
         this.vals.main.slider = mainSlider[0] ? true : false;
         this.vals.main.sliderMin = mainSlider[2] || 0;
         this.vals.main.sliderMax = mainSlider[3] || 100;
+        this.vals.main.sliderStep = mainSlider[4] || 1;
 
         if(!this.vals.main.sliderPrevent) {
           this.vals.main.sliderCurrent = mainSlider[1] || 0;
@@ -590,6 +598,7 @@
           this.vals.main.slider = mainSlider[0] ? true : false;
           this.vals.main.sliderMin = mainSlider[2] || 0;
           this.vals.main.sliderMax = mainSlider[3] || 100;
+          this.vals.main.sliderStep = mainSlider[4] || 1;
 
           if(!this.vals.main.sliderPrevent) {
             this.vals.main.sliderCurrent = mainSlider[1] || 0;

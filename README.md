@@ -202,7 +202,7 @@ In den Template-Dateien können folgende Eigenschaften definiert werden. Die Zuw
       "leftMenu": ["text:set_param"],
       "text": ["reading:value:text"],
       "text2": ["reading:value:text"],
-      "slider": ["reading:value:set_param:current:min:max"],
+      "slider": ["reading:value:set_param:current:min:max:steps"],
       "rightBtn": ["reading:value:icon:disabled"],
       "rightClick": ["reading:value:set_param"],
       "rightLong": ["reading:value:set_param"],
@@ -251,7 +251,7 @@ Beispiele:
 |main|leftMenu|text:cmd|definiert für das **linke Menü** die Texte und FHEM-Kommandos. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die linke Taste ein Menü auf. *Hinweis:* leftClick, leftLong und leftLongRelease stehen bei Zuweisung des Menüs nicht zur Verfügung.|
 |main|text|reading:wert:text|definiert den **ersten Text** der in der Mitte angezeigt wird|
 |main|text2|reading:wert:text|definiert den **zweiten Text** der in der Mitte angezeigt wird *Hinweis:* bei Verwendung von Tasten sollte auf die Anzeige eines zweiten Wertes verzichtet werden, da die Breite des Templates im Normalfall nicht ausreicht|
-|main|slider|reading:wert:cmd:current:min:max|stellt einen **Slider** in der Mitte dar. In diesem Fall werden die Elemente `text` und `text2` nicht angezeigt und evtl. definierte Tasten reagieren nur auf `leftClick` bzw. `rightClick`. *Wichtig:* `cmd` muss die Ersetzung *%v* (den aktuellen Wert des Sliders) enthalten. `current` sollte nur die Ersetzung *%n* enthalten, damit der Slider den aktuellen Wert des Readings anzeigt. `min` und `max` begrenzen die Sliderwerte. *Beispiel:* `["pct::pct %v:%n:0:100"]` verbindet das Reading `pct` mit einem Slider und begrenzt die Werte auf 0-100|
+|main|slider|reading:wert:cmd:current:min:max:steps|stellt einen **Slider** in der Mitte dar. In diesem Fall werden die Elemente `text` und `text2` nicht angezeigt und evtl. definierte Tasten reagieren nur auf `leftClick` bzw. `rightClick`. *Wichtig:* `cmd` muss die Ersetzung *%v* (den aktuellen Wert des Sliders) enthalten. `current` sollte nur die Ersetzung *%n* enthalten, damit der Slider den aktuellen Wert des Readings anzeigt. `min` und `max` begrenzen die Sliderwerte. `steps` definiert die Schritte in denen der Slider die Werte verändert. *Beispiel:* `["pct::pct %v:%n:0:100:1"]` verbindet das Reading `pct` mit einem Slider und begrenzt die Werte auf 0-100 und verändert die Werte jeweils um 1|
 |main|rightBtn|reading:wert:icon:disabled (alternativ: icon)|definiert welches *Icon* auf der rechten Taste angezeigt wird. Optional kann das Flag *disabled* gesetzt werden. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
 |main|leftClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die rechte Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|rightLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der rechten Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
