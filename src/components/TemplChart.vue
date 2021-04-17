@@ -152,11 +152,7 @@
             }
           },
           xaxis: {
-            type: 'datetime',
-            labels: {
-              format: 'dd.MM.yy',
-              datetimeUTC: false
-            }
+            type: 'datetime'
           },
           yaxis: []
         },
@@ -227,8 +223,6 @@
       loadChartData() {
         this.vals.fromPicker = false;
         this.vals.toPicker = false;
-        let priAxisDef = false;
-        let secAxisDef = false;
 
         if(this.item) {
           this.$fhem.loading = true;
@@ -239,6 +233,8 @@
             .then((res) => {
               if(res.defs.length > 0) {
                 let idx = 0;
+                let priSeriesName = '';
+                let secSeriesName = '';
 
                 this.chart.options.yaxis.splice(0);
                 this.chart.series.splice(0);
@@ -249,29 +245,30 @@
 
                   let values = [];
                   let logData = res.data[res.data.map((e) => e.id).indexOf(idx)].data;
-                  let secAxis = parts[4] === 'secondary' ? true : false;
-
-                  if((!priAxisDef && !secAxis) || (!secAxisDef && secAxis)) {
-                    if(!secAxis) priAxisDef = true;
-                    if(secAxis) secAxisDef = true;
-
-                    let yOptions = {
-                      seriesName: parts[2] || '',
-                      opposite: secAxis,
-                      labels: {
-                        formatter: (val) => {
-                          let result = ''
-                          if(val) result = val.toFixed(1) + parts[3]
-                          return result
-                        }
-                      }
-                    }
-
-                    this.chart.options.yaxis.push(yOptions);
-                  }
 
                   for(const vals of logData) values.push([vals.timestamp, vals.value]);
                   this.chart.series.push({ name: parts[2], data: values });
+
+                  let secAxis = parts[4] === 'secondary' ? true : false;
+                  let show = false;
+
+                  if(!priSeriesName && !secAxis) { priSeriesName = parts[2]; show = true; }
+                  if(!secSeriesName && secAxis) { secSeriesName = parts[2]; show = true; }
+
+                  let yOptions = {
+                    seriesName: secAxis ? secSeriesName : priSeriesName,
+                    show: show,
+                    opposite: secAxis,
+                    labels: {
+                      formatter: (val) => {
+                        let result = ''
+                        if(val) result = val.toFixed(1) + parts[3]
+                        return result
+                      }
+                    }
+                  }
+
+                  this.chart.options.yaxis.push(yOptions);
 
                   idx ++;
                 }

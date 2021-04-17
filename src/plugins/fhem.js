@@ -8,7 +8,7 @@ export default class Fhem extends EventEmitter {
       connection: {
         location: window.location.protocol + '//' + window.location.hostname,
         port: window.location.port,
-        path: 'fhem'
+        path: 'fhem' //root path
       },
       socket: null,
       session: {
@@ -51,7 +51,8 @@ export default class Fhem extends EventEmitter {
   set loading(val) {
     if(val) this.app.options.loadCount ++;
     if(!val && this.app.options.loadCount > 0) this.app.options.loadCount --;
-    this.app.options.loading = this.app.options.loadCount > 0 ? true : false;
+    if(this.app.options.loadCount > 0 && !this.app.options.loading) this.app.options.loading = true;
+    if(this.app.options.loadCount === 0) this.app.options.loading = false;
   }
 
   set log(data) {
