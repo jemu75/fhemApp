@@ -348,7 +348,7 @@ export default class Fhem extends EventEmitter {
         }
       }
 
-      val = val.replace('&#058;',':');
+      val = val.replace(/&#058;/g,':');
 
       result.push(val);
     }
