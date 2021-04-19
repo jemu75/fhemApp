@@ -368,7 +368,7 @@ export default class Fhem extends EventEmitter {
 
         if(defSet.length > 2) {
           let value = defSet[0].match(/\./) ? defSet[0].split('.') : [ 'Readings', defSet[0], 'Value' ];
-          let state = this.getEl(device, ...value);
+          let state = this.getEl(device, ...value) || this.getEl(device, 'Readings', defSet[0], 'Value');
 
           if(state) {
             let found = false;

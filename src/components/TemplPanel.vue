@@ -324,7 +324,7 @@
               menu: data.menu
             };
 
-            if(data.color != 'success') this.vals.status.color = data.color;
+            if(listItem.color != 'success' && this.vals.status.color === 'success') this.vals.status.color = listItem.color;
 
             if(idx != -1) {
               this.list.splice(idx, 1, listItem);
