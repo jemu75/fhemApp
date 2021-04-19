@@ -73,7 +73,7 @@
         <v-icon class="ml-0">
           {{ vals.info.left1Icon }}
         </v-icon>{{ vals.info.left1Text }}
-        <v-icon>{{ vals.info.left2Icon }}</v-icon>{{ vals.info.left2Text }}
+        <v-icon class="ml-2">{{ vals.info.left2Icon }}</v-icon>{{ vals.info.left2Text }}
         <v-spacer />
         <v-icon>{{ vals.info.mid1Icon }}</v-icon>{{ vals.info.mid1Text }}
         <v-icon class="ml-2">
@@ -81,7 +81,7 @@
         </v-icon>{{ vals.info.mid2Text }}
         <v-spacer />
         <v-icon>{{ vals.info.right1Icon }}</v-icon>{{ vals.info.right1Text }}
-        <v-icon class="mr-0">
+        <v-icon class="ml-2 mr-0">
           {{ vals.info.right2Icon }}
         </v-icon>{{ vals.info.right2Text }}
       </v-system-bar>
