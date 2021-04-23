@@ -25,7 +25,17 @@
         {{ appBar.clock }}
       </div>
       <v-spacer />
-      <div class="text-h5">
+      <div
+        v-if="app.options.mobileHeader"
+        class="text-h5"
+      >
+        {{ appBar.header }}
+      </div>
+
+      <div
+        v-if="!app.options.mobileHeader"
+        class="hidden-md-and-down text-h5"
+      >
         {{ appBar.header }}
       </div>
       <v-spacer />
@@ -199,7 +209,7 @@
     },
     data: () => ({
       appBar: {
-        color: 'primary',
+        color: '',
         drawer: null,
         clock: null,
         header: null
@@ -248,8 +258,6 @@
       this.app.options = this.$fhem.app.options;
       this.app.data = this.$fhem.app.data;
       this.appBar = this.$fhem.app.appBar;
-
-      if(this.app.options.debugMode) this.appBarColor = 'pink darken-4'
     },
 
     methods: {

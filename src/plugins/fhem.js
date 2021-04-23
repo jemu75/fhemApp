@@ -187,7 +187,7 @@ class Fhem extends EventEmitter {
       for(const item of Object.keys(cfg)) {
         if(item in this.app) Object.assign(this.app[item], cfg[item]);
       }
-      this.log({ lvl: 5, msg: 'Read Configuration from ' + file + ' completed.' });
+      if(this.app.options.debugMode) this.app.appBar.color = 'pink darken-4';
     } else {
       this.log({ lvl: 2, msg: 'No Configuration File found. FHEMApp starting with default settings.'})
     }
@@ -692,7 +692,6 @@ class Fhem extends EventEmitter {
     }
 
     this.setClock();
-
     setInterval(() => this.setClock(), this.app.options.clockInterval);
   }
 }

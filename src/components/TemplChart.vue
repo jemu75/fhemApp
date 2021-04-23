@@ -117,8 +117,8 @@
       name: 'chart',
       setup: {
         size: 'col-12 col-sm-12 col-md-6 col-lg-4',
-        daysAgo: -7,
-        daysTo: 1,
+        daysAgo: -6,
+        daysTo: 0,
         lang: 'de'
       },
       vals: {
@@ -155,7 +155,10 @@
             }
           },
           xaxis: {
-            type: 'datetime'
+            type: 'datetime',
+            labels: {
+              datetimeUTC: false
+            }
           },
           yaxis: []
         },
@@ -232,7 +235,11 @@
         if(this.item) {
           this.$fhem.loading = true;
 
-          let def = { deviceName: this.item.Name, from: this.vals.from, to: this.vals.to, defs: this.item.Options.chartDef };
+          let toDate = new Date(this.vals.to);
+          toDate.setDate(toDate.getDate() + 1);
+          toDate = toDate.toISOString().split('T')[0];
+
+          let def = { deviceName: this.item.Name, from: this.vals.from, to: toDate, defs: this.item.Options.chartDef };
 
           this.$fhem.readLogData(def)
             .then((res) => {
