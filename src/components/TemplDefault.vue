@@ -414,7 +414,7 @@
             if(parts[1]) {
               result = parts.join(' ');
             } else {
-              this.log = { type: 'error', message: 'Connected Device not found. ' + this.item.Options, debugLevel: 1 };
+              this.$fhem.log({ lvl: 1, msg: 'Connected Device not found. ' + this.item.Options });
             }
           } else {
             result = param;
@@ -428,8 +428,7 @@
 
       clickStart(val, evt) {
         this.long = false;
-
-        this.$fhem.log = { type: 'intern', message: 'ClickStart: type ' + val + ':' + evt, debugLevel: 5 };
+        this.$fhem.log({ lvl: 5, msg: 'ClickStart: type ' + val + ':' + evt })
 
         if(this.touchFirst && evt === 'mouse') return;
         if(evt === 'touch') this.touchFirst = true;
@@ -439,7 +438,7 @@
 
           let action = this.setup.main[this.mainLevel].[val + 'Long'];
 
-          this.$fhem.log = { type: 'intern', message: 'ClickEvent: Long ' + ' [' + action + ']', debugLevel: 5 };
+          this.$fhem.log({ lvl: 5, msg: 'ClickEvent: Long ' + ' [' + action + ']' });
 
           if(action) {
             let param = this.$fhem.handleVals(this.item, action);
@@ -453,7 +452,7 @@
       },
 
       clickEnd(val, evt) {
-        this.$fhem.log = { type: 'intern', message: 'ClickEnd: type ' + val + ':' + evt, debugLevel: 5 };
+        this.$fhem.log({ lvl: 5, msg: 'ClickEnd: type ' + val + ':' + evt });
 
         if(this.touchFirst && evt === 'mouse') return;
         if(evt === 'touch') this.touchFirst = true;
@@ -462,7 +461,7 @@
 
         let action = this.setup.main[this.mainLevel].[val + (this.long ? 'LongRelease' : 'Click')];
 
-        this.$fhem.log = { type: 'intern', message: 'ClickEvent: ' + (this.long ? 'LongRelease' : 'Click') + ' [' + action + ']', debugLevel: 5 };
+        this.$fhem.log({ lvl: 5, msg: 'ClickEvent: ' + (this.long ? 'LongRelease' : 'Click') + ' [' + action + ']' });
 
         if(action) {
           let param = this.$fhem.handleVals(this.item, action);
