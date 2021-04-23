@@ -43,10 +43,6 @@ export default {
   watch: {
     $route() {
       this.subscribe();
-    },
-
-    'app.session.ready'(val) {
-      if(val) this.subscribe();
     }
   },
 
@@ -54,6 +50,19 @@ export default {
     this.app.session = this.$fhem.app.session;
     this.app.options = this.$fhem.app.options;
     this.app.data = this.$fhem.app.data;
+
+    this.$fhem.app.componentMap = [
+      { name: 'panel', component: 'templ_panel' },
+      { name: 'chart', component: 'templ_chart' },
+      { name: 'weather', component: 'templ_weather' },
+      { name: 'sysmon', component: 'templ_sysmon' },
+      { name: 'hmlan', component: 'templ_hmlan' },
+      { name: 'sonos', component: 'templ_sonos' },
+      { name: 'scenes', component: 'templ_scenes' }
+    ];
+
+    this.$fhem.on('connect', () => this.subscribe());
+    this.subscribe();
   },
 
   methods: {
@@ -61,18 +70,25 @@ export default {
       if(this.app.options.mobileHeader) {
         if(this.$route.name === 'Devices') {
           if(this.$route.params.filter.match('device=')) {
-            this.$fhem.app.appBar.header = '';
+            this.app.data.header = ''
           } else {
-            this.$fhem.app.appBar.header = this.$route.params.filter.split('=')[1];
+            this.app.data.header = this.$route.params.filter.split('=')[1];
           }
         } else {
-          this.$fhem.app.appBar.header = this.$route.name;
+          this.app.data.header = this.$route.name;
         }
       }
     },
 
     subscribe() {
-      let fltr = this.$route.params.filter || this.$route.path;
+      if(!this.app.session.connect) return;
+      let fltr = '';
+
+      if(this.$route.params.filter) fltr = this.$route.params.filter;
+
+      if(this.$route.name == 'Dashboard') fltr = 'app=dashboard';
+      if(this.$route.name == 'System') fltr = 'app=system';
+      if(this.$route.name == 'Home') fltr = 'app=home';
 
       this.setHeader();
       this.$fhem.getDevices(fltr);

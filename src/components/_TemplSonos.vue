@@ -1,13 +1,13 @@
 <template>
-  <v-col :class="setup.size">
+  <v-col class="col-12 col-sm-6 col-md-4 col-lg-4">
     <v-card
       :dark="this.$vuetify.theme.dark"
       color="secondary"
     >
       <v-progress-linear
         height="7"
-        :value="vals.status.level"
-        :color="vals.status.color"
+        :value="vals.mainLevel"
+        :color="vals.mainColor"
         background-color="secondary darken-1"
       />
 
@@ -152,44 +152,8 @@
 
       <v-divider />
       <v-system-bar color="secondary darken-1">
-        <v-icon class="ml-0">
-          {{ vals.info.left1Icon }}
-        </v-icon>
-        <div class="text-truncate">
-          {{ vals.info.left1Text }}
-        </div>
-        <v-icon class="ml-2">
-          {{ vals.info.left2Icon }}
-        </v-icon>
-        <div class="text-truncate">
-          {{ vals.info.left2Text }}
-        </div>
-        <v-spacer />
-        <v-icon>
-          {{ vals.info.mid1Icon }}
-        </v-icon>
-        <div class="text-truncate">
-          {{ vals.info.mid1Text }}
-        </div>
-        <v-icon class="ml-2">
-          {{ vals.info.mid2Icon }}
-        </v-icon>
-        <div class="text-truncate">
-          {{ vals.info.mid2Text }}
-        </div>
-        <v-spacer />
-        <v-icon>
-          {{ vals.info.right1Icon }}
-        </v-icon>
-        <div class="text-truncate">
-          {{ vals.info.right1Text }}
-        </div>
-        <v-icon class="ml-2 mr-0">
-          {{ vals.info.right2Icon }}
-        </v-icon>
-        <div class="text-truncate">
-          {{ vals.info.right2Text }}
-        </div>
+        <v-icon>{{ vals.systemIcon }}</v-icon>
+        <span class="text-truncate">{{ vals.systemIconValue }}</span>
       </v-system-bar>
     </v-card>
   </v-col>
@@ -217,53 +181,16 @@
           debugMode: false
         }
       },
-      setup: {
-        size: 'col-12 col-sm-6 col-md-4 col-lg-4',
-        status: {
-          bar: [
-          "transportState:PLAYING:100:success",
-          "transportState::0:success"],
-          error: []
-        },
-        info: {
-          left1: [
-            "Mute:1::mdi-volume-off",
-            "transportState:PLAYING::mdi-play",
-            "transportState:::mdi-pause"
-          ],
-          left2: [
-            "currentArtist:$:%s",
-            "currentSource::%s"
-          ],
-          mid1: [],
-          mid2: [],
-          right1: [],
-          right2: [
-            "currentTitle::%s"
-          ]
-        }
-      },
+      defaultSet: [
+        "Volume:^[0]$:stumm::success:mdi-volume-off",
+        "transportState:PLAYING:an:100:success:mdi-play",
+        "transportState::aus:0:success:mdi-pause"
+      ],
       vals: {
-        status: {
-          color: '',
-          level: 0
-        },
-        info: {
-          left1Icon: '',
-          left1Text: '',
-          left2Icon: '',
-          left2Text: '',
-          mid1Icon: '',
-          mid1Text: '',
-          mid2Icon: '',
-          mid2Text: '',
-          right1Icon: '',
-          right1Text: '',
-          right2Icon: '',
-          right2Text: ''
-        },
         title: '',
         mainState: '',
+        mainLevel: 0,
+        mainColor: '',
         play: false,
         volume: 0,
         volumeChanged: false,
@@ -273,6 +200,8 @@
         tracks: '',
         playInfo1: '',
         playInfo2: '',
+        systemIcon: '',
+        systemIconValue: ''
       },
       leftIcon: 'mdi-minus',
       playIcon: 'mdi-play',
@@ -298,17 +227,18 @@
           let volume = this.$fhem.getEl(val, 'Readings', 'Volume', 'Value');
           let mute = this.$fhem.getEl(val, 'Readings', 'Mute', 'Value');
           let stream = this.$fhem.getEl(val, 'Readings', 'currentStreamAudio', 'Value');
-          //let currentSender = this.$fhem.getEl(val, 'Readings', 'currentSender', 'Value');
-          //let currentSenderInfo = this.$fhem.getEl(val, 'Readings', 'currentSenderInfo', 'Value');
-          //let currentAlbum = this.$fhem.getEl(val, 'Readings', 'currentAlbum', 'Value');
-          //let currentArtist = this.$fhem.getEl(val, 'Readings', 'currentArtist', 'Value');
-          //let currentTitle = this.$fhem.getEl(val, 'Readings', 'currentTitle', 'Value');
+          let currentSender = this.$fhem.getEl(val, 'Readings', 'currentSender', 'Value');
+          let currentSenderInfo = this.$fhem.getEl(val, 'Readings', 'currentSenderInfo', 'Value');
+          let currentAlbum = this.$fhem.getEl(val, 'Readings', 'currentAlbum', 'Value');
+          let currentArtist = this.$fhem.getEl(val, 'Readings', 'currentArtist', 'Value');
+          let currentTitle = this.$fhem.getEl(val, 'Readings', 'currentTitle', 'Value');
           let currentTrack = this.$fhem.getEl(val, 'Readings', 'currentTrack', 'Value');
           let numOfTracks = this.$fhem.getEl(val, 'Readings', 'numberOfTracks', 'Value');
           let zone = this.$fhem.getEl(val, 'Readings', 'ZoneGroupNameDetails', 'Value');
           let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
 
           this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
+          this.vals = this.$fhem.handleStates(val, this.vals, this.defaultSet);
 
           if(zone) this.vals.title += ' (gruppiert)';
           this.vals.zones = zone.split(' + ').filter(Boolean);
@@ -324,17 +254,15 @@
           this.vals.mute = mute === '1' ? true : false;
           this.volumeIcon = this.vals.mute ? 'mdi-volume-mute' : 'mdi-volume-high';
 
-          //currentAlbum += currentArtist ? ' (' + currentArtist + ')' : '';
-          //this.vals.playInfo1 = stream === '1' ? currentSender : currentAlbum;
-          //this.vals.playInfo2 = stream === '1' ? currentSenderInfo : currentTitle;
-          //if(!this.vals.systemIconValue) this.vals.systemIconValue = this.vals.playInfo1;
+          currentAlbum += currentArtist ? ' (' + currentArtist + ')' : '';
+          this.vals.playInfo1 = stream === '1' ? currentSender : currentAlbum;
+          this.vals.playInfo2 = stream === '1' ? currentSenderInfo : currentTitle;
+          if(!this.vals.systemIconValue) this.vals.systemIconValue = this.vals.playInfo1;
 
           this.vals.tracks = stream === '0' ? (currentTrack + ' von ' + numOfTracks) : '';
 
           this.vals.play = state === 'PLAYING' ? true : false;
           this.playIcon = this.vals.play ? 'mdi-pause' : 'mdi-play';
-
-          this.setValues();
         }
       }
     },
@@ -342,56 +270,12 @@
     mounted() {
       this.app.options = this.$fhem.app.options;
 
-      /*
       setInterval(() => {
         this.vals.systemIconValue = this.vals.systemIconValue === this.vals.playInfo1 ? this.vals.playInfo2 : this.vals.playInfo1;
       }, 3000)
-      */
     },
 
     methods: {
-      setValues() {
-        let statusVals = this.$fhem.handleVals(this.item, this.setup.status.bar);
-        let errorVals = this.$fhem.handleVals(this.item, this.setup.status.error);
-        let infoLeft1Vals = this.$fhem.handleVals(this.item, this.setup.info.left1);
-        let infoLeft2Vals = this.$fhem.handleVals(this.item, this.setup.info.left2);
-        let infoMid1Vals = this.$fhem.handleVals(this.item, this.setup.info.mid1);
-        let infoMid2Vals = this.$fhem.handleVals(this.item, this.setup.info.mid2);
-        let infoRight1Vals = this.$fhem.handleVals(this.item, this.setup.info.right1);
-        let infoRight2Vals = this.$fhem.handleVals(this.item, this.setup.info.right2);
-
-        this.vals.status.level = statusVals[0] || '100';
-        this.vals.status.color = statusVals[1] || 'success';
-        this.vals.status.invert = statusVals[2] ? true : false;
-
-        this.vals.info.left1Icon = infoLeft1Vals[1] || '';
-        this.vals.info.left1Text = infoLeft1Vals[0] || '';
-
-        this.vals.info.left2Icon = infoLeft2Vals[1] || '';
-        this.vals.info.left2Text = infoLeft2Vals[0] || '';
-
-        this.vals.info.mid1Icon = infoMid1Vals[1] || '';
-        this.vals.info.mid1Text = infoMid1Vals[0] || '';
-
-        this.vals.info.mid2Icon = infoMid2Vals[1] || '';
-        this.vals.info.mid2Text = infoMid2Vals[0] || '';
-
-        this.vals.info.right1Icon = infoRight1Vals[1] || '';
-        this.vals.info.right1Text = infoRight1Vals[0] || '';
-
-        this.vals.info.right2Icon = infoRight2Vals[1] || '';
-        this.vals.info.right2Text = infoRight2Vals[0] || '';
-
-        if(errorVals.length > 0) {
-          this.vals.status.level = errorVals[0] || '100';
-          this.vals.status.color = errorVals[1] || 'error';
-          this.vals.main.text = errorVals[2] || 'Fehler';
-          this.isActive = false;
-        } else {
-          this.isActive = true;
-        }
-      },
-
       sendCmd(cmd, delay) {
         if(!delay) {
           this.$fhem.request(cmd);

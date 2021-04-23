@@ -45,7 +45,7 @@
                 <v-text-field
                   v-model="vals.fromLocale"
                   readonly
-                  label="von"
+                  :label="$t('app.dates.from')"
                   prepend-icon="mdi-calendar"
                   v-bind="attrs"
                   v-on="on"
@@ -53,6 +53,7 @@
               </template>
               <v-date-picker
                 v-model="vals.from"
+                :locale="setup.lang"
                 no-title
                 @input="loadChartData"
               />
@@ -72,7 +73,7 @@
                 <v-text-field
                   v-model="vals.toLocale"
                   readonly
-                  label="bis"
+                  :label="$t('app.dates.to')"
                   prepend-icon="mdi-calendar"
                   v-bind="attrs"
                   v-on="on"
@@ -80,6 +81,7 @@
               </template>
               <v-date-picker
                 v-model="vals.to"
+                :locale="setup.lang"
                 no-title
                 @input="loadChartData"
               />
@@ -116,7 +118,8 @@
       setup: {
         size: 'col-12 col-sm-12 col-md-6 col-lg-4',
         daysAgo: -7,
-        daysTo: 1
+        daysTo: 1,
+        lang: 'de'
       },
       vals: {
         title: '',
@@ -172,11 +175,11 @@
       },
 
       'vals.from'(val) {
-        this.vals.fromLocale = new Date(val).toLocaleString('de-DE', { dateStyle: 'medium' });
+        this.vals.fromLocale = new Date(val).toLocaleString(this.setup.lang, { dateStyle: 'medium' });
       },
 
       'vals.to'(val) {
-        this.vals.toLocale = new Date(val).toLocaleString('de-DE', { dateStyle: 'medium' });
+        this.vals.toLocale = new Date(val).toLocaleString(this.setup.lang, { dateStyle: 'medium' });
       }
     },
 
@@ -186,6 +189,8 @@
 
     methods: {
       init() {
+        this.setup.lang = this.$fhem.app.options.lang;
+
         let setup = this.$fhem.getEl(this.item, 'Options', 'setup');
         if(setup) Object.assign(this.setup, setup);
         if (this.setup.lineWidth) this.chart.options.stroke.width = this.setup.lineWidth;
@@ -279,7 +284,7 @@
               this.$fhem.loading = false;
             });
         } else {
-          this.$fhem.emit('message', { type: 'error', message: 'no valid device defined' } );
+          this.$fhem.emit('message', { lvl: 1, msg: 'No valid device for Chart Data defined at ' + this.item.Name } );
         }
       }
     }

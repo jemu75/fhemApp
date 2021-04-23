@@ -73,7 +73,9 @@
         <v-icon class="ml-0">
           {{ vals.info.left1Icon }}
         </v-icon>{{ vals.info.left1Text }}
-        <v-icon class="ml-2">{{ vals.info.left2Icon }}</v-icon>{{ vals.info.left2Text }}
+        <v-icon class="ml-2">
+          {{ vals.info.left2Icon }}
+        </v-icon>{{ vals.info.left2Text }}
         <v-spacer />
         <v-icon>{{ vals.info.mid1Icon }}</v-icon>{{ vals.info.mid1Text }}
         <v-icon class="ml-2">
@@ -181,7 +183,7 @@
 
       'app.options.updateProcess'(val) {
         if(!val) {
-          this.$fhem.emit('message', { type: 'success', message: 'Update war erfolgreich. Das System sollte neu gestartet werden.' })
+          this.$fhem.emit('message', { lvl: 4, msg: 'Update war erfolgreich. Das System sollte neu gestartet werden.' });
           this.updateText = 'system aktuell';
           this.restart = true;
         }

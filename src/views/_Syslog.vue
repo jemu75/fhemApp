@@ -117,8 +117,8 @@
       log: {
         headers: [
           { text: 'Art', value: 'icon', class: 'secondary' },
-          { text: 'Zeit', value: 'time', class: 'secondary' },
-          { text: 'Nachricht', value: 'msg', class: 'secondary' }
+          { text: 'Zeit', value: 'timeFlag', class: 'secondary' },
+          { text: 'Nachricht', value: 'message', class: 'secondary' }
         ],
         search: '',
         lastPageIcon: 'mdi-chevron-left',

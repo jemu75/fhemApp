@@ -117,11 +117,6 @@
 
     data: () => ({
       name: 'weather',
-      app: {
-        options: {
-          lang: ''
-        }
-      },
       iconSet: {
         // Weather Darksky - Icons
         sunny: 'mdi-weather-sunny',
@@ -139,6 +134,15 @@
         thunderstorm: 'mdi-weather-lightning',
         windy: 'mdi-weather-windy',
         clear_night: 'mdi-weather-night'
+      },
+      weekdays: {
+        Mo: 'Montag',
+        Di: 'Dienstag',
+        Mi: 'Mittwoch',
+        Do: 'Donnerstag',
+        Fr: 'Freitag',
+        Sa: 'Samstag',
+        So: 'Sonntag'
       },
       vals: {
         title: '',
@@ -203,15 +207,14 @@
         this.vals.forecast.splice(0);
 
         for(let i = 1; i < 7; i++) {
-          let weekd = this.$fhem.getDate(i - 1)
-          let weekday = new Date(weekd).toLocaleString(this.app.options.lang, { weekday: 'long' });
+          let weekday = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + '_day_of_week', 'Value');
           let condition = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + '_condition', 'Value');
           let icon = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + '_icon', 'Value');
           let max = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + '_high_c', 'Value') || '--';
           let min = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + '_low_c', 'Value') || '--';
 
           let day = {
-            weekday: weekday,
+            weekday: i === 1 ? 'heute' : this.weekdays[weekday],
             condition,
             icon: this.getIcon(icon),
             temp: max +'°C max. ' + min +'°C min.',
@@ -233,10 +236,6 @@
           this.loadForecast();
         }
       }
-    },
-
-    mounted() {
-      this.app.options = this.$fhem.app.options;
     }
   }
 </script>

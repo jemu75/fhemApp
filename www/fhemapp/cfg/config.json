@@ -1,8 +1,7 @@
 {
   "options": {
     "maxChartPoints": 100,
-    "logBuffer": 500,
-    "debugLevel": 5
+    "logBuffer": 500
   },
   "theme": {
     "dark": true,

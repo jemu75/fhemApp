@@ -6,6 +6,10 @@
       "room": "Area",
       "dashboard": "Dashboard",
       "system": "System"
+    },
+    "dates": {
+      "from": "From",
+      "to": "To"
     }
   }
 }

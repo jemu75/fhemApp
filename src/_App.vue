@@ -9,24 +9,25 @@
 
     <v-app-bar
       app
-      :color="appBar.color"
+      :color="appBarColor"
       dark
       clipped-left
     >
-      <div v-if="!appBar.drawer">
+      <div class="hidden-lg-and-up">
         <v-app-bar-nav-icon
-          @click.stop="appBar.drawer = !appBar.drawer"
+          @click.stop="drawer = !drawer"
         />
       </div>
-      <div
-        v-if="appBar.drawer"
-        class="text-h5"
-      >
-        {{ appBar.clock }}
+      <div class="hidden-md-and-down text-h5">
+        {{ app.options.clock }}
       </div>
       <v-spacer />
-      <div class="text-h5">
-        {{ appBar.header }}
+      <div class="hidden-md-and-down text-h5">
+        {{ app.options.date }}
+      </div>
+
+      <div class="hidden-lg-and-up text-h5">
+        {{ app.data.header }}
       </div>
       <v-spacer />
       <v-btn
@@ -46,8 +47,8 @@
       </v-btn>
 
       <v-btn
-        class="text-h5"
-        v-if="app.options.homeBtn && !appBar.drawer"
+        class="hidden-lg-and-up text-h5"
+        v-if="app.options.homeBtn"
         icon
         @click="goTo()"
       >
@@ -71,7 +72,7 @@
     </v-app-bar>
 
     <v-navigation-drawer
-      v-model="appBar.drawer"
+      v-model="drawer"
       app
       color="secondary"
       :dark="this.$vuetify.theme.dark"
@@ -111,7 +112,7 @@
             :key="group.title"
             class="ma-2"
             link
-            :to="'/devices/' + group.route"
+            :to="group.route"
           >
             {{ group.title }}
           </v-chip>
@@ -130,7 +131,7 @@
             :key="room.title"
             class="ma-2"
             link
-            :to="'/devices/' + room.route"
+            :to="room.route"
           >
             {{ room.title }}
           </v-chip>
@@ -198,16 +199,14 @@
       Broadcaster
     },
     data: () => ({
-      appBar: {
-        color: 'primary',
-        drawer: null,
-        clock: null,
-        header: null
-      },
+      drawer: null,
+      appBarColor: 'primary',
       app: {
         options: {
           loading: false,
           reloadBtn: false,
+          clock: null,
+          date: null
         },
         session: {
           connect: false,
@@ -215,6 +214,7 @@
         data: {
           roomList: [],
           groupList: [],
+          header: ''
         }
       },
       version: 'v' + require('../package.json').version,
@@ -247,12 +247,21 @@
       this.app.session = this.$fhem.app.session;
       this.app.options = this.$fhem.app.options;
       this.app.data = this.$fhem.app.data;
-      this.appBar = this.$fhem.app.appBar;
+      this.$fhem.on('connect', () => this.loadRoutes())
+      this.$fhem.init();
+      this.loadRoutes();
 
       if(this.app.options.debugMode) this.appBarColor = 'pink darken-4'
     },
 
     methods: {
+      loadRoutes() {
+        if(!this.app.session.connect) return;
+
+        this.$fhem.getRoutes('room');
+        this.$fhem.getRoutes('group');
+      },
+
       reload() {
         location.reload(true);
       },

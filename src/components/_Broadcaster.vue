@@ -35,7 +35,6 @@ export default {
   data: () => ({
     alert: false,
     type: 'info',
-    types: ['','error','info','info','success','warning'],
     message: '',
     meta: '',
     msgList: []
@@ -44,8 +43,8 @@ export default {
   watch: {
     msgList() {
       if(this.msgList && this.msgList.length > 0) {
-        this.type = this.types[this.msgList[0].lvl];
-        this.message = this.msgList[0].msg;
+        this.type = this.msgList[0].type;
+        this.message = this.msgList[0].message;
         this.meta = this.msgList[0].meta;
         this.alert = true;
       } else {
@@ -60,8 +59,8 @@ export default {
   mounted() {
     this.$fhem.on('message', (msg) => {
       let target = {
-        lvl: 5,
-        msg: 'no valid message received',
+        type: 'warning',
+        message: 'no valid message received',
         meta: ''
       }
 
