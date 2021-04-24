@@ -85,7 +85,42 @@
             {{ item.icon }}
           </v-icon>
         </template>
+
+        <template v-slot:item.actions="{ item }">
+          <v-icon
+            v-if="item.meta"
+            small
+            @click="showMeta(item)"
+          >
+            mdi-paperclip
+          </v-icon>
+        </template>
       </v-data-table>
+
+      <v-dialog
+        v-model="log.metaDialog"
+        max-width="90%"
+        scrollable
+      >
+        <v-card color="secondary lighten-1">
+          <v-card-title class="secondary">
+            Systemprotokoll - Details
+            <v-spacer />
+            <v-btn
+              icon
+              @click="log.metaDialog = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text>
+            <vue-json-pretty
+              :show-line="false"
+              :data="log.metaData"
+            />
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </v-card-text>
 
     <v-divider />
@@ -97,6 +132,9 @@
 </template>
 
 <script>
+  import VueJsonPretty from 'vue-json-pretty'
+  import 'vue-json-pretty/lib/styles.css'
+
   export default {
     data: () => ({
       name: 'syslog',
@@ -118,7 +156,8 @@
         headers: [
           { text: 'Art', value: 'icon', class: 'secondary' },
           { text: 'Zeit', value: 'time', class: 'secondary' },
-          { text: 'Nachricht', value: 'msg', class: 'secondary' }
+          { text: 'Nachricht', value: 'msg', class: 'secondary' },
+          { text: 'Details', value: 'actions', sortable: false }
         ],
         search: '',
         lastPageIcon: 'mdi-chevron-left',
@@ -129,9 +168,15 @@
         page: 1,
         pageCount: 1,
         lastPage: true,
-        nextPage: false
+        nextPage: false,
+        metaDialog: false,
+        metaData: null
       }
     }),
+
+    components: {
+      VueJsonPretty
+    },
 
     watch: {
       session: {
@@ -176,6 +221,11 @@
         this.log.page = newVal > this.log.pageCount ? this.log.pageCount : newVal < 1 ? 1 : newVal;
         this.log.lastPage = this.log.page === 1 ? true : false;
         this.log.nextPage = this.log.page === this.log.pageCount ? true : false;
+      },
+
+      showMeta(val) {
+        this.log.metaDialog = true;
+        this.log.metaData = val.meta;
       }
     }
   }

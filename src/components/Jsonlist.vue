@@ -2,6 +2,8 @@
   <div class="text-center">
     <v-dialog
       v-model="dialog"
+      max-width="90%"
+      scrollable
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
@@ -18,8 +20,8 @@
         </v-btn>
       </template>
 
-      <v-card>
-        <v-card-title class="headline secondary">
+      <v-card class="secondary lighten-1">
+        <v-card-title class="secondary">
           <v-btn
             icon
             @click="deep = deep > 1 ? 1 : 5"
@@ -37,8 +39,7 @@
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
-        <v-divider />
-        <v-card-text class="secondary lighten-2">
+        <v-card-text>
           <vue-json-pretty
             :show-line="false"
             :deep="deep"

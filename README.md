@@ -743,7 +743,7 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
 ```
 
 ### Konfiguration von Charts
-Da *Chart* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften über den Parameter `setup` in `appOptions` anpassen. Über den Paramter `size` kann die Templatebreite [siehe](#breite-von-templates) verändert werden. Der Parameter `daysAgo` legt ihr fest, wieviele Tage das Chart beim Laden zurückschaut. Als Standard werden die Daten der letzten 7 Tage `"daysAgo": -7` geladen. Über den Parameter `lineWidth` könnt ihr die Linienbreite der Chartlinien verändern. Als Standard ist `"lineWidth": 3` festgelegt. Über den Parameter `chartDef` legt ihr fest, welche Daten im Chart angezeigt werden. Jede Linie entspricht dabei einer Definition.
+Da *Chart* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften über den Parameter `setup` in `appOptions` anpassen. Über den Paramter `size` kann die Templatebreite [siehe](#breite-von-templates) verändert werden. Der Parameter `daysAgo` legt ihr fest, wieviele Tage das Chart beim Laden zurückschaut. Als Standard werden die Daten der letzten 7 Tage `"daysAgo": 6` geladen. Über den Parameter `lineWidth` könnt ihr die Linienbreite der Chartlinien verändern. Als Standard ist `"lineWidth": 3` festgelegt. Über den Parameter `chartDef` legt ihr fest, welche Daten im Chart angezeigt werden. Jede Linie entspricht dabei einer Definition.
 ```
 "chartDef": ["logsource:reading:text:präfix:axis"],
 "setup": {

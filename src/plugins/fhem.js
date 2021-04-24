@@ -85,6 +85,7 @@ class Fhem extends EventEmitter {
       time: time + ':' + ('000' + miSecs).slice(-3),
       msg: message.msg || '',
       lvl: message.lvl || 5,
+      meta: message.meta || null,
       icon: icons[message.lvl || 5],
       color: colors[message.lvl || 5],
     }
@@ -100,7 +101,7 @@ class Fhem extends EventEmitter {
   // mainFunction: Calculate Date with diff of days
   getDate(val) {
     let diff = val ? parseInt(val) : 0;
-    return ( d => new Date(d.setDate(d.getDate() + diff)).toISOString() )(new Date).split('T')[0];
+    return ( d => new Date(d.setDate(d.getDate() - diff)).toISOString() )(new Date).split('T')[0];
   }
 
   // mainFunction: Format Date and Time from FHEM
@@ -157,7 +158,7 @@ class Fhem extends EventEmitter {
 
         return typeof obj === 'object' ? Object.assign(obj, { data: result }) : result;
       })
-      .catch((err) => this.log({ lvl: 1, msg: err.message + ' - Request: ' + req }))
+      .catch((err) => this.log({ lvl: 1, msg: 'Request failed ' + req, meta: err.message }))
   }
 
   // coreFunction: to get json-data from a server-file
@@ -171,10 +172,9 @@ class Fhem extends EventEmitter {
       headers: header,
     };
 
-    this.log({ lvl: 5, msg: 'Read Json-Data from ' + file });
-
     let result = await fetch(file, options).then((res) => res.json());
 
+    if(result) this.log({ lvl: 5, msg: 'Json-Data parsed from ' + file, meta: result });
     if(!result) this.log({ lvl: 1, msg: 'No Json-Data found at ' + file });
 
     return await result;
@@ -189,7 +189,7 @@ class Fhem extends EventEmitter {
       }
       if(this.app.options.debugMode) this.app.appBar.color = 'pink darken-4';
     } else {
-      this.log({ lvl: 2, msg: 'No Configuration File found. FHEMApp starting with default settings.'})
+      this.log({ lvl: 2, msg: 'No Configuration File found. FHEMApp starting with default settings.', meta: this.app.options })
     }
   }
 
@@ -201,7 +201,7 @@ class Fhem extends EventEmitter {
       try {
         result = JSON.parse(device.Attributes.appOptions);
       } catch(err) {
-        this.log({ lvl: 1, msg: 'Read `appOptions` from ' + device.Name + ' failed. - ' + err.message })
+        this.log({ lvl: 1, msg: 'Read `appOptions` from ' + device.Name + ' failed.', meta: err.message })
       }
 
       if(result) {
@@ -563,7 +563,7 @@ class Fhem extends EventEmitter {
         }
       } else {
         // alles was nicht verarbeitet werden kann
-        this.log({ lvl: 3, msg: 'No Handling for this FHEM data. ' + arr })
+        this.log({ lvl: 3, msg: 'No Handling for this FHEM data. ', meta: arr })
       }
     }
 
@@ -624,13 +624,13 @@ class Fhem extends EventEmitter {
     this.app.session.connect = true;
     this.app.session.restartCnt = 0;
 
-    this.log({ lvl: 2, msg: 'Connection with FHEM is opened.'})
+    this.log({ lvl: 2, msg: 'Connection with FHEM is opened.', meta: this.app.connection })
 
     this.loadStructure();
   }
 
   // subFunction: calls after websocket is closed
-  async wsClose() {
+  async wsClose(evt) {
     this.app.session.connect = false;
     this.app.session.csrf = null;
     this.app.session.ready = false;
@@ -646,7 +646,14 @@ class Fhem extends EventEmitter {
         this.wsStart()
       }, msecs);
 
-      this.log({ lvl: 2, msg: 'Connection with FHEM was closed. Try to Reconnect in ' + (msecs / 1000) + ' seconds...' })
+      let meta = {
+        info: 'Websocket was closed.',
+        errCode: evt.code,
+        readyState: this.app.socket.readyState
+      }
+
+      this.log({ lvl: 2, msg: 'Connection with FHEM was closed. Try to Reconnect in ' + (msecs / 1000) + ' seconds...', meta: meta })
+      this.loading = false;
     }
   }
 
@@ -661,7 +668,7 @@ class Fhem extends EventEmitter {
     this.app.socket = new WebSocket(url);
     this.app.socket.onopen = () => this.wsOpen();
     this.app.socket.onmessage = (message) => this.doUpdate(message);
-    this.app.socket.onclose = () => this.wsClose();
+    this.app.socket.onclose = (evt) => this.wsClose(evt);
   }
 
   // subFunction: set the actual timestamp for menubar

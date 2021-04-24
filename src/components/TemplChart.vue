@@ -117,7 +117,7 @@
       name: 'chart',
       setup: {
         size: 'col-12 col-sm-12 col-md-6 col-lg-4',
-        daysAgo: -6,
+        daysAgo: 6,
         daysTo: 0,
         lang: 'de'
       },
