@@ -63,7 +63,8 @@ class Fhem extends EventEmitter {
         deviceList: [],
         routeList: [],
         header: ''
-      }
+      },
+      hasConnected: []
     }
   }
 
@@ -288,23 +289,31 @@ class Fhem extends EventEmitter {
   // subFunction: for getDevices return the connected devices from fhem server
   async createConnected(obj) {
     let result = {};
+    let idx = this.app.hasConnected.indexOf(obj.Name);
 
-    if('connected' in obj.Options) {
-      let deviceList = Object.keys(obj.Options.connected);
+    if(idx == -1) {
+      this.app.hasConnected.push(obj.Name);
 
-      for (const item of deviceList) {
-        let device = await this.request({ param: 'cmd', value: 'jsonlist2 ' + obj.Options.connected[item] }, 'json');
+      if('connected' in obj.Options) {
+        let deviceList = Object.keys(obj.Options.connected);
 
-        if(device && device.Results.length == 1) {
-          if('PossibleSets' in device.Results[0]) delete device.Results[0].PossibleSets;
-          if('PossibleAttrs' in device.Results[0]) delete device.Results[0].PossibleAttrs;
+        for (const item of deviceList) {
+          let device = await this.request({ param: 'cmd', value: 'jsonlist2 ' + obj.Options.connected[item] }, 'json');
 
-          let options = await this.createOptions(device.Results[0]);
-          if(options) device.Results[0].Options = options;
+          if(device && device.Results.length == 1) {
+            if('PossibleSets' in device.Results[0]) delete device.Results[0].PossibleSets;
+            if('PossibleAttrs' in device.Results[0]) delete device.Results[0].PossibleAttrs;
 
-          result[item] = device.Results[0];
+            let options = await this.createOptions(device.Results[0]);
+            if(options) device.Results[0].Options = options;
+            if(options && device.Results[0].Options.connected) device.Results[0].Connected = await this.createConnected(device.Results[0]);
+
+            result[item] = device.Results[0];
+          }
         }
       }
+    } else {
+      this.log({ lvl: 1, msg: 'FHEM Device ' + obj.Name + ' is defined as connected device, witch is called from himself. ', meta: obj });
     }
 
     return result;
@@ -343,6 +352,7 @@ class Fhem extends EventEmitter {
     let idx = this.app.data.routeList.map((e) => e.route).indexOf(fltr);
 
     this.app.data.deviceList.splice(0);
+    this.app.hasConnected = [];
 
     if(idx != -1 || fltr.match('device=')) {
       let filter = idx != -1 ? this.app.data.routeList[idx].deviceList.join(',') : fltr.replace('device=','').split('&')[0];
@@ -627,7 +637,7 @@ class Fhem extends EventEmitter {
     this.log({ lvl: 2, msg: 'Connection with FHEM is opened.', meta: this.app.connection })
 
     this.app.session.csrf = await this.request({}, 'csrf');
-    this.log(this.app.session.csrf ? { lvl: 2, msg: 'Crsf-Token received.' } : { lvl: 1, msg: 'No Crsf-Token received.' });
+    this.log({ lvl: 2, msg: 'Crsf-Token received.', meta: { token: this.app.session.csrf } });
 
     this.loadStructure();
   }
