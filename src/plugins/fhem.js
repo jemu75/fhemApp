@@ -626,6 +626,9 @@ class Fhem extends EventEmitter {
 
     this.log({ lvl: 2, msg: 'Connection with FHEM is opened.', meta: this.app.connection })
 
+    this.app.session.csrf = await this.request({}, 'csrf');
+    this.log(this.app.session.csrf ? { lvl: 2, msg: 'Crsf-Token received.' } : { lvl: 1, msg: 'No Crsf-Token received.' });
+
     this.loadStructure();
   }
 
@@ -661,9 +664,6 @@ class Fhem extends EventEmitter {
   async wsStart() {
     let params = [ { param: 'inform', value: 'type=status;filter=.*;fmt=JSON' }, { param: 'XHR', value: '1' } ];
     let url = this.createURL(params).replace(/^http/i,'ws');
-
-    this.app.session.csrf = await this.request({}, 'csrf');
-    this.log(this.app.session.csrf ? { lvl: 2, msg: 'Crsf-Token received.' } : { lvl: 1, msg: 'No Crsf-Token received.' });
 
     this.app.socket = new WebSocket(url);
     this.app.socket.onopen = () => this.wsOpen();

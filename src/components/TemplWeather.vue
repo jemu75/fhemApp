@@ -203,7 +203,7 @@
         this.vals.forecast.splice(0);
 
         for(let i = 1; i < 7; i++) {
-          let weekd = this.$fhem.getDate(i - 1)
+          let weekd = this.$fhem.getDate(-i + 1)
           let weekday = new Date(weekd).toLocaleString(this.app.options.lang, { weekday: 'long' });
           let condition = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + '_condition', 'Value');
           let icon = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + '_icon', 'Value');

@@ -11,5 +11,21 @@
       "from": "von",
       "to": "bis"
     }
+  },
+  "templates": {
+    "sysmon": {
+      "updateBtn": [
+        "prüfe Updates...",
+        "system aktuell",
+        "update",
+        "update läuft.."
+      ],
+      "restartBtn": "neustart",
+      "updateDialog": {
+        "header": "FHEM Update",
+        "text": "Update wurde erfolgreich beendet. FHEM sollte neu gestartet werden.",
+        "restartBtn": "jetzt neustarten"
+      }
+    }
   }
 }

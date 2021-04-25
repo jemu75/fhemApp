@@ -65,7 +65,7 @@
           :disabled="!restart"
           @click="fhemRestart"
         >
-          Restart
+          {{ $t('templates.sysmon.restartBtn') }}
         </v-btn>
       </v-card-actions>
       <v-divider />
@@ -87,6 +87,36 @@
           {{ vals.info.right2Icon }}
         </v-icon>{{ vals.info.right2Text }}
       </v-system-bar>
+
+      <v-dialog
+        v-model="updateDialog"
+        max-width="420px"
+      >
+        <v-card color="secondary lighten-2">
+          <v-card-title>
+            {{ $t('templates.sysmon.updateDialog.header') }}
+            <v-spacer />
+            <v-btn
+              icon
+              small
+              @click="updateDialog = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text>
+            {{ $t('templates.sysmon.updateDialog.text') }}
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              @click="fhemRestart()"
+            >
+              {{ $t('templates.sysmon.updateDialog.restartBtn') }}
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
   </v-col>
 </template>
@@ -157,7 +187,8 @@
       },
       restart: true,
       update: true,
-      updateText: 'prüfe updates...',
+      updateText: '',
+      updateDialog: false
     }),
 
     watch: {
@@ -183,8 +214,8 @@
 
       'app.options.updateProcess'(val) {
         if(!val) {
-          this.$fhem.emit('message', { lvl: 4, msg: 'Update war erfolgreich. Das System sollte neu gestartet werden.' });
-          this.updateText = 'system aktuell';
+          this.updateDialog = true;
+          this.updateText = this.$t('templates.sysmon.updateBtn[1]');
           this.restart = true;
         }
       }
@@ -280,6 +311,7 @@
 
       fhemRestart() {
         this.restart = false;
+        this.updateDialog = false;
         this.$fhem.request({ param: 'cmd', value: 'shutdown restart' });
       },
 
@@ -287,18 +319,19 @@
         let promise = new Promise((resolve, reject) => {
           this.restart = false;
           this.update = false;
+          this.updateText = this.$t('templates.sysmon.updateBtn[0]')
           this.$fhem.checkUpdate()
             .then((res) => {
               if(res) {
-                this.updateText = 'update';
+                this.updateText = this.$t('templates.sysmon.updateBtn[2]');
                 this.update = true;
               } else {
-                this.updateText = 'system aktuell';
+                this.updateText = this.$t('templates.sysmon.updateBtn[1]');
               }
               resolve(res);
             })
             .catch((err) => {
-              this.$fhem.emit('message', { type: 'error', message: 'Updateprüfung fehlgeschlagen.', meta: err });
+              this.$fhem.log({ lvl: 1, msg: 'Update check failed.', meta: err });
               reject();
             })
             .finally(() => {
@@ -311,7 +344,7 @@
       fhemUpdate() {
         this.restart = false;
         this.update = false;
-        this.updateText ='update läuft...';
+        this.updateText = this.$t('templates.sysmon.updateBtn[3]');
         this.app.options.updateProcess = true;
         this.$fhem.request({ param: 'cmd', value: 'update' })
       },

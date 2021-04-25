@@ -11,5 +11,22 @@
       "from": "From",
       "to": "To"
     }
+  },
+  "templates": {
+    "sysmon": {
+      "updateBtn": [
+        "check updates...",
+        "up to date",
+        "update",
+        "update running..."
+      ],
+      "restartBtn": "restart",
+      "updateDialog": {
+        "header": "FHEM Update",
+        "text": "Update was successful finished. FHEM should be restarted now.",
+        "restartBtn": "restart now"
+      }
+    }
   }
+
 }
