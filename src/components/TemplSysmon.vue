@@ -6,7 +6,7 @@
     >
       <v-progress-linear
         height="7"
-        :value="vals.status.level"
+        :value="getLevel"
         :color="vals.status.color"
         background-color="secondary darken-1"
       />
@@ -149,6 +149,8 @@
         status: {
           bar: [],
           error: [],
+          min: 0,
+          max: 100
         },
         subTitle: [],
         main: [],
@@ -190,6 +192,15 @@
       updateText: '',
       updateDialog: false
     }),
+
+    computed: {
+      getLevel() {
+        let steps = 100 / (this.setup.status.max - this.setup.status.min);
+        let level = (this.vals.status.level - this.setup.status.min) * steps;
+
+        return this.vals.status.invert ? 100 - level : level;
+      }
+    },
 
     watch: {
       item: {

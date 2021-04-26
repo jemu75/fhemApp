@@ -152,7 +152,9 @@
         size: 'col-12 col-sm-6 col-md-6 col-lg-6',
         status: {
           bar: [],
-          error: []
+          error: [],
+          min: 0,
+          max: 100
         },
         info: {
           left1: [],
@@ -190,7 +192,10 @@
 
     computed: {
       getLevel() {
-        return this.vals.status.invert ? 100 - this.vals.status.level : this.vals.status.level;
+        let steps = 100 / (this.setup.status.max - this.setup.status.min);
+        let level = (this.vals.status.level - this.setup.status.min) * steps;
+
+        return this.vals.status.invert ? 100 - level : level;
       }
     },
 
@@ -282,6 +287,10 @@
         let btn = this.$fhem.handleVals(obj, this.$fhem.getEl(obj, 'Options', 'panel', 'btn')) || [];
         let cmd = this.$fhem.handleVals(obj, this.$fhem.getEl(obj, 'Options', 'panel', 'click')) || [];
         let menu = this.$fhem.getEl(obj, 'Options', 'panel', 'menu') || [];
+        let min = this.$fhem.getEl(obj, 'Options', 'panel', 'min') || 0;
+        let max = this.$fhem.getEl(obj, 'Options', 'panel', 'max') || 100;
+        let steps = 100 / (max - min);
+        let level = ((state[1] || 0) - min) * steps;
 
         let menuItems = [];
         if(menu.length > 0) {
@@ -295,7 +304,7 @@
           device: device,
           title: title,
           text: state[0] || '',
-          level: state[1] || 0,
+          level: state[3] ? 100 - level : level,
           color: state[2] || 'success',
           icon: btn[0] || '',
           route: route,

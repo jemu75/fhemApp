@@ -268,7 +268,9 @@
         size: 'col-12 col-sm-6 col-md-4 col-lg-4',
         status: {
           bar: [],
-          error: []
+          error: [],
+          min: 0,
+          max: 100
         },
         main: [
           {
@@ -336,7 +338,10 @@
 
     computed: {
       getLevel() {
-        return this.vals.status.invert ? 100 - this.vals.status.level : this.vals.status.level;
+        let steps = 100 / (this.setup.status.max - this.setup.status.min);
+        let level = (this.vals.status.level - this.setup.status.min) * steps;
+
+        return this.vals.status.invert ? 100 - level : level;
       }
     },
 

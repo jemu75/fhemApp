@@ -192,7 +192,9 @@ In den Template-Dateien können folgende Eigenschaften definiert werden. Die Zuw
   "size": "col-12 col-sm-6 col-md-4 col-lg-4",
   "status": {
     "bar": ["reading:value:level:color:invert"],
-    "error": ["reading:value:level:color:text"]
+    "error": ["reading:value:level:color:text"],
+    "min": 0,
+    "max": 100
   },
   "main": [
     {
@@ -245,6 +247,8 @@ Beispiele:
 |-------|-------|-----|-------------|
 |status|bar|reading:wert:level:color:invert|definiert mit welcher **Farbe** und mit welchem **Level** der Status angezeigt wird. Bei Angabe von invert wird *level* invertiert|
 |status|error|reading:wert:level:color:text|definiert mit welcher **Farbe** und mit welchem **Level** Fehler angezeigt werden. Weiterhin wird die **Fehlermeldung** definiert.|
+|status|min|number|(optional) legt den minimalen Wert für **Level** fest. *Standard: 0* |
+|status|max|number|(optional) legt den maximalen Wert für **Level** fest. *Standard: 100* |
 |main|leftBtn|reading:wert:icon:disabled (alternativ: icon)|definiert welches *Icon* auf der linken Taste angezeigt wird. Optional kann das Flag *disabled* gesetzt werden. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
 |main|leftClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die linke Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|leftLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der linken Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
@@ -685,7 +689,9 @@ Nachdem ihr ein Panel defniert und die *panelItems* zugewiesen habt, müsst ihr 
 ```
 {
   "panel": {
-    "status": ["reading:wert:text:level:color"],
+    "status": ["reading:wert:text:level:color:invert"],
+    "min": 0,
+    "max": 100,
     "btn": ["reading:wert:icon"],
     "click": ["reading:wert:cmd"],
     "link": "string",
@@ -695,7 +701,9 @@ Nachdem ihr ein Panel defniert und die *panelItems* zugewiesen habt, müsst ihr 
 ```
 |Element|Zuweisung|Beschreibung|
 |-------|---------|------------|
-|status|reading:wert:text:level:color|definiert welcher **Statustext** im PanelItem angezeigt wird. Weiterhin mit welcher **Farbe** und mit welchem **Level** der Status in dem *Kreis* angezeigt wird.|
+|status|reading:wert:text:level:color:invert|definiert welcher **Statustext** im PanelItem angezeigt wird. Weiterhin mit welcher **Farbe** und mit welchem **Level** der Status in dem *Kreis* angezeigt wird. Bei Angabe von invert wird *level* invertiert|
+|min|number|(optional) legt den minimalen Wert für **Level** fest. *Standard: 0* |
+|max|number|(optional) legt den maximalen Wert für **Level** fest. *Standard: 100* |
 |btn|reading:wert:icon (alternativ: icon)|definiert welches *Icon* auf der Taste im PanelItem angezeigt wird. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
 |click|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die Taste abgesendet wird. *Hinweis:* `set <devicename>` kann weggelassen werden|
 |link|<route>|link kann alternativ zu click verwendet werden. In diesem Fall wird kein FHEM-Kommando gesendet sondern man kann auf einen anderen Screen in **FHEMApp** wechseln. Die *route* muss mit **/devices/** beginnen. Am besten schaut ihr euch dazu vorher die URL in **FHEMApp** auf den gewünschten Screen an.|
