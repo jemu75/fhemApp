@@ -196,7 +196,7 @@
         >
           <template v-slot:thumb-label="{ value }">
             <div class="text-h6">
-              {{ value }}
+              {{ sliderVal(value) }}
             </div>
           </template>
 
@@ -481,15 +481,32 @@
         }
       },
 
+      sliderVal(val) {
+        let action = this.setup.main[this.mainLevel].slider;
+        let result = val;
+
+        if(action) {
+          let param = this.$fhem.handleVals(this.item, action);
+          let decimal = param[4].match('.') ? 1 : 0;
+
+          result = val.toFixed(decimal)
+        }
+
+        return result;
+      },
+
       setSlider(val) {
         let action = this.setup.main[this.mainLevel].slider;
 
         if(action) {
           let param = this.$fhem.handleVals(this.item, action);
+
           if(param[0]) {
             this.vals.main.sliderPrevent = true;
             let cmd = this.createCmd(param[0]);
-            cmd = cmd.replace('%v', val);
+            let decimal = param[4].match('.') ? 1 : 0;
+
+            cmd = cmd.replace('%v', val.toFixed(decimal));
             this.sendCmd(cmd);
           }
         }

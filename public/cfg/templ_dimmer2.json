@@ -1,12 +1,22 @@
 {
-  "name": "dimmer_fibaro_FGD212",
-  "author": "tomspatz",
-  "date": "2021-03-26",
+  "name": "dimmer2",
+  "author": "jemu75",
+  "date": "2021-04-27",
+  "description": "Beispiel für FHEM Monatsrückblick",
   "status": {
     "bar": ["pct::%n:success"],
     "error": []
   },
   "main": [
+    {
+      "leftBtn": "mdi-minus",
+      "leftClick": ["pct:10:pct %i-10","pct::off"],
+      "leftLong": ["state::off"],
+      "text": ["pct:1:an:","pct::aus"],
+      "rightBtn": "mdi-plus",
+      "rightClick": ["pct:90:on","pct::pct %i10"],
+      "rightLong": ["state::on"]
+    },
     {
       "leftBtn": "mdi-lightbulb-off",
       "leftClick": ["state::off"],
@@ -15,7 +25,7 @@
       "rightClick": ["state::on"]
     },
     {
-      "text": ["pct::%s % &#058;"],
+      "text": ["pct::%n%"],
       "rightBtn": "mdi-dots-vertical",
       "rightMenu": ["aus:off","25 %:pct 25","50 %:pct 50","75 %:pct 75","an:on"]
 
