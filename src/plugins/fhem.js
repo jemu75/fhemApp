@@ -599,7 +599,7 @@ class Fhem extends EventEmitter {
         device.Options.status.error = errorVals[2] || 'Fehler';
         device.Options.status.isActive = false;
       } else {
-        device.Options.isActive = true;
+        device.Options.status.isActive = true;
       }
     }
 

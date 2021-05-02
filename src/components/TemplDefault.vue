@@ -44,7 +44,7 @@
       </v-card-title>
       <v-divider />
 
-      <div v-if="!item.Options.isActive">
+      <div v-if="!item.Options.status.isActive">
         <v-card-text>
           <v-row align="center">
             <v-col align="center">
@@ -57,7 +57,7 @@
         <v-divider />
       </div>
 
-      <div v-if="item.Options.isActive">
+      <div v-if="item.Options.status.isActive">
         <div
           v-for="level in main"
           :key="level.idx"
