@@ -123,17 +123,17 @@ Das Attribut `appOptions` kann mit unterschiedlichen Parametern befüllt werden,
 ```
 {
   "template": "string",             - steuert über welches Template das Device dargestellt wird
-  "name": "string",                - kann alternativ zum FHEM-Attribut 'alias' verwendet werden
+  "name": "string",                 - kann alternativ zum FHEM-Attribut 'alias' verwendet werden
   "room": "string",                 - kann alternativ zum FHEM-Attribut 'room' verwendet werden
   "group": "string",                - kann alternativ zum FHEM-Attribut 'group' verwendet werden
   "sortby": "string",               - kann alternativ zum FHEM-Attribut 'sortby' verwendet werden
-  "home": true,                   - zeigt ein Device auf der Startseite an
-  "dashboard": true,              - zeigt ein Device im Dashboard an
-  "system": true,                 - zeigt ein Device in den Systemeinstellungen an
+  "home": true,                     - zeigt ein Device auf der Startseite an
+  "dashboard": true,                - zeigt ein Device im Dashboard an
+  "system": true,                   - zeigt ein Device in den Systemeinstellungen an
   "setup": { object },              - ermöglicht individuelle Anpassungen des Templates
   "connected": { object },          - bindet zusätzliche Devices in das Template ein
   "panel": { object },              - definiert die Darstellung des Devices in einem Panel
-  "chartDef": ["def1", "def2", ...],- legt die Datenquellen für Grafiken fest
+  "chartDef": ["def1", "def2", ...] - legt die Datenquellen für Grafiken fest
 }
 ```
 
@@ -190,6 +190,7 @@ In den Template-Dateien können folgende Eigenschaften definiert werden. Die Zuw
   "author": "name",
   "date": "YYYY-MM-DD",
   "size": "col-12 col-sm-6 col-md-4 col-lg-4",
+  "expand": false,
   "status": {
     "bar": ["reading:value:level:color:invert"],
     "error": ["reading:value:level:color:text"],
@@ -286,6 +287,12 @@ Extra large |	xl | 4k and ultra-wide | > 1904px |
 Die Definition der Templatebreite erfolgt mit dem Parameter `size`. Der String muss mind. 1 Definition enhalten. Eine Definition beginnt jeweils mit `col-`. Danach folgt (optional) der Displaycode (s.o.) und endet mit den "Teilen" (1-12) Folgendes Beispiel zeigt die voreingestellte Definition für Standard Templates.   
 ```
   "size": "col-12 col-sm-6 col-md-4 col-lg-4"
+```
+
+## Aufklappen von Templates
+Wenn unter `main` mehrere Level definiert wurden, dann können die Level im Template umgeschaltet werden. Alternativ kann über den Parameter `expand` das Aufklappen des Templates aktiviert werden. In diesem Fall werden alle definierten Level untereinander dargestellt. Folgendes Beispiel zeigt die voreingestellte Definition für Standard Templates.
+```
+  "expand": false
 ```
 
 ## Verwendung des Parameters connected innerhalb von appOptions

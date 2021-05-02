@@ -1,242 +1,284 @@
 <template>
-  <v-col :class="setup.size">
+  <v-col :class="item.Options.setup.size">
     <v-card
       :dark="this.$vuetify.theme.dark"
       color="secondary"
     >
       <v-progress-linear
         height="7"
-        :value="getLevel"
-        :color="vals.status.color"
+        :value="item.Options.status.level"
+        :color="item.Options.status.color"
         background-color="secondary darken-1"
       />
 
       <v-card-title class="text-truncate">
-        {{ vals.title }}
+        <div v-if="!app.options.debugMode">
+          {{ item.Options.name }}
+        </div>
+
+        <v-btn
+          v-if="app.options.debugMode"
+          :href="toFhem()"
+          target="_blank"
+          text
+        >
+          {{ item.Options.name }}
+          {{ item.Options.sortby }}
+        </v-btn>
+
         <v-spacer />
+        <v-btn
+          v-if="lvlIcon && item.Options.isActive"
+          small
+          icon
+          @click="lvlBtn()"
+        >
+          <v-icon small>
+            {{ lvlIcon }}
+          </v-icon>
+        </v-btn>
         <jsonList
           v-if="app.options.debugMode"
           :item="item"
         />
-        <v-btn
-          v-if="multiLevel && isActive"
-          small
-          icon
-          @click="setLevel()"
-        >
-          <v-icon small>
-            {{ multiLevelIcon }}
-          </v-icon>
-        </v-btn>
       </v-card-title>
       <v-divider />
 
-      <v-card-text v-if="!vals.main.slider || !isActive">
-        <v-row align="center">
-          <v-col
-            v-if="vals.main.leftMenu.length == 0 && vals.main.leftBtn && isActive"
-            class="col-3"
-            align="center"
-          >
-            <v-btn
-              small
-              icon
-              :disabled="vals.main.leftBtnDisabled"
-              @touchstart="clickStart('left','touch')"
-              @touchend="clickEnd('left','touch')"
-              @mousedown="clickStart('left','mouse')"
-              @mouseup="clickEnd('left','mouse')"
-            >
-              <v-icon large>
-                {{ vals.main.leftBtn }}
-              </v-icon>
-            </v-btn>
-          </v-col>
-          <v-col
-            v-if="vals.main.leftMenu.length > 0 && vals.main.leftBtn && isActive"
-            class="col-3"
-            align="center"
-          >
-            <v-menu
-              bottom
-              left
-              transition="slide-y-transition"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  small
-                  icon
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  <v-icon large>
-                    {{ vals.main.leftBtn }}
-                  </v-icon>
-                </v-btn>
-              </template>
+      <div v-if="!item.Options.isActive">
+        <v-card-text>
+          <v-row align="center">
+            <v-col align="center">
+              <div class="headline font-weight-bold">
+                {{ item.Options.status.error }}
+              </div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-divider />
+      </div>
 
-              <v-list
-                dense
-                color="secondary lighten-2"
-              >
-                <v-list-item-group active-class="success--text">
-                  <v-list-item
-                    v-for="(menu, i) in vals.main.leftMenu"
-                    :key="i"
-                    @click="sendCmd(menu.cmd)"
-                  >
-                    <v-list-item-content>
-                      <v-list-item-title class="text-subtitle-1">
-                        {{ menu.name }}
-                      </v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list-item-group>
-              </v-list>
-            </v-menu>
-          </v-col>
-          <v-divider
-            v-if="vals.main.leftBtn && isActive"
-            vertical
-          />
-          <v-col align="center">
-            <div class="headline font-weight-bold">
-              {{ vals.main.text }}
-            </div>
-          </v-col>
-          <v-col
-            v-if="vals.main.text2 && isActive"
-            align="center"
-          >
-            <div class="headline font-weight-bold">
-              {{ vals.main.text2 }}
-            </div>
-          </v-col>
-          <v-divider
-            v-if="vals.main.rightBtn && isActive"
-            vertical
-          />
-          <v-col
-            v-if="vals.main.rightMenu.length == 0 && vals.main.rightBtn && isActive"
-            class="col-3"
-            align="center"
-          >
-            <v-btn
-              small
-              icon
-              :disabled="vals.main.rightBtnDisabled"
-              @touchstart="clickStart('right','touch')"
-              @touchend="clickEnd('right','touch')"
-              @mousedown="clickStart('right','mouse')"
-              @mouseup="clickEnd('right','mouse')"
-            >
-              <v-icon large>
-                {{ vals.main.rightBtn }}
-              </v-icon>
-            </v-btn>
-          </v-col>
-          <v-col
-            v-if="vals.main.rightMenu.length > 0 && vals.main.rightBtn && isActive"
-            class="col-3"
-            align="center"
-          >
-            <v-menu
-              bottom
-              left
-              transition="slide-y-transition"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  small
-                  icon
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  <v-icon large>
-                    {{ vals.main.rightBtn }}
-                  </v-icon>
-                </v-btn>
-              </template>
-
-              <v-list
-                dense
-                color="secondary lighten-2"
-              >
-                <v-list-item-group active-class="success--text">
-                  <v-list-item
-                    v-for="(menu, i) in vals.main.rightMenu"
-                    :key="i"
-                    @click="sendCmd(menu.cmd)"
-                  >
-                    <v-list-item-content>
-                      <v-list-item-title class="text-subtitle-1">
-                        {{ menu.name }}
-                      </v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list-item-group>
-              </v-list>
-            </v-menu>
-          </v-col>
-        </v-row>
-      </v-card-text>
-
-      <v-card-text v-if="vals.main.slider && isActive">
-        <v-slider
-          class="ml-5 mr-5"
-          v-model="vals.main.sliderCurrent"
-          :min="vals.main.sliderMin"
-          :max="vals.main.sliderMax"
-          hide-details
-          thumb-label
-          thumb-size="48"
-          color="success"
-          :step="vals.main.sliderStep"
-          @change="setSlider"
+      <div v-if="item.Options.isActive">
+        <div
+          v-for="level in main"
+          :key="level.idx"
         >
-          <template v-slot:thumb-label="{ value }">
-            <div class="text-h6">
-              {{ sliderVal(value) }}
+          <v-card-text>
+            <div v-if="!level.slider">
+              <v-row align="center">
+                <v-col
+                  v-if="level.leftMenu.length == 0 && level.leftBtn"
+                  class="col-3"
+                  align="center"
+                >
+                  <v-btn
+                    small
+                    icon
+                    :disabled="level.leftBtnDisabled"
+                    @touchstart="clickStart(level.idx, 'left','touch')"
+                    @touchend="clickEnd(level.idx, 'left','touch')"
+                    @mousedown="clickStart(level.idx, 'left','mouse')"
+                    @mouseup="clickEnd(level.idx, 'left','mouse')"
+                  >
+                    <v-icon large>
+                      {{ level.leftBtn }}
+                    </v-icon>
+                  </v-btn>
+                </v-col>
+                <v-col
+                  v-if="level.leftMenu.length > 0 && level.leftBtn"
+                  class="col-3"
+                  align="center"
+                >
+                  <v-menu
+                    bottom
+                    left
+                    transition="slide-y-transition"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        small
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon large>
+                          {{ level.leftBtn }}
+                        </v-icon>
+                      </v-btn>
+                    </template>
+
+                    <v-list
+                      dense
+                      color="secondary lighten-2"
+                    >
+                      <v-list-item-group active-class="success--text">
+                        <v-list-item
+                          v-for="(menu, i) in level.leftMenu"
+                          :key="i"
+                          @click="sendCmd(menu.cmd)"
+                        >
+                          <v-list-item-content>
+                            <v-list-item-title class="text-subtitle-1">
+                              {{ menu.name }}
+                            </v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </v-list-item-group>
+                    </v-list>
+                  </v-menu>
+                </v-col>
+                <v-divider
+                  v-if="level.leftBtn"
+                  vertical
+                />
+                <v-col align="center">
+                  <div class="headline font-weight-bold">
+                    {{ level.text }}
+                  </div>
+                </v-col>
+                <v-col
+                  v-if="level.text2"
+                  align="center"
+                >
+                  <div class="headline font-weight-bold">
+                    {{ level.text2 }}
+                  </div>
+                </v-col>
+                <v-divider
+                  v-if="level.rightBtn"
+                  vertical
+                />
+                <v-col
+                  v-if="level.rightMenu.length == 0 && level.rightBtn"
+                  class="col-3"
+                  align="center"
+                >
+                  <v-btn
+                    small
+                    icon
+                    :disabled="level.rightBtnDisabled"
+                    @touchstart="clickStart(level.idx, 'right','touch')"
+                    @touchend="clickEnd(level.idx, 'right','touch')"
+                    @mousedown="clickStart(level.idx, 'right','mouse')"
+                    @mouseup="clickEnd(level.idx, 'right','mouse')"
+                  >
+                    <v-icon large>
+                      {{ level.rightBtn }}
+                    </v-icon>
+                  </v-btn>
+                </v-col>
+                <v-col
+                  v-if="level.rightMenu.length > 0 && level.rightBtn"
+                  class="col-3"
+                  align="center"
+                >
+                  <v-menu
+                    bottom
+                    left
+                    transition="slide-y-transition"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        small
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon large>
+                          {{ level.rightBtn }}
+                        </v-icon>
+                      </v-btn>
+                    </template>
+
+                    <v-list
+                      dense
+                      color="secondary lighten-2"
+                    >
+                      <v-list-item-group active-class="success--text">
+                        <v-list-item
+                          v-for="(menu, i) in level.rightMenu"
+                          :key="i"
+                          @click="sendCmd(menu.cmd)"
+                        >
+                          <v-list-item-content>
+                            <v-list-item-title class="text-subtitle-1">
+                              {{ menu.name }}
+                            </v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </v-list-item-group>
+                    </v-list>
+                  </v-menu>
+                </v-col>
+              </v-row>
             </div>
-          </template>
+            <div v-if="level.slider">
+              <v-row align="center">
+                <v-col align="center">
+                  <v-slider
+                    class="ml-5 mr-5"
+                    v-model="level.sliderCurrent"
+                    :min="level.sliderMin"
+                    :max="level.sliderMax"
+                    hide-details
+                    thumb-label
+                    thumb-size="48"
+                    color="success"
+                    :step="level.sliderStep"
+                    @change="setSlider(level.idx, level.sliderCurrent)"
+                  >
+                    <template v-slot:thumb-label="{ value }">
+                      <div class="text-h6">
+                        {{ sliderVal(level.idx, value) }}
+                      </div>
+                    </template>
 
-          <template
-            v-if="vals.main.leftBtn"
-            v-slot:prepend
-          >
-            <v-icon @click="clickEnd('left')">
-              {{ vals.main.leftBtn }}
-            </v-icon>
-          </template>
-          <template
-            v-if="vals.main.rightBtn"
-            v-slot:append
-          >
-            <v-icon @click="clickEnd('right')">
-              {{ vals.main.rightBtn }}
-            </v-icon>
-          </template>
-        </v-slider>
-      </v-card-text>
+                    <template
+                      v-if="level.leftBtn"
+                      v-slot:prepend
+                    >
+                      <v-icon @click="clickEnd(level.idx, 'left')">
+                        {{ level.leftBtn }}
+                      </v-icon>
+                    </template>
+                    <template
+                      v-if="level.rightBtn"
+                      v-slot:append
+                    >
+                      <v-icon @click="clickEnd(level.idx, 'right')">
+                        {{ level.rightBtn }}
+                      </v-icon>
+                    </template>
+                  </v-slider>
+                </v-col>
+              </v-row>
+            </div>
+          </v-card-text>
+          <v-divider />
+        </div>
+      </div>
 
-      <v-divider />
       <v-system-bar color="secondary darken-1">
         <v-icon class="ml-0">
-          {{ vals.info.left1Icon }}
-        </v-icon>{{ vals.info.left1Text }}
+          {{ item.Options.info.left1Icon }}
+        </v-icon>{{ item.Options.info.left1Text }}
         <v-icon class="ml-2">
-          {{ vals.info.left2Icon }}
-        </v-icon>{{ vals.info.left2Text }}
+          {{ item.Options.info.left2Icon }}
+        </v-icon>{{ item.Options.info.left2Text }}
         <v-spacer />
-        <v-icon>{{ vals.info.mid1Icon }}</v-icon>{{ vals.info.mid1Text }}
+        <v-icon>
+          {{ item.Options.info.mid1Icon }}
+        </v-icon>{{ item.Options.info.mid1Text }}
         <v-icon class="ml-2">
-          {{ vals.info.mid2Icon }}
-        </v-icon>{{ vals.info.mid2Text }}
+          {{ item.Options.info.mid2Icon }}
+        </v-icon>{{ item.Options.info.mid2Text }}
         <v-spacer />
-        <v-icon>{{ vals.info.right1Icon }}</v-icon>{{ vals.info.right1Text }}
+        <v-icon>
+          {{ item.Options.info.right1Icon }}
+        </v-icon>{{ item.Options.info.right1Text }}
         <v-icon class="ml-2 mr-0">
-          {{ vals.info.right2Icon }}
-        </v-icon>{{ vals.info.right2Text }}
+          {{ item.Options.info.right2Icon }}
+        </v-icon>{{ item.Options.info.right2Text }}
       </v-system-bar>
     </v-card>
   </v-col>
@@ -264,124 +306,42 @@
           debugMode: false
         }
       },
-      setup: {
-        size: 'col-12 col-sm-6 col-md-4 col-lg-4',
-        status: {
-          bar: [],
-          error: [],
-          min: 0,
-          max: 100
-        },
-        main: [
-          {
-            leftBtn: '',
-            text: 'Template unbekannt',
-            rightBtn: '',
-          }
-        ],
-        info: {
-          left1: [],
-          left2: [],
-          mid1: [],
-          mid2: [],
-          right1: [],
-          right2: []
-        }
-      },
-      vals: {
-        title: '',
-        status: {
-          level: 0,
-          color: '',
-          invert: false,
-        },
-        main: {
-          leftBtn: '',
-          leftBtnDisabled: false,
-          leftMenu: [],
-          text: '',
-          text2: '',
-          slider: false,
-          sliderCurrent: 0,
-          sliderPrevent: false,
-          sliderMin: 0,
-          sliderMax: 100,
-          sliderStep: 1,
-          rightBtn: '',
-          rightBtnDisabled: false,
-          rightMenu: []
-        },
-        info: {
-          left1Icon: '',
-          left1Text: '',
-          left2Icon: '',
-          left2Text: '',
-          mid1Icon: '',
-          mid1Text: '',
-          mid2Icon: '',
-          mid2Text: '',
-          right1Icon: '',
-          right1Text: '',
-          right2Icon: '',
-          right2Text: ''
-        }
-      },
-      multiLevel: false,
-      multiLevelIcon: 'mdi-swap-vertical',
-      mainLevel: 0,
-      isActive: true,
+      main: [],
+      lvlMax: 1,
+      lvlIcon: null,
       timer: false,
       long: false,
       pendingClick: 0,
       touchFirst: false
     }),
 
-    computed: {
-      getLevel() {
-        let steps = 100 / (this.setup.status.max - this.setup.status.min);
-        let level = (this.vals.status.level - this.setup.status.min) * steps;
-
-        return this.vals.status.invert ? 100 - level : level;
-      }
-    },
-
     watch: {
       item: {
-        immediate: true,
-        deep: true,
-        handler(val) {
-          let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
-
-          this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
-          this.setValues();
-        }
-      },
-
-      setup: {
+        immediate: false,
         deep: true,
         handler() {
-          this.setValues();
+          this.setVals();
         }
-      }
+      },
     },
 
-    mounted() {
+    created() {
       this.app.options = this.$fhem.app.options;
 
-      let size = this.$fhem.getEl(this.item, 'Options', 'setup', 'size');
-      let status = this.$fhem.getEl(this.item, 'Options', 'setup', 'status');
-      let main = this.$fhem.getEl(this.item, 'Options', 'setup', 'main');
-      let info = this.$fhem.getEl(this.item, 'Options', 'setup', 'info');
+      this.lvlMax = this.item.Options.setup.main.length;
+      this.lvlIcon = this.lvlMax > 1 ? (this.item.Options.setup.expand ? 'mdi-arrow-expand' : 'mdi-swap-vertical') : null;
 
-      if(size) this.setup.size = size;
-      if(status) Object.assign(this.setup.status, status);
-      if(main) Object.assign(this.setup.main, main);
-      if(info) Object.assign(this.setup.info, info);
-
-      this.setLevel(0);
+      this.setLvl(0);
+      this.setVals();
     },
 
     methods: {
+      toFhem() {
+        let fhemLink = this.$fhem.createURL([{ param: 'detail', value: this.item.Name }]);
+
+        return fhemLink;
+      },
+
       sendCmd(cmd, delay) {
         if(!delay) {
           this.$fhem.request(cmd);
@@ -431,7 +391,7 @@
         return result;
       },
 
-      clickStart(val, evt) {
+      clickStart(idx, val, evt) {
         this.long = false;
         this.$fhem.log({ lvl: 5, msg: 'ClickStart: type ' + val + ':' + evt })
 
@@ -441,7 +401,7 @@
         this.timer = setInterval(() => {
           this.long = true;
 
-          let action = this.setup.main[this.mainLevel].[val + 'Long'];
+          let action = this.item.Options.setup.main[idx].[val + 'Long'];
 
           this.$fhem.log({ lvl: 5, msg: 'ClickEvent: Long ' + ' [' + action + ']' });
 
@@ -456,7 +416,7 @@
         }, 1000)
       },
 
-      clickEnd(val, evt) {
+      clickEnd(idx, val, evt) {
         this.$fhem.log({ lvl: 5, msg: 'ClickEnd: type ' + val + ':' + evt });
 
         if(this.touchFirst && evt === 'mouse') return;
@@ -464,14 +424,16 @@
 
         this.timer = clearInterval(this.timer);
 
-        let action = this.setup.main[this.mainLevel].[val + (this.long ? 'LongRelease' : 'Click')];
+        let action = this.item.Options.setup.main[idx].[val + (this.long ? 'LongRelease' : 'Click')];
 
         this.$fhem.log({ lvl: 5, msg: 'ClickEvent: ' + (this.long ? 'LongRelease' : 'Click') + ' [' + action + ']' });
 
         if(action) {
           let param = this.$fhem.handleVals(this.item, action);
           if(param[0]) {
-            this.vals.main.sliderPrevent = false;
+            let lvl = this.item.Options.setup.expand ? idx : 0;
+
+            this.main[lvl].sliderPrevent = false;
             let cmd = this.createCmd(param[0]);
             let isIncrement = action.findIndex((e) => e.match('%i')) != -1 ? true : false;
             if(!this.long && isIncrement) this.updateReading(cmd);
@@ -481,8 +443,8 @@
         }
       },
 
-      sliderVal(val) {
-        let action = this.setup.main[this.mainLevel].slider;
+      sliderVal(idx, val) {
+        let action = this.item.Options.setup.main[idx].slider;
         let result = val;
 
         if(action) {
@@ -495,14 +457,16 @@
         return result;
       },
 
-      setSlider(val) {
-        let action = this.setup.main[this.mainLevel].slider;
+      setSlider(idx, val) {
+        let action = this.item.Options.setup.main[idx].slider;
 
         if(action) {
           let param = this.$fhem.handleVals(this.item, action);
 
           if(param[0]) {
-            this.vals.main.sliderPrevent = true;
+            let lvl = this.item.Options.setup.expand ? idx : 0;
+
+            this.main[lvl].sliderPrevent = true;
             let cmd = this.createCmd(param[0]);
             let decimal = param[4].match('.') ? 1 : 0;
 
@@ -529,129 +493,87 @@
         return result;
       },
 
-      setLevel(lvl) {
-        if(!isNaN(lvl)) {
-          this.multiLevel = this.setup.main.length > 1 ? true : false;
-          this.mainLevel = lvl;
+      lvlBtn() {
+        let idx = 0;
+
+        if(this.item.Options.setup.expand) {
+          idx = this.main.length > 1 ? 0 : -1;
+          this.lvlIcon = idx === -1 ?  'mdi-arrow-collapse' : 'mdi-arrow-expand';
         } else {
-          this.mainLevel ++;
-          if(this.mainLevel > this.setup.main.length - 1) this.mainLevel = 0;
+          idx = this.main[0].idx + 1;
+          if(idx > this.lvlMax - 1) idx = 0;
         }
+        this.setLvl(idx);
+        this.setVals();
+      },
 
-        this.vals.main.leftBtn = this.setup.main[this.mainLevel].leftBtn;
-        this.vals.main.rightBtn = this.setup.main[this.mainLevel].rightBtn;
+      setLvl(lvl) {
+        let from = lvl != -1 ? lvl : 0;
+        let to = lvl != -1 ? lvl : this.lvlMax - 1;
 
-        let mainText = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].text);
-        let mainText2 = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].text2);
+        this.main.splice(0);
 
-        let mainLeftBtn = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].leftBtn);
-        let mainRightBtn = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].rightBtn);
-
-        let mainSlider = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].slider);
-
-        let mainLeftMenu = this.createMenu(this.setup.main[this.mainLevel].leftMenu);
-        let mainRightMenu = this.createMenu(this.setup.main[this.mainLevel].rightMenu);
-
-        this.vals.main.text = mainText[0] || '';
-        this.vals.main.text2 = mainText2[0] || '';
-
-        this.vals.main.leftBtn = mainLeftBtn[0] || '';
-        this.vals.main.rightBtn = mainRightBtn[0] || '';
-        this.vals.main.leftBtnDisabled = mainLeftBtn[1] ? true : false;
-        this.vals.main.rightBtnDisabled = mainRightBtn[1] ? true : false;
-        this.vals.main.leftMenu = mainLeftMenu;
-        this.vals.main.rightMenu = mainRightMenu;
-
-        this.vals.main.slider = mainSlider[0] ? true : false;
-        this.vals.main.sliderMin = mainSlider[2] || 0;
-        this.vals.main.sliderMax = mainSlider[3] || 100;
-        this.vals.main.sliderStep = mainSlider[4] || 1;
-
-        if(!this.vals.main.sliderPrevent) {
-          this.vals.main.sliderCurrent = mainSlider[1] || 0;
-        } else {
-          if(this.vals.main.sliderCurrent === mainSlider[1]) {
-            this.vals.main.sliderPrevent = false;
-            this.vals.main.sliderCurrent = mainSlider[1] || 0;
+        for(let i = from; i <= to; i++) {
+          let lvlSet = {
+            idx: i,
+            leftBtn: '',
+            leftBtnDisabled: false,
+            leftMenu: [],
+            text: '',
+            text2: '',
+            slider: false,
+            sliderCurrent: 0,
+            sliderPrevent: false,
+            sliderMin: 0,
+            sliderMax: 100,
+            sliderStep: 1,
+            rightBtn: '',
+            rightBtnDisabled: false,
+            rightMenu: []
           }
+
+          this.main.push(lvlSet);
         }
       },
 
-      setValues() {
-        if(this.setup.main.length > 0) {
-          let statusVals = this.$fhem.handleVals(this.item, this.setup.status.bar);
-          let errorVals = this.$fhem.handleVals(this.item, this.setup.status.error);
-          let mainText = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].text);
-          let mainText2 = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].text2);
-          let mainSlider = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].slider);
-          let mainLeftBtn = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].leftBtn);
-          let mainRightBtn = this.$fhem.handleVals(this.item, this.setup.main[this.mainLevel].rightBtn);
-          let mainLeftMenu = this.createMenu(this.setup.main[this.mainLevel].leftMenu);
-          let mainRightMenu = this.createMenu(this.setup.main[this.mainLevel].rightMenu);
-          let infoLeft1Vals = this.$fhem.handleVals(this.item, this.setup.info.left1);
-          let infoLeft2Vals = this.$fhem.handleVals(this.item, this.setup.info.left2);
-          let infoMid1Vals = this.$fhem.handleVals(this.item, this.setup.info.mid1);
-          let infoMid2Vals = this.$fhem.handleVals(this.item, this.setup.info.mid2);
-          let infoRight1Vals = this.$fhem.handleVals(this.item, this.setup.info.right1);
-          let infoRight2Vals = this.$fhem.handleVals(this.item, this.setup.info.right2);
+      setVals() {
+        for(const lvl in this.main) {
+          let idx = this.main[lvl].idx;
 
-          this.vals.status.level = statusVals[0] || '0';
-          this.vals.status.color = statusVals[1] || 'success';
-          this.vals.status.invert = statusVals[2] ? true : false;
+          let mainText = this.$fhem.handleVals(this.item, this.item.Options.setup.main[idx].text);
+          let mainText2 = this.$fhem.handleVals(this.item, this.item.Options.setup.main[idx].text2);
+          let mainSlider = this.$fhem.handleVals(this.item, this.item.Options.setup.main[idx].slider);
+          let mainLeftBtn = this.$fhem.handleVals(this.item, this.item.Options.setup.main[idx].leftBtn);
+          let mainRightBtn = this.$fhem.handleVals(this.item, this.item.Options.setup.main[idx].rightBtn);
+          let mainLeftMenu = this.createMenu(this.item.Options.setup.main[idx].leftMenu);
+          let mainRightMenu = this.createMenu(this.item.Options.setup.main[idx].rightMenu);
 
-          this.vals.info.left1Icon = infoLeft1Vals[1] || '';
-          this.vals.info.left1Text = infoLeft1Vals[0] || '';
+          this.main[lvl].text = mainText[0] || '';
+          this.main[lvl].text2 = mainText2[0] || '';
 
-          this.vals.info.left2Icon = infoLeft2Vals[1] || '';
-          this.vals.info.left2Text = infoLeft2Vals[0] || '';
+          this.main[lvl].leftBtn = mainLeftBtn[0] || '';
+          this.main[lvl].rightBtn = mainRightBtn[0] || '';
+          this.main[lvl].leftBtnDisabled = mainLeftBtn[1] ? true : false;
+          this.main[lvl].rightBtnDisabled = mainRightBtn[1] ? true : false;
+          this.main[lvl].leftMenu = mainLeftMenu;
+          this.main[lvl].rightMenu = mainRightMenu;
 
-          this.vals.info.mid1Icon = infoMid1Vals[1] || '';
-          this.vals.info.mid1Text = infoMid1Vals[0] || '';
+          this.main[lvl].slider = mainSlider[0] ? true : false;
+          this.main[lvl].sliderMin = mainSlider[2] || 0;
+          this.main[lvl].sliderMax = mainSlider[3] || 100;
+          this.main[lvl].sliderStep = mainSlider[4] || 1;
 
-          this.vals.info.mid2Icon = infoMid2Vals[1] || '';
-          this.vals.info.mid2Text = infoMid2Vals[0] || '';
-
-          this.vals.info.right1Icon = infoRight1Vals[1] || '';
-          this.vals.info.right1Text = infoRight1Vals[0] || '';
-
-          this.vals.info.right2Icon = infoRight2Vals[1] || '';
-          this.vals.info.right2Text = infoRight2Vals[0] || '';
-
-          this.vals.main.text = mainText[0] || '';
-          this.vals.main.text2 = mainText2[0] || '';
-
-          this.vals.main.slider = mainSlider[0] ? true : false;
-          this.vals.main.sliderMin = mainSlider[2] || 0;
-          this.vals.main.sliderMax = mainSlider[3] || 100;
-          this.vals.main.sliderStep = mainSlider[4] || 1;
-
-          if(!this.vals.main.sliderPrevent) {
-            this.vals.main.sliderCurrent = mainSlider[1] || 0;
+          if(!this.main[lvl].sliderPrevent) {
+            this.main[lvl].sliderCurrent = mainSlider[1] || 0;
           } else {
-            if(this.vals.main.sliderCurrent === mainSlider[1]) {
-              this.vals.main.sliderPrevent = false;
-              this.vals.main.sliderCurrent = mainSlider[1] || 0;
+            if(this.main[lvl].sliderCurrent === mainSlider[1]) {
+              this.main[lvl].sliderPrevent = false;
+              this.main[lvl].sliderCurrent = mainSlider[1] || 0;
             }
           }
 
-          this.vals.main.leftBtn = mainLeftBtn[0] || '';
-          this.vals.main.rightBtn = mainRightBtn[0] || '';
-          this.vals.main.leftBtnDisabled = mainLeftBtn[1] ? true : false;
-          this.vals.main.rightBtnDisabled = mainRightBtn[1] ? true : false;
-
-          this.vals.main.leftMenu = mainLeftMenu;
-          this.vals.main.rightMenu = mainRightMenu;
-
-          if(errorVals.length > 0) {
-            this.vals.status.level = errorVals[0] || '100';
-            this.vals.status.color = errorVals[1] || 'error';
-            this.vals.main.text = errorVals[2] || 'Fehler';
-            this.isActive = false;
-          } else {
-            this.isActive = true;
-          }
         }
-      }
+      },
     }
   }
 </script>

@@ -96,7 +96,11 @@ class Fhem extends EventEmitter {
       if(this.app.session.logList.length > this.app.options.logBuffer) this.app.session.logList.length = this.app.options.logBuffer;
     }
 
-    if(result.lvl == 1) this.emit('message', result);
+    if(result.lvl == 1) {
+      this.app.options.loadCount = 0;
+      this.app.options.loading = false;
+      this.emit('message', result);
+    }
   }
 
   // mainFunction: Calculate Date with diff of days
@@ -173,10 +177,11 @@ class Fhem extends EventEmitter {
       headers: header,
     };
 
-    let result = await fetch(file, options).then((res) => res.json());
+    let result = await fetch(file, options)
+      .then((res) => res.json())
+      .catch((err) => this.log({ lvl: 1, msg: 'Read Json-Data from ' + file + ' failed.', meta: err }));
 
     if(result) this.log({ lvl: 5, msg: 'Json-Data parsed from ' + file, meta: result });
-    if(!result) this.log({ lvl: 1, msg: 'No Json-Data found at ' + file });
 
     return await result;
   }
@@ -214,6 +219,26 @@ class Fhem extends EventEmitter {
         if(result.room === 'hidden') result.room = '';
         if(result.group === 'hidden') result.group = '';
         if(!result.sortby) result.sortby = 'zzz';
+        result.status = {
+          level: null,
+          color: null,
+          isActive: true,
+          error: null
+        };
+        result.info = {
+          left1Icon: null,
+          left1Text: null,
+          left2Icon: null,
+          left2Text: null,
+          mid1Icon: null,
+          mid1Text: null,
+          mid2Icon: null,
+          mid2Text: null,
+          right1Icon: null,
+          right1Text: null,
+          right2Icon: null,
+          right2Text: null
+        };
       }
     }
 
@@ -307,6 +332,7 @@ class Fhem extends EventEmitter {
             let options = await this.createOptions(device.Results[0]);
             if(options) device.Results[0].Options = options;
             if(options && device.Results[0].Options.connected) device.Results[0].Connected = await this.createConnected(device.Results[0]);
+            if(device.Results[0].Options) this.handleTemplate(device.Results[0]);
 
             result[item] = device.Results[0];
           }
@@ -330,8 +356,12 @@ class Fhem extends EventEmitter {
       if(templDef.status) Object.assign(setup, { status: templDef.status });
       if(templDef.main) Object.assign(setup, { main: templDef.main });
       if(templDef.info) Object.assign(setup, { info: templDef.info});
+      setup.size = templDef.size || 'col-12 col-sm-6 col-md-4 col-lg-4';
+      setup.expand = templDef.expand || false;
 
       return setup;
+    } else {
+      this.log({ lvl: 1, msg: 'Template Definition ' + template + ' not found.'});
     }
   }
 
@@ -381,6 +411,7 @@ class Fhem extends EventEmitter {
 
           item.Options = options;
           if(item.Options.connected) item.Connected = await this.createConnected(item);
+          this.handleTemplate(item);
           target.push(item);
 
           if(idx === devices.Results.length) {
@@ -542,6 +573,65 @@ class Fhem extends EventEmitter {
     return result;
   }
 
+  // subFunction: for getDevices and doUpdate
+  handleTemplate(device) {
+    let statusDefs = this.getEl(device, 'Options', 'setup', 'status', 'bar');
+    let errorDefs = this.getEl(device, 'Options', 'setup', 'status', 'error');
+    let infoDefs = this.getEl(device, 'Options', 'setup', 'info');
+
+    if(statusDefs) {
+      let statusMin = this.getEl(device, 'Options', 'setup', 'status', 'min') || 0;
+      let statusMax = this.getEl(device, 'Options', 'setup', 'status', 'max') || 100;
+      let statusVals = this.handleVals(device, statusDefs);
+      let steps = 100 / (statusMax - statusMin);
+      let level = (statusVals[0] || '0' - statusMin) * steps;
+
+      device.Options.status.level = statusVals[2] ? 100 - level : level;
+      device.Options.status.color = statusVals[1] || 'success';
+    }
+
+    if(errorDefs) {
+      let errorVals = this.handleVals(device, errorDefs);
+
+      if(errorVals.length > 0) {
+        device.Options.status.level = errorVals[0] || '100';
+        device.Options.status.color = errorVals[1] || 'error';
+        device.Options.status.error = errorVals[2] || 'Fehler';
+        device.Options.status.isActive = false;
+      } else {
+        device.Options.isActive = true;
+      }
+    }
+
+    if(infoDefs) {
+      let infoLeft1Vals = this.handleVals(device, infoDefs.left1);
+      let infoLeft2Vals = this.handleVals(device, infoDefs.left2);
+      let infoMid1Vals = this.handleVals(device, infoDefs.mid1);
+      let infoMid2Vals = this.handleVals(device, infoDefs.mid2);
+      let infoRight1Vals = this.handleVals(device, infoDefs.right1);
+      let infoRight2Vals = this.handleVals(device, infoDefs.right2);
+
+      device.Options.info.left1Icon = infoLeft1Vals[1] || '';
+      device.Options.info.left1Text = infoLeft1Vals[0] || '';
+
+      device.Options.info.left2Icon = infoLeft2Vals[1] || '';
+      device.Options.info.left2Text = infoLeft2Vals[0] || '';
+
+      device.Options.info.mid1Icon = infoMid1Vals[1] || '';
+      device.Options.info.mid1Text = infoMid1Vals[0] || '';
+
+      device.Options.info.mid2Icon = infoMid2Vals[1] || '';
+      device.Options.info.mid2Text = infoMid2Vals[0] || '';
+
+      device.Options.info.right1Icon = infoRight1Vals[1] || '';
+      device.Options.info.right1Text = infoRight1Vals[0] || '';
+
+      device.Options.info.right2Icon = infoRight2Vals[1] || '';
+      device.Options.info.right2Text = infoRight2Vals[0] || '';
+    }
+
+  }
+
   // subFunction: for doUpdate(), return Data from update as Object
   handleData(line) {
     let arr = JSON.parse(line);
@@ -601,6 +691,7 @@ class Fhem extends EventEmitter {
               if(data.devicePart === 'Attributes' && this.getEl(source, 'Attributes', data.param)) {
                 source.Attributes[data.param] = data.value;
               }
+              this.handleTemplate(source);
               this.app.data.deviceList.splice(idx, 1, source);
             }
 
@@ -616,6 +707,7 @@ class Fhem extends EventEmitter {
                   if(data.devicePart === 'Attributes' && this.getEl(source.Connected[alias], 'Attributes', data.param)) {
                     source.Connected[alias].Attributes[data.param] = data.value;
                   }
+                  this.handleTemplate(source.Connected[alias]);
                   this.app.data.deviceList.splice(idx, 1, source);
                 }
 
@@ -679,6 +771,15 @@ class Fhem extends EventEmitter {
     this.app.socket.onopen = () => this.wsOpen();
     this.app.socket.onmessage = (message) => this.doUpdate(message);
     this.app.socket.onclose = (evt) => this.wsClose(evt);
+
+    /*
+    let pollConn = new XMLHttpRequest();
+    pollConn.open("GET", this.createURL(params), true);
+    if(pollConn.overrideMimeType)    // Win 8.1, #66004
+      pollConn.overrideMimeType("application/json");
+    pollConn.onreadystatechange = (message) => console.log(message.target.responseText);
+    pollConn.send(null);
+    */
   }
 
   // subFunction: set the actual timestamp for menubar

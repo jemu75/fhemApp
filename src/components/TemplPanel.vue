@@ -13,6 +13,12 @@
 
       <v-card-title class="text-truncate">
         {{ vals.title }}
+        <v-spacer />
+
+        <jsonList
+          v-if="app.options.debugMode"
+          :item="item"
+        />
       </v-card-title>
       <v-divider />
 
@@ -138,7 +144,13 @@
 </template>
 
 <script>
+  import jsonList from '@/components/Jsonlist.vue'
+
   export default {
+    components: {
+      jsonList
+    },
+
     props: {
       item: {
         type: Object,
@@ -148,6 +160,11 @@
 
     data: () => ({
       name: 'panel',
+      app: {
+        options: {
+          debugMode: false
+        }
+      },
       setup: {
         size: 'col-12 col-sm-6 col-md-6 col-lg-6',
         status: {
@@ -187,7 +204,8 @@
           right2Text: ''
         }
       },
-      list: []
+      list: [],
+      statusAlert: false
     }),
 
     computed: {
@@ -221,6 +239,8 @@
     },
 
     created() {
+      this.app.options = this.$fhem.app.options;
+
       let size = this.$fhem.getEl(this.item, 'Options', 'setup', 'size');
       let status = this.$fhem.getEl(this.item, 'Options', 'setup', 'status');
       let info = this.$fhem.getEl(this.item, 'Options', 'setup', 'info');
@@ -241,9 +261,12 @@
         let infoRight1Vals = this.$fhem.handleVals(this.item, this.setup.info.right1);
         let infoRight2Vals = this.$fhem.handleVals(this.item, this.setup.info.right2);
 
-        this.vals.status.level = statusVals[0] || '100';
-        this.vals.status.color = statusVals[1] || 'success';
-        this.vals.status.invert = statusVals[2] ? true : false;
+
+        if(!this.statusAlert) {
+          this.vals.status.level = statusVals[0] || '100';
+          this.vals.status.color = statusVals[1] || 'success';
+          this.vals.status.invert = statusVals[2] ? true : false;
+        }
 
         this.vals.info.left1Icon = infoLeft1Vals[1] || '';
         this.vals.info.left1Text = infoLeft1Vals[0] || '';
@@ -335,7 +358,10 @@
               menu: data.menu
             };
 
-            if(this.setup.status.bar.length == 0 && listItem.color != 'success' && this.vals.status.color === 'success') this.vals.status.color = listItem.color;
+            if(this.setup.status.bar.length == 0 && listItem.color != 'success' && this.vals.status.color === 'success') {
+              this.statusAlert = true;
+              this.vals.status.color = listItem.color;
+            }
 
             if(idx != -1) {
               this.list.splice(idx, 1, listItem);

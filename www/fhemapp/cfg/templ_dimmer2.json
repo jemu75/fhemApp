@@ -9,6 +9,15 @@
   },
   "main": [
     {
+      "leftBtn": "mdi-minus",
+      "leftClick": ["pct:10:pct %i-10","pct::off"],
+      "leftLong": ["state::off"],
+      "text": ["pct:1:an:","pct::aus"],
+      "rightBtn": "mdi-plus",
+      "rightClick": ["pct:90:on","pct::pct %i10"],
+      "rightLong": ["state::on"]
+    },
+    {
       "leftBtn": "mdi-lightbulb-off",
       "leftClick": ["state::off"],
       "slider": ["pct::%v:%n:0:100:0.5"],

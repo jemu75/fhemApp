@@ -29,6 +29,14 @@
             <v-icon>mdi-file-tree-outline</v-icon>
           </v-btn>
 
+          <v-btn
+            icon
+            @click="copyToClipboard()"
+          >
+            <v-icon>mdi-content-copy</v-icon>
+          </v-btn>
+
+
           <v-spacer />
           {{ item.Name }}
           <v-spacer />
@@ -44,6 +52,7 @@
             :show-line="false"
             :deep="deep"
             :data="item"
+            ref="jsonContent"
           />
         </v-card-text>
       </v-card>
@@ -71,6 +80,13 @@
 
     components: {
       VueJsonPretty
+    },
+
+    methods: {
+      copyToClipboard() {
+        var copyText = JSON.stringify(this.$refs.jsonContent.data, null, 2);
+        navigator.clipboard.writeText(copyText);
+      }
     }
   }
 </script>

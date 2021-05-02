@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="noselect">
     <v-overlay :value="app.options.loading">
       <v-progress-circular
         indeterminate
@@ -273,3 +273,12 @@
     }
   }
 </script>
+
+<style scoped>
+  .noselect {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+</style>
