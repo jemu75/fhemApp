@@ -98,17 +98,16 @@ Zusätzlich könnt ihr das Farbschema von **FHEMApp** individuell anpassen. Grun
 
 # Grundeinstellung in FHEM
 Bevor ihr die gewünschten Geräte für die Anzeige in der **FHEMApp** konfiguriert sind sind folgende Grundeinstellungen in FHEM notwendig.
-1. Müsst ihr in eurem *FHEM-Device* `FHEMWEB` die beiden Attribute `CORS` auf `1` und `longpoll` auf `websocket` setzen. [(siehe auch)](https://fhem.de/commandref_DE.html#FHEMWEB) Das folgende Beispiel zeigt einen Auszug aus der Datei *fhem.cfg* nachdem die Grundeinstellung vorgenommen wurde.
-```
-define WEB FHEMWEB 8083 global
-attr WEB CORS 1
-attr WEB longpoll websocket
-attr WEB stylesheetPrefix default
-```
-2. Müsst ihr ein neues globales User-Attribut mit dem Name `appOptions` im FHEM Device `global` hinzufügen. [(siehe auch)](https://fhem.de/commandref_DE.html#global) **Wichtig:** achtet bitte darauf, dass bestehende user-Attribute dabei nicht entfernt werden!
+1. Müsst ihr ein neues globales User-Attribut mit dem Name `appOptions` im FHEM Device `global` hinzufügen. [(siehe auch)](https://fhem.de/commandref_DE.html#global) **Wichtig:** achtet bitte darauf, dass bestehende user-Attribute dabei nicht entfernt werden!
 Damit ihr das Attribut `appOptions` später gut pflegen könnt, empfielt es sich das Attribut wie folgt zu hinterlegen.
 ```
 appOptions:textField-long
+```
+2. Wenn ihr **FHEMApp** außerhalb von FHEM auf einem separaten Web-Server betreibt, müsst ihr in eurem *FHEM-Device* `FHEMWEB` das Attribut `CORS` auf `1` setzen. [(siehe auch)](https://fhem.de/commandref_DE.html#FHEMWEB) Das folgende Beispiel zeigt einen Auszug aus der Datei *fhem.cfg* nachdem die Grundeinstellung vorgenommen wurde.
+```
+define WEB FHEMWEB 8083 global
+attr WEB CORS 1
+attr WEB stylesheetPrefix default
 ```
 
 # Aufruf der App

@@ -105,6 +105,13 @@
         <v-card color="secondary lighten-1">
           <v-card-title class="secondary">
             Systemprotokoll - Details
+            <v-btn
+              icon
+              @click="copyToClipboard()"
+            >
+              <v-icon>mdi-content-copy</v-icon>
+            </v-btn>
+
             <v-spacer />
             <v-btn
               icon
@@ -117,6 +124,7 @@
             <vue-json-pretty
               :show-line="false"
               :data="log.metaData"
+              ref="jsonContent"
             />
           </v-card-text>
         </v-card>
@@ -226,6 +234,11 @@
       showMeta(val) {
         this.log.metaDialog = true;
         this.log.metaData = val.meta;
+      },
+
+      copyToClipboard() {
+        var copyText = JSON.stringify(this.$refs.jsonContent.data, null, 2);
+        navigator.clipboard.writeText(copyText);
       }
     }
   }
