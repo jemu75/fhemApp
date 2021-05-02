@@ -103,9 +103,17 @@
             <v-slider
               v-model="vals.volume"
               hide-details
-              color="accent"
+              thumb-label
+              thumb-size="48"
+              color="success"
               @change="setVolume"
             >
+              <template v-slot:thumb-label="{ value }">
+                <div class="text-h6">
+                  {{ value }}
+                </div>
+              </template>
+
               <template v-slot:prepend>
                 <v-icon
                   @click="setMute()"
