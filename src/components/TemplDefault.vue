@@ -28,7 +28,7 @@
 
         <v-spacer />
         <v-btn
-          v-if="lvlIcon && item.Options.isActive"
+          v-if="lvlIcon && item.Options.status.isActive"
           small
           icon
           @click="lvlBtn()"
