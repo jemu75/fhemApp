@@ -358,7 +358,7 @@
               menu: data.menu
             };
 
-            if(this.setup.status.bar.length == 0 && listItem.color != 'success' && this.vals.status.color === 'success') {
+            if(this.setup.status.bar.length === 0 && listItem.color != 'success' && this.vals.status.color === 'success') {
               this.statusAlert = true;
               this.vals.status.color = listItem.color;
             }

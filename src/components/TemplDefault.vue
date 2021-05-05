@@ -131,19 +131,44 @@
                   v-if="level.leftBtn"
                   vertical
                 />
-                <v-col align="center">
+
+                <v-col
+                  v-if="!level.midBtn"
+                  align="center"
+                >
                   <div class="headline font-weight-bold">
                     {{ level.text }}
                   </div>
                 </v-col>
                 <v-col
-                  v-if="level.text2"
+                  v-if="level.text2 && !level.midBtn"
                   align="center"
                 >
                   <div class="headline font-weight-bold">
                     {{ level.text2 }}
                   </div>
                 </v-col>
+
+                <v-col
+                  v-if="level.midBtn"
+                  align="center"
+                  class="headline"
+                >
+                  <v-btn
+                    small
+                    icon
+                    :disabled="level.midBtnDisabled"
+                    @touchstart="clickStart(level.idx, 'mid','touch')"
+                    @touchend="clickEnd(level.idx, 'mid','touch')"
+                    @mousedown="clickStart(level.idx, 'mid','mouse')"
+                    @mouseup="clickEnd(level.idx, 'mid','mouse')"
+                  >
+                    <v-icon large>
+                      {{ level.midBtn }}
+                    </v-icon>
+                  </v-btn>
+                </v-col>
+
                 <v-divider
                   v-if="level.rightBtn"
                   vertical
@@ -449,7 +474,7 @@
 
         if(action) {
           let param = this.$fhem.handleVals(this.item, action);
-          let decimal = param[4].match('.') ? 1 : 0;
+          let decimal = (param[4] && param[4].match('.')) ? 1 : 0;
 
           result = val.toFixed(decimal)
         }
@@ -468,7 +493,7 @@
 
             this.main[lvl].sliderPrevent = true;
             let cmd = this.createCmd(param[0]);
-            let decimal = param[4].match('.') ? 1 : 0;
+            let decimal = (param[4] && param[4].match('.')) ? 1 : 0;
 
             cmd = cmd.replace('%v', val.toFixed(decimal));
             this.sendCmd(cmd);
@@ -521,6 +546,8 @@
             leftMenu: [],
             text: '',
             text2: '',
+            midBtn: '',
+            midBtnDisabled: false,
             slider: false,
             sliderCurrent: 0,
             sliderPrevent: false,
@@ -544,6 +571,7 @@
           let mainText2 = this.$fhem.handleVals(this.item, this.item.Options.setup.main[idx].text2);
           let mainSlider = this.$fhem.handleVals(this.item, this.item.Options.setup.main[idx].slider);
           let mainLeftBtn = this.$fhem.handleVals(this.item, this.item.Options.setup.main[idx].leftBtn);
+          let mainMidBtn = this.$fhem.handleVals(this.item, this.item.Options.setup.main[idx].midBtn);
           let mainRightBtn = this.$fhem.handleVals(this.item, this.item.Options.setup.main[idx].rightBtn);
           let mainLeftMenu = this.createMenu(this.item.Options.setup.main[idx].leftMenu);
           let mainRightMenu = this.createMenu(this.item.Options.setup.main[idx].rightMenu);
@@ -552,8 +580,10 @@
           this.main[lvl].text2 = mainText2[0] || '';
 
           this.main[lvl].leftBtn = mainLeftBtn[0] || '';
+          this.main[lvl].midBtn = mainMidBtn[0] || '';
           this.main[lvl].rightBtn = mainRightBtn[0] || '';
           this.main[lvl].leftBtnDisabled = mainLeftBtn[1] ? true : false;
+          this.main[lvl].midBtnDisabled = mainMidBtn[1] ? true : false;
           this.main[lvl].rightBtnDisabled = mainRightBtn[1] ? true : false;
           this.main[lvl].leftMenu = mainLeftMenu;
           this.main[lvl].rightMenu = mainRightMenu;

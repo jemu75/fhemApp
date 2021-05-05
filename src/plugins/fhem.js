@@ -777,9 +777,13 @@ class Fhem extends EventEmitter {
     pollConn.open("GET", this.createURL(params), true);
     if(pollConn.overrideMimeType)    // Win 8.1, #66004
       pollConn.overrideMimeType("application/json");
-    pollConn.onreadystatechange = (message) => console.log(message.target.responseText);
+    pollConn.onreadystatechange = () => {
+      let lines = pollConn.responseText.split('\n');
+      console.log(lines);
+    }
     pollConn.send(null);
     */
+    
   }
 
   // subFunction: set the actual timestamp for menubar

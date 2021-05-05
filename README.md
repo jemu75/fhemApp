@@ -206,6 +206,10 @@ In den Template-Dateien können folgende Eigenschaften definiert werden. Die Zuw
       "text": ["reading:value:text"],
       "text2": ["reading:value:text"],
       "slider": ["reading:value:set_param:current:min:max:steps"],
+      "midBtn": ["reading:value:icon:disabled"],
+      "midClick": ["reading:value:set_param"],
+      "midLong": ["reading:value:set_param"],
+      "midLongRelease": ["reading:value:set_param"],
       "rightBtn": ["reading:value:icon:disabled"],
       "rightClick": ["reading:value:set_param"],
       "rightLong": ["reading:value:set_param"],
@@ -257,6 +261,10 @@ Beispiele:
 |main|text|reading:wert:text|definiert den **ersten Text** der in der Mitte angezeigt wird|
 |main|text2|reading:wert:text|definiert den **zweiten Text** der in der Mitte angezeigt wird *Hinweis:* bei Verwendung von Tasten sollte auf die Anzeige eines zweiten Wertes verzichtet werden, da die Breite des Templates im Normalfall nicht ausreicht|
 |main|slider|reading:wert:cmd:current:min:max:steps|stellt einen **Slider** in der Mitte dar. In diesem Fall werden die Elemente `text` und `text2` nicht angezeigt und evtl. definierte Tasten reagieren nur auf `leftClick` bzw. `rightClick`. *Wichtig:* `cmd` muss die Ersetzung *%v* (den aktuellen Wert des Sliders) enthalten. `current` sollte nur die Ersetzung *%n* enthalten, damit der Slider den aktuellen Wert des Readings anzeigt. `min` und `max` begrenzen die Sliderwerte. `steps` definiert die Schritte in denen der Slider die Werte verändert. *Beispiel:* `["pct::pct %v:%n:0:100:1"]` verbindet das Reading `pct` mit einem Slider und begrenzt die Werte auf 0-100 und verändert die Werte jeweils um 1|
+|main|midtBtn|reading:wert:icon:disabled (alternativ: icon)|definiert welches *Icon* auf der mittlerren Taste angezeigt wird. Optional kann das Flag *disabled* gesetzt werden. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
+|main|midClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die mittlere Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
+|main|midLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der mittleren Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
+|main|midLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der mittleren Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|rightBtn|reading:wert:icon:disabled (alternativ: icon)|definiert welches *Icon* auf der rechten Taste angezeigt wird. Optional kann das Flag *disabled* gesetzt werden. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
 |main|leftClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die rechte Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|rightLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der rechten Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
@@ -320,7 +328,7 @@ Wenn du jetzt mehrere Devices in einem Template hast, würden ja "Dopplungen" vo
 | [contact](#template-contact)    | Tür/Fensterkontakt | ![](./docs/media/template_contact_example.png) |
 | [motiondetect](#template-motiondetect) | Bewegungsmelder | ![](./docs/media/template_motiondetect_example.png) |
 | [watersensor](#template-watersensor) | Zisternensensor | ![](./docs/media/template_watersensor_example.png) |
-| sonos | Sonosplayer | ![](./docs/media/template_sonos_example.png) |
+| [sonosplay](#template-sonosplay) | Sonosplayer | ![](./docs/media/template_sonos_example.png) |
 | [scenes](#template-scenes) | LightScenes | ![](./docs/media/template_scenes_example.png) |
 | [panel](#template-panel) | Panel zur Gruppierung mehrerer Devices | ![](./docs/media/template_panel_example.png) |
 | [chart](#template-chart) | Diagramm zur Visualisierung von Log-Daten | ![](./docs/media/template_chart_example.png) |
@@ -674,6 +682,54 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
   }
 }
 ```
+
+# Template SONOSplay
+Dieses Template kann für SONOS-Player Devices verwendet werden. Es ermöglicht die grundlegende Steuerung von SONOS Geräten mit Funktionen wie *Play*, *Pause*, *Lautstärke* oder *Titelwahl*.
+
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
+```
+{ "template": "sonosplay" }
+```
+
+#### Konfiguration
+```
+{
+  "name": "sonosplay",
+  "author": "jemu75",
+  "date": "2021-05-03",
+  "expand": true,
+  "status": {
+    "bar": ["transportState:PLAYING:100:success", "transportState::0:success"]
+  },
+  "main": [
+    {
+      "leftBtn": ["currentTrackProvider:Radio:mdi-skip-previous:disabled","currentTrackProvider::mdi-skip-previous"],
+      "leftClick": ["state::previous"],
+      "midBtn": ["transportState:PLAYING:mdi-pause", "currentTrackProvider::mdi-play"],
+      "text": ["state::keine Musik ausgewählt"],
+      "midClick": ["transportState:PLAYING:Pause", "transportState::Play"],
+      "rightBtn": ["currentTrackProvider:Radio:mdi-skip-next:disabled","currentTrackProvider::mdi-skip-next"],
+      "rightClick": ["state::next"]
+    },
+    {
+      "leftBtn": ["GroupMute:1:mdi-volume-high", "GroupMute:0:mdi-volume-mute"],
+      "leftClick": ["GroupMute:1:mute 0", "GroupMute:0:Mute 1"],
+      "slider": ["GroupVolume::GroupVolume %v:%n:0:40"]
+    },
+    {
+      "text": ["currentTrackPositionSimulated::%s"],
+      "text2": ["currentTrackProvider:Radio:", "tracks_app::%s"]
+    }
+  ],
+  "info": {
+    "left1": ["Mute:1::mdi-volume-off", "transportState:PLAYING::mdi-play", "transportState:::mdi-pause"],
+    "left2": ["currentArtist:$:%s", "currentSource::%s"],
+    "right2": ["currentTitle::%s"]
+  }
+}
+```
+
 # Template Panel
 Über dieses Template können mehrere FHEM-Devices angezeigt werden.
 ![](./docs/media/fhemapp_desk_main.png)*Beispiel für Panels auf dem Homescreen*
