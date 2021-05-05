@@ -1,5 +1,28 @@
 <template>
   <div class="text-center">
+    <v-chip
+      v-if="item.Options.sortby != 'zzz'"
+      small
+      color="secondary"
+    >
+      <v-icon left>
+        mdi-sort-ascending
+      </v-icon>
+      {{ item.Options.sortby }}
+    </v-chip>
+
+    <v-btn
+      :href="toFhem()"
+      target="_blank"
+      small
+      icon
+    >
+      <v-icon small>
+        mdi-link
+      </v-icon>
+    </v-btn>
+
+
     <v-dialog
       v-model="dialog"
       max-width="90%"
@@ -76,6 +99,13 @@
 
     components: {
       VueJsonPretty
+    },
+
+    methods: {
+      toFhem() {
+        let fhemLink = this.$fhem.createURL([{ param: 'detail', value: this.item.Name }]);
+        return fhemLink;
+      }
     }
   }
 </script>

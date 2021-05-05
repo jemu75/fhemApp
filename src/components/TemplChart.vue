@@ -1,18 +1,19 @@
 <template>
-  <v-col :class="setup.size">
+  <v-col :class="size">
     <v-card
       :dark="this.$vuetify.theme.dark"
       color="secondary"
     >
       <v-progress-linear
         height="7"
-        :value="vals.mainLevel"
-        :color="vals.mainColor"
+        :value="item.Options.status.level || status.level"
+        :color="item.Options.status.color || status.color"
         background-color="secondary darken-1"
       />
 
       <v-card-title class="text-truncate">
-        {{ vals.title }}
+        {{ item.Options.name }}
+
         <v-spacer />
         <v-btn
           small
@@ -20,92 +21,147 @@
           @click="goTo"
         >
           <v-icon small>
-            {{ vals.linkIcon }}
+            {{ expandIcon }}
           </v-icon>
         </v-btn>
+
+        <jsonList
+          v-if="app.options.debugMode"
+          :item="item"
+        />
       </v-card-title>
       <v-divider />
 
-      <v-card-text class="pa-0">
-        <v-row
-          v-if="vals.maxSize"
-          class="ma-3"
-          align="center"
-        >
-          <v-col>
-            <v-menu
-              v-model="vals.fromPicker"
-              :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-              max-width="290px"
-              min-width="auto"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                  v-model="vals.fromLocale"
-                  readonly
-                  :label="$t('app.dates.from')"
-                  prepend-icon="mdi-calendar"
-                  v-bind="attrs"
-                  v-on="on"
+      <div v-if="!item.Options.status.isActive">
+        <v-card-text>
+          <v-row align="center">
+            <v-col align="center">
+              <div class="headline font-weight-bold">
+                {{ item.Options.status.error }}
+              </div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-divider />
+      </div>
+
+      <div v-if="item.Options.status.isActive">
+        <v-card-text class="pa-0">
+          <v-row
+            v-if="maxSize"
+            class="ma-3"
+            align="center"
+          >
+            <v-col>
+              <v-menu
+                v-model="fromPicker"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                max-width="290px"
+                min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="fromLocale"
+                    readonly
+                    :label="$t('app.dates.from')"
+                    prepend-icon="mdi-calendar"
+                    v-bind="attrs"
+                    v-on="on"
+                  />
+                </template>
+                <v-date-picker
+                  v-model="from"
+                  :locale="lang"
+                  no-title
+                  @input="loadChartData"
                 />
-              </template>
-              <v-date-picker
-                v-model="vals.from"
-                :locale="setup.lang"
-                no-title
-                @input="loadChartData"
-              />
-            </v-menu>
-          </v-col>
-          <v-col>
-            <v-menu
-              v-model="vals.toPicker"
-              :close-on-content-click="false"
-              transition="scale-transition"
-              offset-y
-              left
-              max-width="290px"
-              min-width="auto"
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field
-                  v-model="vals.toLocale"
-                  readonly
-                  :label="$t('app.dates.to')"
-                  prepend-icon="mdi-calendar"
-                  v-bind="attrs"
-                  v-on="on"
+              </v-menu>
+            </v-col>
+            <v-col>
+              <v-menu
+                v-model="toPicker"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                left
+                max-width="290px"
+                min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="toLocale"
+                    readonly
+                    :label="$t('app.dates.to')"
+                    prepend-icon="mdi-calendar"
+                    v-bind="attrs"
+                    v-on="on"
+                  />
+                </template>
+                <v-date-picker
+                  v-model="to"
+                  :locale="lang"
+                  no-title
+                  @input="loadChartData"
                 />
-              </template>
-              <v-date-picker
-                v-model="vals.to"
-                :locale="setup.lang"
-                no-title
-                @input="loadChartData"
-              />
-            </v-menu>
-          </v-col>
-        </v-row>
-        <apexchart
-          :options="chart.options"
-          :series="chart.series"
-          @zoomed="afterZoom"
-        />
-      </v-card-text>
-      <v-divider />
+              </v-menu>
+            </v-col>
+          </v-row>
+          <apexchart
+            :options="chart.options"
+            :series="chart.series"
+            @zoomed="afterZoom"
+          />
+        </v-card-text>
+      </div>
 
       <v-system-bar color="secondary darken-1">
-        <v-icon>{{ vals.systemIcon }}</v-icon>
+        <v-icon class="ml-0">
+          {{ item.Options.info.left1Icon || chartIcon }}
+        </v-icon><div class="text-truncate">
+          {{ item.Options.info.left1Text }}
+        </div>
+        <v-icon class="ml-2">
+          {{ item.Options.info.left2Icon }}
+        </v-icon><div class="text-truncate">
+          {{ item.Options.info.left2Text }}
+        </div>
         <v-spacer />
+        <v-icon>
+          {{ item.Options.info.mid1Icon }}
+        </v-icon><div class="text-truncate">
+          {{ item.Options.info.mid1Text }}
+        </div>
+        <v-icon class="ml-2">
+          {{ item.Options.info.mid2Icon }}
+        </v-icon><div class="text-truncate">
+          {{ item.Options.info.mid2Text }}
+        </div>
+        <v-spacer />
+        <v-icon>
+          {{ item.Options.info.right1Icon }}
+        </v-icon><div class="text-truncate">
+          {{ item.Options.info.right1Text }}
+        </div>
+        <v-icon class="ml-2 mr-0">
+          {{ item.Options.info.right2Icon }}
+        </v-icon><div class="text-truncate">
+          {{ item.Options.info.right2Text }}
+        </div>
       </v-system-bar>
     </v-card>
   </v-col>
 </template>
 
 <script>
+  import jsonList from '@/components/Jsonlist.vue'
+
   export default {
+    components: {
+      jsonList
+    },
+
     props: {
       item: {
         type: Object,
@@ -115,25 +171,19 @@
 
     data: () => ({
       name: 'chart',
-      setup: {
-        size: 'col-12 col-sm-12 col-md-6 col-lg-4',
-        daysAgo: 6,
-        daysTo: 0,
-        lang: 'de'
-      },
-      vals: {
-        title: '',
-        mainLevel: 0,
-        mainColor: 'success',
-        maxSize: false,
-        linkIcon: 'mdi-arrow-expand',
-        fromPicker: false,
-        from: '',
-        fromLocale: '',
-        toPicker: false,
-        to: '',
-        systemIcon: 'mdi-chart-bar'
-      },
+      size: '',
+      chartIcon: 'mdi-chart-bar',
+      expandIcon: 'mdi-arrow-expand',
+      maxSize: false,
+      fromPicker: false,
+      from: '',
+      fromLocale: '',
+      toPicker: false,
+      to: '',
+      toLocale: '',
+      daysAgo: null,
+      daysTo: null,
+      lang: 'de',
       chart: {
         options: {
           theme: {
@@ -163,58 +213,56 @@
           yaxis: []
         },
         series: []
-      }
+      },
+      status: {
+        color: 'success',
+        level: 0
+      },
+      app: {
+        options: {
+          debugMode: false
+        }
+      },
     }),
 
     watch: {
-      item: {
-        immediate: true,
-        deep: true,
-        handler(val) {
-          let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
-
-          this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
-        }
+      from(val) {
+        this.fromLocale = new Date(val).toLocaleString(this.lang, { dateStyle: 'medium' });
       },
 
-      'vals.from'(val) {
-        this.vals.fromLocale = new Date(val).toLocaleString(this.setup.lang, { dateStyle: 'medium' });
-      },
-
-      'vals.to'(val) {
-        this.vals.toLocale = new Date(val).toLocaleString(this.setup.lang, { dateStyle: 'medium' });
+      to(val) {
+        this.toLocale = new Date(val).toLocaleString(this.lang, { dateStyle: 'medium' });
       }
     },
 
+
     created() {
-      this.init();
+      this.app.options = this.$fhem.app.options;
+      this.size = this.$fhem.getEl(this.item, 'Options', 'setup', 'size') || 'col-12 col-sm-12 col-md-6 col-lg-4';
+
+      if(this.$route.params.filter && this.$route.params.filter.match('&size=max')) {
+        this.maxSize = true;
+        this.size = 'col-12';
+        this.expandIcon = 'mdi-arrow-collapse';
+      }
+
+      this.daysAgo = this.$fhem.getEl(this.item, 'Options', 'setup', 'daysAgo') || 6;
+      this.daysTo = this.$fhem.getEl(this.item, 'Options', 'setup', 'daysTo') || 0;
+      this.from = this.$fhem.getDate(this.daysAgo);
+      this.to = this.$fhem.getDate(this.daysTo);
+
+      this.lang = this.$fhem.app.options.lang;
+
+      this.chart.options.chart.height = window.innerHeight > 600 && this.maxSize ? parseInt((window.innerHeight - 320)) : 'auto';
+      this.chart.options.theme.mode = this.$vuetify.theme.dark ? 'dark' : 'light';
+      this.chart.options.stroke.width = this.$fhem.getEl(this.item, 'Options', 'setup', 'lineWidth') || 4;
+
+      this.loadChartData();
     },
 
     methods: {
-      init() {
-        this.setup.lang = this.$fhem.app.options.lang;
-
-        let setup = this.$fhem.getEl(this.item, 'Options', 'setup');
-        if(setup) Object.assign(this.setup, setup);
-        if (this.setup.lineWidth) this.chart.options.stroke.width = this.setup.lineWidth;
-
-        if(this.$route.params.filter && this.$route.params.filter.match('&size=max')) {
-          this.vals.maxSize = true;
-          this.setup.size = 'col-12';
-          this.vals.linkIcon = 'mdi-arrow-collapse';
-        }
-
-        this.vals.from = this.$fhem.getDate(this.setup.daysAgo);
-        this.vals.to = this.$fhem.getDate(this.setup.daysTo);
-
-        this.chart.options.chart.height = window.innerHeight > 600 && this.vals.maxSize ? parseInt((window.innerHeight - 320)) : 'auto';
-        this.chart.options.theme.mode = this.$vuetify.theme.dark ? 'dark' : 'light';
-
-        this.loadChartData();
-      },
-
       goTo() {
-        if(this.vals.maxSize) {
+        if(this.maxSize) {
           this.$router.go(-1);
         } else {
           this.$router.push('/devices/device=' + this.item.Name + '&size=max');
@@ -222,24 +270,24 @@
       },
 
       afterZoom(chartContext, { xaxis }) {
-        this.vals.from = new Date(xaxis.min).toISOString().split('T')[0];
-        this.vals.to = new Date(xaxis.max).toISOString().split('T')[0];
+        this.from = new Date(xaxis.min).toISOString().split('T')[0];
+        this.to = new Date(xaxis.max).toISOString().split('T')[0];
 
         this.loadChartData();
       },
 
       loadChartData() {
-        this.vals.fromPicker = false;
-        this.vals.toPicker = false;
+        this.fromPicker = false;
+        this.toPicker = false;
 
         if(this.item) {
           this.$fhem.loading = true;
 
-          let toDate = new Date(this.vals.to);
+          let toDate = new Date(this.to);
           toDate.setDate(toDate.getDate() + 1);
           toDate = toDate.toISOString().split('T')[0];
 
-          let def = { deviceName: this.item.Name, from: this.vals.from, to: toDate, defs: this.item.Options.chartDef };
+          let def = { deviceName: this.item.Name, from: this.from, to: toDate, defs: this.item.Options.chartDef };
 
           this.$fhem.readLogData(def)
             .then((res) => {

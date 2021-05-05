@@ -12,19 +12,7 @@
       />
 
       <v-card-title class="text-truncate">
-        <div v-if="!app.options.debugMode">
-          {{ item.Options.name }}
-        </div>
-
-        <v-btn
-          v-if="app.options.debugMode"
-          :href="toFhem()"
-          target="_blank"
-          text
-        >
-          {{ item.Options.name }}
-          {{ item.Options.sortby }}
-        </v-btn>
+        {{ item.Options.name }}
 
         <v-spacer />
         <v-btn
@@ -286,24 +274,36 @@
       <v-system-bar color="secondary darken-1">
         <v-icon class="ml-0">
           {{ item.Options.info.left1Icon }}
-        </v-icon>{{ item.Options.info.left1Text }}
+        </v-icon><div class="text-truncate">
+          {{ item.Options.info.left1Text }}
+        </div>
         <v-icon class="ml-2">
           {{ item.Options.info.left2Icon }}
-        </v-icon>{{ item.Options.info.left2Text }}
+        </v-icon><div class="text-truncate">
+          {{ item.Options.info.left2Text }}
+        </div>
         <v-spacer />
         <v-icon>
           {{ item.Options.info.mid1Icon }}
-        </v-icon>{{ item.Options.info.mid1Text }}
+        </v-icon><div class="text-truncate">
+          {{ item.Options.info.mid1Text }}
+        </div>
         <v-icon class="ml-2">
           {{ item.Options.info.mid2Icon }}
-        </v-icon>{{ item.Options.info.mid2Text }}
+        </v-icon><div class="text-truncate">
+          {{ item.Options.info.mid2Text }}
+        </div>
         <v-spacer />
         <v-icon>
           {{ item.Options.info.right1Icon }}
-        </v-icon>{{ item.Options.info.right1Text }}
+        </v-icon><div class="text-truncate">
+          {{ item.Options.info.right1Text }}
+        </div>
         <v-icon class="ml-2 mr-0">
           {{ item.Options.info.right2Icon }}
-        </v-icon>{{ item.Options.info.right2Text }}
+        </v-icon><div class="text-truncate">
+          {{ item.Options.info.right2Text }}
+        </div>
       </v-system-bar>
     </v-card>
   </v-col>
@@ -361,12 +361,6 @@
     },
 
     methods: {
-      toFhem() {
-        let fhemLink = this.$fhem.createURL([{ param: 'detail', value: this.item.Name }]);
-
-        return fhemLink;
-      },
-
       sendCmd(cmd, delay) {
         if(!delay) {
           this.$fhem.request(cmd);
