@@ -340,6 +340,8 @@
 
       doList() {
         if(this.item.Connected) {
+          this.statusAlert = false;
+
           for(var item in this.item.Options.connected) {
             let idx = this.list.map((e) => e.name).indexOf(item);
 
@@ -358,7 +360,9 @@
               menu: data.menu
             };
 
-            if(this.setup.status.bar.length === 0 && listItem.color != 'success' && this.vals.status.color === 'success') {
+            let isStatusDef = this.$fhem.getEl(this.item, 'Options', 'setup', 'status', 'bar');
+
+            if(!isStatusDef && listItem.color != 'success') {
               this.statusAlert = true;
               this.vals.status.color = listItem.color;
             }
@@ -369,6 +373,8 @@
               this.list.push(listItem);
             }
           }
+
+          if(!this.statusAlert) this.vals.status.color = 'success';
         }
       }
     }
