@@ -8,9 +8,11 @@ class Fhem extends EventEmitter {
       connection: {
         location: window.location.protocol + '//' + window.location.hostname,
         port: window.location.port,
-        path: 'fhem' //root path
+        path: 'fhem', //root path
+        type: 'websocket' // default connection type
       },
-      socket: null,
+      conn: null, // WebSocket or XMLHttpRequest Object
+      connOffset: 0,
       session: {
         connect: false,
         ready: false,
@@ -670,9 +672,20 @@ class Fhem extends EventEmitter {
     return result;
   }
 
-  // subFunction: calls after websockt message
+  // subFunction: calls after message from FHEM-Server
   doUpdate(message) {
-    let lines = message.data.split('\n');
+    let lines = [];
+
+    if(this.app.connection.type === 'websocket') {
+      lines = message.data.split('\n');
+    } else {
+      let response = this.app.conn.responseText;
+
+      if(response && response.slice(-2).match(']')) {
+        lines = response.substr(this.app.connOffset, response.length - this.app.connOffset).split('\n');
+        this.app.connOffset = response.length;
+      }
+    }
 
     for(const line of lines) {
       if(line.length > 0)  {
@@ -721,8 +734,8 @@ class Fhem extends EventEmitter {
     }
   }
 
-  // subFunction: calls after websocket is opened
-  async wsOpen() {
+  // subFunction: calls after Connection is opened
+  async connOpen() {
     this.app.session.connect = true;
     this.app.session.restartCnt = 0;
 
@@ -734,12 +747,12 @@ class Fhem extends EventEmitter {
     this.loadStructure();
   }
 
-  // subFunction: calls after websocket is closed
-  async wsClose(evt) {
+  // subFunction: calls after connection was closed
+  async connClose(evt) {
     this.app.session.connect = false;
     this.app.session.csrf = null;
     this.app.session.ready = false;
-    this.app.session.socket = null;
+    this.app.conn = null;
 
     if(!this.app.session.restart) {
       let msecs = this.app.session.restartCnt == 0 ? 1 : 3000;
@@ -748,42 +761,40 @@ class Fhem extends EventEmitter {
       setTimeout(() => {
         this.app.session.restart = false;
         this.app.session.restartCnt ++;
-        this.wsStart()
+        this.connStart()
       }, msecs);
 
       let meta = {
-        info: 'Websocket was closed.',
-        errCode: evt.code,
-        readyState: this.app.socket.readyState
-      }
+        info: 'Connection (' + this.app.connection.type + ') ' + (evt ? 'failed.' : 'was closed.'),
+        errCode: evt.errCode || ''
+      };
 
       this.log({ lvl: 2, msg: 'Connection with FHEM was closed. Try to Reconnect in ' + (msecs / 1000) + ' seconds...', meta: meta })
       this.loading = false;
     }
   }
 
-  // coreFuntion: open a websocket to FHEM-Server
-  async wsStart() {
+  // coreFunction: open a Connection to FHEM-Server
+  async connStart() {
     let params = [ { param: 'inform', value: 'type=status;filter=.*;fmt=JSON' }, { param: 'XHR', value: '1' } ];
-    let url = this.createURL(params).replace(/^http/i,'ws');
+    let url = this.createURL(params);
 
-    this.app.socket = new WebSocket(url);
-    this.app.socket.onopen = () => this.wsOpen();
-    this.app.socket.onmessage = (message) => this.doUpdate(message);
-    this.app.socket.onclose = (evt) => this.wsClose(evt);
-
-    /*
-    let pollConn = new XMLHttpRequest();
-    pollConn.open("GET", this.createURL(params), true);
-    if(pollConn.overrideMimeType)    // Win 8.1, #66004
-      pollConn.overrideMimeType("application/json");
-    pollConn.onreadystatechange = () => {
-      let lines = pollConn.responseText.split('\n');
-      console.log(lines);
+    if(this.app.connection.type === 'websocket') {
+      this.app.conn = new WebSocket(url.replace(/^http/i,'ws'));
+      this.app.conn.onopen = () => this.connOpen();
+      this.app.conn.onmessage = (message) => this.doUpdate(message);
+      this.app.conn.onclose = () => this.connClose();
+      this.app.conn.onerror = (err) => this.connClose(err);
+    } else {
+      this.app.conn = new XMLHttpRequest();
+      this.app.conn.open("GET", url, true);
+      this.app.conn.onreadystatechange = () => {
+        if(this.app.conn.status === 200 && this.app.conn.readyState === 2) this.connOpen();
+        if(this.app.conn.status === 200 && this.app.conn.readyState === 3) this.doUpdate();
+      }
+      this.app.conn.onerror = (err) => this.connClose(err);
+      this.app.conn.send();
     }
-    pollConn.send(null);
-    */
-    
   }
 
   // subFunction: set the actual timestamp for menubar
@@ -801,7 +812,7 @@ class Fhem extends EventEmitter {
     this.loading = true;
 
     await this.readConfig('./cfg/config.json');
-    this.wsStart();
+    this.connStart();
 
     if(vuetify && this.app.theme) {
       if(this.app.theme.dark != -1) Object.assign(vuetify.framework.theme, { dark: this.app.theme.dark })

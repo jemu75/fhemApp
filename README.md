@@ -35,12 +35,13 @@ Kopiert einfach alle Dateien und Unterverzeichnisse aus dem Ordner [www/fhemapp]
 Die Grundkonfiguration von **FHEMApp** befindet sich in der Datei `config.json` im Verzeichnis `.../fhemapp/cfg`. In dieser können bei Bedarf Anpassungen vorgenommen werden. Dies ist insbesondere wichtig, wenn ihr **FHEMApp** auf einem separaten Webserver installiert. Die Konfigurationsdatei könnt ihr über einen normalen Texteditor bearbeiten, um die folgenden Einstellungen zu verändern.
 
 ### Verbindungseinstellung für FHEM (optional)
-Wenn ihr **FHEMApp** unter *opt/fhem/www/fhemapp* abgelegt habt, müssen keine Verbindungseinstellungen in der `config.json` hinterlegt werden. Solltet ihr **FHEMApp** auf einem separaten Webserver (z.B. apache) betreiben, dann sind diese Angaben notwendig. Das folgende Beispiel zeigt die Verbindungseinstellungen für eine Standard FHEM-Installation.
+Wenn ihr **FHEMApp** unter *opt/fhem/www/fhemapp* abgelegt habt, müssen keine Verbindungseinstellungen in der `config.json` hinterlegt werden. Einige Browser stellen keine websocket Verbindung zu FHEM her. In diesem Fall kann der Verbindungstyp über den Parameter `type` auf `longpoll` geändert werden. Solltet ihr **FHEMApp** auf einem separaten Webserver (z.B. apache) betreiben, dann sind die Angaben `location`, `port` und `path` notwendig. Das folgende Beispiel zeigt die Verbindungseinstellungen für eine Standard FHEM-Installation.
 ```
 "connection": {
   "location": "http://fhem",
   "port": "8083",
-  "path": "fhem"
+  "path": "fhem",
+  "type": "websocket"
 },
 ```
 
