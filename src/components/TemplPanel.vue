@@ -219,6 +219,11 @@
     },
 
     methods: {
+      set(device, param) {
+        let cmd = param.match('set') ? param : 'set ' + device + ' ' + param;
+        this.$fhem.request(cmd);
+      },
+
       loadItem(obj) {
         let device = this.$fhem.getEl(obj, 'Name') || '';
         let alias = this.$fhem.getEl(obj, 'Attributes', 'alias') || obj.Name;
