@@ -512,15 +512,15 @@ class Fhem extends EventEmitter {
     for (var i = 2; i < defSet.length; i ++) {
       let val = defSet[i];
 
-      if(defSet[i].match('%s')) val = defSet[i].replace('%s', state);
-      if(defSet[i].match('%t')) val = defSet[i].replace('%t', this.getDateTime(state));
-      if(defSet[i].match('%n') && chkNum) {
+      if(/%s/.test(defSet[i])) val = defSet[i].replace('%s', state);
+      if(/%t/.test(defSet[i])) val = defSet[i].replace('%t', this.getDateTime(state));
+      if(/%n/.test(defSet[i]) && chkNum) {
         if(!/%n.[0-9]/.test(defSet[i])) defSet[i] = defSet[i].replace('%n','%n.0');
         let isDecimal = /%n../.exec(defSet[i]);
         let decimal = isDecimal[0].replace('%n.','');
         val = defSet[i].replace(isDecimal[0], parseFloat(state.slice(chkNum.index)).toFixed(decimal))
       }
-      if(defSet[i].match('%i') && chkNum) {
+      if(/%i/.test(defSet[i]) && chkNum) {
         let inc = parseFloat(defSet[i].split('%i')[1]);
         if(inc != 'isNaN') {
           let isDecimal = inc.toString().split('.')[1] || '';
@@ -549,17 +549,18 @@ class Fhem extends EventEmitter {
         let defSet = def.split(':');
 
         if(defSet.length > 2) {
-          let value = defSet[0].match(/\./) ? defSet[0].split('.') : [ 'Readings', defSet[0], 'Value' ];
+          let value = /\./.test(defSet[0]) ? defSet[0].split('.') : [ 'Readings', defSet[0], 'Value' ];
           let state = this.getEl(device, ...value) || this.getEl(device, 'Readings', defSet[0], 'Value');
 
           if(state) {
             let found = false;
-            if(isNaN(parseFloat(defSet[1]))) {
+            let ds1 = parseFloat(defSet[1]);
+            if(isNaN(ds1)) {
               if(RegExp(!defSet[1] ? '.' : defSet[1]).test(state)) found = true;
             } else {
               let chkNum = /-?[0-9]/.exec(state);
               if(chkNum.index != -1) {
-                if(parseFloat(state.slice(chkNum.index)) >= parseFloat(defSet[1])) found = true;
+                if(parseFloat(state.slice(chkNum.index)) >= ds1) found = true;
               }
             }
 
@@ -781,6 +782,7 @@ class Fhem extends EventEmitter {
 
     if(this.app.connection.type === 'websocket') {
       this.app.conn = new WebSocket(url.replace(/^http/i,'ws'));
+
       this.app.conn.onopen = () => this.connOpen();
       this.app.conn.onmessage = (message) => this.doUpdate(message);
       this.app.conn.onclose = () => this.connClose();
@@ -788,11 +790,13 @@ class Fhem extends EventEmitter {
     } else {
       this.app.conn = new XMLHttpRequest();
       this.app.conn.open("GET", url, true);
+
       this.app.conn.onreadystatechange = () => {
         if(this.app.conn.status === 200 && this.app.conn.readyState === 2) this.connOpen();
         if(this.app.conn.status === 200 && this.app.conn.readyState === 3) this.doUpdate();
       }
       this.app.conn.onerror = (err) => this.connClose(err);
+
       this.app.conn.send();
     }
   }

@@ -303,6 +303,11 @@
                   let select = /\(.*\)/.exec(item);
                   let parts = select ? item.replace(select[0], '_').split(':') : item.split(':');
 
+                  if(parts[5]) {
+                    if(!('colors' in this.chart.options)) Object.assign(this.chart.options, { colors: []});
+                    this.chart.options.colors.splice([idx], 0, parts[5]);
+                  }
+
                   let values = [];
                   let logData = res.data[res.data.map((e) => e.id).indexOf(idx)].data;
 
