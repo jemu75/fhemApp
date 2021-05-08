@@ -23,7 +23,8 @@ export default {
     templ_scenes: () => import('@/components/TemplScenes.vue'),
     templ_sonos: () => import('@/components/TemplSonos.vue'),
     templ_sysmon: () => import('@/components/TemplSysmon.vue'),
-    templ_hmlan: () => import('@/components/TemplHmLan.vue')
+    templ_hmlan: () => import('@/components/TemplHmLan.vue'),
+    templ_cam: () => import('@/components/TemplCam.vue')
   },
   data: () => ({
     app: {

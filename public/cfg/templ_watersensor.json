@@ -8,10 +8,8 @@
   },
   "main": [
     {
-      "text": ["liter::%n Liter"]
-    },
-    {
-      "text": ["level::%n %"]
+      "text": ["liter::%n Liter"],
+      "text2": ["level::%n %"]
     }
   ],
   "info": {

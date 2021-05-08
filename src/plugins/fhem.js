@@ -57,7 +57,8 @@ class Fhem extends EventEmitter {
         { name: 'sysmon', component: 'templ_sysmon' },
         { name: 'hmlan', component: 'templ_hmlan' },
         { name: 'sonos', component: 'templ_sonos' },
-        { name: 'scenes', component: 'templ_scenes' }
+        { name: 'scenes', component: 'templ_scenes' },
+        { name: 'cam', component: 'templ_cam' }
       ],
       data: {
         roomList: [],
@@ -221,6 +222,7 @@ class Fhem extends EventEmitter {
         if(result.room === 'hidden') result.room = '';
         if(result.group === 'hidden') result.group = '';
         if(!result.sortby) result.sortby = 'zzz';
+        if(!result.setup) result.setup = {};
         result.status = {
           level: null,
           color: null,
