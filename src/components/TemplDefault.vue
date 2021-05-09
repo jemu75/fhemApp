@@ -1,5 +1,8 @@
 <template>
-  <v-col :class="item.Options.setup.size">
+  <v-col
+    v-if="item.Options.show"
+    :class="item.Options.setup.size"
+  >
     <v-card
       :dark="this.$vuetify.theme.dark"
       color="secondary"

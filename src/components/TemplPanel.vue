@@ -1,5 +1,8 @@
 <template>
-  <v-col :class="item.Options.setup.size || size">
+  <v-col
+    v-if="item.Options.show"
+    :class="item.Options.setup.size || size"
+  >
     <v-card
       :dark="this.$vuetify.theme.dark"
       color="secondary"
@@ -283,7 +286,11 @@
               menu: data.menu
             };
 
-            if(data.color != 'success') this.status.color = data.color;
+            if(data.color != 'success') {
+              this.status.color = data.color;
+              this.status.level = 100;
+            }
+
 
             if(idx != -1) {
               this.panelItems.splice(idx, 1, listItem);

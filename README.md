@@ -191,6 +191,7 @@ In den Template-Dateien können folgende Eigenschaften definiert werden. Die Zuw
   "date": "YYYY-MM-DD",
   "size": "col-12 col-sm-6 col-md-4 col-lg-4",
   "expand": false,
+  "show": ["reading:value:show:size:sortby"],
   "status": {
     "bar": ["reading:value:level:color:invert"],
     "error": ["reading:value:level:color:text"],
@@ -250,6 +251,7 @@ Beispiele:
 ## verfügbare Elemente
 |Bereich|Element|Zuweisung|Beschreibung|
 |-------|-------|-----|-------------|
+|show|template|reading:wert:show:size:sortby|definiert, ob ein Template angezeigt wird, welche Breite es hat und an welcher Position das Template steht. Die Parameter *size* und *sortby* überschreiben dabei die Voreinstellungen|
 |status|bar|reading:wert:level:color:invert|definiert mit welcher **Farbe** und mit welchem **Level** der Status angezeigt wird. Bei Angabe von invert wird *level* invertiert|
 |status|error|reading:wert:level:color:text|definiert mit welcher **Farbe** und mit welchem **Level** Fehler angezeigt werden. Weiterhin wird die **Fehlermeldung** definiert.|
 |status|min|number|(optional) legt den minimalen Wert für **Level** fest. *Standard: 0* |

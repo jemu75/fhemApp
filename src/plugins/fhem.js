@@ -223,6 +223,7 @@ class Fhem extends EventEmitter {
         if(result.group === 'hidden') result.group = '';
         if(!result.sortby) result.sortby = 'zzz';
         if(!result.setup) result.setup = {};
+        result.show = true;
         result.status = {
           level: null,
           color: null,
@@ -360,6 +361,7 @@ class Fhem extends EventEmitter {
       if(templDef.status) Object.assign(setup, { status: templDef.status });
       if(templDef.main) Object.assign(setup, { main: templDef.main });
       if(templDef.info) Object.assign(setup, { info: templDef.info});
+      if(templDef.show) Object.assign(setup, { show: templDef.show });
       setup.size = templDef.size || 'col-12 col-sm-6 col-md-4 col-lg-4';
       setup.expand = templDef.expand || false;
 
@@ -580,9 +582,20 @@ class Fhem extends EventEmitter {
 
   // subFunction: for getDevices and doUpdate
   handleTemplate(device) {
+    let showDefs = this.getEl(device, 'Options', 'setup', 'show');
     let statusDefs = this.getEl(device, 'Options', 'setup', 'status', 'bar');
     let errorDefs = this.getEl(device, 'Options', 'setup', 'status', 'error');
     let infoDefs = this.getEl(device, 'Options', 'setup', 'info');
+
+    if(showDefs) {
+      let showVals = this.handleVals(device, showDefs);
+      device.Options.show = showVals[0] === 'false' ? false : true;
+      if(showVals[1]) device.Options.setup.size = showVals[1];
+      if(showVals[2]) {
+        device.Options.sortby = showVals[2];
+        //this.app.data.deviceList.sort((a,b) => (a.Options.sortby > b.Options.sortby) ? 1 : ((b.Options.sortby > a.Options.sortby) ? -1 : 0));
+      }
+    }
 
     if(statusDefs) {
       let statusMin = this.getEl(device, 'Options', 'setup', 'status', 'min') || 0;
@@ -709,6 +722,7 @@ class Fhem extends EventEmitter {
               }
               this.handleTemplate(source);
               this.app.data.deviceList.splice(idx, 1, source);
+              this.app.data.deviceList.sort((a,b) => (a.Options.sortby > b.Options.sortby) ? 1 : ((b.Options.sortby > a.Options.sortby) ? -1 : 0));
             }
 
             if('Connected' in device) {
@@ -725,6 +739,7 @@ class Fhem extends EventEmitter {
                   }
                   this.handleTemplate(source.Connected[alias]);
                   this.app.data.deviceList.splice(idx, 1, source);
+                  this.app.data.deviceList.sort((a,b) => (a.Options.sortby > b.Options.sortby) ? 1 : ((b.Options.sortby > a.Options.sortby) ? -1 : 0));
                 }
 
                 i++;
