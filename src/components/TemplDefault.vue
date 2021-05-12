@@ -82,7 +82,7 @@
                 >
                   <v-menu
                     bottom
-                    left
+                    right
                     transition="slide-y-transition"
                   >
                     <template v-slot:activator="{ on, attrs }">
@@ -102,7 +102,10 @@
                       dense
                       color="secondary lighten-2"
                     >
-                      <v-list-item-group active-class="success--text">
+                      <v-list-item-group
+                        v-model="level.leftMenuIdx"
+                        active-class="success--text"
+                      >
                         <v-list-item
                           v-for="(menu, i) in level.leftMenu"
                           :key="i"
@@ -113,6 +116,9 @@
                               {{ menu.name }}
                             </v-list-item-title>
                           </v-list-item-content>
+                          <v-list-item-icon v-if="menu.active">
+                            <v-icon>mdi-check</v-icon>
+                          </v-list-item-icon>
                         </v-list-item>
                       </v-list-item-group>
                     </v-list>
@@ -141,7 +147,7 @@
                 </v-col>
 
                 <v-col
-                  v-if="level.midBtn"
+                  v-if="level.midMenu.length === 0 && level.midBtn"
                   align="center"
                   class="headline"
                 >
@@ -160,12 +166,61 @@
                   </v-btn>
                 </v-col>
 
+                <v-col
+                  v-if="level.midMenu.length > 0 && level.midBtn"
+                  class="headline"
+                  align="center"
+                >
+                  <v-menu
+                    bottom
+                    transition="slide-y-transition"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        small
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon large>
+                          {{ level.midBtn }}
+                        </v-icon>
+                      </v-btn>
+                    </template>
+
+                    <v-list
+                      dense
+                      color="secondary lighten-2"
+                    >
+                      <v-list-item-group
+                        v-model="level.midMenuIdx"
+                        active-class="success--text"
+                      >
+                        <v-list-item
+                          v-for="(menu, i) in level.midMenu"
+                          :key="i"
+                          @click="sendCmd(menu.cmd)"
+                        >
+                          <v-list-item-content>
+                            <v-list-item-title class="text-subtitle-1">
+                              {{ menu.name }}
+                            </v-list-item-title>
+                          </v-list-item-content>
+                          <v-list-item-icon v-if="menu.active">
+                            <v-icon>mdi-check</v-icon>
+                          </v-list-item-icon>
+                        </v-list-item>
+                      </v-list-item-group>
+                    </v-list>
+                  </v-menu>
+                </v-col>
+
                 <v-divider
                   v-if="level.rightBtn"
                   vertical
                 />
                 <v-col
-                  v-if="level.rightMenu.length == 0 && level.rightBtn"
+                  v-if="level.rightMenu.length === 0 && level.rightBtn"
                   class="col-3"
                   align="center"
                 >
@@ -210,7 +265,10 @@
                       dense
                       color="secondary lighten-2"
                     >
-                      <v-list-item-group active-class="success--text">
+                      <v-list-item-group
+                        v-model="level.rightMenuIdx"
+                        active-class="success--text"
+                      >
                         <v-list-item
                           v-for="(menu, i) in level.rightMenu"
                           :key="i"
@@ -221,6 +279,9 @@
                               {{ menu.name }}
                             </v-list-item-title>
                           </v-list-item-content>
+                          <v-list-item-icon v-if="menu.active">
+                            <v-icon>mdi-check</v-icon>
+                          </v-list-item-icon>
                         </v-list-item>
                       </v-list-item-group>
                     </v-list>
@@ -275,34 +336,46 @@
       </div>
 
       <v-system-bar color="secondary darken-1">
-        <v-icon class="ml-0">
+        <v-icon
+          class="ml-0"
+          :color="item.Options.info.left1IconColor"
+        >
           {{ item.Options.info.left1Icon }}
         </v-icon><div class="text-truncate">
           {{ item.Options.info.left1Text }}
         </div>
-        <v-icon class="ml-2">
+        <v-icon
+          class="ml-2"
+          :color="item.Options.info.left2IconColor"
+        >
           {{ item.Options.info.left2Icon }}
         </v-icon><div class="text-truncate">
           {{ item.Options.info.left2Text }}
         </div>
         <v-spacer />
-        <v-icon>
+        <v-icon :color="item.Options.info.mid1IconColor">
           {{ item.Options.info.mid1Icon }}
         </v-icon><div class="text-truncate">
           {{ item.Options.info.mid1Text }}
         </div>
-        <v-icon class="ml-2">
+        <v-icon
+          class="ml-2"
+          :color="item.Options.info.mid2IconColor"
+        >
           {{ item.Options.info.mid2Icon }}
         </v-icon><div class="text-truncate">
           {{ item.Options.info.mid2Text }}
         </div>
         <v-spacer />
-        <v-icon>
+        <v-icon :color="item.Options.info.right1IconColor">
           {{ item.Options.info.right1Icon }}
         </v-icon><div class="text-truncate">
           {{ item.Options.info.right1Text }}
         </div>
-        <v-icon class="ml-2 mr-0">
+        <v-icon
+          class="ml-2 mr-0"
+          :color="item.Options.info.right2IconColor"
+        >
           {{ item.Options.info.right2Icon }}
         </v-icon><div class="text-truncate">
           {{ item.Options.info.right2Text }}
@@ -498,6 +571,23 @@
         }
       },
 
+      checkMenu(cmd) {
+        let result = false;
+
+        if(cmd) {
+          let parts = cmd.split(' ');
+
+          if(parts[0].match('set')) parts.splice(0, 2);
+          if(parts.length === 1) parts.splice(0, 0, 'state');
+
+          let value = /\./.test(parts[0]) ? parts[0].split('.') : [ 'Readings', parts[0], 'Value' ];
+          let state = this.$fhem.getEl(this.item, ...value);
+          if(state.match(parts[1])) result = true;
+        }
+
+        return result;
+      },
+
       createMenu(arr) {
         let result = [];
 
@@ -507,7 +597,8 @@
 
             if(vals.length > 1) {
               let cmd = this.createCmd(vals[1]);
-              result.push({ name: vals[0], cmd });
+              let active = this.checkMenu(cmd);
+              result.push({ name: vals[0], cmd, active });
             }
           }
         }
@@ -541,10 +632,13 @@
             leftBtn: '',
             leftBtnDisabled: false,
             leftMenu: [],
+            leftMenuIdx: -1,
             text: '',
             text2: '',
             midBtn: '',
             midBtnDisabled: false,
+            midMenu: [],
+            midMenuIdx: -1,
             slider: false,
             sliderCurrent: 0,
             sliderPrevent: false,
@@ -553,7 +647,8 @@
             sliderStep: 1,
             rightBtn: '',
             rightBtnDisabled: false,
-            rightMenu: []
+            rightMenu: [],
+            rightMenuIdx: -1
           }
 
           this.main.push(lvlSet);
@@ -571,6 +666,7 @@
           let mainMidBtn = this.$fhem.handleVals(this.item, this.item.Options.setup.main[idx].midBtn);
           let mainRightBtn = this.$fhem.handleVals(this.item, this.item.Options.setup.main[idx].rightBtn);
           let mainLeftMenu = this.createMenu(this.item.Options.setup.main[idx].leftMenu);
+          let mainMidMenu = this.createMenu(this.item.Options.setup.main[idx].midMenu);
           let mainRightMenu = this.createMenu(this.item.Options.setup.main[idx].rightMenu);
 
           this.main[lvl].text = mainText[0] || '';
@@ -583,7 +679,11 @@
           this.main[lvl].midBtnDisabled = mainMidBtn[1] ? true : false;
           this.main[lvl].rightBtnDisabled = mainRightBtn[1] ? true : false;
           this.main[lvl].leftMenu = mainLeftMenu;
+          this.main[lvl].leftMenuIdx = mainLeftMenu.map((e) => e.active).indexOf(true);
+          this.main[lvl].midMenu = mainMidMenu;
+          this.main[lvl].midMenuIdx = mainMidMenu.map((e) => e.active).indexOf(true);
           this.main[lvl].rightMenu = mainRightMenu;
+          this.main[lvl].rightMenuIdx = mainRightMenu.map((e) => e.active).indexOf(true);
 
           this.main[lvl].slider = mainSlider[0] ? true : false;
           this.main[lvl].sliderMin = mainSlider[2] || 0;

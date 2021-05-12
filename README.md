@@ -212,6 +212,7 @@ In den Template-Dateien können folgende Eigenschaften definiert werden. Die Zuw
       "midClick": ["reading:value:set_param"],
       "midLong": ["reading:value:set_param"],
       "midLongRelease": ["reading:value:set_param"],
+      "midMenu": ["text:set_param"],
       "rightBtn": ["reading:value:icon:disabled"],
       "rightClick": ["reading:value:set_param"],
       "rightLong": ["reading:value:set_param"],
@@ -268,12 +269,13 @@ Beispiele:
 |main|midClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die mittlere Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|midLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der mittleren Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|midLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der mittleren Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
+|main|midMenu|text:cmd|definiert für das **mittlere Menü** die Texte und FHEM-Kommandos. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die mittlere Taste ein Menü auf. *Hinweis:* midClick, midLong und midLongRelease stehen bei Zuweisung des Menüs nicht zur Verfügung.|
 |main|rightBtn|reading:wert:icon:disabled (alternativ: icon)|definiert welches *Icon* auf der rechten Taste angezeigt wird. Optional kann das Flag *disabled* gesetzt werden. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
 |main|leftClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die rechte Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|rightLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der rechten Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|rightLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der rechten Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|rightMenu|text:cmd|definiert für das **rechte Menü** die Texte und FHEM-Kommandos. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die rechte Taste ein Menü auf. *Hinweis:* rightClick, rightLong und rightLongRelease stehen bei Zuweisung des Menüs nicht zur Verfügung.|
-|info|left1..2,<br>mid1..2,<br>right1..2|reading:wert:text:icon|definiert welches **Icon** und welcher **Text** in der Infozeile anzeigeigt wird|
+|info|left1..2,<br>mid1..2,<br>right1..2|reading:wert:text:icon:color|definiert welches **Icon** und welcher **Text** in der Infozeile angezeigt wird. Mit **color** kann optional die Farbe den Icons verändert werden|
 
 ## Hinweis zur Definition von FHEM-Kommandos
 Bei Definition der FHEM-Kommandos kann `set <devicename>` weggelassen werden. Alternativ kann der Name eines bestimmten FHEM-Devices angegeben oder auf ein *Connected-Device* verwiesen werden.

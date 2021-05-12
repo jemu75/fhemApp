@@ -232,16 +232,22 @@ class Fhem extends EventEmitter {
         };
         result.info = {
           left1Icon: null,
+          left1IconColor: null,
           left1Text: null,
           left2Icon: null,
+          left2IconColor: null,
           left2Text: null,
           mid1Icon: null,
+          mid1IconColor: null,
           mid1Text: null,
           mid2Icon: null,
+          mid2IconColor: null,
           mid2Text: null,
           right1Icon: null,
+          right1IconColor: null,
           right1Text: null,
           right2Icon: null,
+          right2IconColor: null,
           right2Text: null
         };
       }
@@ -593,7 +599,6 @@ class Fhem extends EventEmitter {
       if(showVals[1]) device.Options.setup.size = showVals[1];
       if(showVals[2]) {
         device.Options.sortby = showVals[2];
-        //this.app.data.deviceList.sort((a,b) => (a.Options.sortby > b.Options.sortby) ? 1 : ((b.Options.sortby > a.Options.sortby) ? -1 : 0));
       }
     }
 
@@ -629,21 +634,27 @@ class Fhem extends EventEmitter {
       let infoRight1Vals = this.handleVals(device, infoDefs.right1);
       let infoRight2Vals = this.handleVals(device, infoDefs.right2);
 
+      device.Options.info.left1IconColor = infoLeft1Vals[2] || '';
       device.Options.info.left1Icon = infoLeft1Vals[1] || '';
       device.Options.info.left1Text = infoLeft1Vals[0] || '';
 
+      device.Options.info.left2IconColor = infoLeft2Vals[2] || '';
       device.Options.info.left2Icon = infoLeft2Vals[1] || '';
       device.Options.info.left2Text = infoLeft2Vals[0] || '';
 
+      device.Options.info.mid1IconColor = infoMid1Vals[2] || '';
       device.Options.info.mid1Icon = infoMid1Vals[1] || '';
       device.Options.info.mid1Text = infoMid1Vals[0] || '';
 
+      device.Options.info.mid2IconColor = infoMid2Vals[2] || '';
       device.Options.info.mid2Icon = infoMid2Vals[1] || '';
       device.Options.info.mid2Text = infoMid2Vals[0] || '';
 
+      device.Options.info.right1IconColor = infoRight1Vals[2] || '';
       device.Options.info.right1Icon = infoRight1Vals[1] || '';
       device.Options.info.right1Text = infoRight1Vals[0] || '';
 
+      device.Options.info.right2IconColor = infoRight1Vals[2] || '';
       device.Options.info.right2Icon = infoRight2Vals[1] || '';
       device.Options.info.right2Text = infoRight2Vals[0] || '';
     }

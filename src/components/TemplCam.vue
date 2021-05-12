@@ -54,34 +54,46 @@
       </div>
 
       <v-system-bar color="secondary darken-1">
-        <v-icon class="ml-0">
+        <v-icon
+          class="ml-0"
+          :color="item.Options.info.left1IconColor"
+        >
           {{ item.Options.info.left1Icon || camIcon }}
         </v-icon><div class="text-truncate">
           {{ item.Options.info.left1Text }}
         </div>
-        <v-icon class="ml-2">
+        <v-icon
+          class="ml-2"
+          :color="item.Options.info.left2IconColor"
+        >
           {{ item.Options.info.left2Icon }}
         </v-icon><div class="text-truncate">
           {{ item.Options.info.left2Text }}
         </div>
         <v-spacer />
-        <v-icon>
+        <v-icon :color="item.Options.info.mid1IconColor">
           {{ item.Options.info.mid1Icon }}
         </v-icon><div class="text-truncate">
           {{ item.Options.info.mid1Text }}
         </div>
-        <v-icon class="ml-2">
+        <v-icon
+          class="ml-2"
+          :color="item.Options.info.mid2IconColor"
+        >
           {{ item.Options.info.mid2Icon }}
         </v-icon><div class="text-truncate">
           {{ item.Options.info.mid2Text }}
         </div>
         <v-spacer />
-        <v-icon>
+        <v-icon :color="item.Options.info.right1IconColor">
           {{ item.Options.info.right1Icon }}
         </v-icon><div class="text-truncate">
           {{ item.Options.info.right1Text }}
         </div>
-        <v-icon class="ml-2 mr-0">
+        <v-icon
+          class="ml-2 mr-0"
+          :color="item.Options.info.right2IconColor"
+        >
           {{ item.Options.info.right2Icon }}
         </v-icon><div class="text-truncate">
           {{ item.Options.info.right2Text }}

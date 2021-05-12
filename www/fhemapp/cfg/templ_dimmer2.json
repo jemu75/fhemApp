@@ -25,14 +25,17 @@
       "rightClick": ["state::on"]
     },
     {
+      "leftBtn": "mdi-dots-vertical",
+      "leftMenu": ["aus:off","25 %:pct 25","50 %:pct 50","75 %:pct 75","an:on"],
       "text": ["pct::%n%"],
+      "midBtn": "mdi-dots-vertical",
+      "midMenu": ["aus:off","25 %:pct 25","50 %:pct 50","75 %:pct 75","an:on"],
       "rightBtn": "mdi-dots-vertical",
       "rightMenu": ["aus:off","25 %:pct 25","50 %:pct 50","75 %:pct 75","an:on"]
-
     }
   ],
   "info": {
-    "left1": ["pct:1::mdi-lightbulb","pct:::mdi-lightbulb-off"],
+    "left1": ["pct:1::mdi-lightbulb:success","pct:::mdi-lightbulb-off:success"],
     "left2": ["pct:1:%n%"]
   }
 }
