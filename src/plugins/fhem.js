@@ -731,6 +731,7 @@ class Fhem extends EventEmitter {
               if(data.devicePart === 'Attributes' && this.getEl(source, 'Attributes', data.param)) {
                 source.Attributes[data.param] = data.value;
               }
+
               this.handleTemplate(source);
               this.app.data.deviceList.splice(idx, 1, source);
               this.app.data.deviceList.sort((a,b) => (a.Options.sortby > b.Options.sortby) ? 1 : ((b.Options.sortby > a.Options.sortby) ? -1 : 0));
@@ -748,7 +749,8 @@ class Fhem extends EventEmitter {
                   if(data.devicePart === 'Attributes' && this.getEl(source.Connected[alias], 'Attributes', data.param)) {
                     source.Connected[alias].Attributes[data.param] = data.value;
                   }
-                  this.handleTemplate(source.Connected[alias]);
+
+                  this.handleTemplate(source);
                   this.app.data.deviceList.splice(idx, 1, source);
                   this.app.data.deviceList.sort((a,b) => (a.Options.sortby > b.Options.sortby) ? 1 : ((b.Options.sortby > a.Options.sortby) ? -1 : 0));
                 }
@@ -795,7 +797,7 @@ class Fhem extends EventEmitter {
 
       let meta = {
         info: 'Connection (' + this.app.connection.type + ') ' + (evt ? 'failed.' : 'was closed.'),
-        errCode: evt.errCode || ''
+        errCode: evt || ''
       };
 
       this.log({ lvl: 2, msg: 'Connection with FHEM was closed. Try to Reconnect in ' + (msecs / 1000) + ' seconds...', meta: meta })
