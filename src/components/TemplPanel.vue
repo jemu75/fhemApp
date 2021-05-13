@@ -116,7 +116,10 @@
                       dense
                       color="secondary lighten-2"
                     >
-                      <v-list-item-group>
+                      <v-list-item-group
+                        v-model="el.menuIdx"
+                        active-class="success--text"
+                      >
                         <v-list-item
                           v-for="(menu, i) in el.menu"
                           :key="i"
@@ -127,6 +130,9 @@
                               {{ menu.name }}
                             </v-list-item-title>
                           </v-list-item-content>
+                          <v-list-item-icon v-if="menu.active">
+                            <v-icon>mdi-check</v-icon>
+                          </v-list-item-icon>
                         </v-list-item>
                       </v-list-item-group>
                     </v-list>
@@ -239,6 +245,23 @@
         this.$fhem.request(cmd);
       },
 
+      checkMenu(device, cmd) {
+        let result = false;
+
+        if(cmd) {
+          let parts = cmd.split(' ');
+
+          if(parts[0].match('set')) parts.splice(0, 2);
+          if(parts.length === 1) parts.splice(0, 0, 'state');
+
+          let value = /\./.test(parts[0]) ? parts[0].split('.') : [ 'Readings', parts[0], 'Value' ];
+          let state = this.$fhem.getEl(device, ...value);
+          if(state && state.match(parts[1])) result = true;
+        }
+
+        return result;
+      },
+
       loadItem(obj) {
         let device = this.$fhem.getEl(obj, 'Name') || '';
         let alias = this.$fhem.getEl(obj, 'Attributes', 'alias') || obj.Name;
@@ -257,7 +280,9 @@
         if(menu.length > 0) {
           for(const el of menu) {
             let parts = el.split(':');
-            if(parts.length == 2) menuItems.push({ name: parts[0], cmd: parts[1] })
+            let active = this.checkMenu(obj, parts[1]);
+
+            if(parts.length == 2) menuItems.push({ name: parts[0], cmd: parts[1], active })
           }
         }
 
@@ -295,7 +320,8 @@
               icon: data.icon,
               route: data.route,
               click: data.click,
-              menu: data.menu
+              menu: data.menu,
+              menuIdx: data.menu.map((e) => e.active).indexOf(true)
             };
 
             if(data.color != 'success') {

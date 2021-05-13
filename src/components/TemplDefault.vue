@@ -466,8 +466,8 @@
         let result = '';
 
         if(param.match('set')) {
-          let parts = param.split(' ');
-          if(parts[1].match('Connected')) {
+          let parts = param.trim().split(' ');
+          if(parts[1] && parts[1].match('Connected')) {
             let device = parts[1].replace('Connected.','');
             parts[1] = this.$fhem.getEl(this.item, 'Connected', device, 'Internals', 'NAME');
 
@@ -582,7 +582,7 @@
 
           let value = /\./.test(parts[0]) ? parts[0].split('.') : [ 'Readings', parts[0], 'Value' ];
           let state = this.$fhem.getEl(this.item, ...value);
-          if(state.match(parts[1])) result = true;
+          if(state && state.match(parts[1])) result = true;
         }
 
         return result;
