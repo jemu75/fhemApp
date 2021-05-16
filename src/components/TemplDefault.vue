@@ -582,7 +582,7 @@
 
           let value = /\./.test(parts[0]) ? parts[0].split('.') : [ 'Readings', parts[0], 'Value' ];
           let state = this.$fhem.getEl(this.item, ...value);
-          if(state && state.match(parts[1])) result = true;
+          if(state && state === parts[1]) result = true;
         }
 
         return result;

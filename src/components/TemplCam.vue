@@ -47,9 +47,10 @@
 
       <div v-if="item.Options.status.isActive">
         <v-card-text class="pa-0">
-          <video src="">
-            Your browser does not support the VIDEO tag and/or RTP streams.
-          </video>
+          <img
+            :src="source"
+            width="100%"
+          >
         </v-card-text>
       </div>
 
@@ -121,6 +122,7 @@
     data: () => ({
       name: 'cam',
       size: '',
+      source: '',
       camIcon: 'mdi-cctv',
       expandIcon: 'mdi-arrow-expand',
       maxSize: false,
@@ -138,6 +140,7 @@
     created() {
       this.app.options = this.$fhem.app.options;
       this.size = this.$fhem.getEl(this.item, 'Options', 'setup', 'size') || 'col-12 col-sm-12 col-md-6 col-lg-4';
+      this.source = this.$fhem.getEl(this.item, 'Options', 'setup', 'source') || '';
 
       if(this.$route.params.filter && this.$route.params.filter.match('&size=max')) {
         this.maxSize = true;

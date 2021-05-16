@@ -337,6 +337,7 @@ Wenn du jetzt mehrere Devices in einem Template hast, würden ja "Dopplungen" vo
 | [scenes](#template-scenes) | LightScenes | ![](./docs/media/template_scenes_example.png) |
 | [panel](#template-panel) | Panel zur Gruppierung mehrerer Devices | ![](./docs/media/template_panel_example.png) |
 | [chart](#template-chart) | Diagramm zur Visualisierung von Log-Daten | ![](./docs/media/template_chart_example.png) |
+| [cam](#template-cam) | Anzeige von Kamerastreams | ![](./docs/media/template_cam_example.png) |
 | weather | Wettervorhersage (darksky-API) | ![](./docs/media/template_weather_example.png) |
 | [sysmon](#template-sysmon) | Systemmonitor | ![](./docs/media/template_sysmon_example.png) |
 | hmlan | HMLAN-Adapter | ![](./docs/media/template_hmlan_example.png) |
@@ -362,10 +363,10 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
   },
   "main": [
     {
-      "leftIcon": "mdi-power-off",
+      "leftBtn": "mdi-power-off",
       "leftClick": ["state::off"],
       "text": ["state:on:an","state:off:aus","state::%s"],
-      "rightIcon": "mdi-power-on",
+      "rightBtn": "mdi-power-on",
       "rightClick": ["state::on"]
     }
   ],
@@ -844,6 +845,35 @@ attr chn_sen.hm.eg.fl_Climate_FileLog alias Thermostat Flur
 attr chn_sen.hm.eg.fl_Climate_FileLog appOptions { "template": "chart", "dashboard": "true", "chartDef": [":humidity:Luftfeuchte:%:secondary",":measured-temp:Temperatur:°C"] }
 attr chn_sen.hm.eg.fl_Climate_FileLog sortby 2
 ```
+# Template Cam
+Dieses Template steht speziell für die Wiedergabe von Videostreams zur Verfügung.
+
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
+```
+{ "template": "cam", "setup": { "source": "<stream_url>" } }
+```
+
+#### Konfiguration
+Da *Cam* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften über den Parameter `setup` in `appOptions` anpassen. Folgende Eigenschaften könnt ihr individuell anpassen:
+```
+"setup": {
+  "size": "col-12 col-md-6 col-lg-6",
+  "source": "<stream_url>"
+  "status": {
+    "bar": ["reading:value:level:color"]
+  },
+  "info": {
+    "left1": ["reading:value:text:icon"],
+    "left2": ["reading:value:text:icon"],
+    "mid1": ["reading:value:text:icon"],
+    "mid2": ["reading:value:text:icon"],
+    "right1": ["reading:value:text:icon"],
+    "right2": ["reading:value:text:icon"],
+  }
+}
+```
+
 # Template scenes
 Dieses Template steht speziell für den Einstz von *LightScene* [siehe](https://fhem.de/commandref_DE.html#LightScene) zur Verfügung. Es zeigt die aktuelle Szene an und gibt die Möglichkeit zwischen den in FHEM gespeicherten Szenen umuzschalten.
 #### Definition

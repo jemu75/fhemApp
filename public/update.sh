@@ -3,7 +3,7 @@ gitrepo=https://github.com/jemu75/fhemApp.git
 tempdir=update
 appdir=/opt/fhem/www
 echo ---------------------------------------------------------------
-echo $(date) " Starting Update from FHEMApp..."
+echo $(date) " Starting Update FHEMApp..."
 echo ---------------------------------------------------------------
 rm -rf $tempdir
 git clone $gitrepo $tempdir
