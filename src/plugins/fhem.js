@@ -654,7 +654,7 @@ class Fhem extends EventEmitter {
       device.Options.info.right1Icon = infoRight1Vals[1] || '';
       device.Options.info.right1Text = infoRight1Vals[0] || '';
 
-      device.Options.info.right2IconColor = infoRight1Vals[2] || '';
+      device.Options.info.right2IconColor = infoRight2Vals[2] || '';
       device.Options.info.right2Icon = infoRight2Vals[1] || '';
       device.Options.info.right2Text = infoRight2Vals[0] || '';
     }
