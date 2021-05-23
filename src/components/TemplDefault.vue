@@ -177,6 +177,18 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
+                        v-if="level.text"
+                        block
+                        plain
+                        v-bind="attrs"
+                        v-on="on"
+                        class="headline font-weight-bold"
+                      >
+                        {{ level.text }}
+                      </v-btn>
+
+                      <v-btn
+                        v-if="!level.text"
                         small
                         icon
                         v-bind="attrs"
