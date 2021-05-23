@@ -338,7 +338,7 @@ Wenn du jetzt mehrere Devices in einem Template hast, würden ja "Dopplungen" vo
 | [panel](#template-panel) | Panel zur Gruppierung mehrerer Devices | ![](./docs/media/template_panel_example.png) |
 | [chart](#template-chart) | Diagramm zur Visualisierung von Log-Daten | ![](./docs/media/template_chart_example.png) |
 | [cam](#template-cam) | Anzeige von Kamerastreams | ![](./docs/media/template_cam_example.png) |
-| weather | Wettervorhersage (darksky-API) | ![](./docs/media/template_weather_example.png) |
+| weather | Wettervorhersage (darksky-API und Proplanta-API) | ![](./docs/media/template_weather_example.png) |
 | [sysmon](#template-sysmon) | Systemmonitor | ![](./docs/media/template_sysmon_example.png) |
 | hmlan | HMLAN-Adapter | ![](./docs/media/template_hmlan_example.png) |
 

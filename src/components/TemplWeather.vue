@@ -122,6 +122,60 @@
           lang: ''
         }
       },
+      apiSet: {
+        Weather: {
+          lastUpdate: 'validity',
+          condition: 'condition',
+          pressure: 'pressure',
+          wind: 'wind_condition',
+          icon: 'icon',
+          fcCondition: '_condition',
+          fcIcon: '_icon',
+          fcMin: '_low_c',
+          fcMax: '_high_c'
+        },
+        PROPLANTA: {
+          lastUpdate: 'lastConnection',
+          condition: 'weather',
+          pressure: 'pressure',
+          wind: 'wind',
+          icon: 'weatherIcon',
+          fcCondition: '_weatherDay',
+          fcIcon: '_weatherDayIcon',
+          fcMin: '_tempMin',
+          fcMax: '_tempMax',
+          icons: {
+            t1: 'sunny', //'sunny'
+            t2: 'partly_cloudy', //'mostly sunny'
+            t3: 'partly_cloudy', //'partly cloudy'
+            t4: 'partly_cloudy', //'mostly cloudy'
+            t5: 'cloudy', //'cloudy'
+            t6: 'chance_of_rain', //'chance of rain'
+            t7: 'rain', //'rain'
+            t8: 'windy', //'chance of storm'
+            t9: 'sleet', //'light snow showers'
+            t10: 'snow', //'snow'
+            t11: 'sleet', //'mixed rain and snow'
+            t12: 'fog', //'haze'
+            t13: 'fog', //'fog'
+            t14: 'rain', //'drizzle'
+            n1: 'sunny night',
+            n2: 'mostly sunny night',
+            n3: 'partly cloudy night',
+            n4: 'mostly cloudy night',
+            n5: 'cloudy night',
+            n6: 'chance of rain night',
+            n7: 'rain night',
+            n8: 'chance of storm night',
+            n9: 'sleet night',
+            n10: 'snow night',
+            n11: 'mixed rain and snow night',
+            n12: 'haze night',
+            n13: 'fog night',
+            n14: 'drizzle night'
+          }
+        }
+      },
       iconSet: {
         // Weather Darksky - Icons
         sunny: 'mdi-weather-sunny',
@@ -155,6 +209,7 @@
       maxIcon: 'mdi-arrow-expand',
       expanded: false,
       active: true,
+      type: 'Weather'
     }),
 
     watch: {
@@ -162,15 +217,22 @@
         immediate: true,
         deep: true,
         handler(val) {
-          let lastevent = this.$fhem.getEl(val, 'Readings', 'validity', 'Time');
-          let activity = this.$fhem.getEl(val, 'Readings', 'validity', 'Value');
-          let icon = this.$fhem.getEl(val, 'Readings', 'icon', 'Value');
-          let press = this.$fhem.getEl(val, 'Readings', 'pressure', 'Value');
-          let wind = this.$fhem.getEl(val, 'Readings', 'wind_condition', 'Value');
+          this.type = this.$fhem.getEl(val, 'Internals', 'TYPE');
+
+          let lastevent = this.$fhem.getEl(val, 'Readings', this.apiSet[this.type].lastUpdate, 'Time');
+          let activity = this.$fhem.getEl(val, 'Readings', this.apiSet[this.type].lastUpdate, 'Value') || 'up-to-date';
+          let icon = this.$fhem.getEl(val, 'Readings', this.apiSet[this.type].icon, 'Value');
+          let press = this.$fhem.getEl(val, 'Readings', this.apiSet[this.type].pressure, 'Value');
+          let wind = this.$fhem.getEl(val, 'Readings', this.apiSet[this.type].wind, 'Value');
           let alias = this.$fhem.getEl(val, 'Attributes', 'alias') || val.Name;
 
+          if(this.type === 'PROPLANTA') {
+            activity = 'up-to-date';
+            wind = 'Wind: ' + wind + ' km/h';
+          }
+
           this.vals.title = this.$fhem.getEl(val, 'Options', 'name') || alias;
-          this.vals.mainState = this.$fhem.getEl(val, 'Readings', 'condition', 'Value') || '';
+          this.vals.mainState = this.$fhem.getEl(val, 'Readings', this.apiSet[this.type].condition, 'Value') || '';
 
           this.vals.systemIcon = this.getIcon(icon);
           this.vals.pressure = press ? parseInt(press).toLocaleString('de-DE') + 'hPa' : '';
@@ -192,6 +254,12 @@
 
     methods: {
       getIcon(icon) {
+        if(this.type === 'PROPLANTA') {
+          let symbol = /\/.{1,3}\.gif/.exec(icon);
+          let val = symbol[0].replace('/','').replace('.gif','');
+          icon = this.apiSet.PROPLANTA.icons[val] || val;
+        }
+
         if(icon && this.iconSet[icon]) {
           return this.iconSet[icon];
         } else {
@@ -203,12 +271,13 @@
         this.vals.forecast.splice(0);
 
         for(let i = 1; i < 7; i++) {
+          let api = this.type || 'Weather';
           let weekd = this.$fhem.getDate(-i + 1)
           let weekday = new Date(weekd).toLocaleString(this.app.options.lang, { weekday: 'long' });
-          let condition = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + '_condition', 'Value');
-          let icon = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + '_icon', 'Value');
-          let max = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + '_high_c', 'Value') || '--';
-          let min = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + '_low_c', 'Value') || '--';
+          let condition = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + this.apiSet[api].fcCondition, 'Value');
+          let icon = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + this.apiSet[api].fcIcon, 'Value');
+          let max = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + this.apiSet[api].fcMin, 'Value') || '--';
+          let min = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + this.apiSet[api].fcMax, 'Value') || '--';
 
           let day = {
             weekday: weekday,
