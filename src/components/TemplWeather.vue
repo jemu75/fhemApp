@@ -152,27 +152,27 @@
             t5: 'cloudy', //'cloudy'
             t6: 'chance_of_rain', //'chance of rain'
             t7: 'rain', //'rain'
-            t8: 'windy', //'chance of storm'
+            t8: 'thunderstorm', //'chance of storm'
             t9: 'sleet', //'light snow showers'
             t10: 'snow', //'snow'
             t11: 'sleet', //'mixed rain and snow'
             t12: 'fog', //'haze'
             t13: 'fog', //'fog'
             t14: 'rain', //'drizzle'
-            n1: 'sunny night',
-            n2: 'mostly sunny night',
-            n3: 'partly cloudy night',
-            n4: 'mostly cloudy night',
-            n5: 'cloudy night',
-            n6: 'chance of rain night',
-            n7: 'rain night',
-            n8: 'chance of storm night',
-            n9: 'sleet night',
-            n10: 'snow night',
-            n11: 'mixed rain and snow night',
-            n12: 'haze night',
-            n13: 'fog night',
-            n14: 'drizzle night'
+            n1: 'clear_night', //'sunny night',
+            n2: 'clear_night', //'mostly sunny night',
+            n3: 'partly_cloudy_night', //'partly cloudy night',
+            n4: 'partly_cloudy_night', //'mostly cloudy night',
+            n5: 'partly_cloudy_night', //'cloudy night',
+            n6: 'clear_night', //'chance of rain night',
+            n7: 'clear_night', //'rain night',
+            n8: 'clear_night', //'chance of storm night',
+            n9: 'clear_night', //'sleet night',
+            n10: 'clear_night', //'snow night',
+            n11: 'clear_night', //'mixed rain and snow night',
+            n12: 'clear_night', //'haze night',
+            n13: 'clear_night', //'fog night',
+            n14: 'clear_night', //'drizzle night'
           }
         }
       },
@@ -273,11 +273,12 @@
         for(let i = 1; i < 7; i++) {
           let api = this.type || 'Weather';
           let weekd = this.$fhem.getDate(-i + 1)
+          let offset = api === 'PROPLANTA' ? i - 1 : i;
           let weekday = new Date(weekd).toLocaleString(this.app.options.lang, { weekday: 'long' });
-          let condition = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + this.apiSet[api].fcCondition, 'Value');
-          let icon = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + this.apiSet[api].fcIcon, 'Value');
-          let max = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + this.apiSet[api].fcMin, 'Value') || '--';
-          let min = this.$fhem.getEl(this.item, 'Readings', 'fc' + i + this.apiSet[api].fcMax, 'Value') || '--';
+          let condition = this.$fhem.getEl(this.item, 'Readings', 'fc' + offset + this.apiSet[api].fcCondition, 'Value');
+          let icon = this.$fhem.getEl(this.item, 'Readings', 'fc' + offset + this.apiSet[api].fcIcon, 'Value');
+          let max = this.$fhem.getEl(this.item, 'Readings', 'fc' + offset + this.apiSet[api].fcMin, 'Value') || '--';
+          let min = this.$fhem.getEl(this.item, 'Readings', 'fc' + offset + this.apiSet[api].fcMax, 'Value') || '--';
 
           let day = {
             weekday: weekday,
