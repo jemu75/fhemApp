@@ -1,7 +1,7 @@
 {
   "name": "thermostat",
   "author": "jemu75",
-  "date": "2021-03-21",
+  "date": "2021-06-06",
   "status": {
     "bar": ["Connected.valve.Readings.pct.Value::%n:success"],
     "error": ["Connected.receiver.Readings.Activity.Value:^(?!alive):100:error:keine Verbindung"]
@@ -11,7 +11,7 @@
       "leftBtn": "mdi-minus",
       "leftClick": ["desired-temp:17.5:desired-temp %i-0.5","desired-temp::"],
       "leftLong": ["R-nightTemp::desired-temp %n.1"],
-      "text": ["desired-temp::%n.1°C"],
+      "text": ["desired-temp:off:aus", "desired-temp::%n.1°C"],
       "rightBtn": "mdi-plus",
       "rightClick": ["desired-temp:25:","desired-temp::desired-temp %i0.5"],
       "rightLong": ["R-dayTemp::desired-temp %n.1"]
