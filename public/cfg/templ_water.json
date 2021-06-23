@@ -1,0 +1,28 @@
+{
+  "name": "water",
+  "author": "jemu75",
+  "date": "2021-06-14",
+  "status": {
+    "bar": ["state:on:100:success","state:off:0:success"],
+    "error": ["Connected.receiver.Readings.Activity.Value:^(?!alive):100:error:keine Verbindung"]
+  },
+  "main": [
+    {
+      "leftBtn": "mdi-power-off",
+      "leftClick": ["state::off"],
+      "text": ["state:on:an","state:off:aus","state::%s"],
+      "rightBtn": "mdi-power-on",
+      "rightClick": ["state::on"]
+    },
+    {
+      "text": ["timedOn:running:läuft...","timedOn::aus"],
+      "rightBtn": "mdi-timer-outline",
+      "rightMenu": ["15 Minuten:on-for-timer 900","30 Minuten:on-for-timer 1800","60 Minuten:on-for-timer 3600"]
+    }
+  ],
+  "info": {
+    "left1": ["state:off::mdi-water-off","state:on::mdi-watering-can"],
+    "left2": ["timedOn:running::mdi-timer-outline"],
+    "mid1": ["Readings.trigLast.Time::%t"]
+  }
+}

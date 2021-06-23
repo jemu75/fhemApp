@@ -254,7 +254,7 @@ Beispiele:
 |-------|-------|-----|-------------|
 |show|template|reading:wert:show:size:sortby|definiert, ob ein Template angezeigt wird, welche Breite es hat und an welcher Position das Template steht. Die Parameter *size* und *sortby* überschreiben dabei die Voreinstellungen|
 |status|bar|reading:wert:level:color:invert|definiert mit welcher **Farbe** und mit welchem **Level** der Status angezeigt wird. Bei Angabe von invert wird *level* invertiert|
-|status|error|reading:wert:level:color:text|definiert mit welcher **Farbe** und mit welchem **Level** Fehler angezeigt werden. Weiterhin wird die **Fehlermeldung** definiert.|
+|status|error|reading:wert:level:color:text|definiert mit welcher **Farbe** und mit welchem **Level** Fehler angezeigt werden. Weiterhin wird die **Fehlermeldung** definiert und alle Bedienelemente des Templates ausgeblendet.|
 |status|min|number|(optional) legt den minimalen Wert für **Level** fest. *Standard: 0* |
 |status|max|number|(optional) legt den maximalen Wert für **Level** fest. *Standard: 100* |
 |main|leftBtn|reading:wert:icon:disabled (alternativ: icon)|definiert welches *Icon* auf der linken Taste angezeigt wird. Optional kann das Flag *disabled* gesetzt werden. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
