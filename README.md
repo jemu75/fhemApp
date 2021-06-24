@@ -821,7 +821,7 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
 ### Konfiguration von Charts
 Da *Chart* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften über den Parameter `setup` in `appOptions` anpassen. Über den Paramter `size` kann die Templatebreite [siehe](#breite-von-templates) verändert werden. Der Parameter `daysAgo` legt ihr fest, wieviele Tage das Chart beim Laden zurückschaut. Als Standard werden die Daten der letzten 7 Tage `"daysAgo": 6` geladen. Über den Parameter `lineWidth` könnt ihr die Linienbreite der Chartlinien verändern. Als Standard ist `"lineWidth": 3` festgelegt. Über den Parameter `chartDef` legt ihr fest, welche Daten im Chart angezeigt werden. Jede Linie entspricht dabei einer Definition.
 ```
-"chartDef": ["logsource:reading:text:präfix:axis:color"],
+"chartDef": ["logsource:reading:text:präfix:axis:color:min:max"],
 "setup": {
     "size": "string",
     "daysAgo": number,
@@ -834,6 +834,8 @@ Da *Chart* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften
 4. **präfix** - hier tragt ihr die Einheit der Werte ein. (z.B. °C)
 5. **axis** - wenn dieser Parameter weggelassen wird, dann bezieht sich die Linie im Chart auf die linke Achse. Tragt ihr hier **secondary** ein, so bezieht sich die Linie im Chart auf die rechte Achse. Das ist z.B. sinnvoll, wenn ihr in einem Chart die Temperatur und die Luftfeuchte auf unterschiedlichen Skalen anzeigen wollt.
 6. **color** - hier könnt ihr (optional) die Farbe der Linie definieren. Wenn dieser Parameter angegeben wird, dann muss dieser für alle Linien in dieser Chartdefinition angegeben werden!
+7. **min** - mit diesem Parameter kann (optional) der niedrigste Wert für die Y-Achse festgelegt werden.
+8. **max** - mit diesem Parameter kann (optional) der höchste Wert für die Y-Achse festgelegt werden.
 
 | Hinweis: Wenn ihr eure Daten über *DbLog* erfasst, dann habt ihr in FHEM dafür im Normalfall nur ein Device angelegt. Damit ihr verschiedene Charts in **FHEMApp** anzeigen könnt, empfielt es sich, je Chart ein *dummy* in FHEM anzulegen und hier die entsprechenden `appOptions` für das Chart zu hinterlegen. Wenn ihr eure Daten in einzelnen *FileLog-Dateien* erfasst, dann könnt ihr `appOptions` an dem jeweiligen *FileLog-Device* hinterlegen.
 

@@ -348,6 +348,10 @@
                     }
                   }
 
+                  if(parts[6]) yOptions.min = parseInt(parts[6]);
+                  if(parts[7]) yOptions.max = parseInt(parts[7]);
+                  if(parts[6] || parts[7]) yOptions.tickAmount = 4;
+
                   this.chart.options.yaxis.push(yOptions);
 
                   idx ++;

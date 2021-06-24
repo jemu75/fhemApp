@@ -91,7 +91,7 @@
 
     filters: {
       scene_text(val) {
-        return val.replace('_', ' ');
+        return val.replace(/_/g,' ');
       }
     },
 

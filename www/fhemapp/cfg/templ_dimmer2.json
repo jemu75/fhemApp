@@ -18,10 +18,6 @@
       "rightLong": ["state::on"]
     },
     {
-      "rightBtn": "mdi-lightbulb",
-      "rightClick": ["state::on-for-timer 10"]
-    },
-    {
       "leftBtn": "mdi-lightbulb-off",
       "leftClick": ["state::off"],
       "slider": ["pct::%v:%n:0:100:0.5"],
