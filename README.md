@@ -191,6 +191,7 @@ In den Template-Dateien können folgende Eigenschaften definiert werden. Die Zuw
   "date": "YYYY-MM-DD",
   "size": "col-12 col-sm-6 col-md-4 col-lg-4",
   "expand": false,
+  "expanded": false,
   "show": ["reading:value:show:size:sortby"],
   "status": {
     "bar": ["reading:value:level:color:invert"],
@@ -302,9 +303,11 @@ Die Definition der Templatebreite erfolgt mit dem Parameter `size`. Der String m
 ```
 
 ## Aufklappen von Templates
-Wenn unter `main` mehrere Level definiert wurden, dann können die Level im Template umgeschaltet werden. Alternativ kann über den Parameter `expand` das Aufklappen des Templates aktiviert werden. In diesem Fall werden alle definierten Level untereinander dargestellt. Folgendes Beispiel zeigt die voreingestellte Definition für Standard Templates.
+Wenn unter `main` mehrere Level definiert wurden, dann können die Level im Template umgeschaltet werden. Alternativ kann über den Parameter `expand` das Aufklappen des Templates aktiviert werden. In diesem Fall werden alle definierten Level untereinander dargestellt. Soll das Template sofort beim Laden aufgeklappt werden, so muss zusätzlich der Parameter `expanded` gesetzt werden.
+Folgendes Beispiel zeigt die voreingestellte Definition für Standard Templates.
 ```
   "expand": false
+  "expanded": false
 ```
 
 ## Verwendung des Parameters connected innerhalb von appOptions

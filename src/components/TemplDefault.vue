@@ -444,7 +444,7 @@
       this.lvlMax = this.item.Options.setup.main.length;
       this.lvlIcon = this.lvlMax > 1 ? (this.item.Options.setup.expand ? 'mdi-arrow-expand' : 'mdi-swap-vertical') : null;
 
-      this.setLvl(0);
+      this.setLvl(this.$fhem.getEl(this.item, 'Options','setup','expanded') && this.$fhem.getEl(this.item, 'Options','setup','expand') ? -1 : 0);
       this.setVals();
     },
 
@@ -628,6 +628,7 @@
           idx = this.main[0].idx + 1;
           if(idx > this.lvlMax - 1) idx = 0;
         }
+
         this.setLvl(idx);
         this.setVals();
       },

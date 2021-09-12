@@ -370,6 +370,7 @@ class Fhem extends EventEmitter {
       if(templDef.show) Object.assign(setup, { show: templDef.show });
       setup.size = templDef.size || 'col-12 col-sm-6 col-md-4 col-lg-4';
       setup.expand = templDef.expand || false;
+      setup.expanded = templDef.expanded || false;
 
       return setup;
     } else {

@@ -307,6 +307,10 @@
 
     mounted() {
       this.app.options = this.$fhem.app.options;
+      if(this.$fhem.getEl(this.item, 'Options','setup', 'expanded')) {
+        this.expanded = false;
+        this.expand();
+      }
     }
   }
 </script>
