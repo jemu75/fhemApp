@@ -75,6 +75,8 @@ Bei aktiviertem DebugModus könnt ihr oben rechts im Header direkt das "Systemlo
 },
 ```
 
+Auch ohne Debug/Modus kann man das Systemlog-Protokoll über die URL `http://<deine_ip>:8083/fhem/fhemapp/index.html#/syslog` anzeigen.
+
 ### Themeneinstellungen für FHEMApp (optional)
 Zusätzlich könnt ihr das Farbschema von **FHEMApp** individuell anpassen. Grundsätzlich könnt ihr zwischen einem *dunklen* und einem *hellen* Layout über den Parameter `dark` (`true` bzw. `false`) wechseln. Weiterhin könnt ihr die einzelnen Farben für die beiden Farbschemen unter dem Parameter `themes` individuell anpassen. Siehe dazu auch [(Vuetify Customizing)](https://vuetifyjs.com/en/features/theme/#customizing)    
 ```
@@ -240,7 +242,7 @@ Damit ein Element auf den Wert eines bestimmten `Readings` reagieren kann, muss 
 Beispiele:
 - `["state:on:an"]` prüft das FHEM-Reading `state` auf den Wert `on` und liefert für das Element den Text `an` zurück.
 - `["level:30:mdi-weather-sunny"]` prüft das FHEM-Reading `level` auf den Wert >=30 und gibt das Icon `*` zurück.
-- `["state:on:an","state:off:aus","state::Status %s"]` prüft das FHEM-Reading `state` der Reihenfolge nach zuerst auf den Wert `on`, danach `off` und zuletzt jeden beliebigen anderen Wert. Im letzten Fall wird *%s* durch den Wert des Readings ersetzt.
+- `["state:on:an","state:off:aus","state::Status %s"]` prüft das FHEM-Reading `state` der Reihenfolge nach zuerst auf den Wert `on`, danach `off` und zuletzt jeden beliebigen anderen Wert. Im letzten Fall wird *%s* durch den Wert des Readings ersetzt. Die Bedingungen werden von links nach rechts geprüft. Sobald die erste Bedingung zutrifft, wird die Prüfung beendet. Deshalb ist es wichtig, die Bedingungen ist der richtigen Reihenfolge zu definieren.
 
 ### Ersetzungsmöglichkeiten
 - **%s** - liefert das *Reading* als Zeichenkette
@@ -249,6 +251,8 @@ Beispiele:
 - **%t** - liefert das *Reading* als Zeitstempel im Format TT.MM.JJJJ hh:mm:ss zurück
 - **%v** - ausschließlich in Verbindung mit dem Element *slider* notwendig.
 - **\&#058;** - HTML-entity wenn ein Doppelpunkt ausgegeben werden soll
+## Icons
+Es werden die Icons aus der [Material Designs Icon Bibliothek](https://materialdesignicons.com/) verwendet. Wenn man auf deren [Webseite](https://materialdesignicons.com/) ein Icon ausgesucht hat, wird dessen Bezeichnung in einem Popup angezeigt, wenn man mit der Maus darauf zeigt. Als Name des Icons in fhemApp muss diese Bezeichnung mit vorangestelltem `mdi-` verwendet werden, also z.B. `mdi-lightbulb-off-outline`.
 
 ## verfügbare Elemente
 |Bereich|Element|Zuweisung|Beschreibung|
