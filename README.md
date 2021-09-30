@@ -332,9 +332,12 @@ Wenn du jetzt mehrere Devices in einem Template hast, würden ja "Dopplungen" vo
 |----------|--------------|----------|
 | [switch](#template-switch) | Schalteraktoren (optional mit Leistungsmessung) | ![](./docs/media/template_switch_example.png) |
 | [dimmer](#template-dimmer) | Dimmer | ![](./docs/media/template_dimmer_example.png) |
+| [dimmer3](#template-dimmer) | Dimmer (Variante für HUEDevice) | |
 | [light](#template-light) | Lichtschalter | ![](./docs/media/template_light_example.png) |
 | [thermostat](#template-thermostat) | Raumthermostat | ![](./docs/media/template_thermostat_example.png) |
 | [shutter](#template-shutter) | Jalousieschalter | ![](./docs/media/template_shutter_example.png) |
+| [shutter2](#template-shutter) | Jalousieschalter (Variante) |  |
+| [shutter3](#template-shutter) | Jalousieschalter (Variante für Tasmota-Geräte) | |
 | [thermometer](#template-thermometer) | Temperatursensor  | ![](./docs/media/template_thermometer_example.png) |
 | [smokedetect](#template-smokedetect) | Rauchmelder | ![](./docs/media/template_smokedetect_example.png) |
 | [contact](#template-contact)    | Tür/Fensterkontakt | ![](./docs/media/template_contact_example.png) |
