@@ -24,7 +24,8 @@ export default {
     templ_sonos: () => import('@/components/TemplSonos.vue'),
     templ_sysmon: () => import('@/components/TemplSysmon.vue'),
     templ_hmlan: () => import('@/components/TemplHmLan.vue'),
-    templ_cam: () => import('@/components/TemplCam.vue')
+    templ_cam: () => import('@/components/TemplCam.vue'),
+    templ_iframe: () => import('@/components/TemplIFrame.vue')
   },
   data: () => ({
     app: {

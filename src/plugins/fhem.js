@@ -58,7 +58,8 @@ class Fhem extends EventEmitter {
         { name: 'hmlan', component: 'templ_hmlan' },
         { name: 'sonos', component: 'templ_sonos' },
         { name: 'scenes', component: 'templ_scenes' },
-        { name: 'cam', component: 'templ_cam' }
+        { name: 'cam', component: 'templ_cam' },
+        { name: 'iframe', component: 'templ_iframe' },
       ],
       data: {
         roomList: [],
