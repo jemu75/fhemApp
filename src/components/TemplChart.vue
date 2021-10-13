@@ -212,7 +212,7 @@
             }
           },
           stroke: {
-            curve: 'smooth'
+            curve: []
           },
           tooltip: {
             x: {
@@ -323,11 +323,16 @@
                     this.chart.options.colors.splice([idx], 0, parts[5]);
                   }
 
+                  let type = parts[8] || 'line';
+
+                  this.chart.options.stroke.curve.push(type === 'stepline' ? type : 'smooth');
+                  if(type === 'stepline') type = 'line';
+
                   let values = [];
                   let logData = res.data[res.data.map((e) => e.id).indexOf(idx)].data;
 
                   for(const vals of logData) values.push([vals.timestamp, vals.value]);
-                  this.chart.series.push({ name: parts[2], data: values });
+                  this.chart.series.push({ name: parts[2], type, data: values });
 
                   let secAxis = parts[4] === 'secondary' ? true : false;
                   let show = false;
