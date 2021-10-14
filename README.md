@@ -249,6 +249,7 @@ Beispiele:
 - **%n.2** - liefert das *Reading* als Zahlenwert mit der gewünschten Anzahl an Nachkommastellen. Sollte das Reading aus Text und Zahlen bestehen, so wird der erste Zahlenwert zurückgegeben
 - **%i1** - erhöht (%i1.5) bzw. verringert (%i-1.5) das *Reading* um den Wert. Hierfür muss das *Reading* Zahlenwerte enthalten.
 - **%t** - liefert das *Reading* als Zeitstempel im Format TT.MM.JJJJ hh:mm:ss zurück
+- **%a** - liefert das *Reading* als Zeitraum zwischen jetzt und dem Readingwert im Format Tage h min zurück
 - **%v** - ausschließlich in Verbindung mit dem Element *slider* notwendig.
 - **\&#058;** - HTML-entity wenn ein Doppelpunkt ausgegeben werden soll
 ## Icons

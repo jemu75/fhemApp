@@ -526,6 +526,18 @@ class Fhem extends EventEmitter {
 
       if(/%s/.test(defSet[i])) val = defSet[i].replace('%s', state);
       if(/%t/.test(defSet[i])) val = defSet[i].replace('%t', this.getDateTime(state));
+      if(/%a/.test(defSet[i])) {
+        let now = new Date();
+        let ts = new Date(state);
+        let diffMs = (now - ts); // milliseconds between now & timestamp
+        let diffDays = Math.floor(diffMs / 86400000); // days
+        let diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
+        let diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minutes
+        let diff = diffDays > 1 ? (diffDays + 'Tage ') : diffDays > 0 ? (diffDays + 'Tag ') : '';
+        diff += diffHrs > 0 ? (diffHrs + 'h ') : '';
+        diff += diffMins > 0 ? (diffMins + 'min') : '';
+        val = defSet[i].replace('%a', diff);
+      }
       if(/%n/.test(defSet[i]) && chkNum) {
         if(!/%n.[0-9]/.test(defSet[i])) defSet[i] = defSet[i].replace('%n','%n.0');
         let isDecimal = /%n../.exec(defSet[i]);
