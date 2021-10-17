@@ -528,7 +528,7 @@ class Fhem extends EventEmitter {
       if(/%t/.test(defSet[i])) val = defSet[i].replace('%t', this.getDateTime(state));
       if(/%a/.test(defSet[i])) {
         let now = new Date();
-        let ts = new Date(state);
+        let ts = new Date(state.replace(' ','T'));
         let diffMs = (now - ts); // milliseconds between now & timestamp
         let diffDays = Math.floor(diffMs / 86400000); // days
         let diffHrs = Math.floor((diffMs % 86400000) / 3600000); // hours
