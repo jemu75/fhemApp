@@ -830,13 +830,12 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
 ```
 
 ### Konfiguration von Charts
-Da *Chart* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften über den Parameter `setup` in `appOptions` anpassen. Über den Paramter `size` kann die Templatebreite [siehe](#breite-von-templates) verändert werden. Der Parameter `daysAgo` legt ihr fest, wieviele Tage das Chart beim Laden zurückschaut. Als Standard werden die Daten der letzten 7 Tage `"daysAgo": 6` geladen. Über den Parameter `lineWidth` könnt ihr die Linienbreite der Chartlinien verändern. Als Standard ist `"lineWidth": 3` festgelegt. Über den Parameter `chartDef` legt ihr fest, welche Daten im Chart angezeigt werden. Jede Linie entspricht dabei einer Definition.
+Da *Chart* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften über den Parameter `setup` in `appOptions` anpassen. Über den Paramter `size` kann die Templatebreite [siehe](#breite-von-templates) verändert werden. Der Parameter `daysAgo` legt ihr fest, wieviele Tage das Chart beim Laden zurückschaut. Als Standard werden die Daten der letzten 7 Tage `"daysAgo": 6` geladen. Über den Parameter `chartDef` legt ihr fest, welche Daten im Chart angezeigt werden. Jede Linie entspricht dabei einer Definition.
 ```
-"chartDef": ["logsource:reading:text:präfix:axis:color:min:max:typ"],
+"chartDef": ["logsource:reading:text:präfix:axis:color:min:max:typ:lineWidth:markers"],
 "setup": {
     "size": "string",
-    "daysAgo": number,
-    "lineWidth": number
+    "daysAgo": number
 }
 ```
 1. **logsource** - dieser Parameter enthält entweder den Name des *FileLog-Devices* oder den Name eures *DbLog-Devices*.
@@ -845,9 +844,11 @@ Da *Chart* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften
 4. **präfix** - hier tragt ihr die Einheit der Werte ein. (z.B. °C)
 5. **axis** - wenn dieser Parameter weggelassen wird, dann bezieht sich die Linie im Chart auf die linke Achse. Tragt ihr hier **secondary** ein, so bezieht sich die Linie im Chart auf die rechte Achse. Das ist z.B. sinnvoll, wenn ihr in einem Chart die Temperatur und die Luftfeuchte auf unterschiedlichen Skalen anzeigen wollt.
 6. **color** - hier könnt ihr (optional) die Farbe der Linie definieren. Wenn dieser Parameter angegeben wird, dann muss dieser für alle Linien in dieser Chartdefinition angegeben werden!
-7. **min** - mit diesem Parameter kann (optional) der niedrigste Wert für die Y-Achse festgelegt werden.
-8. **max** - mit diesem Parameter kann (optional) der höchste Wert für die Y-Achse festgelegt werden.
-9. **typ** - mit diesem Parameter kann (optional) die Diagrammart festgelegt werden.
+7. **min** - mit diesem Parameter kann (optional) der niedrigste Wert für die Y-Achse festgelegt werden. *(Standard = auto)*
+8. **max** - mit diesem Parameter kann (optional) der höchste Wert für die Y-Achse festgelegt werden. *(Standard = auto)*
+9. **typ** - mit diesem Parameter kann (optional) die Diagrammart festgelegt werden. *(Standard = line)*
+10. **lineWidth** - mit diesem Parameter kann (optional) die Linienbreite festgelegt werden. *(Standard = 4)*
+11. **markers** - mit diesem Parameter kann (optional) die Größe von Datenpunkten festgelegt werden. *(Standard = 0)*
 
 ### Diagrammarten
 Es stehen folgende Arten zur Verfügung *line* (Standard), *stepline*, *column*, *area*  

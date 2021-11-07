@@ -212,7 +212,11 @@
             }
           },
           stroke: {
-            curve: []
+            curve: [],
+            width: []
+          },
+          markers: {
+            size: []
           },
           tooltip: {
             x: {
@@ -270,7 +274,7 @@
 
       this.chart.options.chart.height = window.innerHeight > 600 && this.maxSize ? parseInt((window.innerHeight - 320)) : 'auto';
       this.chart.options.theme.mode = this.$vuetify.theme.dark ? 'dark' : 'light';
-      this.chart.options.stroke.width = this.$fhem.getEl(this.item, 'Options', 'setup', 'lineWidth') || 4;
+      //this.chart.options.stroke.width = this.$fhem.getEl(this.item, 'Options', 'setup', 'lineWidth') || 4;
 
       this.loadChartData();
     },
@@ -327,6 +331,12 @@
 
                   this.chart.options.stroke.curve.push(type === 'stepline' ? type : 'smooth');
                   if(type === 'stepline') type = 'line';
+
+                  let lineWidth = parts[9] || 4;
+                  this.chart.options.stroke.width.push(lineWidth);
+
+                  let markers = parts[10] || 0;
+                  this.chart.options.markers.size.push(markers);
 
                   let values = [];
                   let logData = res.data[res.data.map((e) => e.id).indexOf(idx)].data;
