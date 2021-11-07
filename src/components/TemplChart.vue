@@ -312,8 +312,6 @@
             .then((res) => {
               if(res.defs.length > 0) {
                 let idx = 0;
-                let priSeriesName = '';
-                let secSeriesName = '';
 
                 this.chart.options.yaxis.splice(0);
                 this.chart.series.splice(0);
@@ -344,16 +342,10 @@
                   for(const vals of logData) values.push([vals.timestamp, vals.value]);
                   this.chart.series.push({ name: parts[2], type, data: values });
 
-                  let secAxis = parts[4] === 'secondary' ? true : false;
-                  let show = false;
-
-                  if(!priSeriesName && !secAxis) { priSeriesName = parts[2]; show = true; }
-                  if(!secSeriesName && secAxis) { secSeriesName = parts[2]; show = true; }
-
                   let yOptions = {
-                    seriesName: secAxis ? secSeriesName : priSeriesName,
-                    show: show,
-                    opposite: secAxis,
+                    seriesName: parts[2],
+                    show: /no-label/.test(parts[4]) ? false : true,
+                    opposite: /secondary/.test(parts[4]) ? true : false,
                     labels: {
                       formatter: (val) => {
                         let result = ''
