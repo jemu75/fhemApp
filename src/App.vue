@@ -112,6 +112,7 @@
           v-if="showGroups"
           color="secondary lighten-4"
           prepend-icon="mdi-lightbulb-group"
+          :value="app.options.expandGroups"
         >
           <template v-slot:activator>
             <v-list-item-title>{{ $t('app.navigation.group') }}</v-list-item-title>
@@ -131,6 +132,7 @@
           v-if="showRooms"
           color="secondary lighten-4"
           prepend-icon="mdi-floor-plan"
+          :value="app.options.expandRooms"
         >
           <template v-slot:activator>
             <v-list-item-title>{{ $t('app.navigation.room') }}</v-list-item-title>
@@ -218,6 +220,8 @@
         options: {
           loading: false,
           reloadBtn: false,
+          expandGroups: false,
+          expandRooms: false
         },
         session: {
           connect: false,
