@@ -29,9 +29,9 @@ const routes = [
   },
 
   {
-    path: '/edit-devices',
-    name: 'EditDevice',
-    component: () => import ('../views/EditDevices.vue')
+    path: '/settings',
+    name: 'Settings',
+    component: () => import('../views/Settings.vue')
   },
 
   {

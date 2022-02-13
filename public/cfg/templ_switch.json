@@ -1,7 +1,7 @@
 {
   "name": "switch",
   "author": "jemu75",
-  "date": "2021-03-21",
+  "date": "2021-12-04",
   "status": {
     "bar": ["state:on:100:success","state:off:0:success"],
     "error": ["Connected.receiver.Readings.Activity.Value:^(?!alive):100:error:keine Verbindung"]
@@ -17,7 +17,7 @@
   ],
   "info": {
     "left1": ["state:on::mdi-power-plug","state:off::mdi-power-plug-off"],
-    "left2": ["power:0.1:%n.2w"],
+    "left2": ["power:0.1:%n.2w","Connected.power.Readings.power.Value:0.1:%n.2w"],
     "right2": ["Connected.receiver.Readings.Activity.Value:alive::mdi-wifi","Connected.receiver.Readings.Activity.Value:::mdi-wifi-off"]
   }
 }

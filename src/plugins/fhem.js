@@ -27,7 +27,8 @@ class Fhem extends EventEmitter {
         debugLevel: 5, // 1 = errors, 2 = status, 3 = requests, 4 = informChannel, 5 = internals
         loading: false,
         loadCount: 0,
-        clockInterval: 5000,
+        clockInterval: 1000,
+        clockFormat: { hour: '2-digit', minute: '2-digit' },
         clock: null,
         date: null,
         maxChartPoints: 100,
@@ -852,7 +853,7 @@ class Fhem extends EventEmitter {
   setClock() {
     let timestamp = new Date();
 
-    this.app.appBar.clock = timestamp.toLocaleString(this.app.options.lang, { hour: '2-digit', minute: '2-digit' })
+    this.app.appBar.clock = timestamp.toLocaleString(this.app.options.lang, this.app.options.clockFormat)
 
     if(!this.app.options.mobileHeader) this.app.appBar.header = timestamp.toLocaleString(this.app.options.lang, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
   }

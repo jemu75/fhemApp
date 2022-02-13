@@ -508,7 +508,7 @@
         this.timer = setInterval(() => {
           this.long = true;
 
-          let action = this.item.Options.setup.main[idx].[val + 'Long'];
+          let action = this.item.Options.setup.main[idx][val + 'Long'];
 
           this.$fhem.log({ lvl: 5, msg: 'ClickEvent: Long ' + ' [' + action + ']' });
 
@@ -531,7 +531,7 @@
 
         this.timer = clearInterval(this.timer);
 
-        let action = this.item.Options.setup.main[idx].[val + (this.long ? 'LongRelease' : 'Click')];
+        let action = this.item.Options.setup.main[idx][val + (this.long ? 'LongRelease' : 'Click')];
 
         this.$fhem.log({ lvl: 5, msg: 'ClickEvent: ' + (this.long ? 'LongRelease' : 'Click') + ' [' + action + ']' });
 

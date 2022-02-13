@@ -55,7 +55,7 @@ Wenn ihr in **FHEMApp** Daten aus FHEM-Logs in Charts darstellt, ist es ggf. sin
 ```
 
 ### Anzeigeeinstellungen für FHEMApp (optional)
-Wenn ihr in **FHEMApp** bei der mobilen Ansicht (1-spaltiges Layout) im Header sehen wollt, in welcher Bereich bzw. in welche Gruppe euch gerade befindet, dann könnt ihr unter Options den Parameter `mobileHeader` setzen. Ebenfalls in der mobilen Ansicht könnt ihr über den Parameter `homeBtn` einen Home-Button auf der rechten Seite im Header einblenden. Weiterhin könnt ihr über den Parameter `reloadBtn` einen Button für einen kompletten Browser-Refresh im Header aktivieren. Über die Parameter `expandGroups` bzw. `expandRooms` könnt ihr festlegen, ob die Gruppen bzw. Räume in der Navigationsleiste beim Starten von **FHEMApp** geöffnet oder geschlossen sein sollen. Über den Parameter `lang` kann die Sprache der App umgestellt werden. Aktuell stehen `de` (deutsch) und `en` (englisch) zur Verfügung.
+Wenn ihr in **FHEMApp** bei der mobilen Ansicht (1-spaltiges Layout) im Header sehen wollt, in welcher Bereich bzw. in welche Gruppe euch gerade befindet, dann könnt ihr unter Options den Parameter `mobileHeader` setzen. Ebenfalls in der mobilen Ansicht könnt ihr über den Parameter `homeBtn` einen Home-Button auf der rechten Seite im Header einblenden. Weiterhin könnt ihr über den Parameter `reloadBtn` einen Button für einen kompletten Browser-Refresh im Header aktivieren. Über die Parameter `expandGroups` bzw. `expandRooms` könnt ihr festlegen, ob die Gruppen bzw. Räume in der Navigationsleiste beim Starten von **FHEMApp** geöffnet oder geschlossen sein sollen. Über den Parameter `lang` kann die Sprache der App umgestellt werden. Aktuell stehen `de` (deutsch) und `en` (englisch) zur Verfügung. Über den Parameter `clockFormat` kann die Anzeige der Uhrzeit im Header verändert werden.
 ```
 "options": {
   "mobileHeader": true,
@@ -63,7 +63,8 @@ Wenn ihr in **FHEMApp** bei der mobilen Ansicht (1-spaltiges Layout) im Header s
   "homeBtn": true,
   "expandGroups": false,
   "expandRooms": false,
-  "lang": "de"
+  "lang": "de",
+  "clockFormat": { "hour": "2-digit", "minute": "2-digit", "second": "2-digit" }
 },
 ```
 
