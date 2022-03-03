@@ -11,7 +11,7 @@ import fhem from './plugins/fhem'
 Vue.use(fhem, vuetify, i18n)
 
 Vue.use(VueApexCharts)
-Vue.component('apexchart', VueApexCharts)
+Vue.component('apex-chart', VueApexCharts)
 
 Vue.config.productionTip = false
 

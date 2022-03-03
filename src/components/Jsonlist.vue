@@ -83,6 +83,7 @@
   import 'vue-json-pretty/lib/styles.css'
 
   export default {
+    name: 'JsonList',
     props: {
       item: {
         type: Object,

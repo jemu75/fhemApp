@@ -469,6 +469,7 @@
 
         if(cmdParts.length === 4) {
           if(this.$fhem.getEl(this.item, 'Readings', cmdParts[2], 'Value')) {
+            // eslint-disable-next-line
             this.item.Readings[cmdParts[2]].Value = cmdParts[3];
           }
         }

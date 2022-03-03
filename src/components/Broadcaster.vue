@@ -32,6 +32,7 @@
 
 <script>
 export default {
+  name: 'BroadCaster',
   data: () => ({
     alert: false,
     type: 'info',

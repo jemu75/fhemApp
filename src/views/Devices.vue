@@ -13,8 +13,7 @@
 
 <script>
 export default {
-  name: 'Devices',
-
+  name: 'DevicesView',
   components: {
     templ_default: () => import('@/components/TemplDefault.vue'),
     templ_panel: () => import('@/components/TemplPanel.vue'),

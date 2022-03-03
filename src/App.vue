@@ -205,7 +205,6 @@
   import Broadcaster from '@/components/Broadcaster.vue'
 
   export default {
-
     components: {
       Broadcaster
     },

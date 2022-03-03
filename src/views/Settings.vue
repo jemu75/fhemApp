@@ -8,8 +8,7 @@
 
 <script>
 export default {
-  name: 'Settings',
-
+  name: 'SettingsView',
   data: () => ({
   })
 }

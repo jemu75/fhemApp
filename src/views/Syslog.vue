@@ -80,12 +80,14 @@
         hide-default-footer
         @page-count="log.pageCount = $event"
       >
+        <!-- eslint-disable-next-line -->
         <template v-slot:item.icon="{ item }">
           <v-icon :color="item.color">
             {{ item.icon }}
           </v-icon>
         </template>
 
+        <!-- eslint-disable-next-line -->
         <template v-slot:item.actions="{ item }">
           <v-icon
             v-if="item.meta"
@@ -144,8 +146,8 @@
   import 'vue-json-pretty/lib/styles.css'
 
   export default {
+    name: 'SyslogView',
     data: () => ({
-      name: 'syslog',
       vals: {
         title: 'Systemprotokoll',
         mainLevel: 0,
