@@ -302,11 +302,7 @@
         if(this.item) {
           this.$fhem.loading = true;
 
-          let toDate = new Date(this.to);
-          toDate.setDate(toDate.getDate() + 1);
-          toDate = toDate.toISOString().split('T')[0];
-
-          let def = { deviceName: this.item.Name, from: this.from, to: toDate, defs: this.item.Options.chartDef };
+          let def = { deviceName: this.item.Name, from: this.from, to: this.to, defs: this.item.Options.chartDef };
 
           this.$fhem.readLogData(def)
             .then((res) => {
