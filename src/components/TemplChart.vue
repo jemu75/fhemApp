@@ -111,7 +111,7 @@
               </v-menu>
             </v-col>
           </v-row>
-          <apexchart
+          <apex-chart
             :options="chart.options"
             :series="chart.series"
             @zoomed="afterZoom"
