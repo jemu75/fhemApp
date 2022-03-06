@@ -64,6 +64,7 @@
                   <v-btn
                     small
                     icon
+                    :color="level.leftBtnColor"
                     :disabled="level.leftBtnDisabled"
                     @touchstart="clickStart(level.idx, 'left','touch')"
                     @touchend="clickEnd(level.idx, 'left','touch')"
@@ -155,6 +156,7 @@
                     small
                     icon
                     :disabled="level.midBtnDisabled"
+                    :color="level.midBtnColor"
                     @touchstart="clickStart(level.idx, 'mid','touch')"
                     @touchend="clickEnd(level.idx, 'mid','touch')"
                     @mousedown="clickStart(level.idx, 'mid','mouse')"
@@ -240,6 +242,7 @@
                     small
                     icon
                     :disabled="level.rightBtnDisabled"
+                    :color="level.rightBtnColor"
                     @touchstart="clickStart(level.idx, 'right','touch')"
                     @touchend="clickEnd(level.idx, 'right','touch')"
                     @mousedown="clickStart(level.idx, 'right','mouse')"
@@ -645,12 +648,14 @@
             idx: i,
             leftBtn: '',
             leftBtnDisabled: false,
+            leftBtnColor: '',
             leftMenu: [],
             leftMenuIdx: -1,
             text: '',
             text2: '',
             midBtn: '',
             midBtnDisabled: false,
+            midBtnColor: '',
             midMenu: [],
             midMenuIdx: -1,
             slider: false,
@@ -661,6 +666,7 @@
             sliderStep: 1,
             rightBtn: '',
             rightBtnDisabled: false,
+            rightBtnColor: '',
             rightMenu: [],
             rightMenuIdx: -1
           }
@@ -692,6 +698,10 @@
           this.main[lvl].leftBtnDisabled = mainLeftBtn[1] ? true : false;
           this.main[lvl].midBtnDisabled = mainMidBtn[1] ? true : false;
           this.main[lvl].rightBtnDisabled = mainRightBtn[1] ? true : false;
+          this.main[lvl].leftBtnColor = mainLeftBtn[2] || '';
+          this.main[lvl].midBtnColor = mainMidBtn[2] || '';
+          this.main[lvl].rightBtnColor = mainRightBtn[2] || '';
+
           this.main[lvl].leftMenu = mainLeftMenu;
           this.main[lvl].leftMenuIdx = mainLeftMenu.map((e) => e.active).indexOf(true);
           this.main[lvl].midMenu = mainMidMenu;

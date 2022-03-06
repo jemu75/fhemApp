@@ -338,6 +338,7 @@
                   for(const vals of logData) values.push([vals.timestamp, vals.value]);
                   this.chart.series.push({ name: parts[2], type, data: values });
 
+                  let decimals = /%n./.test(parts[4]) ? parts[4].substring(parts[4].match(/%n./).index + 3 ,parts[4].match(/%n./).index + 5) : 1;
                   let yOptions = {
                     seriesName: parts[2],
                     show: /no-label/.test(parts[4]) ? false : true,
@@ -345,7 +346,7 @@
                     labels: {
                       formatter: (val) => {
                         let result = ''
-                        if(val) result = val.toFixed(1) + parts[3]
+                        if(val) result = val.toFixed(decimals) + parts[3]
                         return result
                       }
                     }

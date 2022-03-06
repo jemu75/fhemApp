@@ -215,7 +215,7 @@
       size: 'col-12 col-sm-6 col-md-6 col-lg-6',
       status: {
         color: 'success',
-        level: 0
+        level: 100
       },
       app: {
         options: {
