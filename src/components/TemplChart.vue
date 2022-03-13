@@ -265,8 +265,10 @@
         this.expandIcon = 'mdi-arrow-collapse';
       }
 
-      this.daysAgo = this.$fhem.getEl(this.item, 'Options', 'setup', 'daysAgo') || 6;
-      this.daysTo = this.$fhem.getEl(this.item, 'Options', 'setup', 'daysTo') || 0;
+      this.daysAgo = this.$fhem.getEl(this.item, 'Options', 'setup', 'daysAgo');
+      this.daysTo = this.$fhem.getEl(this.item, 'Options', 'setup', 'daysTo');
+      if(typeof(this.daysAgo) != 'number') this.daysAgo = 6;
+      if(typeof(this.daysTo) != 'number') this.daysTo = 0;
       this.from = this.$fhem.getDate(this.daysAgo);
       this.to = this.$fhem.getDate(this.daysTo);
 
@@ -274,7 +276,6 @@
 
       this.chart.options.chart.height = window.innerHeight > 600 && this.maxSize ? parseInt((window.innerHeight - 320)) : 'auto';
       this.chart.options.theme.mode = this.$vuetify.theme.dark ? 'dark' : 'light';
-      //this.chart.options.stroke.width = this.$fhem.getEl(this.item, 'Options', 'setup', 'lineWidth') || 4;
 
       this.loadChartData();
     },

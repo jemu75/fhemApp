@@ -612,7 +612,7 @@
             let vals = item.split(':');
 
             if(vals.length > 1) {
-              let cmd = this.createCmd(vals[1]);
+              let cmd = this.createCmd(vals[1].replace(/&#058;/g,':'));
               let active = this.checkMenu(cmd);
               result.push({ name: vals[0], cmd, active });
             }
