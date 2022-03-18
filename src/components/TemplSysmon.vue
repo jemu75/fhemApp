@@ -20,54 +20,71 @@
         />
       </v-card-title>
       <v-divider />
-      <v-card-subtitle>
-        {{ vals.subTitle }}
-      </v-card-subtitle>
 
-      <v-card-text>
-        <v-row>
-          <v-col
-            v-for="itm of vals.list"
-            :key="itm.name"
-            class="col-12 col-md-4 col-lg-4"
+      <div v-if="!item.Options.status.isActive">
+        <v-card-text>
+          <v-row align="center">
+            <v-col align="center">
+              <div class="headline font-weight-bold">
+                {{ item.Options.status.error }}
+              </div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-divider />
+      </div>
+
+      <div v-if="item.Options.status.isActive">
+        <v-card-subtitle>
+          {{ vals.subTitle }}
+        </v-card-subtitle>
+
+        <v-card-text>
+          <v-row>
+            <v-col
+              v-for="itm of vals.list"
+              :key="itm.name"
+              class="col-12 col-md-4 col-lg-4"
+            >
+              <div class="text-truncate">
+                {{ itm.name }}
+              </div>
+              <v-progress-linear
+                v-if="itm.isBar"
+                height="7"
+                :value="itm.value"
+                :color="itm.color"
+                :min="itm.min"
+                :max="itm.max"
+                background-color="secondary lighten-4"
+              />
+              <div>{{ itm.subText }}</div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions v-if="setup.fhemBtns">
+          <v-btn
+            class="mr-2"
+            @click="goTo()"
           >
-            <div class="text-truncate">
-              {{ itm.name }}
-            </div>
-            <v-progress-linear
-              v-if="itm.isBar"
-              height="7"
-              :value="itm.value"
-              :color="itm.color"
-              :min="itm.min"
-              :max="itm.max"
-              background-color="secondary lighten-4"
-            />
-            <div>{{ itm.subText }}</div>
-          </v-col>
-        </v-row>
-      </v-card-text>
-      <v-card-actions v-if="setup.fhemBtns">
-        <v-btn
-          class="mr-2"
-          @click="goTo()"
-        >
-          <v-icon>mdi-format-list-bulleted</v-icon>
-        </v-btn>
-        <v-spacer />
-        <v-btn
-          :disabled="!update"
-          @click="fhemUpdate"
-        >
-          {{ updateText }}
-        </v-btn>
-        <v-btn
-          :disabled="!restart"
-          @click="fhemRestart"
-        >
-          {{ $t('templates.sysmon.restartBtn') }}
-        </v-btn>
-      </v-card-actions>
+            <v-icon>mdi-format-list-bulleted</v-icon>
+          </v-btn>
+          <v-spacer />
+          <v-btn
+            :disabled="!update"
+            @click="fhemUpdate"
+          >
+            {{ updateText }}
+          </v-btn>
+          <v-btn
+            :disabled="!restart"
+            @click="fhemRestart"
+          >
+            {{ $t('templates.sysmon.restartBtn') }}
+          </v-btn>
+        </v-card-actions>
+      </div>
+
       <v-divider />
       <v-system-bar color="secondary darken-1">
         <v-icon class="ml-0">

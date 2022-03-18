@@ -1,0 +1,25 @@
+{
+  "name": "shellyswitch_mqtt",
+  "author": "jemu75",
+  "date": "2022-03-18",
+  "status": {
+    "bar": ["state:on:100:success","state:off:0:success"],
+    "error": ["network:^(?!<html>connected):100:error:keine Verbindung"]
+  },
+  "main": [
+    {
+      "leftBtn": "mdi-power-off",
+      "leftClick": ["state::off"],
+      "text": ["state:on:an","state:off:aus"],
+      "rightBtn": "mdi-power-on",
+      "rightClick": ["state::on"]
+    }
+  ],
+  "info": {
+    "left1": ["state:on::mdi-power-plug","state:::mdi-power-plug-off"],
+    "left2": ["relay_0_power:0.1:%n.2w"],
+    "mid1": ["tmp_tC::%n.1°C"],
+    "right1": ["new_fw:true::mdi-cloud-download"],
+    "right2": ["wifi_sta_connected:true::mdi-wifi","network:::mdi-wifi-off"]
+  }
+}
