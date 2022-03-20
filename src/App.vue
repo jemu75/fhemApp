@@ -26,18 +26,18 @@
       </div>
       <v-spacer />
       <div
-        v-if="app.options.mobileHeader"
-        class="text-h5"
+        v-if="app.options.mobileHeader || app.options.mobileHeaderContent"
+        class="text-h5 hidden-lg-and-up"
+      >
+        {{ appBar.mobileHeader }}
+      </div>
+
+      <div
+        class="text-h5 hidden-md-and-down"
       >
         {{ appBar.header }}
       </div>
 
-      <div
-        v-if="!app.options.mobileHeader"
-        class="hidden-md-and-down text-h5"
-      >
-        {{ appBar.header }}
-      </div>
       <v-spacer />
       <v-btn
         v-if="app.options.debugMode"
@@ -220,7 +220,8 @@
           loading: false,
           reloadBtn: false,
           expandGroups: false,
-          expandRooms: false
+          expandRooms: false,
+          mobileHeaderContent: false
         },
         session: {
           connect: false,

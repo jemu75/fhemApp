@@ -48,7 +48,8 @@ class Fhem extends EventEmitter {
         color: 'primary',
         drawer: false,
         clock: null,
-        header: null
+        header: null,
+        mobileHeader: null
       },
       templates: [],
       componentMap: [
@@ -854,8 +855,10 @@ class Fhem extends EventEmitter {
     let timestamp = new Date();
 
     this.app.appBar.clock = timestamp.toLocaleString(this.app.options.lang, this.app.options.clockFormat)
+    this.app.appBar.header = timestamp.toLocaleString(this.app.options.lang, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 
-    if(!this.app.options.mobileHeader) this.app.appBar.header = timestamp.toLocaleString(this.app.options.lang, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+    if(this.app.options.mobileHeaderContent === 'clock') this.app.appBar.mobileHeader = timestamp.toLocaleString(this.app.options.lang, this.app.options.clockFormat)
+    if(this.app.options.mobileHeaderContent === 'date') this.app.appBar.mobileHeader = timestamp.toLocaleString(this.app.options.lang, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
   }
 
   // mainFunction: Initializing FHEM App

@@ -1,6 +1,6 @@
 {
   "name": "fhemapp",
-  "version": "3.30.3",
+  "version": "3.31.0",
   "private": true,
   "author": "jemu75",
   "scripts": {
@@ -18,7 +18,7 @@
     "vue-i18n": "^8.26.3",
     "vue-json-pretty": "^1.8.2",
     "vue-router": "^3.5.1",
-    "vuetify": "^2.6.3"   
+    "vuetify": "^2.6.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -26,7 +26,7 @@
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
+    "@vue/cli-service": "^5.0.3",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
     "sass": "^1.32.7",

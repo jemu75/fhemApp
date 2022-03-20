@@ -59,15 +59,16 @@ export default {
 
   methods: {
     setHeader() {
-      if(this.app.options.mobileHeader) {
+      // this.app.options.mobileHeader can be deprecated because of new param mobileHeaderContent
+      if(this.app.options.mobileHeader || this.app.options.mobileHeaderContent === 'page') {
         if(this.$route.name === 'Devices') {
           if(this.$route.params.filter.match('device=')) {
-            this.$fhem.app.appBar.header = '';
+            this.$fhem.app.appBar.mobileHeader = '';
           } else {
-            this.$fhem.app.appBar.header = this.$route.params.filter.split('=')[1];
+            this.$fhem.app.appBar.mobileHeader = this.$route.params.filter.split('=')[1];
           }
         } else {
-          this.$fhem.app.appBar.header = this.$route.name;
+          this.$fhem.app.appBar.mobileHeader = this.$route.name;
         }
       }
     },
