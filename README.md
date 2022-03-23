@@ -273,7 +273,7 @@ Es werden die Icons aus der [Material Designs Icon Bibliothek](https://materiald
 |main|leftMenu|text:cmd|definiert für das **linke Menü** die Texte und FHEM-Kommandos. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die linke Taste ein Menü auf. *Hinweis:* leftClick, leftLong und leftLongRelease stehen bei Zuweisung des Menüs nicht zur Verfügung.|
 |main|text|reading:wert:text|definiert den **ersten Text** der in der Mitte angezeigt wird|
 |main|text2|reading:wert:text|definiert den **zweiten Text** der in der Mitte angezeigt wird *Hinweis:* bei Verwendung von Tasten sollte auf die Anzeige eines zweiten Wertes verzichtet werden, da die Breite des Templates im Normalfall nicht ausreicht|
-|main|slider|reading:wert:cmd:current:min:max:steps|stellt einen **Slider** in der Mitte dar. In diesem Fall werden die Elemente `text` und `text2` nicht angezeigt und evtl. definierte Tasten reagieren nur auf `leftClick` bzw. `rightClick`. *Wichtig:* `cmd` muss die Ersetzung *%v* (den aktuellen Wert des Sliders) enthalten. `current` sollte nur die Ersetzung *%n* enthalten, damit der Slider den aktuellen Wert des Readings anzeigt. `min` und `max` begrenzen die Sliderwerte. `steps` definiert die Schritte in denen der Slider die Werte verändert. *Beispiel:* `["pct::pct %v:%n:0:100:1"]` verbindet das Reading `pct` mit einem Slider und begrenzt die Werte auf 0-100 und verändert die Werte jeweils um 1|
+|main|slider|reading:wert:cmd:current:min:max:steps|stellt einen **Slider** in der Mitte dar. Über das Element `text` kann der Slider mit einem zusätzlichen Label versehen werden. *Wichtig:* `cmd` muss die Ersetzung *%v* (den aktuellen Wert des Sliders) enthalten. `current` sollte nur die Ersetzung *%n* enthalten, damit der Slider den aktuellen Wert des Readings anzeigt. `min` und `max` begrenzen die Sliderwerte. `steps` definiert die Schritte in denen der Slider die Werte verändert. *Beispiel:* `["pct::pct %v:%n:0:100:1"]` verbindet das Reading `pct` mit einem Slider und begrenzt die Werte auf 0-100 und verändert die Werte jeweils um 1|
 |main|midtBtn|reading:wert:icon:disabled:color (alternativ: icon)|definiert welches *Icon* auf der mittlerren Taste angezeigt wird. Optional kann das Flag *disabled* und die Farbe des Icons gesetzt werden. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
 |main|midClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die mittlere Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|midLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der mittleren Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
@@ -352,6 +352,7 @@ Wenn du jetzt mehrere Devices in einem Template hast, würden ja "Dopplungen" vo
 | [panel](#template-panel) | Panel zur Gruppierung mehrerer Devices | ![](./docs/media/template_panel_example.png) |
 | [chart](#template-chart) | Diagramm zur Visualisierung von Log-Daten | ![](./docs/media/template_chart_example.png) |
 | [cam](#template-cam) | Anzeige von Kamerastreams | ![](./docs/media/template_cam_example.png) |
+| [kodiremote](#template-kodicontrol) | Kodi Fernbedieung | ![](./docs/media/template_kodicontrol_example.png) |
 | weather | Wettervorhersage (darksky-API und Proplanta-API) | ![](./docs/media/template_weather_example.png) |
 | [sysmon](#template-sysmon) | Systemmonitor | ![](./docs/media/template_sysmon_example.png) |
 | hmlan | HMLAN-Adapter | ![](./docs/media/template_hmlan_example.png) |
@@ -891,6 +892,84 @@ Da *Cam* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften �
     "mid2": ["reading:value:text:icon"],
     "right1": ["reading:value:text:icon"],
     "right2": ["reading:value:text:icon"],
+  }
+}
+```
+
+# Template Kodicontrol
+Dieses Template ermöglicht die Nutzung der Kodi Fernbienung.
+
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
+```
+{ "template": "kodiremote" }
+```
+
+#### Hinweis
+Wenn "myLable" angezeigt werden soll (entweder aktueller TV Sender oder Album bei Musik) wird folgendes userReading benötigt.
+```
+myLabel { ReadingsVal($name,"type","") eq "channel" ? (ReadingsVal($name,"label","")) : (ReadingsVal($name,"type","") eq "song" ? (ReadingsVal($name,"currentAlbum","")) : "")}
+```
+
+#### Konfiguration
+```
+{
+  "name": "kodiremote",
+  "author": "draddy",
+  "date": "2022-03-20",
+  "expand": true,
+  "status": 
+	{
+    "bar": ["playStatus:playing:100:success", "playStatus:paused:50:success", "playStatus::0:success"]
+	},
+  "main": [
+    {
+		"leftBtn": ["state:opened:mdi-skip-previous","state::mdi-skip-previous:disabled"],
+		"leftClick": ["state::prev"],
+		"midBtn": ["playStatus:playing:mdi-pause", "playStatus:stopped:mdi-stop", "playStatus::mdi-play"],
+		"midClick": ["playStatus:playing:pause", "playStatus::play"],
+		"midLong": ["playStatus:playing:stop", "state::select"],
+		"rightBtn": ["state:opened:mdi-skip-next","state::mdi-skip-next:disabled"],
+		"rightClick": ["state::next"]
+    },
+    {
+		"leftBtn": ["state::mdi-home"],
+		"leftClick": ["state::home"],
+		"midBtn": ["state::mdi-menu-up::success"],
+		"midClick": ["state::up"],
+		"rightBtn": ["state::mdi-information-variant"],
+		"rightClick": ["state::showosd"]	
+    },
+    {
+		"leftBtn": ["state::mdi-menu-left::success"],
+		"leftClick": ["state::left"],
+		"midBtn": ["state::mdi-kodi::success"],
+		"midClick": ["state::select"],
+		"rightBtn": ["state::mdi-menu-right::success"],
+		"rightClick": ["state::right"]
+    },
+    {
+		"leftBtn": ["state::mdi-arrow-u-left-top"],
+		"leftClick": ["state::back"],
+		"midBtn": ["state::mdi-menu-down::success"],
+		"midClick": ["state::down"],
+		"rightBtn": ["state::mdi-menu"],
+		"rightClick": ["state::contextmenu"]
+    },
+    {
+		"leftBtn": ["state::mdi-volume-minus"],
+		"leftClick": ["state::volumeDown"],
+		"midBtn": ["mute:off:mdi-volume-high", "mute::mdi-volume-off"],
+		"midClick": ["mute:off:mute", "mute::mute"],
+		"rightBtn": ["state::mdi-volume-plus"],
+		"rightClick": ["state::volumeUp"]
+    }
+  ],
+  "info": {
+	"left1": ["mute:on::mdi-volume-off", "playStatus:playing::mdi-play", "playStatus:stopped::mdi-stop", "playStatus:::mdi-pause"],
+	"left2": ["currentArtist:$:%s"],
+	"mid1": ["myLabel::%s"],
+	"right2": ["currentTitle::%s"]
   }
 }
 ```

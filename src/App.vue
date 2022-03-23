@@ -22,7 +22,11 @@
         v-if="appBar.drawer"
         class="text-h5"
       >
-        {{ appBar.clock }}
+        <div
+          class="text-h5 hidden-md-and-down"
+        >
+          {{ appBar.clock }}
+        </div>
       </div>
       <v-spacer />
       <div

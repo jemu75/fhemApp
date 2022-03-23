@@ -19,6 +19,7 @@
       "leftBtn": "mdi-lightbulb-outline",
       "leftClick": ["gain::gain 0"],
       "slider": ["gain::gain %v:%n:0:100"],
+      "text": "Helligkeit",
       "rightBtn": "mdi-lightbulb-on-outline",
       "rightClick": ["gain::gain 100"]
     }

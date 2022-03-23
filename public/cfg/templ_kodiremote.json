@@ -1,0 +1,59 @@
+{
+  "name": "kodiremote",
+  "author": "draddy",
+  "date": "2022-03-20",
+  "expand": true,
+  "status": 
+	{
+    "bar": ["playStatus:playing:100:success", "playStatus:paused:50:success", "playStatus::0:success"]
+	},
+  "main": [
+    {
+		"leftBtn": ["state:opened:mdi-skip-previous","state::mdi-skip-previous:disabled"],
+		"leftClick": ["state::prev"],
+		"midBtn": ["playStatus:playing:mdi-pause", "playStatus:stopped:mdi-stop", "playStatus::mdi-play"],
+		"midClick": ["playStatus:playing:pause", "playStatus::play"],
+		"midLong": ["playStatus:playing:stop", "state::select"],
+		"rightBtn": ["state:opened:mdi-skip-next","state::mdi-skip-next:disabled"],
+		"rightClick": ["state::next"]
+    },
+    {
+		"leftBtn": ["state::mdi-home"],
+		"leftClick": ["state::home"],
+		"midBtn": ["state::mdi-menu-up::success"],
+		"midClick": ["state::up"],
+		"rightBtn": ["state::mdi-information-variant"],
+		"rightClick": ["state::showosd"]	
+    },
+    {
+		"leftBtn": ["state::mdi-menu-left::success"],
+		"leftClick": ["state::left"],
+		"midBtn": ["state::mdi-kodi::success"],
+		"midClick": ["state::select"],
+		"rightBtn": ["state::mdi-menu-right::success"],
+		"rightClick": ["state::right"]
+    },
+    {
+		"leftBtn": ["state::mdi-arrow-u-left-top"],
+		"leftClick": ["state::back"],
+		"midBtn": ["state::mdi-menu-down::success"],
+		"midClick": ["state::down"],
+		"rightBtn": ["state::mdi-menu"],
+		"rightClick": ["state::contextmenu"]
+    },
+    {
+		"leftBtn": ["state::mdi-volume-minus"],
+		"leftClick": ["state::volumeDown"],
+		"midBtn": ["mute:off:mdi-volume-high", "mute::mdi-volume-off"],
+		"midClick": ["mute:off:mute", "mute::mute"],
+		"rightBtn": ["state::mdi-volume-plus"],
+		"rightClick": ["state::volumeUp"]
+    }
+  ],
+  "info": {
+	"left1": ["mute:on::mdi-volume-off", "playStatus:playing::mdi-play", "playStatus:stopped::mdi-stop", "playStatus:::mdi-pause"],
+	"left2": ["currentArtist:$:%s"],
+	"mid1": ["myLabel::%s"],
+	"right2": ["currentTitle::%s"]
+  }
+}
