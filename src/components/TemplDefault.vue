@@ -141,7 +141,7 @@
 
               <v-col
                 v-if="!level.midBtn && !level.slider"
-                align="center"
+                :align="level.textAlign"
               >
                 <div class="headline font-weight-bold">
                   {{ level.text }}
@@ -150,7 +150,7 @@
  
               <v-col
                 v-if="level.text2 && !level.midBtn && !level.slider"
-                align="center"
+                :align="level.text2Align"
               >
                 <div class="headline font-weight-bold">
                   {{ level.text2 }}
@@ -654,7 +654,9 @@
             leftMenu: [],
             leftMenuIdx: -1,
             text: '',
+            textAlign: '',
             text2: '',
+            text2Align: '',
             midBtn: '',
             midBtnDisabled: false,
             midBtnColor: '',
@@ -692,8 +694,10 @@
           let mainRightMenu = this.createMenu(this.item.Options.setup.main[idx].rightMenu);
 
           this.main[lvl].text = mainText[0] || '';
+          this.main[lvl].textAlign = mainText[1] || 'center';
           this.main[lvl].text2 = mainText2[0] || '';
-
+          this.main[lvl].text2Align = mainText2[1] || 'center';
+          
           this.main[lvl].leftBtn = mainLeftBtn[0] || '';
           this.main[lvl].midBtn = mainMidBtn[0] || '';
           this.main[lvl].rightBtn = mainRightBtn[0] || '';

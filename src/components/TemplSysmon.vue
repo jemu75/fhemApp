@@ -312,13 +312,13 @@
 
       doList() {
         for(var el of this.setup.main) {
-          let idx = this.vals.list.map((e) => e.name).indexOf(el.name);
-
+          let name = this.$fhem.handleVals(this.item, el.name); 
           let bar = this.$fhem.handleVals(this.item, el.bar);
           let subText = this.$fhem.handleVals(this.item, el.subText);
+          let idx = this.vals.list.map((e) => e.name).indexOf(name[0] || '');
 
           let listItem = {
-            name: el.name,
+            name: name[0] || '',
             isBar: bar.length > 0 ? true : false,
             value: bar[0] || 0,
             color: bar[1] || 'success',

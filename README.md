@@ -211,8 +211,8 @@ In den Template-Dateien können folgende Eigenschaften definiert werden. Die Zuw
       "leftLong": ["reading:value:set_param"],
       "leftLongRelease": ["reading:value:set_param"],
       "leftMenu": ["text:set_param"],
-      "text": ["reading:value:text"],
-      "text2": ["reading:value:text"],
+      "text": ["reading:value:text:align"],
+      "text2": ["reading:value:text:align"],
       "slider": ["reading:value:set_param:current:min:max:steps"],
       "midBtn": ["reading:value:icon:disabled"],
       "midClick": ["reading:value:set_param"],
@@ -271,8 +271,8 @@ Es werden die Icons aus der [Material Designs Icon Bibliothek](https://materiald
 |main|leftLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der linken Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|leftLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der linken Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|leftMenu|text:cmd|definiert für das **linke Menü** die Texte und FHEM-Kommandos. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die linke Taste ein Menü auf. *Hinweis:* leftClick, leftLong und leftLongRelease stehen bei Zuweisung des Menüs nicht zur Verfügung.|
-|main|text|reading:wert:text|definiert den **ersten Text** der in der Mitte angezeigt wird|
-|main|text2|reading:wert:text|definiert den **zweiten Text** der in der Mitte angezeigt wird *Hinweis:* bei Verwendung von Tasten sollte auf die Anzeige eines zweiten Wertes verzichtet werden, da die Breite des Templates im Normalfall nicht ausreicht|
+|main|text|reading:wert:text:align|definiert den **ersten Text** der in der Mitte angezeigt wird. Der Text wird im Standard zentriert ausgegeben und kann mit `left` bzw. `right` unter *align* ausgerichtet werden.|
+|main|text2|reading:wert:text:align|definiert den **zweiten Text** der in der Mitte angezeigt wird. Der Text wird im Standard zentriert ausgegeben und kann mit `left` bzw. `right` unter *align* ausgerichtet werden. *Hinweis:* bei Verwendung von Tasten sollte auf die Anzeige eines zweiten Wertes verzichtet werden, da die Breite des Templates im Normalfall nicht ausreicht|
 |main|slider|reading:wert:cmd:current:min:max:steps|stellt einen **Slider** in der Mitte dar. Über das Element `text` kann der Slider mit einem zusätzlichen Label versehen werden. *Wichtig:* `cmd` muss die Ersetzung *%v* (den aktuellen Wert des Sliders) enthalten. `current` sollte nur die Ersetzung *%n* enthalten, damit der Slider den aktuellen Wert des Readings anzeigt. `min` und `max` begrenzen die Sliderwerte. `steps` definiert die Schritte in denen der Slider die Werte verändert. *Beispiel:* `["pct::pct %v:%n:0:100:1"]` verbindet das Reading `pct` mit einem Slider und begrenzt die Werte auf 0-100 und verändert die Werte jeweils um 1|
 |main|midtBtn|reading:wert:icon:disabled:color (alternativ: icon)|definiert welches *Icon* auf der mittlerren Taste angezeigt wird. Optional kann das Flag *disabled* und die Farbe des Icons gesetzt werden. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
 |main|midClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die mittlere Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
@@ -1018,7 +1018,7 @@ Da *sysmon* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschafte
   subTitle: ["reading:value:text"],
   "main": [
     {
-      "name": string,
+      "name": ["reading:value:text"],
       "bar": ["reading:value:level:color:min:max"],
       "subText": ["reading:value:text"]
     }
