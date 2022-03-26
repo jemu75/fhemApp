@@ -569,8 +569,7 @@ class Fhem extends EventEmitter {
     let result = [];
 
     if(typeof defs === 'string') {
-      let defSet = ('::' + defs).split(':');
-      result = this.replaceVals(defSet, '');
+      result = [defs];
     }
 
     if(typeof device === 'object' && typeof defs === 'object' && defs.length > 0) {
