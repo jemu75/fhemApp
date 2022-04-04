@@ -223,7 +223,8 @@ In den Template-Dateien können folgende Eigenschaften definiert werden. Die Zuw
       "rightClick": ["reading:value:set_param"],
       "rightLong": ["reading:value:set_param"],
       "rightLongRelease": ["reading:value:set_param"],
-      "rightMenu": ["text:set_param"]
+      "rightMenu": ["text:set_param"],
+      "show": ["reading:value:show"]
     }
   ],
   "info": {
@@ -248,11 +249,12 @@ Beispiele:
 - `["state:on:an","state:off:aus","state::Status %s"]` prüft das FHEM-Reading `state` der Reihenfolge nach zuerst auf den Wert `on`, danach `off` und zuletzt jeden beliebigen anderen Wert. Im letzten Fall wird *%s* durch den Wert des Readings ersetzt. Die Bedingungen werden von links nach rechts geprüft. Sobald die erste Bedingung zutrifft, wird die Prüfung beendet. Deshalb ist es wichtig, die Bedingungen ist der richtigen Reihenfolge zu definieren.
 
 ### Ersetzungsmöglichkeiten
-- **%s** - liefert das *Reading* als Zeichenkette
-- **%n.2** - liefert das *Reading* als Zahlenwert mit der gewünschten Anzahl an Nachkommastellen. Sollte das Reading aus Text und Zahlen bestehen, so wird der erste Zahlenwert zurückgegeben
-- **%i1** - erhöht (%i1.5) bzw. verringert (%i-1.5) das *Reading* um den Wert. Hierfür muss das *Reading* Zahlenwerte enthalten.
+- **%s** - liefert den Wert des *Readings* als Zeichenkette
+- **%n.2** - liefert den Wert des *Readings* als Zahlenwert mit der gewünschten Anzahl an Nachkommastellen. Sollte das Reading aus Text und Zahlen bestehen, so wird der erste Zahlenwert zurückgegeben. Zahlen werden abhängig von den Ländereinstellungen formatiert.
+- **%i1** - erhöht (%i1.5) bzw. verringert (%i-1.5) den Wert des *Readings* um den Wert. Hierfür muss das *Reading* Zahlenwerte enthalten.
 - **%t** - liefert das *Reading* als Zeitstempel im Format TT.MM.JJJJ hh:mm:ss zurück
 - **%a** - liefert das *Reading* als Zeitraum zwischen jetzt und dem Readingwert im Format Tage h min zurück
+- **%d** - liefert den Name des *Devices* zurück
 - **%v** - ausschließlich in Verbindung mit dem Element *slider* notwendig.
 - **\&#058;** - HTML-entity wenn ein Doppelpunkt ausgegeben werden soll
 ## Icons
@@ -284,6 +286,7 @@ Es werden die Icons aus der [Material Designs Icon Bibliothek](https://materiald
 |main|rightLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der rechten Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|rightLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der rechten Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|rightMenu|text:cmd|definiert für das **rechte Menü** die Texte und FHEM-Kommandos. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die rechte Taste ein Menü auf. *Hinweis:* rightClick, rightLong und rightLongRelease stehen bei Zuweisung des Menüs nicht zur Verfügung.|
+|main|show|reading:wert:show|definiert optional, ob die Ebene angezeigt wird. Bei *show=false* wird die Ebene ausgeblendet.  |
 |info|left1..2,<br>mid1..2,<br>right1..2|reading:wert:text:icon:color|definiert welches **Icon** und welcher **Text** in der Infozeile angezeigt wird. Mit **color** kann optional die Farbe den Icons verändert werden|
 
 ## Hinweis zur Definition von FHEM-Kommandos
@@ -352,6 +355,7 @@ Wenn du jetzt mehrere Devices in einem Template hast, würden ja "Dopplungen" vo
 | [panel](#template-panel) | Panel zur Gruppierung mehrerer Devices | ![](./docs/media/template_panel_example.png) |
 | [chart](#template-chart) | Diagramm zur Visualisierung von Log-Daten | ![](./docs/media/template_chart_example.png) |
 | [cam](#template-cam) | Anzeige von Kamerastreams | ![](./docs/media/template_cam_example.png) |
+| [list](#template-list) | Anzeige von Listen | ![](./docs/media/template_list_example.png) |
 | [kodiremote](#template-kodicontrol) | Kodi Fernbedieung | ![](./docs/media/template_kodicontrol_example.png) |
 | weather | Wettervorhersage (darksky-API und Proplanta-API) | ![](./docs/media/template_weather_example.png) |
 | [sysmon](#template-sysmon) | Systemmonitor | ![](./docs/media/template_sysmon_example.png) |
@@ -896,8 +900,36 @@ Da *Cam* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften �
 }
 ```
 
+# Template List
+Dieses Template ermöglicht die Darstellung mehrerer Werte in Form einer Liste. Es eignet sich z.B. für die Darstellung von Werten aus Wetter-Schnittstellen, die in FHEM bereitgestellt werden.
+
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden. (nur ein Beispiel)
+```
+{ "template": "list", 
+  "iconSet": [
+    { "val": "sunny", "icon": "mdi-weather-sunny" }
+  ],
+  "listItems": [
+    {
+        "class1": "col-2 text-center",
+        "icon1": ["fc0_weatherDayIcon::%s"],
+        "class2": "text-left",
+        "text2": ["fc0_date::%s:font-weight-bold"],
+        "text21": ["fc0_weatherDay::%s:text"],
+        "class5": "col-2 text-center",
+        "text5": ["fc0_tempMin::%n.0°C:text"],
+        "text51": ["fc0_tempMax::%n.0°C:text"]
+    }
+  ]
+}
+```
+#### Hinweis
+Über der Parameter `iconSet` kann eine Zuordnung beliebiger Werte aus readings zu einem bestimmten Icon erfolgen. Es können beliebig viele Zuordnungen von Icons definiert werden. Über den Parameter `listItems` werden die Inhalte je Zeile definiert. Es können beliebig viele Zeilen konfiguriert werden. Jede Zeile kann bis zu 5 Spalten haben. In jeder Spalte können bis zu 3 Textfelder und 1 Icon definiert werden. Die Reihenfolge der Felder innerhalb einer Spalte ist fest: `text1` -> darunter `icon1` -> darunter `text11` -> rechts daneben `text12`. Die erste Ziffer der Elemente repräsentiert die Spalte (1-5) und die zweite Ziffer unterscheidet die beiden "Subtexte". Über `class1` - `class5` können Breite und Ausrichtung der Spalte definiert werden. Über `divider` kann eine Trennlinie am unteren Ende der Zeile eingeblendet werden.
+
+
 # Template Kodicontrol
-Dieses Template ermöglicht die Nutzung der Kodi Fernbienung.
+Dieses Template ermöglicht die Nutzung der Kodi Fernbedienung.
 
 #### Definition
 Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.

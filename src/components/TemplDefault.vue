@@ -53,302 +53,305 @@
           v-for="level in main"
           :key="level.idx"
         >
-          <v-card-text>
+          <div v-if="level.show">
+            {{ level.order }}
+            <v-card-text>
 
-            <v-row align="center">
-              <v-col
-                v-if="level.leftMenu.length == 0 && level.leftBtn"
-                class="col-3"
-                align="center"
-              >
-                <v-btn
-                  small
-                  icon
-                  :color="level.leftBtnColor"
-                  :disabled="level.leftBtnDisabled"
-                  @touchstart="clickStart(level.idx, 'left','touch')"
-                  @touchend="clickEnd(level.idx, 'left','touch')"
-                  @mousedown="clickStart(level.idx, 'left','mouse')"
-                  @mouseup="clickEnd(level.idx, 'left','mouse')"
+              <v-row align="center">
+                <v-col
+                  v-if="level.leftMenu.length == 0 && level.leftBtn"
+                  class="col-3"
+                  align="center"
                 >
-                  <div v-if="level.slider">
-                    <v-icon>
-                      {{ level.leftBtn }}
-                    </v-icon>
-                  </div>
+                  <v-btn
+                    small
+                    icon
+                    :color="level.leftBtnColor"
+                    :disabled="level.leftBtnDisabled"
+                    @touchstart="clickStart(level.idx, 'left','touch')"
+                    @touchend="clickEnd(level.idx, 'left','touch')"
+                    @mousedown="clickStart(level.idx, 'left','mouse')"
+                    @mouseup="clickEnd(level.idx, 'left','mouse')"
+                  >
+                    <div v-if="level.slider">
+                      <v-icon>
+                        {{ level.leftBtn }}
+                      </v-icon>
+                    </div>
 
-                  <div v-if="!level.slider">
-                    <v-icon large>
-                      {{ level.leftBtn }}
-                    </v-icon>
-                  </div>
-
-                </v-btn>
-              </v-col>
-              <v-col
-                v-if="level.leftMenu.length > 0 && level.leftBtn"
-                class="col-3"
-                align="center"
-              >
-                <v-menu
-                  bottom
-                  right
-                  transition="slide-y-transition"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      small
-                      icon
-                      v-bind="attrs"
-                      v-on="on"
-                    >
+                    <div v-if="!level.slider">
                       <v-icon large>
                         {{ level.leftBtn }}
                       </v-icon>
-                    </v-btn>
-                  </template>
-
-                  <v-list
-                    dense
-                    color="secondary lighten-2"
-                  >
-                    <v-list-item-group
-                      v-model="level.leftMenuIdx"
-                      active-class="success--text"
-                    >
-                      <v-list-item
-                        v-for="(menu, i) in level.leftMenu"
-                        :key="i"
-                        @click="sendCmd(menu.cmd)"
-                      >
-                        <v-list-item-content>
-                          <v-list-item-title class="text-subtitle-1">
-                            {{ menu.name }}
-                          </v-list-item-title>
-                        </v-list-item-content>
-                        <v-list-item-icon v-if="menu.active">
-                          <v-icon>mdi-check</v-icon>
-                        </v-list-item-icon>
-                      </v-list-item>
-                    </v-list-item-group>
-                  </v-list>
-                </v-menu>
-              </v-col>
-              <v-divider
-                v-if="level.leftBtn && !level.slider"
-                vertical
-              />
-
-              <v-col
-                v-if="!level.midBtn && !level.slider"
-                :align="level.textAlign"
-              >
-                <div class="headline font-weight-bold">
-                  {{ level.text }}
-                </div>
-              </v-col>
- 
-              <v-col
-                v-if="level.text2 && !level.midBtn && !level.slider"
-                :align="level.text2Align"
-              >
-                <div class="headline font-weight-bold">
-                  {{ level.text2 }}
-                </div>
-              </v-col>
-
-              <v-col
-                v-if="level.midMenu.length === 0 && level.midBtn"
-                align="center"
-                class="headline"
-              >
-                <v-btn
-                  small
-                  icon
-                  :disabled="level.midBtnDisabled"
-                  :color="level.midBtnColor"
-                  @touchstart="clickStart(level.idx, 'mid','touch')"
-                  @touchend="clickEnd(level.idx, 'mid','touch')"
-                  @mousedown="clickStart(level.idx, 'mid','mouse')"
-                  @mouseup="clickEnd(level.idx, 'mid','mouse')"
-                >
-                  <v-icon large>
-                    {{ level.midBtn }}
-                  </v-icon>
-                </v-btn>
-              </v-col>
-
-              <v-col
-                v-if="level.midMenu.length > 0 && level.midBtn"
-                class="headline"
-                align="center"
-              >
-                <v-menu
-                  bottom
-                  transition="slide-y-transition"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      v-if="level.text"
-                      block
-                      plain
-                      v-bind="attrs"
-                      v-on="on"
-                      class="headline font-weight-bold"
-                    >
-                      {{ level.text }}
-                    </v-btn>
-
-                    <v-btn
-                      v-if="!level.text"
-                      small
-                      icon
-                      v-bind="attrs"
-                      v-on="on"
-                    >
-                      <v-icon large>
-                        {{ level.midBtn }}
-                      </v-icon>
-                    </v-btn>
-                  </template>
-
-                  <v-list
-                    dense
-                    color="secondary lighten-2"
-                  >
-                    <v-list-item-group
-                      v-model="level.midMenuIdx"
-                      active-class="success--text"
-                    >
-                      <v-list-item
-                        v-for="(menu, i) in level.midMenu"
-                        :key="i"
-                        @click="sendCmd(menu.cmd)"
-                      >
-                        <v-list-item-content>
-                          <v-list-item-title class="text-subtitle-1">
-                            {{ menu.name }}
-                          </v-list-item-title>
-                        </v-list-item-content>
-                        <v-list-item-icon v-if="menu.active">
-                          <v-icon>mdi-check</v-icon>
-                        </v-list-item-icon>
-                      </v-list-item>
-                    </v-list-item-group>
-                  </v-list>
-                </v-menu>
-              </v-col>
-
-              <v-col
-                v-if="level.slider"
-                align="center"
-              >
-                <v-slider
-                  v-model="level.sliderCurrent"
-                  :min="level.sliderMin"
-                  :max="level.sliderMax"
-                  :label="level.text"
-                  hide-details
-                  thumb-label
-                  thumb-size="48"
-                  color="success"
-                  :step="level.sliderStep"
-                  @change="setSlider(level.idx, level.sliderCurrent)"
-                >
-                  <template v-slot:thumb-label="{ value }">
-                    <div class="text-h6">
-                      {{ sliderVal(level.idx, value) }}
                     </div>
-                  </template>
-                </v-slider>
-              </v-col>
 
-              <v-divider
-                v-if="level.rightBtn && !level.slider"
-                vertical
-              />
-              <v-col
-                v-if="level.rightMenu.length === 0 && level.rightBtn"
-                class="col-3"
-                align="center"
-              >
-                <v-btn
-                  small
-                  icon
-                  :disabled="level.rightBtnDisabled"
-                  :color="level.rightBtnColor"
-                  @touchstart="clickStart(level.idx, 'right','touch')"
-                  @touchend="clickEnd(level.idx, 'right','touch')"
-                  @mousedown="clickStart(level.idx, 'right','mouse')"
-                  @mouseup="clickEnd(level.idx, 'right','mouse')"
+                  </v-btn>
+                </v-col>
+                <v-col
+                  v-if="level.leftMenu.length > 0 && level.leftBtn"
+                  class="col-3"
+                  align="center"
                 >
+                  <v-menu
+                    bottom
+                    right
+                    transition="slide-y-transition"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        small
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon large>
+                          {{ level.leftBtn }}
+                        </v-icon>
+                      </v-btn>
+                    </template>
 
-                  <div v-if="level.slider">
-                    <v-icon>
-                      {{ level.rightBtn }}
-                    </v-icon>
-                  </div>
-
-                  <div v-if="!level.slider">
-                    <v-icon large>
-                      {{ level.rightBtn }}
-                    </v-icon>
-                  </div>
-                </v-btn>
-              </v-col>
-              <v-col
-                v-if="level.rightMenu.length > 0 && level.rightBtn"
-                class="col-3"
-                align="center"
-              >
-                <v-menu
-                  bottom
-                  left
-                  transition="slide-y-transition"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      small
-                      icon
-                      v-bind="attrs"
-                      v-on="on"
+                    <v-list
+                      dense
+                      color="secondary lighten-2"
                     >
+                      <v-list-item-group
+                        v-model="level.leftMenuIdx"
+                        active-class="success--text"
+                      >
+                        <v-list-item
+                          v-for="(menu, i) in level.leftMenu"
+                          :key="i"
+                          @click="sendCmd(menu.cmd)"
+                        >
+                          <v-list-item-content>
+                            <v-list-item-title class="text-subtitle-1">
+                              {{ menu.name }}
+                            </v-list-item-title>
+                          </v-list-item-content>
+                          <v-list-item-icon v-if="menu.active">
+                            <v-icon>mdi-check</v-icon>
+                          </v-list-item-icon>
+                        </v-list-item>
+                      </v-list-item-group>
+                    </v-list>
+                  </v-menu>
+                </v-col>
+                <v-divider
+                  v-if="level.leftBtn && !level.slider"
+                  vertical
+                />
+
+                <v-col
+                  v-if="!level.midBtn && !level.slider"
+                  :align="level.textAlign"
+                >
+                  <div class="headline font-weight-bold">
+                    {{ level.text }}
+                  </div>
+                </v-col>
+  
+                <v-col
+                  v-if="level.text2 && !level.midBtn && !level.slider"
+                  :align="level.text2Align"
+                >
+                  <div class="headline font-weight-bold">
+                    {{ level.text2 }}
+                  </div>
+                </v-col>
+
+                <v-col
+                  v-if="level.midMenu.length === 0 && level.midBtn"
+                  align="center"
+                  class="headline"
+                >
+                  <v-btn
+                    small
+                    icon
+                    :disabled="level.midBtnDisabled"
+                    :color="level.midBtnColor"
+                    @touchstart="clickStart(level.idx, 'mid','touch')"
+                    @touchend="clickEnd(level.idx, 'mid','touch')"
+                    @mousedown="clickStart(level.idx, 'mid','mouse')"
+                    @mouseup="clickEnd(level.idx, 'mid','mouse')"
+                  >
+                    <v-icon large>
+                      {{ level.midBtn }}
+                    </v-icon>
+                  </v-btn>
+                </v-col>
+
+                <v-col
+                  v-if="level.midMenu.length > 0 && level.midBtn"
+                  class="headline"
+                  align="center"
+                >
+                  <v-menu
+                    bottom
+                    transition="slide-y-transition"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        v-if="level.text"
+                        block
+                        plain
+                        v-bind="attrs"
+                        v-on="on"
+                        class="headline font-weight-bold"
+                      >
+                        {{ level.text }}
+                      </v-btn>
+
+                      <v-btn
+                        v-if="!level.text"
+                        small
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        <v-icon large>
+                          {{ level.midBtn }}
+                        </v-icon>
+                      </v-btn>
+                    </template>
+
+                    <v-list
+                      dense
+                      color="secondary lighten-2"
+                    >
+                      <v-list-item-group
+                        v-model="level.midMenuIdx"
+                        active-class="success--text"
+                      >
+                        <v-list-item
+                          v-for="(menu, i) in level.midMenu"
+                          :key="i"
+                          @click="sendCmd(menu.cmd)"
+                        >
+                          <v-list-item-content>
+                            <v-list-item-title class="text-subtitle-1">
+                              {{ menu.name }}
+                            </v-list-item-title>
+                          </v-list-item-content>
+                          <v-list-item-icon v-if="menu.active">
+                            <v-icon>mdi-check</v-icon>
+                          </v-list-item-icon>
+                        </v-list-item>
+                      </v-list-item-group>
+                    </v-list>
+                  </v-menu>
+                </v-col>
+
+                <v-col
+                  v-if="level.slider"
+                  align="center"
+                >
+                  <v-slider
+                    v-model="level.sliderCurrent"
+                    :min="level.sliderMin"
+                    :max="level.sliderMax"
+                    :label="level.text"
+                    hide-details
+                    thumb-label
+                    thumb-size="48"
+                    color="success"
+                    :step="level.sliderStep"
+                    @change="setSlider(level.idx, level.sliderCurrent)"
+                  >
+                    <template v-slot:thumb-label="{ value }">
+                      <div class="text-h6">
+                        {{ sliderVal(level.idx, value) }}
+                      </div>
+                    </template>
+                  </v-slider>
+                </v-col>
+
+                <v-divider
+                  v-if="level.rightBtn && !level.slider"
+                  vertical
+                />
+                <v-col
+                  v-if="level.rightMenu.length === 0 && level.rightBtn"
+                  class="col-3"
+                  align="center"
+                >
+                  <v-btn
+                    small
+                    icon
+                    :disabled="level.rightBtnDisabled"
+                    :color="level.rightBtnColor"
+                    @touchstart="clickStart(level.idx, 'right','touch')"
+                    @touchend="clickEnd(level.idx, 'right','touch')"
+                    @mousedown="clickStart(level.idx, 'right','mouse')"
+                    @mouseup="clickEnd(level.idx, 'right','mouse')"
+                  >
+
+                    <div v-if="level.slider">
+                      <v-icon>
+                        {{ level.rightBtn }}
+                      </v-icon>
+                    </div>
+
+                    <div v-if="!level.slider">
                       <v-icon large>
                         {{ level.rightBtn }}
                       </v-icon>
-                    </v-btn>
-                  </template>
-
-                  <v-list
-                    dense
-                    color="secondary lighten-2"
+                    </div>
+                  </v-btn>
+                </v-col>
+                <v-col
+                  v-if="level.rightMenu.length > 0 && level.rightBtn"
+                  class="col-3"
+                  align="center"
+                >
+                  <v-menu
+                    bottom
+                    left
+                    transition="slide-y-transition"
                   >
-                    <v-list-item-group
-                      v-model="level.rightMenuIdx"
-                      active-class="success--text"
-                    >
-                      <v-list-item
-                        v-for="(menu, i) in level.rightMenu"
-                        :key="i"
-                        @click="sendCmd(menu.cmd)"
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        small
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
                       >
-                        <v-list-item-content>
-                          <v-list-item-title class="text-subtitle-1">
-                            {{ menu.name }}
-                          </v-list-item-title>
-                        </v-list-item-content>
-                        <v-list-item-icon v-if="menu.active">
-                          <v-icon>mdi-check</v-icon>
-                        </v-list-item-icon>
-                      </v-list-item>
-                    </v-list-item-group>
-                  </v-list>
-                </v-menu>
-              </v-col>
-            </v-row>
+                        <v-icon large>
+                          {{ level.rightBtn }}
+                        </v-icon>
+                      </v-btn>
+                    </template>
 
-          </v-card-text>
-          <v-divider />
+                    <v-list
+                      dense
+                      color="secondary lighten-2"
+                    >
+                      <v-list-item-group
+                        v-model="level.rightMenuIdx"
+                        active-class="success--text"
+                      >
+                        <v-list-item
+                          v-for="(menu, i) in level.rightMenu"
+                          :key="i"
+                          @click="sendCmd(menu.cmd)"
+                        >
+                          <v-list-item-content>
+                            <v-list-item-title class="text-subtitle-1">
+                              {{ menu.name }}
+                            </v-list-item-title>
+                          </v-list-item-content>
+                          <v-list-item-icon v-if="menu.active">
+                            <v-icon>mdi-check</v-icon>
+                          </v-list-item-icon>
+                        </v-list-item>
+                      </v-list-item-group>
+                    </v-list>
+                  </v-menu>
+                </v-col>
+              </v-row>
+
+            </v-card-text>
+            <v-divider />
+          </div>
         </div>
       </div>
 
@@ -648,6 +651,7 @@
         for(let i = from; i <= to; i++) {
           let lvlSet = {
             idx: i,
+            show: true,
             leftBtn: '',
             leftBtnDisabled: false,
             leftBtnColor: '',
@@ -683,6 +687,7 @@
         for(const lvl in this.main) {
           let idx = this.main[lvl].idx;
 
+          let show = this.$fhem.handleVals(this.item, this.item.Options.setup.main[idx].show);
           let mainText = this.$fhem.handleVals(this.item, this.item.Options.setup.main[idx].text);
           let mainText2 = this.$fhem.handleVals(this.item, this.item.Options.setup.main[idx].text2);
           let mainSlider = this.$fhem.handleVals(this.item, this.item.Options.setup.main[idx].slider);
@@ -692,6 +697,8 @@
           let mainLeftMenu = this.createMenu(this.item.Options.setup.main[idx].leftMenu);
           let mainMidMenu = this.createMenu(this.item.Options.setup.main[idx].midMenu);
           let mainRightMenu = this.createMenu(this.item.Options.setup.main[idx].rightMenu);
+
+          this.main[lvl].show = show[0] === 'false' ? false : true;
 
           this.main[lvl].text = mainText[0] || '';
           this.main[lvl].textAlign = mainText[1] || 'center';

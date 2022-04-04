@@ -56,6 +56,7 @@ class Fhem extends EventEmitter {
         { name: 'panel', component: 'templ_panel' },
         { name: 'chart', component: 'templ_chart' },
         { name: 'weather', component: 'templ_weather' },
+        { name: 'list', component: 'templ_list' },
         { name: 'sysmon', component: 'templ_sysmon' },
         { name: 'hmlan', component: 'templ_hmlan' },
         { name: 'sonos', component: 'templ_sonos' },
@@ -519,13 +520,14 @@ class Fhem extends EventEmitter {
   }
 
   // subFunction: for handleVals %s %n %i %t &#058;
-  replaceVals(defSet, state) {
+  replaceVals(defSet, state, device) {
     let chkNum = /-?[0-9]/.exec(state);
     let result = [];
 
     for (var i = 2; i < defSet.length; i ++) {
       let val = defSet[i];
 
+      if(/%d/.test(defSet[i])) val = defSet[i].replace('%d', device);
       if(/%s/.test(defSet[i])) val = defSet[i].replace('%s', state);
       if(/%t/.test(defSet[i])) val = defSet[i].replace('%t', this.getDateTime(state));
       if(/%a/.test(defSet[i])) {
@@ -543,8 +545,8 @@ class Fhem extends EventEmitter {
       if(/%n/.test(defSet[i]) && chkNum) {
         if(!/%n.[0-9]/.test(defSet[i])) defSet[i] = defSet[i].replace('%n','%n.0');
         let isDecimal = /%n../.exec(defSet[i]);
-        let decimal = isDecimal[0].replace('%n.','');
-        val = defSet[i].replace(isDecimal[0], parseFloat(state.slice(chkNum.index)).toFixed(decimal))
+        let digits = isDecimal[0].replace('%n.','');
+        val = defSet[i].replace(isDecimal[0], parseFloat(state.slice(chkNum.index)).toLocaleString(this.app.options.lang, { minimumFractionDigits: digits, maximumFractionDigits: digits }));
       }
       if(/%i/.test(defSet[i]) && chkNum) {
         let inc = parseFloat(defSet[i].split('%i')[1]);
@@ -593,7 +595,7 @@ class Fhem extends EventEmitter {
             }
 
             if(found) {
-              result = this.replaceVals(defSet, state);
+              result = this.replaceVals(defSet, state, device.Name);
               break;
             }
           }
