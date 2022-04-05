@@ -121,7 +121,7 @@
                         <v-list-item
                           v-for="(menu, i) in level.leftMenu"
                           :key="i"
-                          @click="sendCmd(menu.cmd)"
+                          @click="sendMenuCmd(menu.cmd)"
                         >
                           <v-list-item-content>
                             <v-list-item-title class="text-subtitle-1">
@@ -225,7 +225,7 @@
                         <v-list-item
                           v-for="(menu, i) in level.midMenu"
                           :key="i"
-                          @click="sendCmd(menu.cmd)"
+                          @click="sendMenuCmd(menu.cmd)"
                         >
                           <v-list-item-content>
                             <v-list-item-title class="text-subtitle-1">
@@ -332,7 +332,7 @@
                         <v-list-item
                           v-for="(menu, i) in level.rightMenu"
                           :key="i"
-                          @click="sendCmd(menu.cmd)"
+                          @click="sendMenuCmd(menu.cmd)"
                         >
                           <v-list-item-content>
                             <v-list-item-title class="text-subtitle-1">
@@ -472,6 +472,12 @@
         }
       },
 
+      sendMenuCmd(cmd) {
+        let device = this.$fhem.getEl(this.item, 'Internals', 'NAME');
+        if(/%d/.test(cmd)) cmd = cmd.replace('%d', device);
+        this.sendCmd(cmd);
+      },
+
       updateReading(cmd) {
         let cmdParts = cmd.split(' ');
 
@@ -486,7 +492,7 @@
       createCmd(param) {
         let result = '';
 
-        if(param.match('set')) {
+        if(param.match('set') || param.match('get')) {
           let parts = param.trim().split(' ');
           if(parts[1] && parts[1].match('Connected')) {
             let device = parts[1].replace('Connected.','');

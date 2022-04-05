@@ -23,6 +23,11 @@
     {
       "text": ["currentTrackPositionSimulated::%s"],
       "text2": ["nextTrackHandle:^\\|:", "tracks_app::%s"]
+    },
+    {
+      "text": ["currentArtist:$:%s", "currentSource::%s"],
+      "rightBtn": "mdi-dots-vertical",
+      "rightMenu": ["MDR JUMP:StartFavourite MDR%20JUMP","Antenne Bayern Chillout Lounge:StartFavourite ANTENNE%20BAYERN%20Chillout","Absolut relax:StartFavourite Absolut%20relax","Radio Chemnitz:StartFavourite Radio%20Chemnitz"]
     }
   ],
   "info": {
