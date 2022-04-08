@@ -708,7 +708,7 @@ class Fhem extends EventEmitter {
           devicePart: 'Readings',
           paramPart: arr[0].match('-ts') ? 'Time' : 'Value',
           param: arr[0].replace('-ts', '').replace(parts[0] + '-', ''),
-          value: arr[1]
+          value: arr[1] || ' '
         }
       } else {
         // alles was nicht verarbeitet werden kann

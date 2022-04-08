@@ -355,8 +355,6 @@
           divider: divider || false
         };
 
-        console.log(result);
-
         return result;
       },
 
