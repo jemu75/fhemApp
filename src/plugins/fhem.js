@@ -57,6 +57,7 @@ class Fhem extends EventEmitter {
         { name: 'chart', component: 'templ_chart' },
         { name: 'weather', component: 'templ_weather' },
         { name: 'list', component: 'templ_list' },
+        { name: 'wdtimer', component: 'templ_wdtimer' },
         { name: 'sysmon', component: 'templ_sysmon' },
         { name: 'hmlan', component: 'templ_hmlan' },
         { name: 'sonos', component: 'templ_sonos' },
@@ -114,6 +115,24 @@ class Fhem extends EventEmitter {
   getDate(val) {
     let diff = val ? parseInt(val) : 0;
     return ( d => new Date(d.setDate(d.getDate() - diff)).toISOString() )(new Date).split('T')[0];
+  }
+
+  // mainFunction: get Weekday from date
+  getWeekDay(val) {
+    let result = null;
+    
+    if(val) {
+      let dateCheck = /\d{2}.\d{2}.\d{4}/.exec(val);
+
+      if(dateCheck && dateCheck.length === 1) {
+        let dateParts = dateCheck[0].split('.');
+        val = dateParts[2] + '/' + dateParts[1] + '/' + dateParts[0];
+      }
+
+      result = new Date(val).toLocaleString(this.app.options.lang, { weekday: 'long' } );      
+    }
+
+    return result;
   }
 
   // mainFunction: Format Date and Time from FHEM
@@ -530,6 +549,7 @@ class Fhem extends EventEmitter {
       if(/%d/.test(defSet[i])) val = defSet[i].replace('%d', device);
       if(/%s/.test(defSet[i])) val = defSet[i].replace('%s', state);
       if(/%t/.test(defSet[i])) val = defSet[i].replace('%t', this.getDateTime(state));
+      if(/%wd/.test(defSet[i])) val = defSet[i].replace('%wd', this.getWeekDay(state));
       if(/%a/.test(defSet[i])) {
         let now = new Date();
         let ts = new Date(state.replace(' ','T'));
@@ -864,6 +884,8 @@ class Fhem extends EventEmitter {
 
   // mainFunction: Initializing FHEM App
   async init(vuetify, i18n) {
+    this.getWeekDay('2022-04-06 08:37:29');
+
     this.log({ lvl: 2, msg: 'Starting FHEMApp...'});
     this.loading = true;
 

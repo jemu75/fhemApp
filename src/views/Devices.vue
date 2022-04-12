@@ -20,6 +20,7 @@ export default {
     templ_chart: () => import('@/components/TemplChart.vue'),
     templ_weather: () => import('@/components/TemplWeather.vue'),
     templ_list: () => import('@/components/TemplList.vue'),
+    templ_wdtimer: () => import('@/components/TemplWdTimer.vue'),
     templ_scenes: () => import('@/components/TemplScenes.vue'),
     templ_sonos: () => import('@/components/TemplSonos.vue'),
     templ_sysmon: () => import('@/components/TemplSysmon.vue'),
