@@ -140,7 +140,9 @@
     created() {
       this.app.options = this.$fhem.app.options;
       this.size = this.$fhem.getEl(this.item, 'Options', 'setup', 'size') || 'col-12 col-sm-12 col-md-6 col-lg-4';
-      this.source = this.$fhem.getEl(this.item, 'Options', 'setup', 'source') || '';
+
+      let srcUrl = this.$fhem.handleVals(this.item, this.$fhem.getEl(this.item, 'Options', 'setup', 'source') || '');
+      this.source = srcUrl[0];
 
       if(this.$route.params.filter && this.$route.params.filter.match('&size=max')) {
         this.maxSize = true;

@@ -590,9 +590,10 @@
 
             this.main[lvl].sliderPrevent = true;
             let cmd = this.createCmd(param[0]);
-            let decimal = (param[4] && param[4].match('.')) ? 1 : 0;
+            let decimal = (param[4] && param[4].match('\\.')) ? 1 : 0;
 
             cmd = cmd.replace('%v', val.toFixed(decimal));
+
             this.sendCmd(cmd);
           }
         }

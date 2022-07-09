@@ -1,16 +1,16 @@
 {
-  "name": "water",
+  "name": "waterfall",
   "author": "jemu75",
-  "date": "2022-06-26",
+  "date": "2022-06-27",
   "status": {
     "bar": ["state:on:100:success","state:off:0:success"],
     "error": ["Connected.receiver.Readings.Activity.Value:^(?!alive):100:error:keine Verbindung"]
   },
   "main": [
     {
-      "text": ["timedOn:running:läuft...","Connected.weekdaytimer.Attributes.disable:1:manuell","Connected.weekdaytimer.Attributes.comment::%s","state:off:aus"],
+      "text": ["timedOn:running:läuft...","state:off:aus"],
       "rightBtn": "mdi-timer-outline",
-      "rightMenu": ["aus:off","15 Minuten:on-for-timer 900","30 Minuten:on-for-timer 1800","45 Minuten:on-for-timer 2700","60 Minuten:on-for-timer 3600","automatich:set Connected.weekdaytimer enable","manuell:set Connected.weekdaytimer disable"]
+      "rightMenu": ["aus:off","15 Minuten:on-for-timer 900","30 Minuten:on-for-timer 1800","45 Minuten:on-for-timer 2700","60 Minuten:on-for-timer 3600"]
     },
     {
       "leftBtn": "mdi-power-off",
@@ -22,7 +22,6 @@
   ],
   "info": {
     "left1": ["state:off::mdi-water-off","state:on::mdi-watering-can"],
-    "left2": ["Connected.weekdaytimer.Attributes.disable:1::","Connected.weekdaytimer.Attributes.disable:0::mdi-calendar-clock"],
     "mid1": ["Readings.trigLast.Time::%t"],
     "right2": ["timedOn:running::mdi-timer-outline"]
   }

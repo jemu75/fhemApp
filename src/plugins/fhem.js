@@ -476,28 +476,52 @@ class Fhem extends EventEmitter {
   }
 
   // subFunction for readLogFile() - split timestamp and value and reduce data if large array
-  handleLogData(data) {
+  handleLogData(data, calc) {
     let items = data.split('\n');
     if(items.length > 3) items.splice(-3, 3);
     let result = [];
     let steps = items.length > this.app.options.maxChartPoints ? parseInt(items.length / this.app.options.maxChartPoints) : 1; // important for performance
     let nextStep = steps;
-    let sumVal = 0;
+    let sumVal = null;
     let idx = 1;
+    let lastTs = null;
 
     for(const item of items) {
       let itemPart = item.split(' ');
       let timestamp = Date.parse(itemPart[0].replace('_','T'));
+      let ts = new Date(timestamp);
+      let calcTs = null;
       let value = parseFloat(itemPart[1]);
 
-      sumVal += value;
+      if(calc) {
+        if(/-min/.test(calc) && (sumVal > value || !sumVal)) sumVal = value;
+        if(/-max/.test(calc) && sumVal < value) sumVal = value;
+        if(/-avg/.test(calc)) sumVal = (sumVal + value) / 2;
+        if(/-delta/.test(calc) && !sumVal) sumVal = value;
 
-      if(idx >= nextStep || idx === items.length) {
-        if(idx === items.length) steps = steps - (nextStep - idx);
+        if(/hour-/.test(calc)) calcTs = new Date(ts.getFullYear() +'-' + (ts.getMonth() + 1) + '-' + ts.getDate()).setHours(ts.getHours());
+        if(/day-/.test(calc)) calcTs = new Date(ts.getFullYear() +'-' + (ts.getMonth() + 1) + '-' + ts.getDate()).setHours(12);
+        if(/week-/.test(calc)) calcTs = new Date(ts.getFullYear() +'-' + (ts.getMonth() + 1) + '-' + ts.getDate()).setDate(ts.getDate() - ts.getDay() + 3);
+        if(/month-/.test(calc)) calcTs = new Date(ts.getFullYear() +'-' + (ts.getMonth() + 1) + '-1');
+        if(/year-/.test(calc)) calcTs = new Date(ts.getFullYear() +  '-1-1');
 
-        result.push({ timestamp, value: sumVal / steps });
-        nextStep += steps;
-        sumVal = 0;
+        if(!lastTs) lastTs = calcTs;
+
+        if(calcTs > lastTs || idx === items.length) {
+          result.push({ timestamp: lastTs, value: sumVal });
+          sumVal = null;
+          lastTs = calcTs;
+        }
+      } else {
+        sumVal += value;
+
+        if(idx >= nextStep || idx === items.length) {
+          if(idx === items.length) steps = steps - (nextStep - idx);
+  
+          result.push({ timestamp, value: sumVal / steps });
+          nextStep += steps;
+          sumVal = 0;
+        }
       }
 
       idx ++;
@@ -527,8 +551,9 @@ class Fhem extends EventEmitter {
         cmd += select ? ' ' + select[0].replace(/\(|\)/g,'') : ' 4:' + defPart[1];
 
         let logData = await this.request([{ param: 'cmd', value: cmd }, { param: 'XHR', value: '1' }],'text', { id: idx });
+        let calc = defPart[11] ? defPart[11] : null; 
 
-        if(logData) data.push({ id: logData.id, data: this.handleLogData(await logData.data) });
+        if(logData) data.push({ id: logData.id, data: this.handleLogData(await logData.data, calc) });
 
         idx ++;
       }

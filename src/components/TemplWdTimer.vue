@@ -50,6 +50,32 @@
 
       <div v-if="item.Options.status.isActive">
         <v-card-text>
+          <v-row align="center">
+            <v-col align="center">
+              <div class="headline font-weight-bold">
+                {{ text }}
+              </div>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-text class="pa-0">
+          <v-row v-if="expanded" align="center">
+            <v-col>
+              <v-expansion-panels accordion focusable flat>
+                <v-expansion-panel
+                  v-for="(profile,i) in defs.profiles"
+                  :key="i"
+                >
+                  <v-expansion-panel-header color="secondary">
+                    {{ profile.time }}
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content>
+                    {{ profile.weekdays }}
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
+            </v-col>
+          </v-row>
         </v-card-text>
       </div>
 
@@ -127,14 +153,18 @@
       status: {
         color: 'success',
         level: 0
-      },      
+      },
+      text: '',      
       app: {
         options: {
           debugMode: false
         }
       },
-      setup: {
-
+      defs: {
+        device: null,
+        globalWeekdays: null,
+        lang: null,
+        profiles: []
       }
     }),
 
@@ -143,19 +173,13 @@
         immediate: true,
         deep: true,
         handler() {
-          //this.doList();
         }
       }
     },
 
     created() {
-      let setup = this.iconSet = this.$fhem.getEl(this.item, 'Options','setup');
       this.app.options = this.$fhem.app.options;
       if(this.$fhem.getEl(this.item, 'Options', 'setup', 'expanded')) this.expand();
-      if(setup) {
-        // achtung hier noch differenzieren!
-        this.setup = setup;
-      }
       this.loadDefs();
     },
 
@@ -171,10 +195,29 @@
       },
 
       loadDefs() {
+        this.defs = {
+          device: null,
+          globalWeekdays: null,
+          lang: null,
+          profiles: []
+        };
+
         if(this.$fhem.getEl(this.item, 'Internals', 'TYPE') === 'WeekdayTimer') {
-          let def = this.$fhem.getEl(this.item, 'Internals', 'DEF') || '';
-          let defs = def.split(' ');
-          console.log(defs);
+          let defs = this.$fhem.getEl(this.item, 'Internals', 'DEF').split(' ');
+          if(defs.length > 1) {
+            for(var [idx, def] of defs.entries()) {
+              if(idx === 0) this.defs.device = def;
+              if(idx > 0 && /^[0-8]*$/.test(def)) this.defs.globalWeekdays = def;
+              if(idx > 0 && /^de|en|fr|nl$/.test(def)) this.defs.lang = def;
+              if(idx > 0 && /\|/.test(def)) {
+                let defParts = def.split('|');
+                let defPart = {};
+                if(/:|^{*}$/.test(defParts[0])) defParts.unshift(this.defs.globalWeekdays || '0123456');
+                if(defParts.length > 2) defPart = { weekdays: defParts[0].split(''), time: new Date('1900-01-01T' + defParts[1]), cmd: defParts[2] };
+                this.defs.profiles.push(defPart);
+              }
+            }
+          }
         } else {
           this.$fhem.log({ lvl: 1, msg: 'Template is not a FHEM-WeekdayTimer.', meta: this.item });
         }

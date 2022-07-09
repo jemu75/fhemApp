@@ -885,7 +885,7 @@ Da *Cam* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften �
 ```
 "setup": {
   "size": "col-12 col-md-6 col-lg-6",
-  "source": "<stream_url>"
+  "source": ["reading:value:url"],
   "status": {
     "bar": ["reading:value:level:color"]
   },
