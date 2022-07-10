@@ -1,4 +1,8 @@
 # Versionsinformationen
+## v.3.35.0 (10.07.2022)
+**Features**
+- Template Chart: über den Parameter ``calc`` sind jetzt Berechnungen von Werten möglich
+
 ## v.3.34.3 (09.07.2022)
 **Bugfix**
 - Standard-Template: Fehler in der Konfiguration des Slider behoben

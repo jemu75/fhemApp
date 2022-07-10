@@ -840,7 +840,7 @@ Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
 ### Konfiguration von Charts
 Da *Chart* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften über den Parameter `setup` in `appOptions` anpassen. Über den Paramter `size` kann die Templatebreite [siehe](#breite-von-templates) verändert werden. Der Parameter `daysAgo` legt ihr fest, wieviele Tage das Chart beim Laden zurückschaut. Als Standard werden die Daten der letzten 7 Tage `"daysAgo": 6` geladen. Über den Parameter `chartDef` legt ihr fest, welche Daten im Chart angezeigt werden. Jede Linie entspricht dabei einer Definition.
 ```
-"chartDef": ["logsource:reading:text:präfix:axis:color:min:max:typ:lineWidth:markers"],
+"chartDef": ["logsource:reading:text:präfix:axis:color:min:max:typ:lineWidth:markers:calc"],
 "setup": {
     "size": "string",
     "daysAgo": number
@@ -857,11 +857,19 @@ Da *Chart* kein Standard-Template ist, könnt ihr nur ausgewählte Eigenschaften
 9. **typ** - mit diesem Parameter kann (optional) die Diagrammart festgelegt werden. *(Standard = line)*
 10. **lineWidth** - mit diesem Parameter kann (optional) die Linienbreite festgelegt werden. *(Standard = 4)*
 11. **markers** - mit diesem Parameter kann (optional) die Größe von Datenpunkten festgelegt werden. *(Standard = 0)*
+12. **calc** - mit diesem Parameter können Logdaten (optional) berechnet werden.
 
 ### Diagrammarten
 Es stehen folgende Arten zur Verfügung *line* (Standard), *stepline*, *column*, *area*  
 
 | Hinweis: Wenn ihr eure Daten über *DbLog* erfasst, dann habt ihr in FHEM dafür im Normalfall nur ein Device angelegt. Damit ihr verschiedene Charts in **FHEMApp** anzeigen könnt, empfielt es sich, je Chart ein *dummy* in FHEM anzulegen und hier die entsprechenden `appOptions` für das Chart zu hinterlegen. Wenn ihr eure Daten in einzelnen *FileLog-Dateien* erfasst, dann könnt ihr `appOptions` an dem jeweiligen *FileLog-Device* hinterlegen.
+
+### Berechnung von Werten
+Mit dem Parameter ``calc`` können Logdaten über bestimmte Zeiträume aggrgiert und berechnet werden. Es können Werte die Zeiträume (Jahr, Monat, Woche, Tag, Stunde) aggregiert werden. Innerhalb der Zeiträume können Werte (kleinster Wert, größter Werte, Durchschnitt, Differenz) berechnet werden. Bei Verwendung des Parameter ``calc`` wird zuerst der Zeitraum und danach die Berechnung angegeben.
+|Zeitraum|Trennung|Berechnung|
+|--------|--------|----------|
+|year month week day hour|-|min max avg delta|
+*Beispiel:* Darstellung von Durchschnittswerten pro Monat ``month-avg`` oder Darstellung der Differenz zum Vortag ``day-delta``
 
 ### Beispiel für eine Chartkonfiguration
 Es wird ein Chart im Menüpunkt *Dashboard* angezeigt. Aus dem Logfile werden die Readings *humidity* (rechte Achse) und *measured-temp* (linke Achse) im Chart dargestellt.

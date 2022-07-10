@@ -483,6 +483,7 @@ class Fhem extends EventEmitter {
     let steps = items.length > this.app.options.maxChartPoints ? parseInt(items.length / this.app.options.maxChartPoints) : 1; // important for performance
     let nextStep = steps;
     let sumVal = null;
+    let lastVal = null;
     let idx = 1;
     let lastTs = null;
 
@@ -497,7 +498,8 @@ class Fhem extends EventEmitter {
         if(/-min/.test(calc) && (sumVal > value || !sumVal)) sumVal = value;
         if(/-max/.test(calc) && sumVal < value) sumVal = value;
         if(/-avg/.test(calc)) sumVal = (sumVal + value) / 2;
-        if(/-delta/.test(calc) && !sumVal) sumVal = value;
+        if(/-delta/.test(calc) && lastVal) sumVal += value - lastVal;
+        if(/-delta/.test(calc)) lastVal = value;
 
         if(/hour-/.test(calc)) calcTs = new Date(ts.getFullYear() +'-' + (ts.getMonth() + 1) + '-' + ts.getDate()).setHours(ts.getHours());
         if(/day-/.test(calc)) calcTs = new Date(ts.getFullYear() +'-' + (ts.getMonth() + 1) + '-' + ts.getDate()).setHours(12);
@@ -510,6 +512,7 @@ class Fhem extends EventEmitter {
         if(calcTs > lastTs || idx === items.length) {
           result.push({ timestamp: lastTs, value: sumVal });
           sumVal = null;
+          lastVal = null;
           lastTs = calcTs;
         }
       } else {
