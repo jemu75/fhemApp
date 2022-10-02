@@ -18,6 +18,7 @@ export default {
     templ_default: () => import('@/components/TemplDefault.vue'),
     templ_panel: () => import('@/components/TemplPanel.vue'),
     templ_chart: () => import('@/components/TemplChart.vue'),
+    templ_chart2: () => import('@/components/TemplChart2.vue'),
     templ_weather: () => import('@/components/TemplWeather.vue'),
     templ_list: () => import('@/components/TemplList.vue'),
     templ_wdtimer: () => import('@/components/TemplWdTimer.vue'),

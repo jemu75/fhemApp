@@ -1,13 +1,21 @@
 {
+  "connection": {
+    "location": "http://192.168.2.157",
+    "port": "8083",
+    "path": "fhem"
+  },
   "options": {
-    "maxChartPoints": 100,
-    "logBuffer": 500
+    "maxChartPoints": 300,
+    "logBuffer": 500,
+    "debugMode": true
   },
   "theme": {
     "dark": true,
     "themes": {
       "dark": {
-      },
+        "on": "#69F0AE",
+        "standby": "#214f39"
+      },      
       "light": {
         "primary": "#616161",
         "secondary": "#F5F5F5",

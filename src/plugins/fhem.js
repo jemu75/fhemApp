@@ -55,6 +55,7 @@ class Fhem extends EventEmitter {
       componentMap: [
         { name: 'panel', component: 'templ_panel' },
         { name: 'chart', component: 'templ_chart' },
+        { name: 'chart2', component: 'templ_chart2' },
         { name: 'weather', component: 'templ_weather' },
         { name: 'list', component: 'templ_list' },
         { name: 'wdtimer', component: 'templ_wdtimer' },
@@ -552,7 +553,7 @@ class Fhem extends EventEmitter {
         cmd += obj.from ? ' - - ' + obj.from : '';
         cmd += obj.to ? ' ' + obj.to : '';
         cmd += select ? ' ' + select[0].replace(/\(|\)/g,'') : ' 4:' + defPart[1];
-
+      
         let logData = await this.request([{ param: 'cmd', value: cmd }, { param: 'XHR', value: '1' }],'text', { id: idx });
         let calc = defPart[11] ? defPart[11] : null; 
 

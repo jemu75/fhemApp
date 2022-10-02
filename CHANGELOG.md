@@ -1,4 +1,8 @@
 # Versionsinformationen
+## v.3.36.0 (02.10.2022)
+**Features**
+- Template Chart2: alternatives Template zu Chart mit verbesserten Konfigurarionsmöglichkeiten 
+
 ## v.3.35.0 (10.07.2022)
 **Features**
 - Template Chart: über den Parameter ``calc`` sind jetzt Berechnungen von Werten möglich
