@@ -359,7 +359,7 @@
         this.timeSteps = this.getTimeSteps();
         this.$fhem.loading = true;
 
-        let def = { deviceName: this.item.Name, from: this.from, to: this.to, defs: this.item.Options.chartDef };
+        let def = { deviceName: this.item.Name, from: this.from, to: this.to, defs: this.item.Options.chartSeries };
         let series = [];
 
         this.readLogData(def)
