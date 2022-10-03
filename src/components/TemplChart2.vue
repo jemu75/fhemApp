@@ -110,6 +110,26 @@
                 />
               </v-menu>
             </v-col>
+            <v-col align="right">
+              <v-btn 
+                icon
+                @click="changeDate('prev')"
+              >
+                <v-icon>mdi-skip-backward</v-icon>
+              </v-btn>
+              <v-btn 
+                icon
+                @click="changeDate('rest')"
+                >
+                <v-icon>mdi-restore</v-icon>
+              </v-btn>
+              <v-btn 
+                icon
+                @click="changeDate('next')"
+                >
+                <v-icon>mdi-skip-forward</v-icon>
+              </v-btn>
+            </v-col>
           </v-row>
 
           <apex-chart
@@ -209,6 +229,7 @@
       toLocale: '',
       fromPicker: false,
       toPicker: false,
+      timeSteps: null,
       chart: {
         series: [],
         options: {
@@ -246,11 +267,11 @@
       },
 
       from(val) {
-        this.fromLocale = new Date(val).toLocaleString(this.app.options.lang, { dateStyle: 'medium' });
+        this.fromLocale = new Date(val).toLocaleString(this.app.options.lang, { dateStyle: 'short' });
       },
 
       to(val) {
-        this.toLocale = new Date(val).toLocaleString(this.app.options.lang, { dateStyle: 'medium' });
+        this.toLocale = new Date(val).toLocaleString(this.app.options.lang, { dateStyle: 'short' });
       }
     },
 
@@ -293,6 +314,26 @@
         this.chart.options = Object.assign({}, this.chart.options);
       },
 
+      changeDate(action) {
+        if(action == 'rest') {
+          this.from = this.$fhem.getDate(this.daysAgo);
+          this.to = this.$fhem.getDate(this.daysTo);
+        } else {
+          let dayStart = new Date(this.from);
+          let dayEnd = new Date(this.to);
+          let dateDiff = Math.abs(dayEnd-dayStart);
+          let from = new Date(this.from);
+          let to = new Date(this.to);
+
+          if(action == 'prev') dateDiff = -dateDiff;
+
+          this.from = new Date(from.setMilliseconds(from.getMilliseconds() + dateDiff)).toISOString().split("T")[0];
+          this.to = new Date(to.setMilliseconds(to.getMilliseconds() + dateDiff)).toISOString().split("T")[0];
+        }
+
+        this.loadChartData();
+      },
+
       afterZoom(chartContext, { xaxis }) {
         this.from = new Date(xaxis.min).toISOString().split('T')[0];
         this.to = new Date(xaxis.max).toISOString().split('T')[0];
@@ -300,9 +341,19 @@
         this.loadChartData();
       },
 
+      // subFunction for loadChartData
+      getTimeSteps() {
+        let dayStart = new Date(this.from);
+        let dayEnd = new Date(this.to + ' 23:59:59');
+        let dateDiff = Math.abs(dayEnd-dayStart);
+
+        return dateDiff / this.app.options.maxChartPoints;
+      },
+
       loadChartData() {
         this.fromPicker = false;
         this.toPicker = false;
+        this.timeSteps = this.getTimeSteps();
         this.$fhem.loading = true;
 
         let def = { deviceName: this.item.Name, from: this.from, to: this.to, defs: this.item.Options.chartDef };
@@ -349,76 +400,78 @@
           });
       },
 
-      // subFunction for loadChartData
-      getTimeSteps(from, to, maxPoints) {
-        let dayStart = new Date(from);
-        let dayEnd = new Date(to + ' 23:59:59');
-        let dateDiff = Math.abs(dayEnd-dayStart);
-        
-        return dateDiff / maxPoints;
+      // subFunction for handleLogData
+      setTimeStep(time, ts, timeSpan) {
+        if(!ts) time.setTime(time.getTime() - 1000);
+
+        switch(timeSpan) {
+          case 'hour':
+            time.setTime(time.getTime() + (1 * 60 * 60 * 1000));
+            break;
+          case 'day':
+            time.setDate(time.getDate() + 1);            
+            break;
+          case 'week':
+            time.setDate(time.getDate() + 7);
+            break;
+          case 'month':
+            time.setMonth(time.getMonth() + 1);
+            break;
+          default:
+            while (time < ts) time.setMilliseconds(time.getMilliseconds() + this.timeSteps);
+        }
+
+        return time;
       },
 
       // subFunction for loadChartData
       handleLogData(data, calcMode) {
         let result = [];
-        let timeSteps = this.getTimeSteps(this.from, this.to, this.app.options.maxChartPoints);
-        let time = new Date(this.from);
+        let valCalc = null;
         let valLast = null;
         let valDelta = null;
-        let valCalc = null;
         let cnt = 1;
-        let calcOperation = calcMode ? calcMode.split('-')[0] : null;
-        let calcTime = calcMode ? calcMode.split('-')[1] : null;
+        let calc = calcMode ? calcMode.split('-')[0] : null;
+        let timeSpan = calcMode ? calcMode.split('-')[1] : null;
+        let time = this.setTimeStep(new Date(this.from + 'T00:00:00'), null, timeSpan);
+
         let items = data.split('\n');
         if(items.length > 3) items.splice(-3, 3);
+        if(calc == 'raw' && items.length > window.innerWidth) calc = null;
 
         for(const [idx, item] of items.entries()) {
           let itemPart = item.split(' ');
           let ts = new Date(itemPart[0].replace('_','T'));
           let val = parseFloat(itemPart[1]);
 
-          if(items.length < this.app.options.maxChartPoints && !calcOperation) {
+          if(calc == 'raw') {
             if(val != valLast || items.length == idx + 1) result.push([Date.parse(ts), val]);
             valLast = val;
           } else {
-            if(ts < time) {
-              switch(calcOperation) {
+            if(ts < time && idx + 1 < items.length ) {
+              switch(calc) {
                 case 'min':
                   if(val < valCalc || !valCalc) valCalc = val;
                   break;
                 case 'max':
                   if(val > valCalc || !valCalc) valCalc = val;
                   break;
-                case 'delta':
-                  if(valDelta) valCalc = valCalc + val - valDelta;
-                  valDelta = val;
+                case 'delta': 
+                  if(!valDelta) valDelta = val;                                   
                   break;
                 default:
+                  if(valCalc) cnt ++;  
                   valCalc += val;
-                  cnt ++;
               }
             } else {
-              valCalc = valCalc ? valCalc / cnt : val;
-              if(valCalc != valLast || items.length == idx + 1) result.push([Date.parse(time), valCalc]);
-              switch(calcTime) {
-                case 'hour':
-                  time.setTime(time.getTime() + (1 * 60 * 60 * 1000));
-                  break;
-                case 'day':
-                  time.setDate(time.getDate() + 1);
-                  break;
-                case 'week':
-                  time.setDate(time.getDate() + 7);
-                  break;
-                case 'month':
-                  time.setMonth(time.getMonth() + 1);
-                  break;
-                default:
-                  while (time < ts) time.setMilliseconds(time.getMilliseconds() + timeSteps);
-              }
-
+              if(calc == 'delta' && valDelta) valCalc = val - valDelta;
+              if(!valCalc && calc != 'delta') valCalc = val;
+              if(!calc) valCalc = valCalc / cnt;
+              if(valCalc) result.push([Date.parse(time), valCalc]);
+              time = this.setTimeStep(time, ts, timeSpan);
               valLast = valCalc;
-              valCalc = val;
+              valCalc = null;
+              valDelta = null;
               cnt = 1;
             }
           }

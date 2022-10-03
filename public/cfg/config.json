@@ -5,7 +5,7 @@
     "path": "fhem"
   },
   "options": {
-    "maxChartPoints": 100,
+    "maxChartPoints": 150,
     "logBuffer": 500
   },
   "theme": {
