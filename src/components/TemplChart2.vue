@@ -55,7 +55,7 @@
             class="ma-3"
             align="center"
           >
-            <v-col>
+            <v-col cols="5">
               <v-menu
                 v-model="fromPicker"
                 :close-on-content-click="false"
@@ -82,7 +82,7 @@
                 />
               </v-menu>
             </v-col>
-            <v-col>
+            <v-col cols="5">
               <v-menu
                 v-model="toPicker"
                 :close-on-content-click="false"
@@ -111,24 +111,27 @@
               </v-menu>
             </v-col>
             <v-col align="right">
-              <v-btn 
-                icon
-                @click="changeDate('prev')"
-              >
-                <v-icon>mdi-skip-backward</v-icon>
-              </v-btn>
-              <v-btn 
-                icon
-                @click="changeDate('rest')"
+              <v-btn-toggle rounded>
+                <v-btn 
+                  icon
+                  @click="changeDate('prev')"
                 >
-                <v-icon>mdi-restore</v-icon>
-              </v-btn>
-              <v-btn 
-                icon
-                @click="changeDate('next')"
-                >
-                <v-icon>mdi-skip-forward</v-icon>
-              </v-btn>
+                  <v-icon>mdi-skip-backward</v-icon>
+                </v-btn>
+                <v-btn 
+                  icon
+                  @click="changeDate('rest')"
+                  >
+                  <v-icon>mdi-restore</v-icon>
+                </v-btn>
+                <v-btn 
+                  icon
+                  @click="changeDate('next')"
+                  >
+                  <v-icon>mdi-skip-forward</v-icon>
+                </v-btn>
+              </v-btn-toggle>
+
             </v-col>
           </v-row>
 
