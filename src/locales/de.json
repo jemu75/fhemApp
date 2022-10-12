@@ -9,7 +9,8 @@
     },
     "dates": {
       "from": "von",
-      "to": "bis"
+      "to": "bis",
+      "range": "Zeitraum"
     }
   },
   "templates": {

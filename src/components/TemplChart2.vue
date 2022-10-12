@@ -55,36 +55,18 @@
             class="ma-3"
             align="center"
           >
-            <v-col cols="5">
-              <v-menu
-                v-model="fromPicker"
-                :close-on-content-click="false"
-                transition="scale-transition"
-                offset-y
-                max-width="290px"
-                min-width="auto"
+            <v-col cols="2" align="left">
+              <v-btn 
+                icon
+                small
+                @click="changeDate('prev')"
               >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="fromLocale"
-                    readonly
-                    :label="$t('app.dates.from')"
-                    prepend-icon="mdi-calendar"
-                    v-bind="attrs"
-                    v-on="on"
-                  />
-                </template>
-                <v-date-picker
-                  v-model="from"
-                  :locale="app.options.lang"
-                  no-title
-                  @input="loadChartData"
-                />
-              </v-menu>
+                <v-icon>mdi-chevron-left</v-icon>
+              </v-btn>
             </v-col>
-            <v-col cols="5">
+            <v-col>
               <v-menu
-                v-model="toPicker"
+                v-model="datePicker"
                 :close-on-content-click="false"
                 transition="scale-transition"
                 offset-y
@@ -94,44 +76,37 @@
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                    v-model="toLocale"
+                    v-model="datesLocale"
                     readonly
-                    :label="$t('app.dates.to')"
-                    prepend-icon="mdi-calendar"
+                    :label="$t('app.dates.range')"
                     v-bind="attrs"
                     v-on="on"
                   />
                 </template>
                 <v-date-picker
-                  v-model="to"
+                  v-model="dates"
+                  range
                   :locale="app.options.lang"
-                  no-title
-                  @input="loadChartData"
+                  no-title                  
                 />
-              </v-menu>
+              </v-menu>              
             </v-col>
-            <v-col align="right">
-              <v-btn-toggle rounded>
-                <v-btn 
-                  icon
-                  @click="changeDate('prev')"
-                >
-                  <v-icon>mdi-skip-backward</v-icon>
-                </v-btn>
-                <v-btn 
-                  icon
-                  @click="changeDate('rest')"
-                  >
-                  <v-icon>mdi-restore</v-icon>
-                </v-btn>
-                <v-btn 
-                  icon
-                  @click="changeDate('next')"
-                  >
-                  <v-icon>mdi-skip-forward</v-icon>
-                </v-btn>
-              </v-btn-toggle>
+            <v-col cols="2" align="right">
 
+              <!--
+              <v-btn 
+                icon
+                @click="changeDate('rest')"
+              >
+                <v-icon>mdi-restore</v-icon>
+              </v-btn>
+              -->
+              <v-btn 
+                icon
+                @click="changeDate('next')"
+                >
+                <v-icon>mdi-chevron-right</v-icon>
+              </v-btn>
             </v-col>
           </v-row>
 
@@ -226,12 +201,13 @@
         expanded: false,
         size: 'col-12 col-sm-12 col-md-6 col-lg-4'
       },
+      dates: [],
+      datesLocale: '',
+      datePicker: false,
       from: '',
       to: '',
       fromLocale: '',
       toLocale: '',
-      fromPicker: false,
-      toPicker: false,
       timeSteps: null,
       chart: {
         series: [],
@@ -269,13 +245,15 @@
         }
       },
 
-      from(val) {
-        this.fromLocale = new Date(val).toLocaleString(this.app.options.lang, { dateStyle: 'short' });
+      dates(val) {
+        this.from = val[0] > val[1] ? val[1] : val[0];
+        this.to = val[0] > val[1] ? val[0] : val[1];
+        if(val.length == 2) {
+          this.datePicker = false;
+          this.setLocaleDate();
+          this.loadChartData();
+        }
       },
-
-      to(val) {
-        this.toLocale = new Date(val).toLocaleString(this.app.options.lang, { dateStyle: 'short' });
-      }
     },
 
     created() {
@@ -295,8 +273,10 @@
       this.daysTo = this.$fhem.getEl(this.item, 'Options', 'setup', 'daysTo');
       if(typeof(this.daysAgo) != 'number') this.daysAgo = 6;
       if(typeof(this.daysTo) != 'number') this.daysTo = 0;
+
       this.from = this.$fhem.getDate(this.daysAgo);
       this.to = this.$fhem.getDate(this.daysTo);
+      this.setLocaleDate();
 
       this.loadChartData();
     },
@@ -324,7 +304,7 @@
         } else {
           let dayStart = new Date(this.from);
           let dayEnd = new Date(this.to);
-          let dateDiff = Math.abs(dayEnd-dayStart);
+          let dateDiff = Math.abs(dayEnd-dayStart) + (1000 * 60 * 60 *24);
           let from = new Date(this.from);
           let to = new Date(this.to);
 
@@ -332,14 +312,23 @@
 
           this.from = new Date(from.setMilliseconds(from.getMilliseconds() + dateDiff)).toISOString().split("T")[0];
           this.to = new Date(to.setMilliseconds(to.getMilliseconds() + dateDiff)).toISOString().split("T")[0];
+          this.setLocaleDate();
         }
 
         this.loadChartData();
       },
 
+      setLocaleDate() {
+        this.fromLocale = new Date(this.from).toLocaleString(this.app.options.lang, { dateStyle: 'medium' });
+        this.toLocale = new Date(this.to).toLocaleString(this.app.options.lang, { dateStyle: 'medium' });
+
+        this.datesLocale = this.fromLocale + ' - ' + this.toLocale;
+      },
+
       afterZoom(chartContext, { xaxis }) {
         this.from = new Date(xaxis.min).toISOString().split('T')[0];
         this.to = new Date(xaxis.max).toISOString().split('T')[0];
+        this.setLocaleDate();
 
         this.loadChartData();
       },
@@ -469,7 +458,7 @@
             } else {
               if(calc == 'delta' && valDelta) valCalc = val - valDelta;
               if(!valCalc && calc != 'delta') valCalc = val;
-              if(!calc) valCalc = valCalc / cnt;
+              if(!calc || calc == 'avg') valCalc = valCalc / cnt;
               if(valCalc) result.push([Date.parse(time), valCalc]);
               time = this.setTimeStep(time, ts, timeSpan);
               valLast = valCalc;

@@ -9,7 +9,8 @@
     },
     "dates": {
       "from": "From",
-      "to": "To"
+      "to": "To",
+      "range": "Daterange"
     }
   },
   "templates": {
