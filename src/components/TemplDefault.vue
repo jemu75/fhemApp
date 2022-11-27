@@ -616,11 +616,18 @@
         return result;
       },
 
-      createMenu(arr) {
+      createMenu(data) {
         let result = [];
 
-        if(arr && arr.length > 0) {
-          for(let item of arr) {
+        if(typeof data === 'string') {
+          let def = /\./.test(data) ? data.split('.') : [ 'Readings', data, 'Value' ];
+          let menuItems = this.$fhem.getEl(this.item, ...def);
+
+          data = JSON.parse(menuItems);
+        }
+
+        if(data && data.length > 0) {
+          for(let item of data) {
             let vals = item.split(':');
 
             if(vals.length > 1) {

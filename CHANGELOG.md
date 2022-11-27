@@ -1,7 +1,8 @@
 # Versionsinformationen
-## v.3.36.0 (02.10.2022)
+## v.3.36.0 (27.11.2022)
 **Features**
 - Template Chart2: alternatives Template zu Chart mit verbesserten Konfigurarionsmöglichkeiten 
+- Template Standard: Menü kann jetzt auch über ein Reading befüllt werden. Reading musst dabei folgendes beinhalten ["name1:cmd1","name2:cmd2","name3:cmd3",...]
 
 ## v.3.35.0 (10.07.2022)
 **Features**

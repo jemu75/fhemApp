@@ -272,7 +272,7 @@ Es werden die Icons aus der [Material Designs Icon Bibliothek](https://materiald
 |main|leftClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die linke Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|leftLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der linken Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|leftLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der linken Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
-|main|leftMenu|text:cmd|definiert für das **linke Menü** die Texte und FHEM-Kommandos. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die linke Taste ein Menü auf. *Hinweis:* leftClick, leftLong und leftLongRelease stehen bei Zuweisung des Menüs nicht zur Verfügung.|
+|main|leftMenu|text:cmd (altern. Reading)|definiert für das **linke Menü** die Texte und FHEM-Kommandos. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die linke Taste ein Menü auf. Alternativ kann das Menü auch über ein Reading definiert werden. In diesem Fall erfolgt die Definition von leftMenu nicht über ein Array sondern das Reading wird als String angegeben! Das Reading in FHEM muss dabei folgendes beinhalten ["name1:cmd1","name2:cmd2","name3:cmd3",...] *Hinweis:* leftClick, leftLong und leftLongRelease stehen bei Zuweisung des Menüs nicht zur Verfügung.|
 |main|text|reading:wert:text:align|definiert den **ersten Text** der in der Mitte angezeigt wird. Der Text wird im Standard zentriert ausgegeben und kann mit `left` bzw. `right` unter *align* ausgerichtet werden.|
 |main|text2|reading:wert:text:align|definiert den **zweiten Text** der in der Mitte angezeigt wird. Der Text wird im Standard zentriert ausgegeben und kann mit `left` bzw. `right` unter *align* ausgerichtet werden. *Hinweis:* bei Verwendung von Tasten sollte auf die Anzeige eines zweiten Wertes verzichtet werden, da die Breite des Templates im Normalfall nicht ausreicht|
 |main|slider|reading:wert:cmd:current:min:max:steps|stellt einen **Slider** in der Mitte dar. Über das Element `text` kann der Slider mit einem zusätzlichen Label versehen werden. *Wichtig:* `cmd` muss die Ersetzung *%v* (den aktuellen Wert des Sliders) enthalten. `current` sollte nur die Ersetzung *%n* enthalten, damit der Slider den aktuellen Wert des Readings anzeigt. `min` und `max` begrenzen die Sliderwerte. `steps` definiert die Schritte in denen der Slider die Werte verändert. *Beispiel:* `["pct::pct %v:%n:0:100:1"]` verbindet das Reading `pct` mit einem Slider und begrenzt die Werte auf 0-100 und verändert die Werte jeweils um 1|
@@ -280,12 +280,12 @@ Es werden die Icons aus der [Material Designs Icon Bibliothek](https://materiald
 |main|midClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die mittlere Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|midLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der mittleren Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|midLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der mittleren Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
-|main|midMenu|text:cmd|definiert für das **mittlere Menü** die Texte und FHEM-Kommandos. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die mittlere Taste ein Menü auf. *Hinweis:* midClick, midLong und midLongRelease stehen bei Zuweisung des Menüs nicht zur Verfügung.|
+|main|midMenu|text:cmd (altern. Reading)|definiert für das **mittlere Menü** die Texte und FHEM-Kommandos. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die mittlere Taste ein Menü auf. Alternativ kann das Menü auch über ein Reading definiert werden. In diesem Fall erfolgt die Definition von midMenu nicht über ein Array sondern das Reading wird als String angegeben! Das Reading in FHEM muss dabei folgendes beinhalten ["name1:cmd1","name2:cmd2","name3:cmd3",...] *Hinweis:* midClick, midLong und midLongRelease stehen bei Zuweisung des Menüs nicht zur Verfügung.|
 |main|rightBtn|reading:wert:icon:disabled:color (alternativ: icon)|definiert welches *Icon* auf der rechten Taste angezeigt wird. Optional kann das Flag *disabled* und die Farbe des Icons gesetzt werden. Icon Bibliothek [siehe](https://materialdesignicons.com/)|
 |main|rightClick|reading:wert:cmd|defniert welches FHEM-Kommando bei Klick auf die rechte Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|rightLong|reading:wert:cmd|defniert welches FHEM-Kommando bei langem Halten der rechten Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
 |main|rightLongRelease|reading:wert:cmd|defniert welches FHEM-Kommando beim loslassen nach langem Halten der rechten Taste abgesendet wird. [siehe auch](#hinweis-zur-definition-von-fhem-Kommandos)|
-|main|rightMenu|text:cmd|definiert für das **rechte Menü** die Texte und FHEM-Kommandos. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die rechte Taste ein Menü auf. *Hinweis:* rightClick, rightLong und rightLongRelease stehen bei Zuweisung des Menüs nicht zur Verfügung.|
+|main|rightMenu|text:cmd (altern. Reading)|definiert für das **rechte Menü** die Texte und FHEM-Kommandos. Wenn dieses Element zugewiesen wird, klappt bei Klick auf die rechte Taste ein Menü auf. Alternativ kann das Menü auch über ein Reading definiert werden. In diesem Fall erfolgt die Definition von rightMenu nicht über ein Array sondern das Reading wird als String angegeben! Das Reading in FHEM muss dabei folgendes beinhalten ["name1:cmd1","name2:cmd2","name3:cmd3",...] *Hinweis:* rightClick, rightLong und rightLongRelease stehen bei Zuweisung des Menüs nicht zur Verfügung.|
 |main|show|reading:wert:show|definiert optional, ob die Ebene angezeigt wird. Bei *show=false* wird die Ebene ausgeblendet.  |
 |info|left1..2,<br>mid1..2,<br>right1..2|reading:wert:text:icon:color|definiert welches **Icon** und welcher **Text** in der Infozeile angezeigt wird. Mit **color** kann optional die Farbe den Icons verändert werden|
 
@@ -354,6 +354,7 @@ Wenn du jetzt mehrere Devices in einem Template hast, würden ja "Dopplungen" vo
 | [scenes](#template-scenes) | LightScenes | ![](./docs/media/template_scenes_example.png) |
 | [panel](#template-panel) | Panel zur Gruppierung mehrerer Devices | ![](./docs/media/template_panel_example.png) |
 | [chart](#template-chart) | Diagramm zur Visualisierung von Log-Daten | ![](./docs/media/template_chart_example.png) |
+| [chart2](#template-chart2) | neue Version von Diagramm zur Visualisierung von Log-Daten | ![](./docs/media/template_chart_example.png) |
 | [cam](#template-cam) | Anzeige von Kamerastreams | ![](./docs/media/template_cam_example.png) |
 | [list](#template-list) | Anzeige von Listen | ![](./docs/media/template_list_example.png) |
 | [kodiremote](#template-kodicontrol) | Kodi Fernbedieung | ![](./docs/media/template_kodicontrol_example.png) |
@@ -879,6 +880,99 @@ attr chn_sen.hm.eg.fl_Climate_FileLog alias Thermostat Flur
 attr chn_sen.hm.eg.fl_Climate_FileLog appOptions { "template": "chart", "dashboard": "true", "chartDef": [":humidity:Luftfeuchte:%:secondary",":measured-temp:Temperatur:°C"] }
 attr chn_sen.hm.eg.fl_Climate_FileLog sortby 2
 ```
+# Template Chart2
+ Das Template Chart2 ist die Weiterentwicklung vom Template Chart und funktioniert grundsätzlich gleich. Jedoch sind die Konfigurationsmöglichkeiten deutlich umfangreicher. Über dieses Template können Daten aus FHEM-Logfiles in Charts dargestellt werden. Am besten legt ihr dieses Template direkt in den *FHEM-Devices* vom Typ *FileLog* an, aus denen ihr Daten visualisieren möchtet. Das Chart-Template kann auf die volle Bildschirmbreite vergrößert werden. In diesem Modus kann zusätzlich auch der Zeitraum verändert werden. Standardmäßig werden in Charts die letzten 7 Tage geladen.
+
+![](./docs/media/fhemapp_desk_charts.png)*Beispiel für Charts*
+
+![](./docs/media/template_chart_expand_example.png)*Beispiel für vergrößertes Chart*
+
+#### Definition
+Im FHEM-Device muss im Attribut `appOptions` folgendes eingetragen werden.
+```
+{ "template": "chart2", "chartSeries": ["<def1>", "<def2>", ...], "chartOptions": { }, "setup": { } }
+```
+
+### Konfiguration von Charts
+Da *Chart2* kein Standard-Template ist, könnt ihr die Eigenschaften `show`, `status` und `info` über den Parameter `setup` in `appOptions` anpassen. Über den Paramter `size` kann die Templatebreite [siehe](#breite-von-templates) verändert werden. Über den Parameter `expand` und `expanded` kann festgelegt werden, ob dasChart beim Laden maximiert oder minimiert [siehe](#ausklappen-von-templates) dargestellt wird. Die Parameter `daysAgo` bzw. `daysTo` legen fest, wieviele Tage das Chart beim Laden zurück bzw. nach vorn schaut. Als Standard werden die Daten der letzten 7 Tage `"daysAgo": 6` geladen. Über den Parameter `chartSeries` legt ihr fest, welche Daten im Chart angezeigt werden. Über den Parameter `chartOptions` könnt ihr die einzelnen Chartelemente umfangreich formatieren.
+```
+"chartSeries": ["logsource:reading:name:format:type:calc"],
+"chartOptions": { 
+  "colors": [],
+  "stroke": {
+    "curve": [],
+    "width": []
+  },
+  "yaxis": []
+},
+"setup": {
+    "size": "string",    
+    "daysAgo": number,
+    "daysTo": number
+}
+```
+1. **logsource** - dieser Parameter enthält entweder den Name des *FileLog-Devices* oder den Name eures *DbLog-Devices*.
+2. **reading** - wenn ihr auf ein *FileLog-Device* zugreift, genügt hier im Normalfall der Name des *Readings* welches dargestellt werden soll. Wenn euer *FileLog* Readings in mehreren Spalten enthält, dann müsst ihr den Parameter in runde Klammern setzen und *<spalte:reading>* angeben z.B. `(4:temperature)`. Wenn Daten von einem *DbLog-Device* anzeigen wollt, dann müsst ihr den Parameter in runde Klammern setzen und *<device>:<reading>* angeben z.B. `(myTempSensor:temperature)`
+3. **name** - hier tragt iht den gewünschten Achsenname ein. (z.B. Temperatur)
+4. **format** - hier könnt festlegen, wie Werte angezeigt werden (z.B. %n.1 °C)
+5. **type** - hier legt ihr den Diagrammtyp fest (z.B. line, area, column).
+6. **calc** - mit diesem Parameter können Logdaten (optional) berechnet werden.
+
+### Diagrammtypen
+Das Chart2-Template verwendet [APEXCHARTS](https://apexcharts.com). Es werden alle Diagrammtypen mit zwei Achsen unterstützt. Zu beachten ist, dass die x-Achse dabei immer mit den Zeitstempeln aus den FHEM-Logdaten befüllt wird. (siehe dazu auch [Timeline Series](https://apexcharts.com/docs/series/) in der Dokumentation)
+
+Folgende Diagrammtypen verwenden die *Timeline* auf der X-Achse und eignen sich gut für den Einsatz in **FHEMApp**. 
+|Diagrammtyp|Beschreibung|
+|-----------|------------|
+|line|[line Charts](https://apexcharts.com/docs/chart-types/line-chart/)|
+|area|[area Charts](https://apexcharts.com/docs/chart-types/area-chart/)|
+|column|[column Charts](https://apexcharts.com/docs/chart-types/column-chart/)|
+
+### Berechnung von Werten
+Mit dem Parameter ``calc`` können Logdaten über bestimmte Zeiträume aggrgiert und berechnet werden. Es können Werte die Zeiträume (Jahr, Monat, Woche, Tag, Stunde) aggregiert werden. Innerhalb der Zeiträume können Werte (kleinster Wert, größter Werte, Durchschnitt, Differenz) berechnet werden. Bei Verwendung des Parameter ``calc`` wird zuerst die Berechnung und danach der Zeitraum angegeben. Wenn der Parameter ``calc`` nicht angegeben wird, so erfolgt dennoch eine Berechnung auf Basis des Parameter ``maxChartPoints``, welcher in der Datei ``config.json`` definiert werden kann. Man kann jedoch verhindern, dass Werte automatisch berechnet werden, indem man den Parameter ``calc`` auf den Wert ``raw`` setzt. Dann wird für jeden Wert aus den Logdaten, tatsächlich ein "Datenpunkt" im jeweiligen Chart gesetzt. Sollten sich sehr viele Werte in den Logdaten befinden, kann sich die Verwendung von ``raw`` jedoch negativ auf die Performance auswirken. 
+|Berechnung|Trennung|Zeitraum|
+|--------|--------|----------|
+|min max avg delta raw|-|year month week day hour|
+*Beispiel:* Darstellung von Durchschnittswerten pro Monat ``avg-month`` oder Darstellung der Differenz zum Vortag ``delta-day``
+
+### Datenreihen formatieren
+Zur Formatierung der einzelnen Chartelemente steht der Parameter ``chartOptions`` zur Verfügung. Hierüber können u.a. Linienart, Liniebreite, Marker, Farben, Achsenoptionen usw. angepasst werden. Welche Formatoptionen zur Verfügung stehen, ist in der Dokumentation von APEXCHART unter den Diagrammtypen beschrieben. 
+
+### Beispiel für eine Chart2 Definition
+Das Diagramm liefert Vorlauf-Temperatur, Soll-Temperatur, Luftfeuchte, Ist-Temperatur für die Überwachung des Raumklima.
+```
+{ "template": "chart2", "dashboard": true, 
+  "chartSeries": [
+    ":ventil:Heizkreis:%n.1 °C:line:raw",
+    "vitoconnect_FileLog:Soll_Temperatur:Heizung:%n.1 °C:line:raw",
+    ":humidity:Luftfeuchte:%n.0 %:line",
+    ":measured-temp:Temperatur:%n.1 °C:line"
+  ], 
+  "chartOptions": {
+    "colors": ["#fd6a6a","#81d4fa","#4ecdc4","#c7f464"],
+    "stroke": {
+     "curve": ["stepline", "stepline", "smooth", "smooth"],
+     "width": [3, 3, 3, 3]    
+    },
+    "yaxis": [
+      { "seriesName": "Temperatur", "show": false, "min": 10, "max": 30 },
+      { "seriesName": "Temperatur", "show": false, "min": 10, "max": 30 },
+      { "seriesName": "Luftfeuchte", "opposite": true },
+      { "seriesName": "Temperatur", "showAlways": true, "min": 10, "max": 30, "tickAmount": 4 }
+    ]
+  },
+  "setup": {
+    "info": {
+      "left1": ["linesInTheFile::%n.0:mdi-chart-line"]
+    }
+  } 
+}
+```
+![](./docs/media/template_chart2_example.png)*Beispiel für Chart2*
+
+| Hinweis: Wenn ihr eure Daten über *DbLog* erfasst, dann habt ihr in FHEM dafür im Normalfall nur ein Device angelegt. Damit ihr verschiedene Charts in **FHEMApp** anzeigen könnt, empfielt es sich, je Chart ein *dummy* in FHEM anzulegen und hier die entsprechenden `appOptions` für das Chart zu hinterlegen. Wenn ihr eure Daten in einzelnen *FileLog-Dateien* erfasst, dann könnt ihr `appOptions` an dem jeweiligen *FileLog-Device* hinterlegen.
+
+
 # Template Cam
 Dieses Template steht speziell für die Wiedergabe von Videostreams zur Verfügung.
 
