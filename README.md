@@ -206,7 +206,7 @@ In den Template-Dateien können folgende Eigenschaften definiert werden. Die Zuw
   },
   "main": [
     {
-      "leftBtn": ["reading:value:icon:disabled"],
+      "leftBtn": ["reading:value:icon:disabled:color"],
       "leftClick": ["reading:value:set_param"],
       "leftLong": ["reading:value:set_param"],
       "leftLongRelease": ["reading:value:set_param"],
@@ -214,12 +214,12 @@ In den Template-Dateien können folgende Eigenschaften definiert werden. Die Zuw
       "text": ["reading:value:text:align"],
       "text2": ["reading:value:text:align"],
       "slider": ["reading:value:set_param:current:min:max:steps"],
-      "midBtn": ["reading:value:icon:disabled"],
+      "midBtn": ["reading:value:icon:disabled:color"],
       "midClick": ["reading:value:set_param"],
       "midLong": ["reading:value:set_param"],
       "midLongRelease": ["reading:value:set_param"],
       "midMenu": ["text:set_param"],
-      "rightBtn": ["reading:value:icon:disabled"],
+      "rightBtn": ["reading:value:icon:disabled:color"],
       "rightClick": ["reading:value:set_param"],
       "rightLong": ["reading:value:set_param"],
       "rightLongRelease": ["reading:value:set_param"],

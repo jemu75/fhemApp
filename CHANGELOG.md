@@ -1,4 +1,8 @@
 # Versionsinformationen
+## v.3.36.2 (21.01.2023)
+**Bugfix**
+- Standard-Template: bei Verwendung von Menu wird jetzt auch die Iconfarbe und Disabled berücksichtigt
+
 ## v.3.36.1 (21.01.2023)
 **Bugfix**
 - Standard-Template: Icongröße für Menü korrigiert, wenn ein Slider verwendet wird
