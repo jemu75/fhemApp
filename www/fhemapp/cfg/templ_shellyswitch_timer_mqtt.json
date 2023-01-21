@@ -1,0 +1,30 @@
+{
+  "name": "shellyswitch_timer_mqtt",
+  "author": "jemu75",
+  "date": "2022-12-10",
+  "status": {
+    "bar": ["state:off:0:on","apower:5:100:on","apower:0.1:100:standby","relay_0_power:0.1:100:on","relay_0_power:0:100:standby","state:on:100:on"],
+    "error": ["mqtt_connected:false:100:error:keine Verbindung"]
+  },
+  "main": [
+    {
+        "text": ["state:off:aus","apower:5:an","apower:0.1:standby","relay_0_power:0.1:an","relay_0_power:0:standby","state:on:an"],
+        "rightBtn": "mdi-timer-outline",
+        "rightMenu": ["aus:off","30 Minuten:on-for-timer 1800","1 Stunde:on-for-timer 3600","2 Stunden:on-for-timer 7200"]
+      },  
+    {
+      "leftBtn": "mdi-power-off",
+      "leftClick": ["state::off"],
+      "text": ["state:off:aus","apower:5:an","apower:0.1:standby","relay_0_power:0.1:an","relay_0_power:0:standby","state:on:an"],
+      "rightBtn": "mdi-power-on",
+      "rightClick": ["state::on"]
+    }
+  ],
+  "info": {
+    "left1": ["state:on::mdi-power-plug","state:::mdi-power-plug-off"],
+    "left2": ["relay_0_power:0.1:%n.2w","apower:0.1:%n.1w"],
+    "mid1": ["temperature::%n.1°C"],
+    "right1": ["new_fw:true::mdi-cloud-download"],
+    "right2": ["mqtt_connected:true::mdi-wifi","mqtt_connected:::mdi-wifi-off"]
+  }
+}

@@ -1,4 +1,11 @@
 # Versionsinformationen
+## v.3.36.1 (21.01.2023)
+**Bugfix**
+- Standard-Template: Icongröße für Menü korrigiert, wenn ein Slider verwendet wird
+
+**sonstiges**
+- sicherheitsrelevante Updates
+
 ## v.3.36.0 (27.11.2022)
 **Features**
 - Template Chart2: alternatives Template zu Chart mit verbesserten Konfigurarionsmöglichkeiten 
