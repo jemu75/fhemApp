@@ -419,7 +419,6 @@ class Fhem extends EventEmitter {
     let idx = this.app.data.routeList.map((e) => e.route).indexOf(fltr);
 
     this.app.data.deviceList.splice(0);
-    this.app.hasConnected = [];
 
     if(idx != -1 || fltr.match('device=')) {
       let filter = idx != -1 ? this.app.data.routeList[idx].deviceList.join(',') : fltr.replace('device=','').split('&')[0];
@@ -446,6 +445,7 @@ class Fhem extends EventEmitter {
             options.setup = setup;
           }
 
+          this.app.hasConnected = [];
           item.Options = options;
           if(item.Options.connected) item.Connected = await this.createConnected(item);
           this.handleTemplate(item);

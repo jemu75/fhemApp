@@ -1,4 +1,8 @@
 # Versionsinformationen
+## v.3.36.3 (15.11.2023)
+**Bugfix**
+- core: Anpassung im Modul createConnected
+
 ## v.3.36.2 (21.01.2023)
 **Bugfix**
 - Standard-Template: bei Verwendung von Menu wird jetzt auch die Iconfarbe und Disabled berücksichtigt
