@@ -1,0 +1,27 @@
+{
+    "defaultTheme": "dark",    
+    "themes": {      
+        "dark": {
+            "colors": {
+                "primary": "#212121",
+                "secondary": "#424242",
+                "accent": "#4caf50",
+                "error": "#f44336",
+                "warning": "#FB8C00",
+                "info": "#607d8b",
+                "success": "#8bc34a"
+            }
+        },
+        "light": {
+            "colors": {
+                "primary": "#37474F",
+                "secondary": "#90A4AE",
+                "accent": "#4caf50",
+                "error": "#f44336",
+                "warning": "#FB8C00",
+                "info": "#607d8b",
+                "success": "#8bc34a"
+            }
+        }
+    }
+}
