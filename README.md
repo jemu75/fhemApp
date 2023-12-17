@@ -1,3 +1,6 @@
+> [!NOTE]
+> Betaversion
+
 # FHEM App 4
 ...
 # Systemanforderungen
