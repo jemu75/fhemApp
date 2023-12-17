@@ -1,5 +1,5 @@
-> [!NOTE]
-> Betaversion
+> [!WARNING]
+> Achtung: Diese Version von **FHEMApp** ist noch nicht für den produktiven Einsatz geeignet. Aktuell steht diese Version nur zum Testen zur Verfügung!
 
 # FHEM App 4
 ...
