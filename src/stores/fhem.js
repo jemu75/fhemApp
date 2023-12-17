@@ -121,8 +121,8 @@ export const useFhemStore = defineStore('fhem', () => {
 
     //coreFunction to open online HelpPage (README.md)
     function help(anchor) {
-        //window.open(app.helpURL + anchor, '_blank')
-        console.log(app.helpURL + anchor)
+        window.open(app.helpURL + anchor, '_blank')
+        //console.log(app.helpURL + anchor)
     }
 
     //coreFunction to handle url params and query-string

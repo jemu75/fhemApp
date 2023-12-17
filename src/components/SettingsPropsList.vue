@@ -14,30 +14,30 @@
 
     const listItemDefs = {
         panel: [
-            { type: 'defs', show: ['panels', 'extended.panels'], required: true, prop: 'devices', def: 'key:fhem_device' },
-            { type: 'template', show: ['panels', 'extended.panels'], required: false, prop: 'template' },
+            { type: 'defs', show: ['panels', 'extended.panels'], required: true, prop: 'devices', def: 'key:fhem_device', help: 'element-devices' },
+            { type: 'template', show: ['panels', 'extended.panels'], required: false, prop: 'template', help: 'element-template' },
             { type: 'text', show: ['templates'], required: false, prop: 'author', def: 'text' },
             { type: 'text', show: ['templates'], required: false, prop: 'date', def: 'text' },
-            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'navigation', def: 'reading:filter:route' },
-            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'expandable', def: 'reading:filter:boolean:boolean', help: '#element-expandable' },
-            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'size', def: 'reading:filter:size' },
-            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'sortby', def: 'reading:filter:sortkey' },
-            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'show', def: 'reading:filter:boolean' },
-            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'iconmap', def: 'search:icon' }
+            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'navigation', def: 'reading:filter:route', help: 'element-navigation' },
+            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'expandable', def: 'reading:filter:boolean:boolean', help: 'element-expandable' },
+            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'size', def: 'reading:filter:size', help: 'element-size' },
+            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'sortby', def: 'reading:filter:sortkey', help: 'element-sortkey' },
+            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'show', def: 'reading:filter:boolean', help: 'element-show' },
+            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'iconmap', def: 'search:icon', help: 'element-iconmap' }
         ],
         status: [
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'bar', def: 'reading:filter:level:color:min:max:reverse' },
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'bar2', def: 'reading:filter:level:color:min:max:reverse' },
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'imageUrl', def: 'reading:filter:url' },
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: true, prop: 'title', def: 'reading:filter:title' }
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'bar', def: 'reading:filter:level:color:min:max:reverse', help: 'element-bar' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'bar2', def: 'reading:filter:level:color:min:max:reverse', help: 'element-bar' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'imageUrl', def: 'reading:filter:url', help: 'element-imageurl' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: true, prop: 'title', def: 'reading:filter:title', help: 'element-title' }
         ],
         info: [
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'left1', def: 'reading:filter:text:icon:color' },
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'left2', def: 'reading:filter:text:icon:color' },
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'mid1', def: 'reading:filter:text:icon:color' },
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'mid2', def: 'reading:filter:text:icon:color' },
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'right1', def: 'reading:filter:text:icon:color' },
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'right2', def: 'reading:filter:text:icon:color' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'left1', def: 'reading:filter:text:icon:color', help: 'element-info' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'left2', def: 'reading:filter:text:icon:color', help: 'element-info' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'mid1', def: 'reading:filter:text:icon:color', help: 'element-info' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'mid2', def: 'reading:filter:text:icon:color', help: 'element-info' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'right1', def: 'reading:filter:text:icon:color', help: 'element-info' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'right2', def: 'reading:filter:text:icon:color', help: 'element-info' },
         ]
     }
 
