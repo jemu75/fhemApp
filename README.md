@@ -21,7 +21,7 @@ http://fhem:8083/fhem/fhemapp4/index.html#/myapp
 ## zusätzliche URL-Parameter
 Zum Aufruf von **FHEMApp** können optionale URL-Parameter verwendet werden. Diese sind u.a. beim Betrieb von **FHEMApp** auf einem separaten Web-Server nötig. Die Angabe der URL-Parameter erfolgt in Form eines URL-Querystring (z.B. .../?dark=1&lang=en&loglevel=7)
 
-> [!INFO]
+> [!IMPORTANT]
 > Beim Betrieb von **FHEMApp** auf einem separaten Web-Server müssen die Verbidungsparameter `protocol`, `server`, `port` und `path` angegeben werden!
 
 |Parameter|Beschreibung|Beispiel|
