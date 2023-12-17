@@ -61,10 +61,6 @@
     loadItems()
   }
 
-  function openHelp(anchor) {
-      window.open(fhem.app.repository + '#' + anchor, '_blank')
-  }
-
   loadItems()
 </script>
 
@@ -76,7 +72,7 @@
           color="info"
           icon="mdi-help-circle"
           variant="text"
-          @click="openHelp('navigation')"
+          @click="fhem.help('navigation')"
         ></v-btn>
       </template>
     </v-list-item>

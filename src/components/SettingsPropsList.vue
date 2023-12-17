@@ -19,7 +19,7 @@
             { type: 'text', show: ['templates'], required: false, prop: 'author', def: 'text' },
             { type: 'text', show: ['templates'], required: false, prop: 'date', def: 'text' },
             { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'navigation', def: 'reading:filter:route' },
-            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'expandable', def: 'reading:filter:boolean:boolean', help: 'systemanforderungen' },
+            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'expandable', def: 'reading:filter:boolean:boolean', help: '#element-expandable' },
             { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'size', def: 'reading:filter:size' },
             { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'sortby', def: 'reading:filter:sortkey' },
             { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'show', def: 'reading:filter:boolean' },
@@ -70,20 +70,16 @@
 
         return res
     }
-
-    function openHelp(anchor) {
-        window.open(fhem.app.repository + '#' + anchor, '_blank')
-    }
 </script>
 
 <template>
-    <v-list-item :title="$t('_app.settings.title') + ' ' + $t('_app.settings.props.' + props.section) + ' (' + $t('_app.settings.' + props.type + '.' + 'title') + ': ' + fhem.app.config[props.type][props.typeIdx].name + ')'">
+    <v-list-item :title="$t('_app.settings.title') + ' ' + $t('_app.settings.props.' + section) + ' (' + $t('_app.settings.' + type + '.' + 'title') + ': ' + fhem.app.config[type][typeIdx].name + ')'">
         <template v-slot:append>
             <v-btn
                 color="info"
                 icon="mdi-help-circle"
                 variant="text"
-                @click="openHelp('props_list')">
+                @click="fhem.help(section === 'panel' ? 'panel-allgemein' : section === 'status' ? 'bereich-status' : 'bereich-info')">
             </v-btn>
         </template>
     </v-list-item>

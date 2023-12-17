@@ -45,10 +45,6 @@
             delete fhem.app.config[props.type][props.typeIdx][props.section][props.mainIdx][props.mainSection][props.prop]
         }
     }
-
-    function openHelp() {
-        window.open(fhem.app.repository + '#' + props.help, '_blank')
-    }
 </script>
 
 <template>
@@ -83,7 +79,7 @@
                             label="new Definition"
                             :append-inner-icon="props.propHelp ? 'mdi-help-circle' : ''"
                             clearable
-                            @click:append-inner="openHelp">
+                            @click:append-inner="fhem.help(propHelp)">
                         </v-text-field>                        
                     </v-col>
                     <v-col cols="1" class="text-right">                                                

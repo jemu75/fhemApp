@@ -8,7 +8,7 @@
   import SettingsColors from '../components/SettingsColors.vue'
   import SettingsContent from '../components/SettingsContent.vue'
 
-  const tabs = ['header', 'navigation', 'panels', 'templates', 'colors', 'content']
+  const tabs = ['header', 'panels', 'templates', 'navigation', 'colors', 'content']
 
   const settingsTab = ref(tabs[0])
   const configIsChanged = ref(false)

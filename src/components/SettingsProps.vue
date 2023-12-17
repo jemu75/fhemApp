@@ -26,7 +26,11 @@
     const selectorPart = ref(0)
 
     const items = computed(() => {
-        return fhem.app.config[props.type].map((e) => e.name) || []
+        let res = fhem.app.config[props.type].map((e) => e.name) || []
+
+        res.sort((a,b) => (a > b) ? 1 : (b > a) ? -1 : 0)
+
+        return res
     })
         
     const item = ref(items.value[0])
@@ -47,6 +51,8 @@
         let res = []
 
         for(const panel of fhem.app.config.panels) if(panel.template === item.value) res.push(panel.name)
+
+        res.sort((a,b) => (a > b) ? 1 : (b > a) ? -1 : 0)
 
         updatePanel(res[0])
 
@@ -99,10 +105,6 @@
 
         fhem.app.config[props.type].push(props.type === 'panels' ? newPanel : newTemplate)
     }
-
-    function openHelp(anchor) {
-        window.open(fhem.app.repository + '#' + anchor, '_blank')
-    }
 </script>
 
 <template>
@@ -115,7 +117,7 @@
                             color="info"
                             icon="mdi-help-circle"
                             variant="text"
-                            @click="openHelp(props.type === 'panels' ? 'panels' : 'vorlagen')">
+                            @click="fhem.help(props.type === 'panels' ? 'panels' : 'vorlagen')">
                         </v-btn>
                     </template>
                 </v-list-item>

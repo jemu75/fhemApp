@@ -39,10 +39,6 @@
             delete fhem.app.config.colors[theme][colorKey]
         }
     }
-
-    function openHelp(anchor) {
-        window.open(fhem.app.repository + '#' + anchor, '_blank')
-    }
 </script>
 
 <template>
@@ -53,7 +49,7 @@
                 color="info"
                 icon="mdi-help-circle"
                 variant="text"
-                @click="openHelp('kopfzeile')">
+                @click="fhem.help('farben')">
                 </v-btn>
             </template>
         </v-list-item>

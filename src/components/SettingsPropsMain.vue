@@ -151,10 +151,6 @@
 
         return res
     }
-
-    function openHelp(anchor) {
-        window.open(fhem.app.repository + '#' + anchor, '_blank')
-    }
 </script>
 
 <template>
@@ -164,7 +160,7 @@
                 color="info"
                 icon="mdi-help-circle"
                 variant="text"
-                @click="openHelp('props_list')">
+                @click="fhem.help('bereich-main')">
             </v-btn>
         </template>
     </v-list-item>

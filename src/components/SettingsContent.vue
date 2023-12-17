@@ -56,11 +56,6 @@
             delete fhem.app.config.content[lang][contentKey]
         }
     }
-
-    //https://de.wikipedia.org/wiki/Liste_der_ISO-639-1-Codes
-    function openHelp(anchor) {
-        window.open(fhem.app.repository + '#' + anchor, '_blank')
-    }
 </script>
 
 <template>
@@ -71,7 +66,7 @@
                 color="info"
                 icon="mdi-help-circle"
                 variant="text"
-                @click="openHelp('kopfzeile')">
+                @click="fhem.help('sprachen')">
                 </v-btn>
             </template>
         </v-list-item>
