@@ -1,14 +1,21 @@
 > [!WARNING]
 > Achtung: Diese Version von **FHEMApp** ist noch nicht für den produktiven Einsatz geeignet. Aktuell steht diese Version nur zum Testen zur Verfügung!
 
-# FHEM App 4
-...
+# FHEMApp 4
+**FHEMApp** ist eine webbasierende, grafische Benutzeroberfläche für FHEM. Das System unterstützt die optimale Darstellung auf verschiedenen Geräten wie Desktop-PCs, Tablets oder Smartphones. **FHEMApp** bietet eine Vielzahl von Einstellungen zur einfachen Erstellung von Benutzeroberflächen. Programmierkenntnisse sind für die Einrichtung nicht notwendig.
 # Systemanforderungen
-...
+Für den Einsatz von **FHEMApp** wird FHEM(tm) (https://fhem.de/) benötigt.
 # Installation und Updates
 ... Beschreibung in FHEM
 # Aufruf der App
-...
+Der Aufruf von **FHEMApp** erfolgt über einen Web-Browser. Bei der Installation in FHEM erfolgt der Aufruf nach folgendem Schema:
+```
+http(s)://<fhem_ip>:<fhem_port>/<fhem_pfad>/<fhemapp_verzeichnis>/index.html#/<fhemapp_device>
+```
+Beispiel zum Aufruf von FHEMapp
+```
+http://fhem:8083/fhem/fhemapp4/index.html#/myapp
+```
 ## URL-Parameter
 ...
 # Einstellungen
