@@ -7,17 +7,33 @@
 Für den Einsatz von **FHEMApp** wird FHEM(tm) (https://fhem.de/) benötigt.
 # Installation und Updates
 ... Beschreibung in FHEM
+# Instanzen
+In FHEM können beliebig viele Devices vom Typ *fhemapp* definiert werden. Hinter jedem *fhemapp*-Device wird eine separate KKonfiguration gespeichert. Dies ermöglicht die Betrieb von mehreren **FHEMApp**-Instanzen. Beim Aufruf von **FHEMApp** kann dann auf die jeweilige Instanz verwiesen. 
 # Aufruf der App
-Der Aufruf von **FHEMApp** erfolgt über einen Web-Browser. Bei der Installation in FHEM erfolgt der Aufruf nach folgendem Schema:
+Der Aufruf von **FHEMApp** erfolgt über einen Web-Browser. Am Ende der URL wird jeweils der Name des *fhemapp*-Device aus FHEM angegeben. Dessen Konfiguration wird beim Aufruf von **FHEMApp** verwendet. Bei der Installation in FHEM erfolgt der Aufruf nach folgendem Schema:
 ```
-http(s)://<fhem_ip>:<fhem_port>/<fhem_pfad>/<fhemapp_verzeichnis>/index.html#/<fhemapp_device>
+http(s)://<fhem_ip>:<fhem_port>/<fhem_pfad>/<fhemapp_verzeichnis>/index.html#/<fhemapp_config>
 ```
 Beispiel zum Aufruf von FHEMapp
 ```
 http://fhem:8083/fhem/fhemapp4/index.html#/myapp
 ```
-## URL-Parameter
-...
+## zusätzliche URL-Parameter
+Zum Aufruf von **FHEMApp** können optionale URL-Parameter verwendet werden. Diese sind u.a. beim Betrieb von **FHEMApp** auf einem separaten Web-Server nötig. Die Angabe der URL-Parameter erfolgt in Form eines URL-Querystring (z.B. .../?dark=1&lang=en&loglevel=7)
+
+> [!INFO]
+> Beim Betrieb von **FHEMApp** auf einem separaten Web-Server müssen die Verbidungsparameter `protocol`, `server`, `port` und `path` angegeben werden!
+
+|Parameter|Beschreibung|Beispiel|
+|---|---|---|
+|protocol|WEB Protokoll über das FHEM erreichbar ist|http oder https|
+|server|url bzw. IP-Adresse unter der FHEM erreichbar ist|fhem|
+|port|Port über den FHEM erreichbar ist|8083|
+|path|Pfad der FHEM Installation|fhem|
+|dark|legt fest in welchem Farbmodus **FHEMApp** gestartet wird.|0 oder 1
+|lang|Sprache in der FHEMapp angezeigt wird|de, en, ...|
+|xhr|Umschaltung auf Longpoll wenn Browser kein websocket unterstützt|1|
+|loglevel|Detailgrad der Protokollierung für Fehleranalyse über die Browserkonsole (*1=status, 2=error, 3=warnings, 4=infos, 5=all request to fhem, 6=received events from fhem, 7=details, 8=all received events from FHEM*)|1...8|
 # Einstellungen
 ...
 # Kopfzeile
@@ -33,6 +49,8 @@ http://fhem:8083/fhem/fhemapp4/index.html#/myapp
 ## Verwendung von Templates
 ...
 ## Zuweisung von Parametern
+...
+## Ersetzungen
 ...
 # Panelkonfiguration
 ...
