@@ -27,14 +27,28 @@
 
       <v-navigation-drawer v-model="drawer" color="secondary">
         <template v-slot:prepend>
-          <v-img height="88px" :src="logo"></v-img>
+          <v-img :src="logo"></v-img>
+          <v-divider/>
         </template>
+
+        <v-list>
+          <AppNavigation :items="fhem.app.navigation"/>
+        </v-list>
+    
+        <v-divider/>
+
+        <v-row no-gutters class="mx-2 my-1">
+          <v-col>
+            {{ fhem.app.version }}
+          </v-col>
+          <v-spacer/>
+          <v-col class="text-right">
+            <v-icon :icon="fhem.app.isReady ? 'mdi-sync' : 'mdi-sync-alert'" size="small"></v-icon>
+          </v-col>
+        </v-row>
 
         <v-divider/>
 
-        <v-list nav>
-          <AppNavigation :items="fhem.app.navigation"/>
-        </v-list>
       </v-navigation-drawer>
 
       <v-app-bar :order="mobile ? 0 : -1" color="primary">

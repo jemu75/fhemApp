@@ -57,6 +57,7 @@ export const useFhemStore = defineStore('fhem', () => {
         isReady: false,
         message: false,
         currentView: null,
+        version: null,
         repository: 'https://github.com/jemu75/fhemApp'        
     })
 
@@ -101,11 +102,21 @@ export const useFhemStore = defineStore('fhem', () => {
         }
     }
 
-    //core Function for Clock
+    //coreFunction for Clock
     function initClock() {
         setInterval(() => {
             app.header.time = new Date()
         }, 1000)
+    }
+
+    //coreFunction to read Version
+    async function getVersion() {
+        let log = await fetch('CHANGELOG.md')
+            .then((res) => {
+                return res.text()
+            })
+
+        app.version = await 'v' + log.split('\n').shift().split('Version').pop().trim()
     }
 
     //coreFunction to handle url params and query-string
@@ -838,6 +849,7 @@ export const useFhemStore = defineStore('fhem', () => {
             if(res.routeChanged) loadPanelView()
         })
 
+        getVersion()
         initClock()
     }
 

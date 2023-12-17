@@ -26,8 +26,8 @@
             { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'iconmap', def: 'search:icon' }
         ],
         status: [
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'bar', def: 'reading:filter:level:color:reverse:min:max' },
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'bar2', def: 'reading:filter:level:color:reverse:min:max' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'bar', def: 'reading:filter:level:color:min:max:reverse' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'bar2', def: 'reading:filter:level:color:min:max:reverse' },
             { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'imageUrl', def: 'reading:filter:url' },
             { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: true, prop: 'title', def: 'reading:filter:title' }
         ],

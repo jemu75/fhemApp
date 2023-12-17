@@ -29,15 +29,39 @@
 
         return res
     })
+
+    const status = computed(() => {
+        let res = fhem.handleDefs(props.el.status, ['level','color','min','max','reverse','linear'],[0, 'success', 0, 100, false, false])
+        res.level = Math.round((res.level - res.min) / (res.max - res.min) * 100)
+        res.reverse = res.reverse ? true : false
+
+        return res
+    })
 </script>
 
 <template>
     <div v-if="el.text" :class="text.format">
         {{ text.text }}
     </div>
+
     <v-icon v-if="el.icon" :color="icon.color" :size="icon.size">
         {{ icon.icon }}
     </v-icon>
+
+    <v-progress-circular v-if="el.status && !status.linear" 
+        width="4"
+        v-model="status.level"
+        :color="status.color"
+        :reverse="status.reverse">
+    </v-progress-circular>
+
+    <v-progress-linear v-if="el.status && status.linear" 
+        height="7"
+        v-model="status.level"
+        :color="status.color"
+        :reverse="status.reverse">
+    </v-progress-linear>
+
     <div :class="el.text2 ? text2.format : text3.format">
         <span v-if="el.text2" :class="text2.format">
             {{ text2.text }}

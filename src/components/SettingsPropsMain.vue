@@ -47,11 +47,6 @@
             { type: 'defs', required: false, prop: 'divider', def: 'reading:filter:boolean' },
             { type: 'defs', required: false, prop: 'size', def: 'reading:filter:size' }
         ],
-        status: [
-            { type: 'defs', required: false, prop: 'status', def: 'reading:filter:level:color:reverse:min:max' },
-            { type: 'defs', required: false, prop: 'divider', def: 'reading:filter:boolean' },
-            { type: 'defs', required: false, prop: 'size', def: 'reading:filter:size' }
-        ],
         slider: [
             { type: 'defs', required: false, prop: 'slider', def: 'reading:filter:cmd:current:color:min:max:steps' },
             { type: 'defs', required: false, prop: 'divider', def: 'reading:filter:boolean' },
@@ -69,9 +64,10 @@
         ],
         info: [
             { type: 'defs', required: false, prop: 'text', def: 'reading:filter:text:format' },
+            { type: 'defs', required: false, prop: 'icon', def: 'reading:filter:icon:color:size' },
+            { type: 'defs', required: false, prop: 'status', def: 'reading:filter:level:color:min:max:reverse:linear' },
             { type: 'defs', required: false, prop: 'text2', def: 'reading:filter:text:format' },
             { type: 'defs', required: false, prop: 'text3', def: 'reading:filter:text:format' },
-            { type: 'defs', required: false, prop: 'icon', def: 'reading:filter:icon:color:size' },
             { type: 'defs', required: false, prop: 'divider', def: 'reading:filter:boolean' },
             { type: 'defs', required: false, prop: 'size', def: 'reading:filter:size' }
         ]

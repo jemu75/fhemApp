@@ -2,7 +2,6 @@
     import { useFhemStore } from '@/stores/fhem'
     import PanelMainInfo from './PanelMainInfo.vue'
     import PanelMainBtn from './PanelMainBtn.vue'
-    import PanelMainStatus from './PanelMainStatus.vue'
     import PanelMainSlider from './PanelMainSlider.vue'
     import PanelMainImage from './PanelMainImage.vue'
     import PanelMainMenu from './PanelMainMenu.vue'
@@ -20,6 +19,14 @@
         return fhem.handleDefs(lvl[position].size, ['size'],[false]).size
     }
 
+    function getClass(position) {
+        let res = ''
+
+        if(['info'].indexOf(position) !== -1) res = "mx-2"
+
+        return res
+    }
+
     function showDivider(lvl, position) {
         return lvl[position] ? fhem.handleDefs(lvl[position].divider, ['show'],[false]).show : false
     }
@@ -27,7 +34,6 @@
     function getComponent(type) {
         if(type === 'info') return PanelMainInfo
         if(type === 'btn') return PanelMainBtn
-        if(type === 'status') return PanelMainStatus
         if(type === 'slider') return PanelMainSlider
         if(type === 'image') return PanelMainImage
         if(type === 'menu') return PanelMainMenu
@@ -38,9 +44,9 @@
     <div v-for="(lvl, idx) of main" :key="idx">
         <v-expand-transition>
             <v-row v-if="levels.indexOf(idx) !== -1 ? true : false" no-gutters class="text-center align-center">
-                <v-sheet :height="showDivider(lvl, 'level') || levels.length < 2 ? '68px' : '55px'"></v-sheet>
+                <v-sheet :height="showDivider(lvl, 'level') || levels.length < 2 ? '64px' : '55px'"></v-sheet>
                 <template v-for="position of ['left1', 'left2', 'mid', 'right1', 'right2']" :key="position">
-                    <v-col v-if="lvl.level[position]" :cols="getCols(lvl, position)">
+                    <v-col v-if="lvl.level[position]" :cols="getCols(lvl, position)" :class="getClass(lvl.level[position])">
                         <component :is="getComponent(lvl.level[position])" :el="lvl[position]" :iconmap="iconmap" :devices="devices"></component>
                     </v-col>
                     <v-divider v-if="showDivider(lvl, position)" vertical></v-divider>

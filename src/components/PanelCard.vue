@@ -10,7 +10,7 @@
     })
 
     function getBar(pos) {
-        let res = fhem.handleDefs(item.panel.status[pos], ['level','color','reverse','min','max'],[0, 'success', false, 0, 100])
+        let res = fhem.handleDefs(item.panel.status[pos], ['level','color','min','max','reverse'],[0, 'success', 0, 100, false])
         res.level = Math.round((res.level - res.min) / (res.max - res.min) * 100)
         res.reverse = res.reverse ? true : false
 
