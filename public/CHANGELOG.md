@@ -1,2 +1,2 @@
-# 17.12.2023 - Version 4.0.0
+# v4.0.0-beta (17.12.2023)
 ## initial development

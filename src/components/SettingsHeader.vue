@@ -27,10 +27,6 @@
   function deleteItem(idx) {
     fhem.app.config.header.commands.splice(idx, 1)
   }
-
-  function openHelp(anchor) {
-      window.open(fhem.app.repository + '#' + anchor, '_blank')
-  }
 </script>
 
 <template>  
@@ -41,7 +37,7 @@
           color="info"
           icon="mdi-help-circle"
           variant="text"
-          @click="openHelp('kopfzeile')">
+          @click="fhem.help('kopfzeile')">
         </v-btn>
       </template>
     </v-list-item>
@@ -88,7 +84,7 @@
           color="info"
           icon="mdi-help-circle"
           variant="text"
-          @click="openHelp('optionsmenü')"
+          @click="fhem.help('optionsmenü')"
         ></v-btn>
       </template>
     </v-list-item>
@@ -124,7 +120,7 @@
           color="info"
           icon="mdi-help-circle"
           variant="text"
-          @click="openHelp('optionsmenü-fhem-befehle')"
+          @click="fhem.help('optionsmenü-fhem-befehle')"
         ></v-btn>
       </template>
     </v-list-item>

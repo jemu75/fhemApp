@@ -58,7 +58,7 @@ export const useFhemStore = defineStore('fhem', () => {
         message: false,
         currentView: null,
         version: null,
-        repository: 'https://github.com/jemu75/fhemApp'        
+        helpURL: 'https://github.com/jemu75/fhemApp/tree/dev-v4?tab=readme-ov-file#'        
     })
 
     const stat = {
@@ -116,7 +116,12 @@ export const useFhemStore = defineStore('fhem', () => {
                 return res.text()
             })
 
-        app.version = await 'v' + log.split('\n').shift().split('Version').pop().trim()
+        app.version = await log.split('\n')[0].split(' ')[1].trim()
+    }
+
+    //coreFunction to open online HelpPage (README.md)
+    function help(anchor) {
+        window.open(app.helpURL + anchor, '_blank')
     }
 
     //coreFunction to handle url params and query-string
@@ -857,7 +862,7 @@ export const useFhemStore = defineStore('fhem', () => {
     router.isReady().then(init())
 
     //only for production
-    return { app, getEl, handleDefs, getIcon, replacer, createSession, request }
+    return { app, getEl, handleDefs, getIcon, replacer, createSession, request, help }
 
     //only for unit testing
     //return { app, handleURL, base64ToString, stringToJson, handleDefs }
