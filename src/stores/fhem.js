@@ -834,6 +834,7 @@ export const useFhemStore = defineStore('fhem', () => {
         if(!res) {
             log(3, 'FHEMApp launching failed.')
         } else {
+            app.message = false
             log(1, 'FHEMApp launched.', app)
         }        
 
