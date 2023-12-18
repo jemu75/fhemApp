@@ -90,7 +90,7 @@ Damit die Konfiguration nicht für jedes Panel erfolgen muss, können die Einste
 
 Panels können in beliebigen Gruppen (z.B. nach Räumen oder Geräteart) zusammengefasst und dann über die Navigationsleiste ausgewählt und angezeigt werden. 
 ## Verbinden mit FHEM Devices
-... nötig???
+Jedes Panel kann mit einem oder mehreren FHEM-Devices verknüpft werden. Die Verknüpfung erfolgt in der [Panelkonfiguration](#panelkonfiguration) unter der [allgemeinen Einstallungen](#panel-allgemein) im Element [devices](#element-devices)
 ## Verwendung von Templates
 Damit Konfigurationen nicht für jedes Panel erstellt werden müssen, können diese auch als Vorlage (template) erstellt und abgespeichert werden. Somit kann man Vorlagen für alle FHEM-Devices eines Typs (z.B. Schalter, Rolladenaktoren, Fensterkontakte, Thermostate...) erstellen. 
 
@@ -98,8 +98,7 @@ Nachdem eine Vorlage (template) erstellt wurde, kann diese den  gewünschten Pan
 
 Grundsätzlich können alle Elemente, die in einem Panel einstellbar sind auch in Vorlagen konfiguriert werden. In den nächsten Abschnitten wird die Panelkonfiguration beschrieben. Die Beschreibung trifft in gleicher Weise auch für Vorlagen zu.
 
-> [!IMPORTANT]
-> Paneleinstellungen behalten ihre Gültigkeit auch dann, wenn dem Panel eine Vorlage zugewiesen wurde.
+> [!IMPORTANT] Paneleinstellungen behalten ihre Gültigkeit auch dann, wenn dem Panel eine Vorlage zugewiesen wurde.
 ## Zuweisung von Parametern
 
 > vielleicht auch alles unter Panelkonfiguration beschreiben?
