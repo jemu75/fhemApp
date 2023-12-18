@@ -48,6 +48,11 @@ Zum Aufruf von **FHEMApp** können optionale URL-Parameter verwendet werden. Die
 |lang|Sprache in der **FHEMApp** geöffnet wird|de, en, ...|
 |xhr|Umschaltung auf Longpoll wenn Browser kein websocket unterstützt|1|
 |loglevel|Detailgrad der Protokollierung für Fehleranalyse über die Browserkonsole (*1=status, 2=error, 3=warnings, 4=infos, 5=all request to fhem, 6=received events from fhem, 7=details, 8=all received events from FHEM*)|1...8|
+
+Beispiel zum Aufruf von FHEMapp mit zusätzlichen Parametern
+```
+http://fhem:8083/fhem/fhemapp4/index.html#/myapp/?dark=1&lang=en
+```
 # Einstellungen
 **FHEMApp** ist in drei wesentliche Bereiche untergliedert, welche individuell konfiguriert werden können. 
 * die **Kopfzeile** im oberen Bereich
@@ -62,9 +67,9 @@ http://fhem:8083/fhem/fhemapp4/index.html#/myapp/settings
 ```
 
 # Kopfzeile
-Unter den Einstellungen im Bereich Kopfzeile kann die Anzeige für das aktuelle Datum und Uhrzeit aktiviert werden. Die Anzeige für Datum und Uhrzeit erfolgt nur bei großen Bildschirmauflösungen. In der mobilen Ansicht werden Datum und Uhrzeit nicht angezeigt.
+Unter den [Einstellungen](#einstellungen) im Bereich Kopfzeile kann die Anzeige für das aktuelle Datum und Uhrzeit aktiviert werden. Die Anzeige für Datum und Uhrzeit erfolgt nur bei großen Bildschirmauflösungen. In der mobilen Ansicht werden Datum und Uhrzeit nicht angezeigt.
 
-Weiterhin kann ein Hintergrundbild für die Kopfzeile festgelegt werden. Die Verwendung des Farbfilters (CSS Linear Gradient Definition) für das Hintergrundbild ermöglicht ein Anpassung des Hintergrundbildes an das festgelegte Farbschema. 
+Weiterhin kann ein Hintergrundbild für die Kopfzeile festgelegt werden. Die Verwendung des Farbfilters mit einer [CSS Linear Gradient Definition](https://www.w3schools.com/css/css3_gradients.asp) ermöglicht ein Anpassung des Hintergrundbildes an das festgelegte Farbschema. 
 ## Optionsmenü
 Durch Aktivierung dieser Optionen wird das Optionsmenü oben rechts in der Kopfleiste eingeblendet. Folgende Optionen können aktiviert werden
 |Option|Beschreibung|
@@ -77,46 +82,64 @@ Durch Aktivierung dieser Optionen wird das Optionsmenü oben rechts in der Kopfl
 ## Optionsmenü FHEM Befehle
 Neben den festen Optionen können im Optionsmenü auch FHEM Befehle hinterlegt werden. Es können beliebig viele FHEM Befehle im Optionsmenü hinterlegt werden. Jeder Befehl kann mit einer individuellen Beschriftung und optional mehrsprachig (siehe auch [Sprachen](#sprachen)) sowie mit einem Icon versehen werden. Zudem muss das vollständige FHEM-Kommando angegeben werden.  
 # Panels
-Panels sind der Kernbaustein von **FHEMApp**. Sie dienen zur Anzeige bzw. zur Steuerung deiner FHEM Devices in **FHEMApp**. Ein Panel kann dabei auch Informationen aus mehreren FHEM [Devices](#element-devices) anzeigen bzw. steuern. Unter den Einstellungen im Bereich Panels können Panels erstellt und konfiguriert werden. 
+Panels sind der Kernbaustein von **FHEMApp**. Sie dienen zur Anzeige bzw. zur Steuerung deiner FHEM Devices in **FHEMApp**. Ein Panel kann dabei auch Informationen aus mehreren FHEM Devices anzeigen bzw. steuern. Unter den [Einstellungen](#einstellungen) können Panels erstellt und konfiguriert werden. 
 
-Jedes Panel enthält 3 konfigurierbare Bereiche.
+Panels enthalten drei konfigurierbare Bereiche
 * den Bereich [status](#bereich-status) im oberen Teil des Panels
 * den Bereich [main](#bereich-main) im mittleren Teil des Panels
 * den Bereich [info](#bereich-info) im unteren Teil des Panels
 
-Für jeden Bereich können vielfältige Eigenschaften konfiguriert und mit den *Internals*, *Readings* oder *Attributen* deiner FHEM-Devices verknüpft werden. Der Bereich [main](#bereich-main) kann zudem mit mehreren Ebenen versehen werden, um komplexe Panels zu erstellen.
+Für jeden Bereich können vielfältige Elemente konfiguriert und mit den *Internals*, *Readings* oder *Attributen* deiner FHEM-Devices verknüpft werden. 
 
-Damit die Konfiguration nicht für jedes Panel erfolgen muss, können die Einstellungen auch in Vorlagen abgelegt und wiederverwendet werden. (siehe auch [Verwendung von Templates](#verwendung-von-templates))
+Der Bereich [main](#bereich-main) kann zudem mit mehreren Ebenen versehen werden, um komplexe Panels zu erstellen.
 
-Panels können in beliebigen Gruppen (z.B. nach Räumen oder Geräteart) zusammengefasst und dann über die Navigationsleiste ausgewählt und angezeigt werden. 
-## Verbinden mit FHEM Devices
-Jedes Panel kann mit einem oder mehreren FHEM-Devices verknüpft werden. Die Verknüpfung erfolgt in der [Panelkonfiguration](#panelkonfiguration) unter der [allgemeinen Einstallungen](#panel-allgemein) im Element [devices](#element-devices)
-## Verwendung von Templates
-Damit Konfigurationen nicht für jedes Panel erstellt werden müssen, können diese auch als Vorlage (template) erstellt und abgespeichert werden. Somit kann man Vorlagen für alle FHEM-Devices eines Typs (z.B. Schalter, Rolladenaktoren, Fensterkontakte, Thermostate...) erstellen. 
+Damit die Konfiguration nicht für jedes Panel erfolgen muss, können die Einstellungen auch in [Vorlagen](#vorlagen) abgelegt und wiederverwendet werden.
 
-Nachdem eine Vorlage (template) erstellt wurde, kann diese den  gewünschten Panels zugewiesen werden. (siehe auch [Element template](#element-template))
-
-Grundsätzlich können alle Elemente, die in einem Panel einstellbar sind auch in Vorlagen konfiguriert werden. In den nächsten Abschnitten wird die Panelkonfiguration beschrieben. Die Beschreibung trifft in gleicher Weise auch für Vorlagen zu.
-
-> [!IMPORTANT] Paneleinstellungen behalten ihre Gültigkeit auch dann, wenn dem Panel eine Vorlage zugewiesen wurde.
-## Zuweisung von Parametern
-
-> vielleicht auch alles unter Panelkonfiguration beschreiben?
-
-Alle konfigurierbaren Elemente in Panels folgen einem einheitlichen Definitions-Schema. Jedes Element kann mit *Internals*, *Readings* oder *Attributen* deiner FHEM-Devices verknüpft werden und auf deren Werte reagieren. Zudem können jedem Element unterschiedliche Eigenschaften zugewiesen werden. Welche Eigenschaften die einzelnen Elemente haben, wird in den folgenden Abschnitten beschrieben.
-
-Definitions-Schema (allgemein). Alle erforderlichen Angaben werden durch einen `:` voneinander getrennt.
+Panels können in beliebigen Gruppen (z.B. nach Räumen oder Geräteart) zusammengefasst und dann über die Navigationsleiste ausgewählt und angezeigt werden.
+## Konfiguration der Elemente
+Die Konfiguration der Elemente in den verschiedenen Bereichen des Panels erfolgt nach einem einheitlichen Definitions-Schema. Dabei werden die einzelnen Parameter immer durch einen Doppelpunkt `:` getrennt.
 ```
-<reading>:<filter>:<eigenschaft_1>:<eigenschaft_2>:<eigenschaft_n>
+reading:value:eigenschaft_1:eigenschaft_2:...
 ```
-### Zuweisung von Readings
-...
-### Verwendung von Filtern
-...
+Jede Definition beginnt mit den beiden Parametern `reading` und `value`. Diese dienen dazu, das Element mit einem *Reading* eines FHEM-Devices zu verknüpfen und optional auf einen bestimmten Wert zu prüfen. Statt *Readings* können auch *Internals* oder *Attribute* vom jeweiligen FHEM-Device angegeben werden. Der Parameter `reading` kann wie folgt angegeben werden.
+
+|Beispiel|Beschreibung|
+|----|---|
+|state|liefert das FHEM **Reading** `state` vom Device das als erstes im Panel definiert ist|
+|state-ts|liefert den **Zeitstempel** des FHEM Readings `state` vom Device das als erstes im Panel definiert ist|
+|a-alias|liefert das FHEM **Attribut** `alias` vom Device das als erstes im Panel definiert ist|
+|i-NAME|liefert das FHEM **Internal** `NAME` vom Device das als erstes im Panel definiert ist|
+|switch-state|liefert das FHEM **Reading** `state` vom Device das mit dem Key `switch` im Panel definiert ist|
+|switch-state-ts|liefert den **Zeitstempel** des FHEM Readings `state` vom Device das mit dem Key `switch` im Panel definiert ist|
+|swicht-a-alias|liefert das FHEM **Attribut** `alias` vom Device das mit dem Key `switch` im Panel definiert ist|
+|switch-i-NAME|liefert das FHEM **Internal** `NAME` vom Device das mit dem Key `switch` im Panel definiert ist|
+
+Eine Definition wird verwendet, wenn der Wert im Parameter `value` zutrifft. Der Parameter `value` wird wie folgt geprüft.
+
+|Beispiel|Beschreibung|
+|:---:|---|
+|12|Zahlenwert -> trifft zu wenn das *Reading* **>=12** ist|
+|on|Text -> trifft zu wenn das *Reading* den Text **on** enthält|
+|^on|RegExp -> triff zu wenn das *Reading* mit dem Text **on** beginnt|
+
+Werden mehrere Definitionen für ein Element erstellt, so wird die erste zutreffende Definition verwendet. 
+
+Die jeweiligen Eigenschaften der verfügbaren Elemente werden in den folgenden Abschnitten beschrieben.
 ## Ersetzungen
-...
-# Panelkonfiguration
-...
+Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zurückzugeben und zu formatieren. Folgende Möglichkeiten für Ersetzungen gibt es.
+|Ersetzung|Beschreibung|
+|---|---|
+|%s|gibt den Wert vom Parameter `reading` als Text zurück|
+|%n()|gibt den Wert vom Parameter `reading` als Ganzzahl zurück|
+|%n(2)|gibt den Wert vom Parameter `reading` als Zahl mit 2 Nachkommastellen zurück|
+|%n(0,1)|gibt den Wert vom Parameter `reading` als Ganzzahl mit einem **Offset** von +1 zurück|
+|%n(1,-1.5)|gibt den Wert vom Parameter `reading` als Zahl mit einer Nachkommastelle und einem **Offset** von -1,5 zurück|
+|%d()|gibt den Wert vom Parameter `reading` als Zeitstempel im gewählten Sprachschema zurück|
+|%d(time)|gibt den Wert vom Parameter `reading` als Zeitwert im gewählten Sprachschema zurück|
+|%d(date)|gibt den Wert vom Parameter `reading` als Datum im gewählten Sprachschema zurück|
+|%d({ "weekday"\: "long" })|gibt den Wert vom Parameter `reading` als Wochentag im gewählten Sprachschema zurück (siehe auch [Datumsformatierung](https://www.w3schools.com/jsref/jsref_tolocalestring.asp))|
+|%t(on)|gibt die Übersetzung für den Schlüssel `on` an. (siehe auch [Sprachen](#sprachen))|
+|\\: oder \&#058;|kann zur Ausgabe von `:` innerhalb von Element-Definitionen verwendet werden|
 ## Panel allgemein
 ...
 ### Element devices
@@ -181,8 +204,15 @@ Definitions-Schema (allgemein). Alle erforderlichen Angaben werden durch einen `
 ...
 ### Element info
 ...
-# Templates
-...
+# Vorlagen
+Damit Konfigurationen nicht für jedes Panel erstellt werden müssen, können diese auch als Vorlage (template) erstellt und abgespeichert werden. Somit kann man Vorlagen für alle FHEM-Devices eines Typs (z.B. Schalter, Rolladenaktoren, Fensterkontakte, Thermostate...) erstellen. 
+
+Nachdem eine Vorlage erstellt wurde, kann diese den gewünschten Panels in der [Panelkonfiguration](#panelkonfiguration) unter den [allgemeinen Einstellungen](#panel-allgemein) im Element [template](#element-template) zugewiesen werden.
+
+Grundsätzlich können alle Elemente, die in einem Panel konfigurierbar sind auch in Vorlagen konfiguriert werden. 
+
+> [!IMPORTANT] 
+> Paneleinstellungen behalten ihre Gültigkeit auch dann, wenn dem Panel eine Vorlage zugewiesen wurde.
 # Navigation
 ...
 # Farben
