@@ -127,17 +127,20 @@ Werden mehrere Definitionen für ein Element erstellt, so wird die erste zutreff
 Die jeweiligen Eigenschaften der verfügbaren Elemente werden in den folgenden Abschnitten beschrieben.
 ## Ersetzungen
 Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zurückzugeben und zu formatieren. Folgende Möglichkeiten für Ersetzungen gibt es.
+|Ersetzung|gibt den Wert vom Parameter `reading`|
+|---|---|
+|%s|als Text zurück|
+|%n()|als Ganzzahl zurück|
+|%n(2)|als Zahl mit 2 Nachkommastellen zurück|
+|%n(0,1)|als Ganzzahl mit einem **Offset** von +1 zurück|
+|%n(1,-1.5)|als Zahl mit einer Nachkommastelle und einem **Offset** von -1,5 zurück|
+|%d()|als Zeitstempel im gewählten Sprachschema zurück|
+|%d(time)|als Zeitwert im gewählten Sprachschema zurück|
+|%d(date)|als Datum im gewählten Sprachschema zurück|
+|%d({ "weekday"\\: "long" })|als Wochentag im gewählten Sprachschema zurück (siehe auch [Datumsformatierung](https://www.w3schools.com/jsref/jsref_tolocalestring.asp))|
+
 |Ersetzung|Beschreibung|
 |---|---|
-|%s|gibt den Wert vom Parameter `reading` als Text zurück|
-|%n()|gibt den Wert vom Parameter `reading` als Ganzzahl zurück|
-|%n(2)|gibt den Wert vom Parameter `reading` als Zahl mit 2 Nachkommastellen zurück|
-|%n(0,1)|gibt den Wert vom Parameter `reading` als Ganzzahl mit einem **Offset** von +1 zurück|
-|%n(1,-1.5)|gibt den Wert vom Parameter `reading` als Zahl mit einer Nachkommastelle und einem **Offset** von -1,5 zurück|
-|%d()|gibt den Wert vom Parameter `reading` als Zeitstempel im gewählten Sprachschema zurück|
-|%d(time)|gibt den Wert vom Parameter `reading` als Zeitwert im gewählten Sprachschema zurück|
-|%d(date)|gibt den Wert vom Parameter `reading` als Datum im gewählten Sprachschema zurück|
-|%d({ "weekday"\: "long" })|gibt den Wert vom Parameter `reading` als Wochentag im gewählten Sprachschema zurück (siehe auch [Datumsformatierung](https://www.w3schools.com/jsref/jsref_tolocalestring.asp))|
 |%t(on)|gibt die Übersetzung für den Schlüssel `on` an. (siehe auch [Sprachen](#sprachen))|
 |\\: oder \&#058;|kann zur Ausgabe von `:` innerhalb von Element-Definitionen verwendet werden|
 ## Panel allgemein
