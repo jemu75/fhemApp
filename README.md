@@ -121,10 +121,11 @@ Eine Definition wird verwendet, wenn der Wert im Parameter `value` zutrifft. Der
 |12|Zahlenwert -> trifft zu wenn das *Reading* **>=12** ist|
 |on|Text -> trifft zu wenn das *Reading* den Text **on** enthält|
 |^on|RegExp -> triff zu wenn das *Reading* mit dem Text **on** beginnt|
+||Es erfolgt **keine Prüfung**. die Definition wird verwendet.
 
 Werden mehrere Definitionen für ein Element erstellt, so wird die erste zutreffende Definition verwendet. 
 
-Die jeweiligen Eigenschaften der verfügbaren Elemente werden in den folgenden Abschnitten beschrieben.
+Die jeweiligen Eigenschaften der Elemente werden in den folgenden Abschnitten beschrieben.
 ## Ersetzungen
 Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zurückzugeben und zu formatieren. Folgende Möglichkeiten für Ersetzungen gibt es.
 |Ersetzung|gibt den Wert vom Parameter `reading`|
@@ -142,6 +143,7 @@ Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zu
 |Ersetzung|Beschreibung|
 |---|---|
 |%t(on)|gibt die Übersetzung für den Schlüssel `on` an. (siehe auch [Sprachen](#sprachen))|
+|%v|liefert den aktuellen Wert von Slidern
 |\\: oder \&#058;|kann zur Ausgabe von `:` innerhalb von Element-Definitionen verwendet werden|
 ## Panel allgemein
 ...
