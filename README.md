@@ -164,9 +164,22 @@ Liste der FHEM-Devices, die mit dem Panel verknüpft sind. Es muss mindestens ei
 ### Element template
 Optional kann eine [Vorlage](#vorlagen) ausgewählt werden, die für die Darstellung des Panels verwendet werden soll. Elemente die im Panel (unter **erweiterte Konfiguration**) definiert wurden, behalten ihre Gültigkeit wenn eine Vorlage verwendet wird. In diesem Fall werden die betreffenden Definitionen aus der Vorlage ignoriert. 
 ### Element navigation
-...
+Liste der Navigationspunkte, unter denen das Panel angezeigt wird. Im Gegensatz zu normalen Definitionen, werden hier **alle** Definitionen verwendet, deren Bedingungen zutreffen.  
+
+|Parameter|Beschreibung|
+|---|---|
+|reading|siehe Parameter [reading](#konfiguration-der-elemente)|
+|value|siehe Parameter [value](#konfiguration-der-elemente)|
+|route|Navigationspunkt unter dem das Panel angezeigt werden soll. Die Angabe kann auf gleiche Weise wie im FHEM-Attribut [room](https://wiki.fhem.de/wiki/Room) erfolgen.  
 ### Element expandable
-...
+Dieses Element legt fest, ob ein Panel ausklappbar ist, sobald es mehr als eine aktive Ebene im Bereich [main](#bereich-main) enthält. Weiterhin kann festgelegt werden, ob das Panel beim Laden bereits ausgeklappt sein soll. 
+
+|Parameter|Beschreibung|
+|---|---|
+|reading|siehe Parameter [reading](#konfiguration-der-elemente)|
+|value|siehe Parameter [value](#konfiguration-der-elemente)|
+|expandable| true \| **false**|
+|expanded| true \| **false**|
 ### Element size
 ...
 ### Element sortby
