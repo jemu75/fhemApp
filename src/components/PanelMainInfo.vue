@@ -57,6 +57,7 @@
 
     <v-progress-linear v-if="el.status && status.linear" 
         height="7"
+        rounded
         v-model="status.level"
         :color="status.color"
         :reverse="status.reverse">

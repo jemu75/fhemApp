@@ -82,26 +82,23 @@ Durch Aktivierung dieser Optionen wird das Optionsmenü oben rechts in der Kopfl
 ## Optionsmenü FHEM Befehle
 Neben den festen Optionen können im Optionsmenü auch FHEM Befehle hinterlegt werden. Es können beliebig viele FHEM Befehle im Optionsmenü hinterlegt werden. Jeder Befehl kann mit einer individuellen Beschriftung und optional mehrsprachig (siehe auch [Sprachen](#sprachen)) sowie mit einem Icon versehen werden. Zudem muss das vollständige FHEM-Kommando angegeben werden.  
 # Panels
-Panels sind der Kernbaustein von **FHEMApp**. Sie dienen zur Anzeige bzw. zur Steuerung deiner FHEM Devices in **FHEMApp**. Ein Panel kann dabei auch Informationen aus mehreren FHEM Devices anzeigen bzw. steuern. Unter den [Einstellungen](#einstellungen) können Panels erstellt und konfiguriert werden. 
+Panels bilden den Kernbaustein von **FHEMApp**. Über Panels werden deine Geräte, die du in FHEM eingebunden hast, angezeigt und gesteuert. Jedes Panel besteht aus drei **Bereichen**. Jeder **Bereich** enthält verschiedene **Elemente**. Jedes **Element** kann mit *Readings*, *Attributes* oder *Internals* von FHEM Devices verknüpft werden. So kannst du deine FHEM Devices in **FHEMApp** visualisieren und steuern. Damit die Konfiguration nicht für jedes Panel erfolgen muss, können die Einstellungen auch in [Vorlagen](#vorlagen) abgelegt und wiederverwendet werden. Panels können in beliebigen Gruppen (z.B. nach Räumen oder Geräteart) zusammengefasst und dann über die Navigationsleiste ausgewählt werden.
 
 Panels enthalten drei konfigurierbare Bereiche
 * den Bereich [status](#bereich-status) im oberen Teil des Panels
 * den Bereich [main](#bereich-main) im mittleren Teil des Panels
 * den Bereich [info](#bereich-info) im unteren Teil des Panels
 
-Für jeden Bereich können vielfältige Elemente konfiguriert und mit den *Internals*, *Readings* oder *Attributen* deiner FHEM-Devices verknüpft werden. 
-
 Der Bereich [main](#bereich-main) kann zudem mit mehreren Ebenen versehen werden, um komplexe Panels zu erstellen.
 
-Damit die Konfiguration nicht für jedes Panel erfolgen muss, können die Einstellungen auch in [Vorlagen](#vorlagen) abgelegt und wiederverwendet werden.
-
-Panels können in beliebigen Gruppen (z.B. nach Räumen oder Geräteart) zusammengefasst und dann über die Navigationsleiste ausgewählt und angezeigt werden.
 ## Konfiguration der Elemente
-Die Konfiguration der Elemente in den verschiedenen Bereichen des Panels erfolgt nach einem einheitlichen Definitions-Schema. Dabei werden die einzelnen Parameter immer durch einen Doppelpunkt `:` getrennt.
+Die Konfiguration der Elemente in den verschiedenen Bereichen des Panels erfolgt nach einem einheitlichen Definitions-Schema. 
 ```
-reading:value:eigenschaft_1:eigenschaft_2:...
+reading:value:property_1:property_2:...
 ```
-Jede Definition beginnt mit den beiden Parametern `reading` und `value`. Diese dienen dazu, das Element mit einem *Reading* eines FHEM-Devices zu verknüpfen und optional auf einen bestimmten Wert zu prüfen. Statt *Readings* können auch *Internals* oder *Attribute* vom jeweiligen FHEM-Device angegeben werden. Der Parameter `reading` kann wie folgt angegeben werden.
+Für jedes Element können mehrere Definitionen hinterlegt werden. So können beispielsweise Buttons ihr Aussehen abhängig vom Wert eines *Readings* verändern oder Icons abhängig vom Wert eines *Readings* angezeigt werden. Neben *Readings* können auch *Attributes* und *Internals* für Definitionen verwendet werden. 
+
+Jede Definition beginnt mit den beiden Parametern `reading` und `value`. Diese dienen dazu, das Element mit einem FHEM-Device zu verbinden und optional auf einen bestimmten Werte zu prüfen. Folgende Beispiele zeigen, wie der Parameter `reading` verwendet werden kann. 
 
 |Beispiel|Beschreibung|
 |----|---|
@@ -114,18 +111,14 @@ Jede Definition beginnt mit den beiden Parametern `reading` und `value`. Diese d
 |swicht-a-alias|liefert das FHEM **Attribut** `alias` vom Device das mit dem Key `switch` im Panel definiert ist|
 |switch-i-NAME|liefert das FHEM **Internal** `NAME` vom Device das mit dem Key `switch` im Panel definiert ist|
 
-Eine Definition wird verwendet, wenn der Wert im Parameter `value` zutrifft. Der Parameter `value` wird wie folgt geprüft.
+Eine Definition wird verwendet, wenn der Wert im Parameter `value` zutrifft. Es wird immer die erste zutreffende Definition verwendet.  Der Parameter `value` wird wie folgt geprüft.
 
 |Beispiel|Beschreibung|
-|:---:|---|
-|12|Zahlenwert -> trifft zu wenn das *Reading* **>=12** ist|
-|on|Text -> trifft zu wenn das *Reading* den Text **on** enthält|
-|^on|RegExp -> triff zu wenn das *Reading* mit dem Text **on** beginnt|
-||Es erfolgt **keine Prüfung**. die Definition wird verwendet.
-
-Werden mehrere Definitionen für ein Element erstellt, so wird die erste zutreffende Definition verwendet. 
-
-Die jeweiligen Eigenschaften der Elemente werden in den folgenden Abschnitten beschrieben.
+|---|---|
+|`temperature:12:...`|Zahlenwert -> trifft zu wenn das *Reading* **größer oder gleich** *12* ist|
+|`state:on:...`|Text -> trifft zu wenn das *Reading* den Text *on* **enthält**|
+|`state:^on:...`|RegExp -> triff zu wenn das *Reading* mit dem Text *on* **beginnt**|
+|`state::...`|Es erfolgt **keine weitere Prüfung**. die Definition wird verwendet.
 ## Ersetzungen
 Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zurückzugeben und zu formatieren. Folgende Möglichkeiten für Ersetzungen gibt es.
 |Ersetzung|gibt den Wert vom Parameter `reading`|
@@ -145,6 +138,18 @@ Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zu
 |%t(on)|gibt die Übersetzung für den Schlüssel `on` an. (siehe auch [Sprachen](#sprachen))|
 |%v|liefert den aktuellen Wert von Slidern
 |\\: oder \&#058;|kann zur Ausgabe von `:` innerhalb von Element-Definitionen verwendet werden|
+
+|Beispiel|Reading|Ausgabe|Hinweis|
+|---|---|---|---|
+|`state::%s`|on|on|
+|`temperature::%n(0)`|12.5|13|
+|`desired-temp::%n(1,2)`|22.5|24,5|Komma und tausender Trennzeichen abhängig vom Sprachschema|
+|`state-ts::%d()`|2023-12-17 17:53:32|17.12.2023 17:53:32|abhängig vom Sprachschema|
+|`state-ts::%d(time)`|2023-12-17 17:53:32|17:53:32|abhängig vom Sprachschema|
+|`state-ts::%d(date)`|2023-12-17 17:53:32|17.12.2023|abhängig vom Sprachschema|
+|`state-ts::%d({ "weekday"\: "long" })`|2023-12-17 17:53:32|Sonntag|abhängig vom Sprachschema|
+|`state::%t(on)`|on|an|wenn unter [Sprachen](#sprachen) für den Schlüssel *on* im Sprachschema *an* hinterlegt wurde|
+|`temp::Temperatur\: %n(1)°C`|18.7|Temperatur: 18,7°C|
 ## Panel allgemein
 ...
 ### Element devices
