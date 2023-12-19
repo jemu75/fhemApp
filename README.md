@@ -82,7 +82,7 @@ Durch Aktivierung dieser Optionen wird das Optionsmenü oben rechts in der Kopfl
 ## Optionsmenü FHEM Befehle
 Neben den festen Optionen können im Optionsmenü auch FHEM Befehle hinterlegt werden. Es können beliebig viele FHEM Befehle im Optionsmenü hinterlegt werden. Jeder Befehl kann mit einer individuellen Beschriftung und optional mehrsprachig (siehe auch [Sprachen](#sprachen)) sowie mit einem Icon versehen werden. Zudem muss das vollständige FHEM-Kommando angegeben werden.  
 # Panels
-Panels bilden den Kernbaustein von **FHEMApp**. Über Panels werden deine Geräte, die du in FHEM eingebunden hast, angezeigt und gesteuert. Jedes Panel besteht aus drei **Bereichen**. Jeder **Bereich** enthält verschiedene **Elemente**. Jedes **Element** kann mit *Readings*, *Attributes* oder *Internals* von FHEM Devices verknüpft werden. So kannst du deine FHEM Devices in **FHEMApp** visualisieren und steuern. Damit die Konfiguration nicht für jedes Panel erfolgen muss, können die Einstellungen auch in [Vorlagen](#vorlagen) abgelegt und wiederverwendet werden. Panels können in beliebigen Gruppen (z.B. nach Räumen oder Geräteart) zusammengefasst und dann über die Navigationsleiste ausgewählt werden.
+Panels bilden den Kernbaustein von **FHEMApp**. Alle Geräte die du in FHEM eingebunden hast, können in **FHEMApp** über Panels visualisiert und gesteuert werden. Jedes Panel besteht aus drei **Bereichen**. Jeder **Bereich** enthält verschiedene **Elemente**. Jedes **Element** kann mit *Readings*, *Attributes* oder *Internals* von FHEM Devices verknüpft werden. Damit die Konfiguration nicht für jedes Panel erfolgen muss, können [Vorlagen](#vorlagen) erstellt werden. Panels können in beliebigen Gruppen (z.B. nach Räumen oder Geräteart) zusammengefasst und dann über die Navigationsleiste zur Anzeige gebracht werden.
 
 Panels enthalten drei konfigurierbare Bereiche
 * den Bereich [status](#bereich-status) im oberen Teil des Panels
@@ -96,20 +96,20 @@ Die Konfiguration der Elemente in den verschiedenen Bereichen des Panels erfolgt
 ```
 reading:value:property_1:property_2:...
 ```
-Für jedes Element können mehrere Definitionen hinterlegt werden. So können beispielsweise Buttons ihr Aussehen abhängig vom Wert eines *Readings* verändern oder Icons abhängig vom Wert eines *Readings* angezeigt werden. Neben *Readings* können auch *Attributes* und *Internals* für Definitionen verwendet werden. 
+Für jedes Element können mehrere Definitionen hinterlegt werden. So können beispielsweise Buttons ihr Aussehen abhängig vom Wert eines *Readings* verändern oder unterschiedliche Icons abhängig vom Wert eines *Readings* angezeigt werden. Neben *Readings* können auch *Attributes* und *Internals* für Definitionen verwendet werden. 
 
-Jede Definition beginnt mit den beiden Parametern `reading` und `value`. Diese dienen dazu, das Element mit einem FHEM-Device zu verbinden und optional auf einen bestimmten Werte zu prüfen. Folgende Beispiele zeigen, wie der Parameter `reading` verwendet werden kann. 
+Jede Definition beginnt mit den beiden Parametern `reading` und `value`. Diese dienen dazu, das Element mit einem FHEM-Device zu verbinden und optional auf einen bestimmten Wert zu prüfen. Folgende Beispiele zeigen, wie der Parameter `reading` verwendet werden kann. 
 
 |Beispiel|Beschreibung|
 |----|---|
-|state|liefert das FHEM **Reading** `state` vom Device das als erstes im Panel definiert ist|
-|state-ts|liefert den **Zeitstempel** des FHEM Readings `state` vom Device das als erstes im Panel definiert ist|
-|a-alias|liefert das FHEM **Attribut** `alias` vom Device das als erstes im Panel definiert ist|
-|i-NAME|liefert das FHEM **Internal** `NAME` vom Device das als erstes im Panel definiert ist|
-|switch-state|liefert das FHEM **Reading** `state` vom Device das mit dem Key `switch` im Panel definiert ist|
-|switch-state-ts|liefert den **Zeitstempel** des FHEM Readings `state` vom Device das mit dem Key `switch` im Panel definiert ist|
-|swicht-a-alias|liefert das FHEM **Attribut** `alias` vom Device das mit dem Key `switch` im Panel definiert ist|
-|switch-i-NAME|liefert das FHEM **Internal** `NAME` vom Device das mit dem Key `switch` im Panel definiert ist|
+|`state::...`|liefert das FHEM **Reading** `state` vom Device das als erstes im Panel definiert ist|
+|`state-ts::...`|liefert den **Zeitstempel** des FHEM Readings `state` vom Device das als erstes im Panel definiert ist|
+|`a-alias::...`|liefert das FHEM **Attribut** `alias` vom Device das als erstes im Panel definiert ist|
+|`i-NAME::...`|liefert das FHEM **Internal** `NAME` vom Device das als erstes im Panel definiert ist|
+|`switch-state::...`|liefert das FHEM **Reading** `state` vom Device das mit dem Key `switch` im Panel definiert ist|
+|`switch-state-ts::...`|liefert den **Zeitstempel** des FHEM Readings `state` vom Device das mit dem Key `switch` im Panel definiert ist|
+|`switch-a-alias::...`|liefert das FHEM **Attribut** `alias` vom Device das mit dem Key `switch` im Panel definiert ist|
+|`switch-i-NAME::...`|liefert das FHEM **Internal** `NAME` vom Device das mit dem Key `switch` im Panel definiert ist|
 
 Eine Definition wird verwendet, wenn der Wert im Parameter `value` zutrifft. Es wird immer die erste zutreffende Definition verwendet.  Der Parameter `value` wird wie folgt geprüft.
 
