@@ -101,15 +101,15 @@ Für jedes Element können mehrere Definitionen hinterlegt werden. So können be
 Jede Definition beginnt mit den beiden Parametern `reading` und `value`. Diese dienen dazu, das Element mit einem FHEM-Device zu verbinden und optional auf einen bestimmten Wert zu prüfen. Folgende Beispiele zeigen, wie der Parameter `reading` verwendet werden kann. 
 
 |Beispiel|Beschreibung|
-|----|---|
-|`state::...`|liefert das FHEM **Reading** `state` vom Device das als erstes im Panel definiert ist|
-|`state-ts::...`|liefert den **Zeitstempel** des FHEM Readings `state` vom Device das als erstes im Panel definiert ist|
-|`a-alias::...`|liefert das FHEM **Attribut** `alias` vom Device das als erstes im Panel definiert ist|
-|`i-NAME::...`|liefert das FHEM **Internal** `NAME` vom Device das als erstes im Panel definiert ist|
-|`switch-state::...`|liefert das FHEM **Reading** `state` vom Device das mit dem Key `switch` im Panel definiert ist|
-|`switch-state-ts::...`|liefert den **Zeitstempel** des FHEM Readings `state` vom Device das mit dem Key `switch` im Panel definiert ist|
-|`switch-a-alias::...`|liefert das FHEM **Attribut** `alias` vom Device das mit dem Key `switch` im Panel definiert ist|
-|`switch-i-NAME::...`|liefert das FHEM **Internal** `NAME` vom Device das mit dem Key `switch` im Panel definiert ist|
+|---|---|
+|`state`|liefert das FHEM **Reading** `state` vom Device das als erstes im Panel definiert ist|
+|`state-ts`|liefert den **Zeitstempel** des FHEM Readings `state` vom Device das als erstes im Panel definiert ist|
+|`a-alias`|liefert das FHEM **Attribut** `alias` vom Device das als erstes im Panel definiert ist|
+|`i-NAME`|liefert das FHEM **Internal** `NAME` vom Device das als erstes im Panel definiert ist|
+|`switch-state`|liefert das FHEM **Reading** `state` vom Device das mit dem Key `switch` im Panel definiert ist|
+|`switch-state-ts`|liefert den **Zeitstempel** des FHEM Readings `state` vom Device das mit dem Key `switch` im Panel definiert ist|
+|`switch-a-alias`|liefert das FHEM **Attribut** `alias` vom Device das mit dem Key `switch` im Panel definiert ist|
+|`switch-i-NAME`|liefert das FHEM **Internal** `NAME` vom Device das mit dem Key `switch` im Panel definiert ist|
 
 Eine Definition wird verwendet, wenn der Wert im Parameter `value` zutrifft. Es wird immer die erste zutreffende Definition verwendet.  Der Parameter `value` wird wie folgt geprüft.
 
@@ -151,11 +151,18 @@ Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zu
 |`state::%t(on)`|on|an|wenn unter [Sprachen](#sprachen) für den Schlüssel *on* im Sprachschema *an* hinterlegt wurde|
 |`temp::Temperatur\: %n(1)°C`|18.7|Temperatur: 18,7°C|
 ## Panel allgemein
-...
+In den allgemeinen Einstellungen für Panels wird festgelegt, mit welchen FHEM **Devices** das Panel verknüpft ist und ob eine **Vorlage** zur Darstellung des Panels verwendet werden soll. Weiterhin wird festgelegt, unter welchen Navigationspunkten das Panel zur Anzeige gebracht werden soll. Zusätzlich können verschiedene Einstellung zur Darstellung des Panels erfolgen.
+
+Die Aktivierung der **erweitere Konfiguration** ermöglicht die Anpassung aller Bereiche und Elemente des Panels, wenn keine [Vorlage](#vorlagen) verwendet werden soll, oder bestimmte Einstellung einer verwendeten Vorlage überschrieben werden sollen.
 ### Element devices
-...
+Liste der FHEM-Devices, die mit dem Panel verknüpft sind. Es muss mindestens ein FHEM-Device mit einem Panel verknüpft werden.
+
+|Parameter|Beschreibung|
+|---|---|
+|key|eindeutiger Bezeichner, der für den Parameter `reading` in Definitionen oder für FHEM Befehle in Definitionen benötigt wird|
+|device|Name des FHEM Device, mit dem das Panel verknüpft ist|
 ### Element template
-...
+Optional kann eine [Vorlage](#vorlagen) ausgewählt werden, die für die Darstellung des Panels verwendet werden soll. Elemente die im Panel (unter **erweiterte Konfiguration**) definiert wurden, behalten ihre Gültigkeit wenn eine Vorlage verwendet wird. In diesem Fall werden die betreffenden Definitionen aus der Vorlage ignoriert. 
 ### Element navigation
 ...
 ### Element expandable
