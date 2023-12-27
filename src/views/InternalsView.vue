@@ -6,7 +6,6 @@
   const fhem = useFhemStore()
 </script>
 
-
 <template>  
   <v-card>
       <json-viewer

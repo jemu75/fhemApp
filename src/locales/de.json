@@ -43,6 +43,8 @@
                 "iconPlaceholder": "mdi-home",
                 "groupAsChips": "Kompakt",
                 "groupAsChipsHint": "Kompakte Darstellung untergeordneter Navigationspunkte",
+                "sort": "sortiert",
+                "sortHint": "Sortiert untergeordneter Navigationspunkte aufsteigend",
                 "divider": "Trennlinie",
                 "dividerHint": "Trennlinie unterhalb des Navigationspunktes"
             },

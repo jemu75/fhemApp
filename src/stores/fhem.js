@@ -7,15 +7,6 @@ import { useTheme } from 'vuetify'
 export const useFhemStore = defineStore('fhem', () => {
     const i18n = useI18n()
     const theme = useTheme()
-    
-    //only for unit testing
-    /*
-    const i18n = { 
-        locale: {
-            value: 'de'
-        }
-    }
-    */
 
     const app = reactive({
         settings: {
@@ -330,17 +321,11 @@ export const useFhemStore = defineStore('fhem', () => {
     //coreFunction to handle all Events in Buffer
     function handleEventBuffer() {
         let idx,
-            //viewIdx,
             evts = stat.evtBuffer.length
         
         if(!app.isReady || evts === 0) return
 
         for(const evt of stat.evtBuffer) {
-            //ToDo
-            //Updates überwachen -> configFile, Navigation müssen createSession auslösen
-            //Navigation ggf. nur neu laden der Navigation
-            //configFile ggf. auch nicht komplett neue Session laden
-
             idx = stat.panelMap.map((e) => e.reading).indexOf(evt.reading)
 
             if(idx !== -1) {
@@ -426,17 +411,17 @@ export const useFhemStore = defineStore('fhem', () => {
     }
 
     //subFunction called from openEventWatcher to reconnect FHEM
-    function refreshEventWatcher() {
+    function refreshEventWatcher(delay) {
         let res
 
-        log(3, 'Connection to FHEM was interrupted. Try to reconnect in 3 seconds.', null, 'reconnect')
+        log(3, 'Connection to FHEM was interrupted. Try to reconnect' + delay > 0 ? ' in 3 seconds.' : '.', null, delay > 0 ? 'reconnect' : null)
         stat.conn = null
         app.isReady = false
 
         setTimeout(async () => {
             res = await createSession(true)
-            if(!res) refreshEventWatcher()
-        }, 3000)
+            if(!res) refreshEventWatcher(3000)
+        }, delay)
     }
 
     //helperFunction called from createPanelMap for handle reading-definitions in Panels
@@ -488,9 +473,6 @@ export const useFhemStore = defineStore('fhem', () => {
         let res = [],
             part
 
-        //only for compatibily with fhemapp4
-        if(typeof devices === 'string') devices = [devices]
-
         if(!Array.isArray(devices) || (Array.isArray(devices) && devices.length === 0)) return false
 
         for(const device of devices) {
@@ -525,7 +507,7 @@ export const useFhemStore = defineStore('fhem', () => {
                         for(const [lvlIdx, mainLevel] of Object.entries(panelDef.main)) {
                             for(const key of Object.keys(mainLevel.level)) {
                                 if(mainLevel.level[key]) {
-                                    Object.assign(panel.main[lvlIdx], mainLevel)
+                                    panel.main[lvlIdx] = mainLevel
                                     break
                                 }
                             }
@@ -726,7 +708,7 @@ export const useFhemStore = defineStore('fhem', () => {
                     if(RegExp(!defParts[1] ? '.' : defParts[1]).test(defParts[0])) isTrue = true
                 } else {
                     numPart = /-?[0-9]/.exec(defParts[0])
-                    if(numPart.index != -1) {
+                    if(numPart && numPart.index !== -1) {
                         if(parseFloat(defParts[0].slice(numPart.index)) >= filter) isTrue = true
                     }
                 }
@@ -772,6 +754,17 @@ export const useFhemStore = defineStore('fhem', () => {
         return navObj
     }
 
+    function sortNavItems(group) {
+        for(const item of group) {
+            if(item.sort && item.group && item.group.length > 1) {
+                item.group.sort((a, b) => (a.title > b.title) ? 1 : (b.title > a.title) ? -1 : 0)
+                //console.log(item)
+            }
+
+            if(item.group) sortNavItems(item.group)
+        }
+    }
+
     //coreFunction to create Navigation
     function createNavigation() {
         let routes = []
@@ -784,6 +777,8 @@ export const useFhemStore = defineStore('fhem', () => {
             }
         }
 
+        sortNavItems(app.navigation)
+        
         log(4, 'Navigation loaded.', app.navigation)
         return true
     }
@@ -865,7 +860,4 @@ export const useFhemStore = defineStore('fhem', () => {
 
     //only for production
     return { app, getEl, handleDefs, getIcon, replacer, createSession, request, help }
-
-    //only for unit testing
-    //return { app, handleURL, base64ToString, stringToJson, handleDefs }
 })

@@ -16,13 +16,11 @@
     <v-layout>
       <v-overlay
         :model-value="!fhem.app.isReady && !fhem.app.message"
-        class="align-center justify-center"
-        >
+        class="align-center justify-center">
         <v-progress-circular
-        color="primary"
-        indeterminate
-        size="64"
-        ></v-progress-circular>
+          indeterminate          
+          size="64">
+        </v-progress-circular>
       </v-overlay>
 
       <v-navigation-drawer v-model="drawer" color="secondary">

@@ -2,6 +2,10 @@
     import { ref, computed } from 'vue'
     import { useFhemStore } from '@/stores/fhem'
     import { useDisplay } from 'vuetify'
+
+    import VueJsonPretty from 'vue-json-pretty'
+    import 'vue-json-pretty/lib/styles.css'
+
     import SettingsPropsList from './SettingsPropsList.vue'
     import SettingsPropsMain from './SettingsPropsMain.vue'
     import PanelCard from '../components/PanelCard.vue'
@@ -60,6 +64,8 @@
     })
 
     const showNew = ref(true)
+
+    const preview = ref('panel')
 
     const extendedSettings = ref(props.type === 'panels' ? false : true )
 
@@ -229,10 +235,20 @@
                                 variant="outlined">
                             </v-autocomplete>
                         </v-col>
+                        <v-col class="text-right">
+                            <v-btn
+                                variant="text"
+                                :icon="preview === 'panel' ? 'mdi-code-json' : 'mdi-view-day'"
+                                @click="preview = preview === 'panel' ? 'json' : 'panel'">
+                            </v-btn>
+                        </v-col>
                     </v-row>
                     <v-row v-if="fhem.app.isReady && getPreviewPanel()" no-gutters>
-                        <v-col>
+                        <v-col v-if="preview === 'panel'">
                             <PanelCard :panel="getPreviewPanel()"></PanelCard>
+                        </v-col>
+                        <v-col v-if="preview === 'json'">                            
+                            <vue-json-pretty :data="getPreviewPanel()" :deep="1" :showLine="false"/>
                         </v-col>
                     </v-row>
                 </v-list-item>

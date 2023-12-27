@@ -19,6 +19,7 @@
       icon: null,
       divider: false,
       groupAsChips: false,
+      sort: false,
       group: []
     }
   })
@@ -122,6 +123,12 @@
             :label="$t(preLang + 'groupAsChips')"
             v-model="item.groupAsChips"/>
         </v-col>
+        <v-col :cols="4" lg="" class="pt-1">
+          <v-checkbox               
+          :hint="$t(preLang + 'sortHint')"
+            :label="$t(preLang + 'sort')"
+            v-model="item.sort"/>
+        </v-col>
         <v-col cols="4" lg="" class="pt-1">
           <v-checkbox
             :hint="$t(preLang + 'dividerHint')"              
@@ -180,6 +187,12 @@
               :hint="$t(preLang + 'groupAsChipsHint')"               
               :label="$t(preLang + 'groupAsChips')"
               v-model="navSettings.newItem.groupAsChips"/>
+          </v-col>
+          <v-col cols="4" lg="" class="pt-1">
+            <v-checkbox
+              :hint="$t(preLang + 'sortHint')"               
+              :label="$t(preLang + 'sort')"
+              v-model="navSettings.newItem.sort"/>
           </v-col>
           <v-col cols="4" lg="" class="pt-1">
             <v-checkbox               
