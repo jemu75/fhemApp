@@ -32,6 +32,7 @@
         level: [
             { type: 'defs', required: false, prop: 'show', def: 'reading:value:boolean', help: 'main-element-show' },
             { type: 'defs', required: false, prop: 'divider', def: 'reading:value:boolean', help: 'main-element-divider' },
+            { type: 'defs', required: false, prop: 'height', def: 'reading:value:height', help: 'main-element-height' },
             { type: 'types', required: false, prop: 'left1', help: 'main-element-typ' },
             { type: 'types', required: false, prop: 'left2', help: 'main-element-typ' },
             { type: 'types', required: false, prop: 'mid', help: 'main-element-typ' },

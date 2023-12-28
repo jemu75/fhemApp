@@ -97,6 +97,14 @@
         return res
     }
 
+    function getMidSize() {
+        let leftText = infoLeft1.value.text || infoLeft2.value.text ? true : false
+        let midText = infoMid1.value.text || infoMid2.value.text ? true : false
+        let rightText = infoRight1.value.text || infoRight2.value.text ? true : false
+        
+        return !leftText && midText && !rightText ? 7 : null
+    }
+
     const infoLeft1 = computed(() => getInfo('left1'))
     const infoLeft2 = computed(() => getInfo('left2'))
     const infoMid1 = computed(() => getInfo('mid1'))
@@ -155,7 +163,7 @@
                         <span v-if="infoLeft2.text">{{ infoLeft2.text }}</span>
                     </v-col>
 
-                    <v-col class="text-truncate text-center">
+                    <v-col class="text-truncate text-center" :cols="getMidSize()">
                         <v-icon v-if="infoMid1.icon" :icon="infoMid1.icon" :color="infoMid1.color" size="small"></v-icon>
                         <span v-if="infoMid1.text">{{ infoMid1.text }}</span>
                         <v-icon v-if="infoMid2.icon" :icon="infoMid2.icon" :color="infoMid2.color" size="small" class="ml-2"></v-icon>

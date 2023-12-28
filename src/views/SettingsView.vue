@@ -35,8 +35,8 @@
 </script>
 
 <template>
-  <v-card color="primary">
-    <v-toolbar color="primary">
+  <v-card>
+    <v-toolbar>
       <v-toolbar-title>
         {{ $t('_app.settings.title') }}
       </v-toolbar-title>
@@ -55,7 +55,7 @@
       </template>
     </v-toolbar>
 
-    <v-tabs bg-color="primary" v-model="settingsTab">
+    <v-tabs v-model="settingsTab">
       <v-tab v-for="tab of tabs" :value="tab" :key="tab">{{ $t('_app.settings.' + tab + '.title', 2) }}</v-tab>
     </v-tabs>
 

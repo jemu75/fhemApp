@@ -75,7 +75,7 @@
             },
             "content": {
                 "title": "Sprache | Sprachen",
-                "newKey": "neuer Schlüssel",
+                "newKey": "neue Variable",
                 "newLang": "neue Sprache (ISO-639)"
             },
             "rules": {
@@ -88,6 +88,10 @@
             "darkMode": "Tag/Nacht Modus",
             "reload": "Aktualisieren",
             "settings": "Einstellungen"
+        },
+        "internals": {
+            "title": "Systeminformationen",
+            "onlyConfig": "nur Config anzeigen"
         },
         "messages": {
             "request": {

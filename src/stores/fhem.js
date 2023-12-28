@@ -587,7 +587,7 @@ export const useFhemStore = defineStore('fhem', () => {
 
             val = getEl(res.Results[idx], jsonList2Item)
 
-            if(val) for(const path of item.items) doUpdate(panelList, path, val)
+            for(const path of item.items) doUpdate(panelList, path, val)
         }
 
         app.panelList = panelList
@@ -621,14 +621,14 @@ export const useFhemStore = defineStore('fhem', () => {
         if(/&#058;/.test(val)) val = val.replace(/&#058;/g,':')
         if(/&#058;/.test(res)) res = res.replace(/&#058;/g,':')
 
-        if(/%s/.test(res) && val) res = res.replace(/%s/g, val)
+        if(/%s/.test(res)) res = res.replace(/%s/g, val)
 
-        if(/%n\(.*\)/.test(res) && val) {
+        if(/%n\(.*\)/.test(res)) {
             res = res.replace('%n()','%n(0)')
             let def = /%n\(.*[0-9]\)/.exec(res)
             let chkNum = /-?[0-9]/.exec(val)
 
-            if(!chkNum) return res
+            if(!chkNum) return null
 
             let opts = def[0].slice(3,-1).split(',')
             let ofs = parseFloat(opts[1] || 0)
@@ -700,7 +700,7 @@ export const useFhemStore = defineStore('fhem', () => {
                 continue
             }
 
-            if(defParts[0] && defParts[1]) {
+            if(defParts[1]) {
                 isTrue = false
                 filter = parseFloat(defParts[1])
 

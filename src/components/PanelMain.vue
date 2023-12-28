@@ -31,6 +31,10 @@
         return lvl[position] ? fhem.handleDefs(lvl[position].divider, ['show'],[false]).show : false
     }
 
+    function getHeight(lvl) {
+        return lvl.level ? fhem.handleDefs(lvl.level.height, ['height'],['64px']).height : '64px'
+    }
+
     function getComponent(type) {
         if(type === 'info') return PanelMainInfo
         if(type === 'btn') return PanelMainBtn
@@ -44,7 +48,7 @@
     <div v-for="(lvl, idx) of main" :key="idx">
         <v-expand-transition>
             <v-row v-if="levels.indexOf(idx) !== -1 ? true : false" no-gutters class="text-center align-center">
-                <v-sheet :height="showDivider(lvl, 'level') || levels.length < 2 ? '64px' : '55px'"></v-sheet>
+                <v-sheet :height="getHeight(lvl, 'level')"></v-sheet>
                 <template v-for="position of ['left1', 'left2', 'mid', 'right1', 'right2']" :key="position">
                     <v-col v-if="lvl.level[position]" :cols="getCols(lvl, position)" :class="getClass(lvl.level[position])">
                         <component :is="getComponent(lvl.level[position])" :el="lvl[position]" :iconmap="iconmap" :devices="devices"></component>

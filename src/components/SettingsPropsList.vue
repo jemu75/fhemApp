@@ -19,10 +19,9 @@
             { type: 'text', show: ['templates'], required: false, prop: 'author', def: 'text' },
             { type: 'text', show: ['templates'], required: false, prop: 'date', def: 'text' },
             { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'navigation', def: 'reading:value:route', help: 'element-navigation' },
-            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'expandable', def: 'reading:value:boolean:boolean', help: 'element-expandable' },
-            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'size', def: 'reading:value:size', help: 'element-size' },
+            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'expandable', def: 'reading:value:expandable:expanded:maximizable', help: 'element-expandable' },
             { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'sortby', def: 'reading:value:sortkey', help: 'element-sortkey' },
-            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'show', def: 'reading:value:boolean', help: 'element-show' },
+            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'show', def: 'reading:value:show', help: 'element-show' },
             { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'iconmap', def: 'search:icon', help: 'element-iconmap' }
         ],
         status: [

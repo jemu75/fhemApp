@@ -1,3 +1,6 @@
+# v4.0.4-beta (28.12.2023)
+## coreFunction - bugfixing
+
 # v4.0.3-beta (27.12.2023)
 ## coreFunction - bugfixing
 

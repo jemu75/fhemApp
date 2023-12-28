@@ -172,35 +172,84 @@ Liste der Navigationspunkte, unter denen das Panel angezeigt wird. Im Gegensatz 
 |value|siehe Parameter [value](#konfiguration-der-elemente)|
 |route|Navigationspunkt unter dem das Panel angezeigt werden soll. Die Angabe kann auf gleiche Weise wie im FHEM-Attribut [room](https://wiki.fhem.de/wiki/Room) erfolgen.  
 ### Element expandable
-Dieses Element legt fest, ob ein Panel ausklappbar ist, sobald es mehr als eine aktive Ebene im Bereich [main](#bereich-main) enthält. Weiterhin kann festgelegt werden, ob das Panel beim Laden bereits ausgeklappt sein soll. 
+Panels können ausgeklappt werden sobald mehr als eine aktive Ebene im Bereich [main](#bereich-main) enthalten. Weiterhin kann festgelegt werden, ob das Panel beim Laden bereits ausgeklappt sein soll und ob das Panel auf die voll Bildschirmgröße maximiert werden kann.
 
-|Parameter|Beschreibung|
-|---|---|
-|reading|siehe Parameter [reading](#konfiguration-der-elemente)|
-|value|siehe Parameter [value](#konfiguration-der-elemente)|
-|expandable| true \| **false**|
-|expanded| true \| **false**|
-### Element size
-...
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|expandable|false|soll ausklappbar sein [boolean]|
+|expanded|false|ist beim Laden ausgeklappt [boolean]|
+|maximizable|false|kann auf volle Bildschirmgröße maximiert werden [boolean]|
 ### Element sortby
-...
+Panels können in einer bestimmten Reihenfolge angezeigt werden. Hierfür kann ein beliebiger Sortierschlüssel festgelegt werden. Panels mit Sortierschlüssel werden immer zuerst angezeigt. Danach folgen alle Panels ohne Sortierschlüssel.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|sortkey||Sortierschlüssel [string \| number]|
 ### Element show
-...
+Panels können ausgeblendet werden.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|show|true|blendet Panel ein oder aus [string \| number]|
 ### Element iconmap
-...
+Wenn innerhalb eines Panels viele unterschiedliche Icons mehrfach zum Einsatz kommen und diese zudem abhängig von *readings* sind, können Elementdefinitionen sehr groß werden. Hierfür kann das Mapping für Icons verwendet werden. Dazu kann eine Liste von Variablen erstellt und jeder Variable ein Icon zugewiesen werden. 
+
+Bei Verwendung des Mapping kann in allen Elementen, in denen Icons definiert werden können, die Variable statt dem Icon-Name verwendet werden. 
+
+Die Variable ist auch als Suchtext zu verstehen. Wenn beispielsweise in einem Wetter-Template ein *reading* verwendet werden soll, um verschiedene Wetterlagen als Icon darzustellen, kann der Wert des *readings* entsprechend geprüft werden. 
+
+**Beispiel:** reading = `morgens stark bewölkt` - Definition = `stark bewölkt:mdi-weather-partly-cloudy`. Es wird nach *stark bewölkt* im Wert des *readings* gesucht und wenn dieser Text enthalten ist, dann liefert das Mapping den Wert `mdi-weather-partly-cloudy` zurück.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|search||Variable bzw. Suchtext nach dem in einem Reading gesucht werden soll und das. [string]|
+|icon||Name des Icons [string]|
 ## Bereich Status
-...
+Der Statusbereich befndet sich im oberen Teil. Er dient dazu, den Status und den Name des Panels (z.B. *Licht Bad*) anzuzeigen. Um den Zustand von Aktoren oder Senoren optisch einfach darzustellen können bis zu 2 Statusbars definiert werden. Weiterhin kann für den Statusbereich ein Hintergrundbild festgelegt werden. 
+
 ### Element bar
-...
+Es wird ein farblich abgesetzter Streifen am oberen Ende des Panel angezeigt. Bei Definition von **bar** und **bar2** befinden sich zwei farbliche Streifen nebeneinander am oberen Ende des Panels.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|level|0|Wert definiert, welcher Anteil der Bar farblich hervorgehoben wird [number]|
+|color|success|Farbe in der die Bar hervorgehoben wird (siehe auch [Farben](#farben)) [string]|
+|min|0|Wenn der Bereich des Wertes nicht zwischen 0 und 100 liegt, kann kann der kleinste Wert festgelegt werden. Diese entspricht dann im Wertebereich 0 Prozent [number]|
+|max|100|Wenn der Bereich des Wertes nicht zwischen 0 und 100 liegt, kann kann der größte Wert festgelegt werden. Diese entspricht dann im Wertebereich 100 Prozent [number]|
+|reverse|false|Die Startrichtung in der die Bar farblich hervorgehoben wird, wird umgekehrt [boolean]|
 ### Element imageurl
-...
+Es wird ein Hintergrundbild im Statusbereich angezeigt. Das Bild wird unabhängig von seiner Größe in den Statusbereich eingepasst und skaliert, jedoch nicht verzerrt. Die Hintergrundbilder sollten jedoch keine zu hohen Auflösungen haben, um die Ladezeit des Panels nicht negativ zu beeinflussen.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|url||URL die auf ein Bild verweist [string]|
 ### Element title
-...
+Es wird ein Text auf der linken Seite im Statusbereich angezeigt.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|title||Titel bzw. Name des Panels [string]|
 ## Bereich Main
 ...
 ### Main Element show
 ...
 ### Main Element divider
+...
+### Main Element height
 ...
 ### Main Element typ
 ...
@@ -231,9 +280,17 @@ Dieses Element legt fest, ob ein Panel ausklappbar ist, sobald es mehr als eine 
 ### Level Element Info status
 ...
 ## Bereich Info
-...
+Der Infobereich befindet sich im unteren Teil. Er dient dazu, weitere Werte des Sonsors oder Aktors in Form von Icons oder Text darzustellen. Es können bis zu 6 Spalten für die Anzeige von Icons bzw. Texten verwendet werden.
 ### Element info
-...
+Es wird ein Text und/oder ein Icon in einem der 6 Spalten (left1, left2, mid1, mid2, right1, right2) angezeigt. Es sollten keine zu langen Texte ausgegeben werden, da der Platz auf die Gesamtbreite des Panels begrenzt ist. Wenn Texte zu lang für die jeweilige Spalte sind, so werden diese abgeschnitten.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|text||Text der angezeigt wird [string]|
+|icon||Icon das agezeigt wird. (siehe auch [mdi Icons](https://pictogrammers.com/library/mdi/) und [Icon Mapping](#element-iconmap)) [string]|
+|color||[string]|
 # Vorlagen
 Damit Konfigurationen nicht für jedes Panel erstellt werden müssen, können diese auch als Vorlage (template) erstellt und abgespeichert werden. Somit kann man Vorlagen für alle FHEM-Devices eines Typs (z.B. Schalter, Rolladenaktoren, Fensterkontakte, Thermostate...) erstellen. 
 
