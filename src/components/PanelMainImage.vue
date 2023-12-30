@@ -13,7 +13,7 @@
     const loaded = ref(false)
 
     const image = computed(() => {
-        return fhem.handleDefs(props.el.image, ['source'],[''])
+        return fhem.handleDefs(props.el.image, ['source','height'],['', null])
     })
 </script>
 
@@ -22,7 +22,7 @@
     </v-skeleton-loader>
     <v-img
         :src="image.source"
-        width="100hv"
+        :height="image.height"
         @load="loaded = true"
         >
     </v-img>

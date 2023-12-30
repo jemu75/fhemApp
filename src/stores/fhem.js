@@ -45,6 +45,7 @@ export const useFhemStore = defineStore('fhem', () => {
         panelView: [],
         panelList: [],
         navigation: [],
+        panelMaximized: false,
         isReady: false,
         message: false,
         currentView: null,
@@ -150,6 +151,7 @@ export const useFhemStore = defineStore('fhem', () => {
         }
 
         app.message = false
+        app.panelMaximized = false
 
         log(4, 'URL processed.', route)
 

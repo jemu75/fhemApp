@@ -47,7 +47,7 @@ Zum Aufruf von **FHEMApp** können optionale URL-Parameter verwendet werden. Die
 |dark|Festlegen ob **FHEMApp** im dunklen Farbschema geöffnet wird|1
 |lang|Sprache in der **FHEMApp** geöffnet wird|de, en, ...|
 |xhr|Umschaltung auf Longpoll wenn Browser kein websocket unterstützt|1|
-|loglevel|Detailgrad der Protokollierung für Fehleranalyse über die Browserkonsole (*1=status, 2=error, 3=warnings, 4=infos, 5=all request to fhem, 6=received events from fhem, 7=details, 8=all received events from FHEM*)|1...8|
+|loglevel|Detailgrad der Protokollierung für Fehleranalyse über die Browserkonsole. Ab dem loglevel 7 wird die Kopfzeile von **FHEMApp** umgeschaltet und ein Infosymbol angzeigt. Bei Klick auf das Infosymbol werden weitere Systeminformationen von **FHEMApp** angezeigt. (*1=status, 2=error, 3=warnings, 4=infos, 5=all request to fhem, 6=received events from fhem, 7=details, 8=all received events from FHEM*)|1...8|
 
 Beispiel zum Aufruf von FHEMapp mit zusätzlichen Parametern
 ```
@@ -135,9 +135,9 @@ Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zu
 
 |Ersetzung|Beschreibung|
 |---|---|
-|%t(on)|gibt die Übersetzung für den Schlüssel `on` an. (siehe auch [Sprachen](#sprachen))|
+|%t(on)|gibt die Übersetzung für die Variable `on` an. (siehe auch [Sprachen](#sprachen))|
 |%v|liefert den aktuellen Wert von Slidern
-|\\: oder \&#058;|kann zur Ausgabe von `:` innerhalb von Element-Definitionen verwendet werden|
+|\\:|wird zur Ausgabe von `:` innerhalb von Element-Definitionen verwendet|
 
 |Beispiel|Reading|Ausgabe|Hinweis|
 |---|---|---|---|
@@ -148,7 +148,7 @@ Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zu
 |`state-ts::%d(time)`|2023-12-17 17:53:32|17:53:32|abhängig vom Sprachschema|
 |`state-ts::%d(date)`|2023-12-17 17:53:32|17.12.2023|abhängig vom Sprachschema|
 |`state-ts::%d({ "weekday"\: "long" })`|2023-12-17 17:53:32|Sonntag|abhängig vom Sprachschema|
-|`state::%t(on)`|on|an|wenn unter [Sprachen](#sprachen) für den Schlüssel *on* im Sprachschema *an* hinterlegt wurde|
+|`state::%t(on)`|on|an|wenn unter [Sprachen](#sprachen) für die Variable `on` im deutschen Sprachschema `an` hinterlegt wurde|
 |`temp::Temperatur\: %n(1)°C`|18.7|Temperatur: 18,7°C|
 ## Panel allgemein
 In den allgemeinen Einstellungen für Panels wird festgelegt, mit welchen FHEM **Devices** das Panel verknüpft ist und ob eine **Vorlage** zur Darstellung des Panels verwendet werden soll. Weiterhin wird festgelegt, unter welchen Navigationspunkten das Panel zur Anzeige gebracht werden soll. Zusätzlich können verschiedene Einstellung zur Darstellung des Panels erfolgen.
@@ -159,7 +159,7 @@ Liste der FHEM-Devices, die mit dem Panel verknüpft sind. Es muss mindestens ei
 
 |Parameter|Beschreibung|
 |---|---|
-|key|eindeutiger Bezeichner, der für den Parameter `reading` in Definitionen oder für FHEM Befehle in Definitionen benötigt wird|
+|key|eindeutiger Schlüssel, der für Element-Definitionen benötigt wird. Es wird empfohlen, die Art des FHEM-Device (z.B. switch, contact, thermo,...) als Schlüssel zu verwenden.|
 |device|Name des FHEM Device, mit dem das Panel verknüpft ist|
 ### Element template
 Optional kann eine [Vorlage](#vorlagen) ausgewählt werden, die für die Darstellung des Panels verwendet werden soll. Elemente die im Panel (unter **erweiterte Konfiguration**) definiert wurden, behalten ihre Gültigkeit wenn eine Vorlage verwendet wird. In diesem Fall werden die betreffenden Definitionen aus der Vorlage ignoriert. 
@@ -244,41 +244,195 @@ Es wird ein Text auf der linken Seite im Statusbereich angezeigt.
 |value||siehe Parameter [value](#konfiguration-der-elemente)|
 |title||Titel bzw. Name des Panels [string]|
 ## Bereich Main
-...
+Der Bereich Main befindet sich im mittleren Teil. Er enthält mindestens eine Ebene mit bis zu 5 Spalten. Jede Spalte kann zur Anzeige von Werten oder zur Steuerung von Aktoren verwendet werden.
+
+Der Bereich Main erlaubt zudem die Definition mehrerer Ebenen. Diese können entweder umgeschaltet oder alle eingeblendet werden. (siehe auch [Element expandable](#element-expandable)) Der Einsatz mehrerer Ebenen ist sinnvoll für komplexe Devices, in denen viele Werte angezeigt oder gesteuert werden soll.
+
+Jede Ebene erfordert Grundeinstellungen. Über diese kann festgelegt werden, welche Spalten angezeigt werden sollen. Zudem können weitere Anzeigeeinstellungen für die jeweilige Ebene definiert werden.
 ### Main Element show
-...
+Ebenen können ausgeblendet werden.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|show|true|blendet Ebenen ein oder aus [string \| number]|
 ### Main Element divider
-...
+Zeigt eine horizontale Trennlinie am unteren Ende der Ebene.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|show|true|blendet Ebenen ein oder aus [string \| number]|
 ### Main Element height
-...
+Passt die Höhe der Ebene an.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|height|64px|gibt die Höhe der Ebene in Pixeln an [string]|
 ### Main Element typ
-...
+Legt fest, welche der 5 möglichen Spalten (left1, left2, mid, right1, right2) für die Ebene verwendet werden und was innerhalb der Spalte angezeigt werden soll. 
+
+Es stehen folgende Typen zur Verfügung
+|Typ|Beschreibung|
+|---|---|
+|none|Spalte wird nicht angezeigt|
+|button|Es kann ein Button zur Steuerung von Aktoren konfiguriert werden|
+|info|Es können bis zu 3 Textelemente und ein Icon zur Anzeige von Statuswerten konfiguriert werden|
+|status|Es kann eine runde Statusbar zur Anzeige von Statuswerten konfiguriert werden|
+|slider|Es kann ein Slider zu Steuerung von Aktoren konfiguriert werden|
+|image|Es kann ein Bild über eine URL angezeigt werden|
+|menu|Es kann ein DropDown-Menü zur Steuerung verschiedener Aktoren bzw. Aktorwerte konfiguriert werden|
 ### Level Element divider
-...
+Zeigt eine vertikale Linie auf der rechten Seite der Spalte an.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|divider|false|blendet die Trennlinie ein oder aus [boolean]|
 ### Level Element size
-...
+Legt die Breite der Spalte fest. 
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|size||Werte zwischen 1 und 12. Der Wert 12 entspricht der vollen Breite der Ebene. Die Summe aller size-Werte innerhalb einer Ebene sollte den Wert 12 nicht überschreiten. [number]|
 ### Level Element Button btn
-...
+Zeigt einen Button an, der folgendes ermöglicht. Das Auslösen der Befehle wird in [click](#level-element-button-click), [longClick](#level-element-button-longclick) und [longRelease](#level-element-button-longrelease) konfiguriert.
+- das Senden von FHEM Kommandos
+- das Aufrufen von Navigationspunkten in **FHEMApp**
+- das Aufrufen von beliebigen URLs
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|icon||Icon das agezeigt wird (siehe auch [mdi Icons](https://pictogrammers.com/library/mdi/) und [Icon Mapping](#element-iconmap)) [string]|
+|disabled|false|legt fest ob der Button aktiv oder inaktiv ist [boolean]|
+|color||legt die Farbe für den Button fest (siehe auch [Farben](#farben)) [string]|
+|variant||passt die Darstellung des Button an (outlined, tonal, plain) [string]|
 ### Level Element Button status
-...
+Zeigt eine Statusbar über dem Button an.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|level|0|Wert definiert, welcher Anteil der Bar farblich hervorgehoben wird [number]|
+|color|success|Farbe in der die Bar hervorgehoben wird (siehe auch [Farben](#farben)) [string]|
+|min|0|Wenn der Bereich des Wertes nicht zwischen 0 und 100 liegt, kann kann der kleinste Wert festgelegt werden. Diese entspricht dann im Wertebereich 0 Prozent [number]|
+|max|100|Wenn der Bereich des Wertes nicht zwischen 0 und 100 liegt, kann kann der größte Wert festgelegt werden. Diese entspricht dann im Wertebereich 100 Prozent [number]|
+|reverse|false|Die Startrichtung in der die Bar farblich hervorgehoben wird, wird umgekehrt [boolean]|
 ### Level Element Button click
-...
+Legt den Befehl fest, der bei kurzem Drücken des Button ausgeführt wird.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|cmd|| FHEM Kommando, Route oder Link [string]|
+|type|cmd| cmd, route, url [string]|
+
+|Beispiele|Erklärung|
+|---|---|
+|::set switch on|sendet den Befehl `set switch on` an FHEM. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `switch` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt. Kann kein entsprechender Schlüssel gefunden werden, so wird der Befehl unverändert an FHEM gesendet.|
+|::home:route|wechselt zum Navigationspunkt `home` in **FHEMApp**. Die angegebene Route muss existieren und der Route in der URL (.../devices/{route}/?...)|
+|::https\\://fhem.de:url|wechsel direkt zu der URL `https://fhem.de`. Bei direkter Eingabe von URLs müssen Doppelpunkte entsprechend ersetzt werden. (siehe auch [Ersetzungen](#ersetzungen))|
+|cam-link::%s:url|wechsel direkt zu der URL, die im Device `cam` im Reading `link` hinterlegt ist|
 ### Level Element Button longClick
-...
+Legt den Befehl fest, der bei langem Drücken des Button ausgeführt wird. Der Button muss dabei mindestens 1 Sekunde gedrückt werden.
+
+Parameter siehe [Button click](#level-element-button-click)
 ### Level Element Button longRelease
-...
+Legt den Befehl fest, der nach dem Loslassen des Button ausgeführt wird, wenn der Button mindestens 1 Sekunde gedrückt wurde.
+
+Parameter siehe [Button click](#level-element-button-click)
 ### Level Element Slider slider
-...
+Zeigt einen horizontalen Schieberegler an und sendet einen entsprechenden Befehl an FHEM.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|cmd||FHEM Kommando. Die Ersetzung **%v** repräsentiert den aktuellen Wert des Sliders. (siehe auch [Ersetzungen](#ersetzungen)) [string]|
+|current||aktueller Wert des Sliders [number]|
+|color|success|Farbe in der die Bar hervorgehoben wird (siehe auch [Farben](#farben)) [string]|
+|min|0|Wert des Sliders, wenn dieser ganz links steht [number]|
+|max|100|Wert des Sliders, wenn dieser ganz rechts steht [number]|
+|steps|10|Schritte in denen der Wert des Sliders verändert wird[number]|
+
+|Beispiel|Erklärung|
+|---|---|
+|dimmer-pct::set dimmer pct %v:%n()|setzt den Slider auf den aktuellen Wert des readings `pct` aus dem Device `dimmer` und sendet nach dem Verschieben den Befehl `set dimmer %v` an FHEM. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `dimmer` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt. Kann kein entsprechender Schlüssel gefunden werden, so wird der Befehl unverändert an FHEM gesendet. Weiterhin wird `%v` durch den aktuellen Wert des Sliders ersetzt.|
 ### Level Element Image image
-...
+Zeigt ein Bild an.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|source||URL die auf ein Bild verweist. Bei direkter Eingabe von URLs müssen Doppelpunkte entsprechend ersetzt werden. (siehe auch [Ersetzungen](#ersetzungen)) [string]|
+|height||legt die absolute Höhe des Bildes in Pixeln fest [string]|
 ### Level Element Menu menu
-...
+Zeigt einen Button an, der beim Klicken ein DropDown-Menü öffnet. Bei Klick auf einen Menüpunkt wird der hinterlegte Befehl an FHEM gesendet. Im Gegensatz zu normalen Definitionen, werden zur Anzeige der Menüpunkte **alle** Definitionen verwendet, deren Bedingungen zutreffen.
+
+Menüeinträge können auch von FHEM übergeben werden. Dafür muss der Inhalt des FHEM *readings* oder *attributes* folgender Form entsprechen: `Name1:cmd1,Name2:cmd2,...`
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|name||Name der im DropDown-Menü angezeiugt wird [string]|
+|cmd||FHEM Befehl, der beim Klick auf den Menüpunkt an FHEM gesendet wird. [string]|
+
+|Beispiel|Erklärung|
+|---|---|
+|::30 Minuten:set switch on-for-timer 1800|sendet den Befehl `set switch on-for-timer 1800` an FHEM. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `switch` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt.|
+|switch-a-dropdown::%s:%s|übernimmt die Definition der Menüeinträge aus dem *Attribute* `dropdown` vom Device `switch`. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `switch` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt.|
 ### Level Element Info text
-...
+Zeigt bis zu 3 Texte (text, text2, text3) an. Dabei wird `text` immer über `text2` und `text3` angezeigt. Weiterhin wird `text2` immer links neben `text3` angezeigt.
+
+Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|text||Text der ausgegeben wird [string]|
+|format||Angaben zur Größe, Ausrichtung und Farbe des Textes. Es können mehrere Formatangaben kombiniert werden. Diese müssen durch Leernzeichen voneinander getrennt werden. [string]|
+
+|Beispiel|Erklärung|
+|---|---|
+|text-success|zeigt den Text in der Farbe grün an (siehe auch [Farben](#farben))|
+|text-left|richtet den Text linksbündig aus|
+|text-right|richtet den Text linksbündig aus|
+|text-h4|Text in großer Schrift (weitere Möglichkeiten siehe auch [Text und Typografie](https://vuetifyjs.com/en/styles/text-and-typography/))
 ### Level Element Info icon
-...
+Zeigt ein Icon zwischen `text` und `text2/text3` an.
+
+Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|icon|| Icon das agezeigt wird. (siehe auch [mdi Icons](https://pictogrammers.com/library/mdi/) und [Icon Mapping](#element-iconmap)) [string]|
+|color||legt die Farbe für das Icon fest. (siehe auch [Farben](#farben)) [string]|
+|size|x-large| Größe des Icons (x-small, small, medium, large, x-large) [string]|
 ### Level Element Info status
-...
+Zeigt eine runde Statusbar oder eine horizontale Statusbar zwischen `text` und `text2/text3` an.
+
+Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|level||Wert definiert, welcher Anteil der Bar farblich hervorgehoben wird [number]|
+|color|success|Farbe in der die Bar hervorgehoben wird (siehe auch [Farben](#farben)) [string]|
+|min|0|Wenn der Bereich des Wertes nicht zwischen 0 und 100 liegt, kann kann der kleinste Wert festgelegt werden. Diese entspricht dann im Wertebereich 0 Prozent [number]|
+|max|100|Wenn der Bereich des Wertes nicht zwischen 0 und 100 liegt, kann kann der größte Wert festgelegt werden. Diese entspricht dann im Wertebereich 100 Prozent [number]|
+|reverse|false|Die Startrichtung in der die Bar farblich hervorgehoben wird, wird umgekehrt [boolean]|
+|linear|false|zeigt eine horizontale oder runde Statusbar an [boolean]|
 ## Bereich Info
 Der Infobereich befindet sich im unteren Teil. Er dient dazu, weitere Werte des Sonsors oder Aktors in Form von Icons oder Text darzustellen. Es können bis zu 6 Spalten für die Anzeige von Icons bzw. Texten verwendet werden.
 ### Element info
@@ -290,7 +444,7 @@ Es wird ein Text und/oder ein Icon in einem der 6 Spalten (left1, left2, mid1, m
 |value||siehe Parameter [value](#konfiguration-der-elemente)|
 |text||Text der angezeigt wird [string]|
 |icon||Icon das agezeigt wird. (siehe auch [mdi Icons](https://pictogrammers.com/library/mdi/) und [Icon Mapping](#element-iconmap)) [string]|
-|color||[string]|
+|color||legt die Farbe für das Icon fest. (siehe auch [Farben](#farben)) [string]|
 # Vorlagen
 Damit Konfigurationen nicht für jedes Panel erstellt werden müssen, können diese auch als Vorlage (template) erstellt und abgespeichert werden. Somit kann man Vorlagen für alle FHEM-Devices eines Typs (z.B. Schalter, Rolladenaktoren, Fensterkontakte, Thermostate...) erstellen. 
 

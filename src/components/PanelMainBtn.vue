@@ -20,7 +20,7 @@
     })
 
     const status = computed(() => {
-        let res = fhem.handleDefs(props.el.status, ['level','color','reverse','min','max'],[0, 'success', false, 0, 100])
+        let res = fhem.handleDefs(props.el.status, ['level','color','min','max','reverse'],[0, 'success', 0, 100, false])
         res.level = Math.round((res.level - res.min) / (res.max - res.min) * 100)
         res.reverse = res.reverse ? true : false
 

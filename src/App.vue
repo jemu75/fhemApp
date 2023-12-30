@@ -2,6 +2,7 @@
   import { ref } from 'vue'
   import { useFhemStore } from '@/stores/fhem'  
   import { useDisplay } from 'vuetify'
+  import router from '@/router'
   import AppNavigation from './components/AppNavigation.vue'
   import OptionsMenu from './components/OptionsMenu.vue'
   import logo from '@/assets/logo_v4.png'
@@ -9,6 +10,10 @@
   const fhem = useFhemStore()
   const { mobile } = useDisplay()
   const drawer = ref(true)
+
+  function showInternals() {
+    router.push({ name: 'internals', query: router.currentRoute.value.query })
+  }
 </script>
 
 <template>
@@ -49,8 +54,8 @@
 
       </v-navigation-drawer>
 
-      <v-app-bar :order="mobile ? 0 : -1" color="primary">
-        <template v-if="fhem.app.header.imageUrl" v-slot:image>
+      <v-app-bar :order="mobile ? 0 : -1" :color="fhem.app.settings.loglevel > 6 ? 'error' : 'primary'">
+        <template v-if="fhem.app.header.imageUrl && fhem.app.settings.loglevel < 7" v-slot:image>
           <v-img :src="fhem.app.header.imageUrl" cover :gradient="fhem.app.header.imageGradient"></v-img>        
         </template>
 
@@ -62,6 +67,7 @@
         <div v-if="!mobile && fhem.app.header.showDate" class="text-h5">{{ $d(fhem.app.header.time, fhem.app.header.dateFormat) }}</div>
 
         <template v-slot:append>
+          <v-btn v-if="fhem.app.settings.loglevel > 6" icon="mdi-information" @click="showInternals()"></v-btn>
           <OptionsMenu/>
         </template>
       </v-app-bar>

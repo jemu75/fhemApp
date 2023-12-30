@@ -1,3 +1,10 @@
+# v4.0.6-beta (29.12.2023)
+## Panel - adding Property maximizable
+
+# v4.0.5-beta (29.12.2023)
+## Component Slider - bugfixing
+## Component Image - adding Property height
+
 # v4.0.4-beta (28.12.2023)
 ## coreFunction - bugfixing
 

@@ -30,8 +30,8 @@
 
     const listItemDefs = {
         level: [
-            { type: 'defs', required: false, prop: 'show', def: 'reading:value:boolean', help: 'main-element-show' },
-            { type: 'defs', required: false, prop: 'divider', def: 'reading:value:boolean', help: 'main-element-divider' },
+            { type: 'defs', required: false, prop: 'show', def: 'reading:value:show', help: 'main-element-show' },
+            { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'main-element-divider' },
             { type: 'defs', required: false, prop: 'height', def: 'reading:value:height', help: 'main-element-height' },
             { type: 'types', required: false, prop: 'left1', help: 'main-element-typ' },
             { type: 'types', required: false, prop: 'left2', help: 'main-element-typ' },
@@ -41,26 +41,26 @@
         ],
         btn: [
             { type: 'defs', required: false, prop: 'btn', def: 'reading:value:icon:disabled:color:variant', help: 'level-element-button-btn' },
-            { type: 'defs', required: false, prop: 'status', def: 'reading:value:level:color:reverse:min:max', help: 'level-element-button-status' },
+            { type: 'defs', required: false, prop: 'status', def: 'reading:value:level:color:min:max:reverse', help: 'level-element-button-status' },
             { type: 'defs', required: false, prop: 'click', def: 'reading:value:cmd:type', help: 'level-element-button-click' },
             { type: 'defs', required: false, prop: 'longClick', def: 'reading:value:cmd:type', help: 'level-element-button-longClick' },
             { type: 'defs', required: false, prop: 'longRelease', def: 'reading:value:cmd:type', help: 'level-element-button-longRelease' },
-            { type: 'defs', required: false, prop: 'divider', def: 'reading:value:boolean', help: 'level-element-divider' },
+            { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider' },
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size' }
         ],
         slider: [
             { type: 'defs', required: false, prop: 'slider', def: 'reading:value:cmd:current:color:min:max:steps', help: 'level-element-slider-slider' },
-            { type: 'defs', required: false, prop: 'divider', def: 'reading:value:boolean', help: 'level-element-divider' },
+            { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider' },
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size' }
         ],
         image: [
-            { type: 'defs', required: false, prop: 'image', def: 'reading:value:source', help: 'level-element-image-image' },
-            { type: 'defs', required: false, prop: 'divider', def: 'reading:value:boolean', help: 'level-element-divider' },
+            { type: 'defs', required: false, prop: 'image', def: 'reading:value:source:height', help: 'level-element-image-image' },
+            { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider' },
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size' }
         ],
         menu: [
             { type: 'defs', required: false, prop: 'menu', def: 'reading:value:name:cmd', help: 'level-element-menu-menu' },
-            { type: 'defs', required: false, prop: 'divider', def: 'reading:value:boolean', help: 'level-element-divider' },
+            { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider' },
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size' }
         ],
         info: [
@@ -69,7 +69,7 @@
             { type: 'defs', required: false, prop: 'status', def: 'reading:value:level:color:min:max:reverse:linear', help: 'level-element-info-status' },
             { type: 'defs', required: false, prop: 'text2', def: 'reading:value:text:format', help: 'level-element-info-text' },
             { type: 'defs', required: false, prop: 'text3', def: 'reading:value:text:format', help: 'level-element-info-text' },
-            { type: 'defs', required: false, prop: 'divider', def: 'reading:value:boolean', help: 'level-element-divider' },
+            { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider' },
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size' }
         ]
     }

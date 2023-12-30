@@ -3,11 +3,11 @@
     import { useFhemStore } from '@/stores/fhem'
     import PanelMain from './PanelMain.vue'
 
-    const fhem = useFhemStore()
-
     const item = defineProps({
         panel: Object
     })
+
+    const fhem = useFhemStore()
 
     function getBar(pos) {
         let res = fhem.handleDefs(item.panel.status[pos], ['level','color','min','max','reverse'],[0, 'success', 0, 100, false])
@@ -29,13 +29,13 @@
     })
 
     const expand = computed(() => {
-        return fhem.handleDefs(item.panel.panel.expandable, ['expandable','expanded'],[false, false])        
+        return fhem.handleDefs(item.panel.panel.expandable, ['expandable','expanded','maximizable'],[false, false, false])        
     })
 
     const expanded = ref(expand.value.expanded)
 
     const expandIcon = computed(() => {
-        let res = ''
+        let res = null
 
         if(expand.value.expandable) {
             res = expanded.value ? 'mdi-arrow-collapse' : 'mdi-arrow-expand'
@@ -64,6 +64,14 @@
 
     function levelSwitch() {
         if(expand.value.expandable) {
+            if(expand.value.maximizable) {
+                if(!expanded.value) {
+                    fhem.app.panelMaximized = item.panel
+                } else {
+                    fhem.app.panelMaximized = false
+                }
+            } 
+            
             expanded.value = !expanded.value
         } else {
             levelClick.value = true
@@ -142,7 +150,7 @@
                             {{  title.title }}
                         </v-col>
                         <v-spacer></v-spacer>
-                        <v-col v-if="levelsActive.length > 1" cols="1" class="text-right">
+                        <v-col v-if="levelsActive.length > 1 || expand.maximizable" cols="1" class="text-right">
                             <v-btn :icon="expandIcon" size="small" variant="plain" density="compact" @click="levelSwitch"></v-btn>
                         </v-col>
                     </v-row>
@@ -152,7 +160,7 @@
         <v-divider/>
 
         <PanelMain :main="panel.main" :levels="levels" :iconmap="panel.panel.iconmap" :devices="panel.panel.devices"></PanelMain>
-
+        
         <v-sheet color="secondary">
             <v-card-text class="pa-1">
                 <v-row no-gutters>

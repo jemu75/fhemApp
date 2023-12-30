@@ -19,6 +19,7 @@
     const slider = computed(() => {
         let res = fhem.handleDefs(props.el.slider, ['cmd', 'current', 'color', 'min', 'max', 'steps'],['', 0, '', 0, 100, 10])
 
+        if(/%v/.test(res.current)) res.current = res.current.replace('%v', sliderVal.value)
         setSliderVal(res.current)
 
         return res
