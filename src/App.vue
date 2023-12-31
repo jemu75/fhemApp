@@ -20,7 +20,7 @@
   <v-app class="noselect">
     <v-layout>
       <v-overlay
-        :model-value="!fhem.app.isReady && !fhem.app.message"
+        :model-value="(!fhem.app.isReady && !fhem.app.message) || fhem.app.threads.length > 0"
         class="align-center justify-center">
         <v-progress-circular
           indeterminate          

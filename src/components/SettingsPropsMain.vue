@@ -22,7 +22,6 @@
         { title: 'none', value: null },
         { title: 'button', value: 'btn' },
         { title: 'info', value: 'info' },
-        { title: 'status', value: 'status' },
         { title: 'slider', value: 'slider' },
         { title: 'image', value: 'image' },
         { title: 'menu', value: 'menu' }

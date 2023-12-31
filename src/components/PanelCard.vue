@@ -1,5 +1,5 @@
 <script setup>
-    import { computed, ref } from 'vue'
+    import { computed, onMounted, ref } from 'vue'
     import { useFhemStore } from '@/stores/fhem'
     import PanelMain from './PanelMain.vue'
 
@@ -8,6 +8,10 @@
     })
 
     const fhem = useFhemStore()
+
+    let threadId = fhem.thread()
+
+    onMounted(() => fhem.thread(threadId))
 
     function getBar(pos) {
         let res = fhem.handleDefs(item.panel.status[pos], ['level','color','min','max','reverse'],[0, 'success', 0, 100, false])
@@ -37,12 +41,9 @@
     const expandIcon = computed(() => {
         let res = null
 
-        if(expand.value.expandable) {
-            res = expanded.value ? 'mdi-arrow-collapse' : 'mdi-arrow-expand'
-        } else {
-            res = 'mdi-swap-vertical'
-        }
-        
+        if(expand.value.expandable) res = expanded.value ? 'mdi-arrow-collapse' : 'mdi-arrow-expand'
+        if(!expand.value.expandable && !expand.value.expanded && item.panel.main.length > 1) res = 'mdi-swap-vertical'
+       
         return res
     })
 
@@ -82,7 +83,7 @@
         let res = [],
         idx = -1
 
-        if(expand.value.expandable) {
+        if(expand.value.expandable || (!expand.value.expandable && expand.value.expanded)) {
             res = expanded.value ? levelsActive.value : [levelsActive.value[0]]
         } else {
             if(levelClick.value) {
@@ -150,7 +151,7 @@
                             {{  title.title }}
                         </v-col>
                         <v-spacer></v-spacer>
-                        <v-col v-if="levelsActive.length > 1 || expand.maximizable" cols="1" class="text-right">
+                        <v-col v-if="expandIcon" cols="1" class="text-right">
                             <v-btn :icon="expandIcon" size="small" variant="plain" density="compact" @click="levelSwitch"></v-btn>
                         </v-col>
                     </v-row>

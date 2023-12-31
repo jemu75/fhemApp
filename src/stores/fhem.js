@@ -46,6 +46,7 @@ export const useFhemStore = defineStore('fhem', () => {
         panelList: [],
         navigation: [],
         panelMaximized: false,
+        threads: [],
         isReady: false,
         message: false,
         currentView: null,
@@ -109,6 +110,17 @@ export const useFhemStore = defineStore('fhem', () => {
             })
 
         app.version = await log.split('\n')[0].split(' ')[1].trim()
+    }
+
+    //coreFunction to handle internal Threads
+    function thread(id) {
+        if(id) { 
+            app.threads.splice(app.threads.indexOf(id), 1)
+        } else {
+            app.threads.push((app.threads.slice(-1)[0] || 0) + 1)
+        }
+
+        return app.threads.slice(-1)[0]
     }
 
     //coreFunction to open online HelpPage (README.md)
@@ -861,5 +873,5 @@ export const useFhemStore = defineStore('fhem', () => {
     router.isReady().then(init())
 
     //only for production
-    return { app, getEl, handleDefs, getIcon, replacer, createSession, request, help }
+    return { app, getEl, handleDefs, getIcon, replacer, createSession, request, thread, help }
 })

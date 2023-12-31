@@ -1,3 +1,6 @@
+# v4.0.7-beta (31.12.2023)
+## Panel - bugfixing
+
 # v4.0.6-beta (29.12.2023)
 ## Panel - adding Property maximizable
 
