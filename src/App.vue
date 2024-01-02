@@ -20,11 +20,11 @@
   <v-app class="noselect">
     <v-layout>
       <v-overlay
-        :model-value="(!fhem.app.isReady && !fhem.app.message) || fhem.app.threads.length > 0"
+        :model-value="fhem.app.threads.length > 0"
         class="align-center justify-center">
         <v-progress-circular
           indeterminate          
-          size="64">
+          size="64">          
         </v-progress-circular>
       </v-overlay>
 
@@ -46,7 +46,7 @@
           </v-col>
           <v-spacer/>
           <v-col class="text-right">
-            <v-icon :icon="fhem.app.isReady ? 'mdi-sync' : 'mdi-sync-alert'" size="small"></v-icon>
+            <v-icon :icon="fhem.app.isReady ? 'mdi-sync' : 'mdi-alert'" size="small"></v-icon>
           </v-col>
         </v-row>
 

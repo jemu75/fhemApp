@@ -17,7 +17,7 @@
     }
 
     const slider = computed(() => {
-        let res = fhem.handleDefs(props.el.slider, ['cmd', 'current', 'color', 'min', 'max', 'steps'],['', 0, '', 0, 100, 10])
+        let res = fhem.handleDefs(props.el.slider, ['cmd', 'current', 'color', 'min', 'max', 'steps', 'reverse', 'size', 'vertical'],['', 0, '', 0, 100, 10, false, 4, false])
 
         if(/%v/.test(res.current)) res.current = res.current.replace('%v', sliderVal.value)
         setSliderVal(res.current)
@@ -56,9 +56,12 @@
         :min="slider.min"
         :max="slider.max"
         :step="slider.steps"
+        :reverse="slider.reverse"        
+        :direction="slider.vertical ? 'vertical' : 'horizontal'"
+        :track-size="slider.size"
+        :color="slider.color"
         hide-details
         thumb-label
-        :color="slider.color"
         @update:modelValue="doCmd($event)"
         >
     </v-slider>

@@ -30,7 +30,9 @@
     const selectorPart = ref(0)
 
     const items = computed(() => {
-        let res = fhem.app.config[props.type].map((e) => e.name) || []
+        let res = []
+
+        for(const e of fhem.app.config[props.type]) if(!e.dist) res.push(e.name)
 
         res.sort((a,b) => (a > b) ? 1 : (b > a) ? -1 : 0)
 

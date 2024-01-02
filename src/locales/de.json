@@ -129,7 +129,11 @@
             "noPanels": {
                 "title": "Konfiguration enthält keine Panels",
                 "text": "Bitte erstelle zuerst Panels in den Einstellungen von FHEMapp."
+            },
+            "clipboard": {
+                "text": "Daten wurden in die Zwischenablage kopiert."
             }
-        }
+        },
+        "default": "Standard"
     }
 }

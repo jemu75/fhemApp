@@ -49,6 +49,18 @@
         return res
     })
 
+    const templates = computed(() => {
+        let res = []
+
+        for(const template of fhem.app.config.templates) if(!template.dist) res.push({ title: template.name, value: template.name })
+
+        res.sort((a, b) => (a.title > b.title) ? 1 : (b.title > a.title) ? -1 : 0)
+
+        for(const dist of fhem.app.distTemplates) res.push({ title: dist + ' (' + fhem.replacer('%t(_app.default)', '') + ')', value: dist })
+
+        return res
+    })
+
     function panelIcon(def) {
         let res = {
                 icon: def.required ? 'mdi-alert-circle' : 'mdi-chevron-down',
@@ -105,7 +117,7 @@
 
                     <v-autocomplete v-if="def.type === 'template'"
                         v-model="fhem.app.config.panels[props.typeIdx]['template']"                                
-                        :items="fhem.app.config.templates.map((e) => e.name)"
+                        :items="templates"
                         :label="$t('_app.settings.templates.title')"
                         :disabled="fhem.app.config.templates.length === 0"
                         density="compact"

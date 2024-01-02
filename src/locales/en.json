@@ -129,7 +129,11 @@
             "noPanels": {
                 "title": "Configuration does not contain any panels",
                 "text": "Please create panels in the FHEMapp settings first."
+            },
+            "clipboard": {
+                "text": "Data has been copied to the clipboard."
             }
-        }
+        },
+        "default": "Default"
     }
 }

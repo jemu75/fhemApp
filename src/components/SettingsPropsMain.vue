@@ -48,7 +48,7 @@
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size' }
         ],
         slider: [
-            { type: 'defs', required: false, prop: 'slider', def: 'reading:value:cmd:current:color:min:max:steps', help: 'level-element-slider-slider' },
+            { type: 'defs', required: false, prop: 'slider', def: 'reading:value:cmd:current:color:min:max:steps:reverse:size:vertical', help: 'level-element-slider-slider' },
             { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider' },
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size' }
         ],

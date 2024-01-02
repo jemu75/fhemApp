@@ -116,8 +116,9 @@ Eine Definition wird verwendet, wenn der Wert im Parameter `value` zutrifft. Es 
 |Beispiel|Beschreibung|
 |---|---|
 |`temperature:12:...`|Zahlenwert -> trifft zu wenn das *Reading* **größer oder gleich** *12* ist|
-|`state:on:...`|Text -> trifft zu wenn das *Reading* den Text *on* **enthält**|
-|`state:^on:...`|RegExp -> triff zu wenn das *Reading* mit dem Text *on* **beginnt**|
+|`state:on:...`|Text -> trifft zu wenn das *Reading* den Text `on` **enthält**|
+|`state:^on:...`|RegExp -> triff zu wenn das *Reading* mit dem Text `on` **beginnt**|
+|`state:^(?!on):..-`|RegExp -> trifft zu wenn das *Reading* **nicht** den Wert `on` hat|
 |`state::...`|Es erfolgt **keine weitere Prüfung**. die Definition wird verwendet.
 ## Ersetzungen
 Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zurückzugeben und zu formatieren. Folgende Möglichkeiten für Ersetzungen gibt es.
@@ -365,6 +366,9 @@ Zeigt einen horizontalen Schieberegler an und sendet einen entsprechenden Befehl
 |min|0|Wert des Sliders, wenn dieser ganz links steht [number]|
 |max|100|Wert des Sliders, wenn dieser ganz rechts steht [number]|
 |steps|10|Schritte in denen der Wert des Sliders verändert wird[number]|
+|reverse|false|kehrt die Richtung des Sliders um [boolean]|
+|size|4|legt die Breite des Sliders fest [number]|
+|vertical|false|zeigt den Slider in vertikaler Richtung an [boolean]|
 
 |Beispiel|Erklärung|
 |---|---|

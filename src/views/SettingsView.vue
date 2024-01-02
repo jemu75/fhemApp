@@ -24,6 +24,10 @@
     let config = null
     
     if(save) {
+      for(const [idx, template] of Object.entries(fhem.app.config.templates)) {
+        if(template.dist) fhem.app.config.templates.splice(idx, 1)
+      }
+
       config = encodeURIComponent(btoa(JSON.stringify(fhem.app.config)))
       await fhem.request('text', 'set ' + fhem.app.fhemDevice + ' config ' + config)
     }

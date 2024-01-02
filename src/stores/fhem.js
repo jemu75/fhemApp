@@ -47,6 +47,7 @@ export const useFhemStore = defineStore('fhem', () => {
         navigation: [],
         panelMaximized: false,
         threads: [],
+        distTemplates: [],        
         isReady: false,
         message: false,
         currentView: null,
@@ -60,7 +61,7 @@ export const useFhemStore = defineStore('fhem', () => {
         xhrOffset: 0,
         xhrBuffer: '',
         evtBuffer: [],
-        panelMap: [],
+        panelMap: []        
     }
 
     //coreFunction emit messages 1=status, 2=error, 3=warning, 4=info, 5=send, 6=receive, 7=details
@@ -264,6 +265,23 @@ export const useFhemStore = defineStore('fhem', () => {
         }
     }
 
+    //coreFunction for read json Files
+    async function getJsonFile(file) {
+        let header = new Headers()
+        header.append('pragma', 'no-cache')
+        header.append('cache-control', 'no-cache')
+    
+        let options = { method: 'GET', headers: header }
+    
+        let result = await fetch(file, options)
+          .then((res) => res.json())
+          .catch((err) => log(2, 'Loading JSON-File ' + file + ' failed.', { file, err }))
+    
+        if(result) log(4, 'JSON-File ' + file + ' was successful loaded.', { file, result })
+    
+        return await result
+    }
+
     //coreFunction load Configuration from FHEM Device
     async function loadConfig() {
         let res = await request('text', 'get ' + app.fhemDevice + ' config'),            
@@ -316,6 +334,25 @@ export const useFhemStore = defineStore('fhem', () => {
         }
 
         log(4, 'Config loaded.', cfg)
+        return true
+    }
+
+    //coreFunction load default Templates if needed
+    async function loadDefaultTemplates() {
+        let distTemplate
+
+        app.distTemplates = await getJsonFile('./templates/templates.json')
+        app.distTemplates.sort((a, b) => (a > b) ? 1 : (b > a) ? -1 : 0)
+
+        for (const panel of app.config.panels) {
+            if(panel.template && app.config.templates.map((e) => e.name).indexOf(panel.template) === -1) {
+                if(app.distTemplates.indexOf(panel.template) !== -1) {
+                    distTemplate = await getJsonFile('./templates/' + panel.template + '.json')
+                    if(distTemplate) app.config.templates.push(distTemplate)
+                }
+            }
+        }        
+
         return true
     }
 
@@ -428,13 +465,16 @@ export const useFhemStore = defineStore('fhem', () => {
     function refreshEventWatcher(delay) {
         let res
 
-        log(3, 'Connection to FHEM was interrupted. Try to reconnect' + delay > 0 ? ' in 3 seconds.' : '.', null, delay > 0 ? 'reconnect' : null)
         stat.conn = null
         app.isReady = false
 
         setTimeout(async () => {
-            res = await createSession(true)
-            if(!res) refreshEventWatcher(3000)
+            res = await createSession(true)            
+            if(!res) {
+                app.message = false
+                log(3, 'Connection to FHEM was interrupted. Try to reconnect in 3 seconds.', null, 'reconnect')
+                refreshEventWatcher(3000)
+            }
         }, delay)
     }
 
@@ -695,7 +735,7 @@ export const useFhemStore = defineStore('fhem', () => {
 
         if(hasProps) {
             for(const [idx, prop] of Object.entries(props)) {
-                prototyp[prop] = hasDefaults ? (defaults[idx] || null) : null
+                prototyp[prop] = hasDefaults ? defaults[idx] : null
             }
         }
 
@@ -800,8 +840,7 @@ export const useFhemStore = defineStore('fhem', () => {
     //coreFunction load Panels in View
     function loadPanelView() {
         let routes
-
-        if(app.isReady) app.isReady = false
+        let tid = thread()
 
         app.panelView = []
 
@@ -813,10 +852,9 @@ export const useFhemStore = defineStore('fhem', () => {
             }
         }
         
-        app.isReady = true
         handleEventBuffer()
-
         log('4', 'PanelView loaded.', { view: app.currentView })
+        thread(tid)
 
         return true
     }
@@ -824,17 +862,17 @@ export const useFhemStore = defineStore('fhem', () => {
     //coreFunction create a new Session
     async function createSession(connect) {
         let res = true
+        let tid = thread()
 
         log(4, 'Create Session...')
 
-        if(!connect) {
-            app.isReady = false
-            stat.panelMap = []
-        }
+        app.isReady = false
+        stat.panelMap = []
 
         if(res && connect) res = await getToken()
         if(res && connect) res = openEventWatcher()
         if(res) res = await loadConfig()
+        if(res) res = await loadDefaultTemplates()
         if(res) res = createPanelList()
         if(res) res = await initialLoad()
         if(res) res = createNavigation()
@@ -844,9 +882,11 @@ export const useFhemStore = defineStore('fhem', () => {
             log(3, 'FHEMApp launching failed.')
         } else {
             app.message = false
+            app.isReady = true
             log(1, 'FHEMApp launched.', app)
         }        
 
+        thread(tid)
         return res
     }
 

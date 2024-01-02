@@ -1,3 +1,9 @@
+# v4.0.9-beta (02.01.2024)
+## Component Slider - vertical
+
+# v4.0.8-beta (01.01.2024)
+## coreFunction - distributed Templates
+
 # v4.0.7-beta (31.12.2023)
 ## Panel - bugfixing
 

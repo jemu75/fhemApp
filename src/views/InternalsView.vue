@@ -1,20 +1,22 @@
 <script setup>
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
   import VueJsonPretty from 'vue-json-pretty'
   import 'vue-json-pretty/lib/styles.css'
   import { useFhemStore } from '@/stores/fhem' 
-  import { computed } from 'vue';
+  import useClipboard from 'vue-clipboard3'
 
   const cfgOnly = ref(false)
   
   const fhem = useFhemStore()
+
+  const { toClipboard } = useClipboard()
 
   const jsonData = computed(() => {
     return cfgOnly.value ? fhem.app.config : fhem.app
   })
 
   function copyBtn() {
-    navigator.clipboard.writeText(JSON.stringify(jsonData.value, null, '  '))
+    toClipboard(JSON.stringify(jsonData.value, null, '  '))
   }
 </script>
 
@@ -29,7 +31,14 @@
             <v-switch :label="$t('_app.internals.onlyConfig')" v-model="cfgOnly" color="blue" density="comfortable" hide-details></v-switch>
           </v-col>
           <v-col cols="1" class="text-right">
-            <v-btn variant="text" icon="mdi-clipboard-multiple-outline" size="small" @click="copyBtn"></v-btn>
+            <v-snackbar 
+              :timeout="2000"              
+              rounded="pill">
+              <template v-slot:activator="{ props }">
+                <v-btn v-bind="props" variant="text" icon="mdi-clipboard-multiple-outline" size="small" @click="copyBtn"></v-btn>
+              </template>
+              {{ $t('_app.messages.clipboard.text') }}
+            </v-snackbar>
           </v-col>
         </v-row>
         <v-divider class="pb-3"></v-divider>
