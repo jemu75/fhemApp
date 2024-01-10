@@ -437,6 +437,27 @@ Parameter|Default|Beschreibung|
 |max|100|Wenn der Bereich des Wertes nicht zwischen 0 und 100 liegt, kann kann der größte Wert festgelegt werden. Diese entspricht dann im Wertebereich 100 Prozent [number]|
 |reverse|false|Die Startrichtung in der die Bar farblich hervorgehoben wird, wird umgekehrt [boolean]|
 |linear|false|zeigt eine horizontale oder runde Statusbar an [boolean]|
+### Level Element Chart serie
+Zeigt ein Chart. Im Gegensatz zu normalen Definitionen, werden zur Anzeige der Datenreihen **alle** Definitionen verwendet, deren Bedingungen zutreffen.
+
+Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|log|||
+|from|-6||
+|to|0||
+|column|4||
+|filter|||
+|format|||
+|name|||
+|type|||
+|calc|||
+### Level Element Chart options
+Bietet die Möglichkeit die Darstellung der Datenreihen individuell anzupassen. Die entsprechenden Optionen müssen als JSON-Definition angegeben werden.
+
+!noch auf Voreinstellung der Zeiten eingehen und auf Apex-Charts verweisen.!
+
 ## Bereich Info
 Der Infobereich befindet sich im unteren Teil. Er dient dazu, weitere Werte des Sonsors oder Aktors in Form von Icons oder Text darzustellen. Es können bis zu 6 Spalten für die Anzeige von Icons bzw. Texten verwendet werden.
 ### Element info

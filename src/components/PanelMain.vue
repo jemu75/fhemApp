@@ -5,6 +5,7 @@
     import PanelMainSlider from './PanelMainSlider.vue'
     import PanelMainImage from './PanelMainImage.vue'
     import PanelMainMenu from './PanelMainMenu.vue'
+    import PanelMainChart from './PanelMainChart.vue'
 
     defineProps({
         main: Object,
@@ -41,6 +42,7 @@
         if(type === 'slider') return PanelMainSlider
         if(type === 'image') return PanelMainImage
         if(type === 'menu') return PanelMainMenu
+        if(type === 'chart') return PanelMainChart
     }
 </script>
 

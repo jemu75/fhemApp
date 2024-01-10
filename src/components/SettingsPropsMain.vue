@@ -1,7 +1,9 @@
 <script setup>
     import { ref, computed } from 'vue'
     import { useFhemStore } from '@/stores/fhem'
+
     import SettingsPropsMainItem from './SettingsPropsMainItem.vue'
+    import SettingsPropsMainJson from './SettingsPropsMainJson.vue'
     
     const props = defineProps({
         type: String,
@@ -24,7 +26,8 @@
         { title: 'info', value: 'info' },
         { title: 'slider', value: 'slider' },
         { title: 'image', value: 'image' },
-        { title: 'menu', value: 'menu' }
+        { title: 'menu', value: 'menu' },
+        { title: 'chart', value: 'chart' }
     ]
 
     const listItemDefs = {
@@ -70,6 +73,10 @@
             { type: 'defs', required: false, prop: 'text3', def: 'reading:value:text:format', help: 'level-element-info-text' },
             { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider' },
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size' }
+        ],
+        chart: [
+            { type: 'defs', required: false, prop: 'serie', def: 'reading:value:log:from:to:column:filter:format:name:type:calc', help: 'level-element-chart-serie' },
+            { type: 'json', required: false, prop: 'options', def: '', help: 'level-element-chart-options' }
         ]
     }
 
@@ -81,9 +88,13 @@
         return !fhem.app.config[props.type][props.typeIdx][props.section][lvl.value - 1]['level'][segment] && segment !== 'level' ? true : false
     }
 
+    const listType = computed(() => {
+        return fhem.app.config[props.type][props.typeIdx][props.section][lvl.value - 1]['level'][subSections[subSectionIdx.value]['name']]
+    })
+
     const listItems = computed(() => {
         if(subSectionIdx.value !== 0) {
-            let type = fhem.app.config[props.type][props.typeIdx][props.section][lvl.value - 1]['level'][subSections[subSectionIdx.value]['name']]
+            let type = listType.value
             if(type) return listItemDefs[type]
         }
         return listItemDefs[subSections[subSectionIdx.value].name]
@@ -102,6 +113,9 @@
     function typeChanged(newVal, subSection) {
         if(newVal) {
             fhem.app.config[props.type][props.typeIdx][props.section][lvl.value - 1][subSection] = {}
+            if(newVal === 'chart') {
+                fhem.app.config[props.type][props.typeIdx][props.section][lvl.value - 1][subSection].options = {}
+            }
         } else {
             delete fhem.app.config[props.type][props.typeIdx][props.section][lvl.value - 1][subSection]
         }
@@ -191,7 +205,7 @@
         <v-expansion-panels>
             <v-expansion-panel v-for="def of listItems" :key="def.prop">
                 <v-expansion-panel-title>
-                    {{ def.prop }}
+                    {{ listType ? listType + '-' : '' }}{{ def.prop }} 
                     <template v-slot:actions="{ expanded }">
                         <v-icon :color="expanded ? '' : defIcon(def).color" :icon="expanded ? 'mdi-chevron-up' : defIcon(def).icon">
                         </v-icon>
@@ -207,8 +221,19 @@
                         density="compact"
                         variant="outlined"
                         class="pt-3">
-                    </v-autocomplete>                
- 
+                    </v-autocomplete>
+
+                    <SettingsPropsMainJson v-if="def.type === 'json'"
+                        :type="props.type"  
+                        :typeIdx="props.typeIdx"
+                        :section="props.section"
+                        :mainIdx="lvl - 1"
+                        :mainSection="subSections[subSectionIdx].name"
+                        :prop="def.prop" 
+                        :propDef="def.def"
+                        :propHelp="def.help">
+                    </SettingsPropsMainJson>
+
                     <SettingsPropsMainItem v-if="def.type === 'defs'"
                         :type="props.type" 
                         :typeIdx="props.typeIdx"

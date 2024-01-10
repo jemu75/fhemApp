@@ -1,3 +1,6 @@
+# v4.0.10-beta (06.01.2024)
+## Component Chart
+
 # v4.0.9-beta (02.01.2024)
 ## Component Slider - vertical
 

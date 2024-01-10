@@ -15,6 +15,8 @@ import theme from './assets/theme'
 import { createI18n } from 'vue-i18n'
 import messages from '@intlify/unplugin-vue-i18n/messages'
 
+import "echarts";
+
 const vuetify = createVuetify({
     components,
     directives,
@@ -28,6 +30,7 @@ const i18n = createI18n({
     fallbackLocale: 'en',
     messages
 })
+
 
 const app = createApp(App)
 

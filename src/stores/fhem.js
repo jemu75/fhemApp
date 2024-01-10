@@ -221,15 +221,15 @@ export const useFhemStore = defineStore('fhem', () => {
     }
 
     //coreFunction convert String to JSON
-    function stringToJson(val) {
+    function stringToJson(val, noLogging) {
         try {
             const parsed = JSON.parse(val)
             if (parsed && typeof parsed === "object") {
-              return parsed
+              return noLogging ? { result: parsed, error: false } : parsed
             }
         } catch(err) {
-            log(2, 'JSON parsing failed.', { input: val, error: err.message }, 'jsonParse') 
-            return false 
+            if(!noLogging) log(2, 'JSON parsing failed.', { input: val, error: err.message }, 'jsonParse') 
+            return noLogging ? { result: null, error: err.message } : false 
         }
 
         log(3, 'Unhandled state during JSON parsing.', null, 'jsonParse')
@@ -775,7 +775,7 @@ export const useFhemStore = defineStore('fhem', () => {
                     if(prop === 'true') prop = true
                     if(prop === 'false') prop = false
 
-                    obj[hasProps && props[idx] ? props[idx] : [idx]] = replacer(prop, defParts[0])
+                    if(prop !== '') obj[hasProps && props[idx] ? props[idx] : [idx]] = replacer(prop, defParts[0])
                 }
 
                 if(isList) { 
@@ -913,5 +913,5 @@ export const useFhemStore = defineStore('fhem', () => {
     router.isReady().then(init())
 
     //only for production
-    return { app, getEl, handleDefs, getIcon, replacer, createSession, request, thread, help }
+    return { app, getEl, handleDefs, getIcon, replacer, createSession, request, thread, stringToJson, help }
 })

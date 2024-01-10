@@ -13,11 +13,15 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "echarts": "^5.4.3",
     "pinia": "^2.1.7",
+    "prismjs": "^1.29.0",
     "vue": "^3.3.4",
     "vue-clipboard3": "^2.0.0",
+    "vue-echarts": "^6.6.8",
     "vue-i18n": "^9.6.1",
     "vue-json-pretty": "^2.3.0",
+    "vue-prism-editor": "^2.0.0-alpha.2",
     "vue-router": "^4.2.5",
     "vuetify": "^3.3.22"
   },

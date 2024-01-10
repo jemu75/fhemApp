@@ -44,8 +44,7 @@
           <v-col>
             {{ fhem.app.version }}
           </v-col>
-          <v-spacer/>
-          <v-col class="text-right">
+          <v-col cols="2" class="text-right">
             <v-icon :icon="fhem.app.isReady ? 'mdi-sync' : 'mdi-alert'" size="small"></v-icon>
           </v-col>
         </v-row>
