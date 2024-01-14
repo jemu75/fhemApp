@@ -56,46 +56,23 @@
         return res
     })
 
-    const levelClick = ref(false)
-
-    function clickReset() {
-        levelClick.value = false
-    }
-
-    function levelSwitch() {
-        if(expand.value.expandable) {
-            if(expand.value.maximizable) {
-                if(!expanded.value) {
-                    fhem.app.panelMaximized = item.panel
-                } else {
-                    fhem.app.panelMaximized = false
-                }
-            } 
-            
-            expanded.value = !expanded.value
-        } else {
-            levelClick.value = true
-        }
-    }
-
-    const levels = computed(() => {
-        let res = [],
-        idx = -1
+    function levelSwitch(init) {
+        let idx = -1
 
         if(expand.value.expandable || (!expand.value.expandable && expand.value.expanded)) {
-            res = expanded.value ? levelsActive.value : [levelsActive.value[0]]
-        } else {
-            if(levelClick.value) {
-                idx = levelsActive.value.indexOf(levels.value ? levels.value[0] : null)
-                res = (idx === -1 || idx === levelsActive.value.length - 1) ? [levelsActive.value[0]] : [levelsActive.value[idx + 1]]
-                clickReset() 
-            } else {
-                res = [levelsActive.value[0]]
+            if(!init) {
+                if(expand.value.maximizable) fhem.app.panelMaximized = expanded.value ? false : item.panel
+                expanded.value = !expanded.value
             }
-        }
 
-        return res
-    })
+            levels.value = expanded.value ? levelsActive.value : [levelsActive.value[0]] 
+        } else {
+            idx = levelsActive.value.indexOf(levels.value ? levels.value[0] : null)
+            levels.value = (idx === -1 || idx === levelsActive.value.length - 1) ? [levelsActive.value[0]] : [levelsActive.value[idx + 1]]
+        }
+    }
+
+    const levels = ref([])
 
     function getInfo(pos) {
         let res = fhem.handleDefs(item.panel.info[pos], ['text', 'icon', 'color'],['', '', ''])
@@ -119,6 +96,8 @@
     const infoMid2 = computed(() => getInfo('mid2'))
     const infoRight1 = computed(() => getInfo('right1'))
     const infoRight2 = computed(() => getInfo('right2'))
+
+    levelSwitch(true)
 </script>
 
 <template>
@@ -151,7 +130,7 @@
                         </v-col>
                         <v-spacer></v-spacer>
                         <v-col v-if="expandIcon" cols="1" class="text-right">
-                            <v-btn :icon="expandIcon" size="small" variant="plain" density="compact" @click="levelSwitch"></v-btn>
+                            <v-btn :icon="expandIcon" size="small" variant="plain" density="compact" @click="levelSwitch(false)"></v-btn>
                         </v-col>
                     </v-row>
                 </v-card-title>

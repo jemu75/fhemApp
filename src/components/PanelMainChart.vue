@@ -2,125 +2,128 @@
     import { ref, computed, onMounted } from 'vue'
     import { useFhemStore } from '@/stores/fhem'
     import VChart from 'vue-echarts'
-        
+    import { useTheme } from 'vuetify'
+    import { useI18n } from 'vue-i18n'
+ 
     const props = defineProps({
         el: Object,
         iconmap: Array,
-        devices: Array
+        devices: Array,
+        height: String
     })
 
     const fhem = useFhemStore()
 
-    const option = ref({
-        xAxis: {
-            type: 'time'
-        },
-        yAxis: {
-            type: 'value'
-        },
-        series: [
-            {
-                data: [],
-                type: 'line',
-                smooth: true
-            }
-        ]
+    const theme = useTheme()
+
+    const i18n = useI18n()
+
+    const defs = computed(() => {
+        return fhem.handleDefs(props.el.serie, ['data', 'name', 'digits', 'suffix', 'type', 'yAxisIndex'], [null, '', 0, '', 'line', 0], true)
     })
 
-    const seriesDefs = computed(() => {
-        let res = fhem.handleDefs(
-            props.el.serie, 
-            ['log', 'from', 'to', 'column', 'filter', 'format', 'name', 'type', 'calc'], 
-            [null, -6, 0, 4, null, null, '', 'line', 'raw'], true),
-            defPart
-            
-        for(const [ idx, def ] of Object.entries(props.el.serie)) {
-            defPart = def.split(':')[7]
-            if(defPart) res[idx].format = defPart
-            if(!res[idx].format) res[idx].format = '%n()'
-        }
+    const chartStyle = computed(() => {
+        let res = 'height: ' + props.height
+
+        if(fhem.app.panelMaximized) res = 'height: 80dvh'
 
         return res
     })
 
-    function getDate(diff) {
-        return ( d => new Date(d.setDate(d.getDate() + (Number(diff) || 0))).toISOString() )(new Date).split('T')[0]
-    }
+    const option = ref({})
 
-    function getDevice(device) {
-        let defParts = []
+    const loading = ref(true)
 
-        for(const device of props.devices) {
-            defParts = device.split(':')
-            if(RegExp(defParts[0]).test(device)) return defParts[1]
+    function getDate(val) {
+        if(isNaN(val)) {
+            return val
+        } else {
+            return ( d => new Date(d.setDate(d.getDate() + (Number(val) || 0))).toISOString() )(new Date).split('T')[0]
         }
-
-        return device
     }
 
-    function handleLogData(data) {
-        let rows = data.split('\n'),
+    async function readLogData(cmd) {
+        let cmdParts = cmd.split(' '),
+            logData,
+            rows = [],
             ts,
-            value,
+            val,
             res = []
-        
+
+        for(const device of props.devices) if(device.split(':')[0] === cmdParts[1]) cmdParts[1] = device.split(':')[1]
+        cmdParts[4] = getDate(cmdParts[4])
+        cmdParts[5] = getDate(cmdParts[5])
+
+        logData = await fhem.request('text', cmdParts.join(' '))
+
+        rows = logData.split('\n')
+
         if(rows.length > 0) {
             for(const row of rows) {
                 ts = new Date(row.split(' ')[0].replace('_','T'))
-                value = parseFloat(row.split(' ')[1])
+                val = parseFloat(row.split(' ')[1])
 
-                res.push([ts, value])
+                res.push([ts, val])
             }
         }
-
+  
         return res
     }
 
-    function loadChartData() {
-        readLogData(seriesDefs.value)
-            .then((res) => {
-                if(res.length > 0) {
-                    for(const data of res) {
-                        option.value.series[0].data = handleLogData(data.data, data.calc)
-                    }
-                }
-            })
+    function readValues(data) {
+        let vals = /,/.test(data) ? data : data.replace(/ /g,',')
+
+        if(!/^\[.*\]$/.test(vals)) vals = '[' + vals + ']'
+
+        return fhem.stringToJson(vals)
     }
 
-    async function readLogData(series) {
-        let res = [],
-            cmd,            
-            logData
+    async function handleSeries() {
+        let data,
+            opts = {
+                tooltip: {
+                    trigger: 'axis'
+                },
+                series: [],
+                yAxis: [],
+                xAxis: {},
+                legend: { data: [], bottom: 10 }
+            },
+            presets = JSON.parse(JSON.stringify(fhem.getEl(props.el, ['options']) || {})),
+            presetSeries = JSON.parse(JSON.stringify(fhem.getEl(props.el, ['options', 'series']) || [])),
+            axisLabel
 
-        for(const [idx, serie] of Object.entries(series)) {
-            if(serie.log) {
-                cmd = 'get ' + getDevice(serie.log) + ' - - ' 
-                cmd += getDate(serie.from) + ' ' 
-                cmd += getDate(serie.to) + ' ' 
-                cmd += serie.column + ':' + serie.filter + ':0:int'
+        loading.value = true
 
-                logData = fhem.request('text', cmd)
+        if(defs.value.length > 0) {
+            if(presetSeries.length > 0) delete presets.series
 
-                if(logData) {              
-                    res.push({ id: idx, data: await logData, name: serie.name, format: serie.format, type: serie.type, calc: serie.calc })
+            for(const [ idx, def ] of Object.entries(defs.value)) {
+                data = /^get.*/.test(def.data) ? await readLogData(def.data) : readValues(def.data)
+                axisLabel = { 
+                    formatter: (val) => { 
+                        return val.toLocaleString(i18n.locale.value, { minimumFractionDigits: def.digits, maximumFractionDigits: def.digits }) + def.suffix 
+                    } 
                 }
+
+                opts.xAxis.type = /^get.*/.test(def.data) ? 'time' : 'category' //woher kommen die Kategorienamen?
+                opts.series.push(Object.assign({ name: def.name, type: def.type, data }, (presetSeries[idx] || {})))
+                opts.yAxis.push({ type: 'value', axisLabel })
+                opts.legend.data.push(def.name)
             }
-        }
 
-        return res
+            if(Object.keys(presets).length > 0) Object.assign(opts, presets)
+
+            option.value = Object.assign({}, opts)
+            loading.value = false
+        }        
     }
-    
+
     onMounted(() => {
-        loadChartData()
+        handleSeries()               
     })
 </script>
 
 <template>
-    <v-chart class="chart" :option="option" autoresize />
+    <v-chart :style="chartStyle" :option="option" :loading="loading" :theme="theme.global.name.value === 'dark' ? 'dark' : 'light'" autoresize />
 </template>
-
-<style scoped>
-    .chart {
-        height: 50vh;
-    }
-</style>

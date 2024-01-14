@@ -53,7 +53,7 @@
                 <v-sheet :height="getHeight(lvl, 'level')"></v-sheet>
                 <template v-for="position of ['left1', 'left2', 'mid', 'right1', 'right2']" :key="position">
                     <v-col v-if="lvl.level[position]" :cols="getCols(lvl, position)" :class="getClass(lvl.level[position])">
-                        <component :is="getComponent(lvl.level[position])" :el="lvl[position]" :iconmap="iconmap" :devices="devices"></component>
+                        <component :is="getComponent(lvl.level[position])" :el="lvl[position]" :iconmap="iconmap" :devices="devices" :height="getHeight(lvl, 'level')"></component>
                     </v-col>
                     <v-divider v-if="showDivider(lvl, position)" vertical></v-divider>
                 </template>

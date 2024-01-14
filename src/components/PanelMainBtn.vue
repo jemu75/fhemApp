@@ -6,7 +6,8 @@
     const props = defineProps({
         el: Object,
         iconmap: Array,
-        devices: Array
+        devices: Array,
+        height: String
     })
 
     const fhem = useFhemStore()

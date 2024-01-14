@@ -75,8 +75,10 @@
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size' }
         ],
         chart: [
-            { type: 'defs', required: false, prop: 'serie', def: 'reading:value:log:from:to:column:filter:format:name:type:calc', help: 'level-element-chart-serie' },
-            { type: 'json', required: false, prop: 'options', def: '', help: 'level-element-chart-options' }
+            { type: 'defs', required: false, prop: 'serie', def: 'reading:value:data:name:digits:suffix:type', help: 'level-element-chart-serie' },
+            { type: 'json', required: false, prop: 'options', def: '', help: 'level-element-chart-options' },
+            { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider' },
+            { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size' }
         ]
     }
 
