@@ -132,7 +132,7 @@
                         <v-list-item
                           v-for="(menu, i) in level.leftMenu"
                           :key="i"
-                          @click="sendMenuCmd(menu.cmd)"
+                          @click="sendCmd(menu.cmd)"
                         >
                           <v-list-item-content>
                             <v-list-item-title class="text-subtitle-1">
@@ -238,7 +238,7 @@
                         <v-list-item
                           v-for="(menu, i) in level.midMenu"
                           :key="i"
-                          @click="sendMenuCmd(menu.cmd)"
+                          @click="sendCmd(menu.cmd)"
                         >
                           <v-list-item-content>
                             <v-list-item-title class="text-subtitle-1">
@@ -356,7 +356,7 @@
                         <v-list-item
                           v-for="(menu, i) in level.rightMenu"
                           :key="i"
-                          @click="sendMenuCmd(menu.cmd)"
+                          @click="sendCmd(menu.cmd)"
                         >
                           <v-list-item-content>
                             <v-list-item-title class="text-subtitle-1">
@@ -482,6 +482,9 @@
 
     methods: {
       sendCmd(cmd, delay) {
+        let device = this.$fhem.getEl(this.item, 'Internals', 'NAME');
+        if(/%d/.test(cmd)) cmd = cmd.replace('%d', device);
+
         if(!delay) {
           this.$fhem.request(cmd);
         } else {
@@ -494,12 +497,6 @@
             this.$fhem.request(cmd);
           }, 1000);
         }
-      },
-
-      sendMenuCmd(cmd) {
-        let device = this.$fhem.getEl(this.item, 'Internals', 'NAME');
-        if(/%d/.test(cmd)) cmd = cmd.replace('%d', device);
-        this.sendCmd(cmd);
       },
 
       updateReading(cmd) {

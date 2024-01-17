@@ -1,4 +1,8 @@
 # Versionsinformationen
+## v.3.36.4 (17.01.2024)
+**Bugfix**
+- Standard-Template: Ersetzung %d wird jetzt bei allen FHEM Kommando's berücksichtigt
+
 ## v.3.36.3 (15.11.2023)
 **Bugfix**
 - core: Anpassung im Modul createConnected
