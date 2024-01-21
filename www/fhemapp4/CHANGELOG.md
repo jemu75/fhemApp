@@ -1,3 +1,6 @@
+# v4.0.12-beta (18.01.2024)
+## Component Chart
+- Sizing and Preview
 # v4.0.11-beta (13.01.2024)
 ## Panel
 - Bugfix switching Levels

@@ -913,5 +913,5 @@ export const useFhemStore = defineStore('fhem', () => {
     router.isReady().then(init())
 
     //only for production
-    return { app, getEl, handleDefs, getIcon, replacer, createSession, request, thread, stringToJson, help }
+    return { app, getEl, handleDefs, getIcon, replacer, createSession, request, thread, stringToJson, log, help }
 })
