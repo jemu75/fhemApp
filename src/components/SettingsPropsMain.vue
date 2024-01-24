@@ -77,6 +77,7 @@
         chart: [
             { type: 'defs', required: false, prop: 'serie', def: 'reading:value:data:name:digits:suffix:type', help: 'level-element-chart-serie' },
             { type: 'json', required: false, prop: 'options', def: '', help: 'level-element-chart-options' },
+            { type: 'json', required: false, prop: 'options2', def: '', help: 'level-element-chart-options' },
             { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider' },
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size' }
         ]
@@ -163,7 +164,7 @@
 
             el = fhem.getEl(fhem.app.config, path)
 
-            if(el && el.length > 0) res = { icon: 'mdi-check', color: 'success' }
+            if(el && Object.keys(el).length > 0) res = { icon: 'mdi-check', color: 'success' }
 
         return res
     }

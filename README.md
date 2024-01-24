@@ -24,16 +24,16 @@ set myapp update
 # Instanzen
 In FHEM können mehrere *fhemapp*-Devices definiert werden. Hinter jedem Device wird eine separate Konfiguration gespeichert. Dies ermöglicht die Betrieb von beliebig vielen **FHEMApp**-Instanzen. Beim Aufruf von **FHEMApp** kann dann auf die jeweilige Instanz verwiesen. 
 # Aufruf der App
-Der Aufruf von **FHEMApp** erfolgt über einen Web-Browser. Am Ende der URL wird jeweils der Name des *fhemapp*-Device aus FHEM angegeben. Dessen Konfiguration wird beim Aufruf von **FHEMApp** verwendet. Bei der Installation in FHEM erfolgt der Aufruf nach folgendem Schema:
+Der Aufruf von **FHEMApp** erfolgt über einen Web-Browser. Nach dem `...#/` wird muss der Name des *fhemapp*-Device aus FHEM angegeben. Dessen Konfiguration wird beim Aufruf von **FHEMApp** verwendet. Bei der Installation in FHEM erfolgt der Aufruf nach folgendem Schema:
 ```
-http(s)://<fhem_ip>:<fhem_port>/<fhem_pfad>/<fhemapp_verzeichnis>/index.html#/<fhemapp_config>
+http(s)://<server>:<port>/<pfad>/index.html#/<fhemapp_config>
 ```
 Beispiel zum Aufruf von FHEMapp
 ```
 http://fhem:8083/fhem/fhemapp4/index.html#/myapp
 ```
 ## zusätzliche URL-Parameter
-Zum Aufruf von **FHEMApp** können optionale URL-Parameter verwendet werden. Diese sind u.a. beim Betrieb von **FHEMApp** auf einem separaten Web-Server nötig. Die Angabe der URL-Parameter erfolgt in Form eines URL-Querystring (z.B. .../?dark=1&lang=en&loglevel=7)
+Zum Aufruf von **FHEMApp** können optionale URL-Parameter verwendet werden. Diese sind u.a. beim Betrieb von **FHEMApp** auf einem separaten Web-Server nötig. Die Angabe der URL-Parameter erfolgt in Form eines URL-Querystring z.B. `.../?dark=1&lang=en&loglevel=7`
 
 > [!IMPORTANT]
 > Beim Betrieb von **FHEMApp** auf einem separaten Web-Server müssen die Verbidungsparameter `protocol`, `server`, `port` und `path` angegeben werden!
@@ -88,16 +88,11 @@ Panels enthalten drei konfigurierbare Bereiche
 * den Bereich [status](#bereich-status) im oberen Teil des Panels
 * den Bereich [main](#bereich-main) im mittleren Teil des Panels
 * den Bereich [info](#bereich-info) im unteren Teil des Panels
-
-Der Bereich [main](#bereich-main) kann zudem mit mehreren Ebenen versehen werden, um komplexe Panels zu erstellen.
-
 ## Konfiguration der Elemente
 Die Konfiguration der Elemente in den verschiedenen Bereichen des Panels erfolgt nach einem einheitlichen Definitions-Schema. 
 ```
-reading:value:property_1:property_2:...
+reading:value:prop1:prop2:...
 ```
-Für jedes Element können mehrere Definitionen hinterlegt werden. So können beispielsweise Buttons ihr Aussehen abhängig vom Wert eines *Readings* verändern oder unterschiedliche Icons abhängig vom Wert eines *Readings* angezeigt werden. Neben *Readings* können auch *Attributes* und *Internals* für Definitionen verwendet werden. 
-
 Jede Definition beginnt mit den beiden Parametern `reading` und `value`. Diese dienen dazu, das Element mit einem FHEM-Device zu verbinden und optional auf einen bestimmten Wert zu prüfen. Folgende Beispiele zeigen, wie der Parameter `reading` verwendet werden kann. 
 
 |Beispiel|Beschreibung|
@@ -287,6 +282,7 @@ Es stehen folgende Typen zur Verfügung
 |slider|Es kann ein Slider zu Steuerung von Aktoren konfiguriert werden|
 |image|Es kann ein Bild über eine URL angezeigt werden|
 |menu|Es kann ein DropDown-Menü zur Steuerung verschiedener Aktoren bzw. Aktorwerte konfiguriert werden|
+|chart|Es kann ein Chart angezeigt werden|
 ### Level Element divider
 Zeigt eine vertikale Linie auf der rechten Seite der Spalte an.
 
@@ -438,25 +434,34 @@ Parameter|Default|Beschreibung|
 |reverse|false|Die Startrichtung in der die Bar farblich hervorgehoben wird, wird umgekehrt [boolean]|
 |linear|false|zeigt eine horizontale oder runde Statusbar an [boolean]|
 ### Level Element Chart serie
-Zeigt ein Chart. Im Gegensatz zu normalen Definitionen, werden zur Anzeige der Datenreihen **alle** Definitionen verwendet, deren Bedingungen zutreffen.
+Zeigt ein Chart. Im Gegensatz zu normalen Definitionen, werden zur Anzeige der Datenreihen **alle** Definitionen verwendet, deren Bedingungen zutreffen. Für die Darstellung von Charts kommt [Apache ECharts](https://echarts.apache.org) zum Einsatz. Diese bietet eine sehr große Vielfalt an Charts und Anpassungsmöglichkeiten.
 
 Parameter|Default|Beschreibung|
 |---|---|---|
 |reading||siehe Parameter [reading](#konfiguration-der-elemente)|
 |value||siehe Parameter [value](#konfiguration-der-elemente)|
-|log|||
-|from|-6||
-|to|0||
-|column|4||
-|filter|||
-|format|||
-|name|||
-|type|||
-|calc|||
-### Level Element Chart options
-Bietet die Möglichkeit die Darstellung der Datenreihen individuell anzupassen. Die entsprechenden Optionen müssen als JSON-Definition angegeben werden.
+|data||kann sowohl eine FHEM-Anweisung `get` für FileLog-Devices bzw. DBLog-Devices enthalten oder eine Reihe von Werten, welche durch ein Leerzeichen oder Komma voneinander getrennt sind.|
+|name||Name der Datenreihe|
+|digits|0|Anzahl der Nachkommastellen, die im Diagramm angezeigt werden.|
+|suffix||Einheit für die Zahlenwerte (z.B. % oder °C)|
+|type|line|Charttyp der Datenreihe (z.B. line, bar, scatter, gauge und weitere siehe auch [ECharts Beispiele](https://echarts.apache.org/examples/en/index.html))|
 
-!noch auf Voreinstellung der Zeiten eingehen und auf Apex-Charts verweisen.!
+Bei Verwendung der FHEM-Anweisung `get` können statt fester Datumsangaben im ISO-Format auch Offsetwerte verwendet werden. z.B. `get log1 - - -14 0 4\:level` Dabei entspricht `-14` dem aktuellen Datum - 14 Tage und `0` dem aktuellen Datum. Da in der FHEM-Anweisung `get` auch Doppelpunkte zum Einsatz kommen ist die Schreibweise `\:` innerhalb der Anweisung zu beachten. (siehe auch [Ersetzungen](#ersetzungen)) Das Ergebnis der `get` Anweisung muss immer zwei Spalten zurückgeben. Die linke Spalte muss der Zeitstempel und die rechte Spalte den zugehörigen Zahlenwert enthalten. 
+
+Die zurückgegebenen Daten werden an das EChart Object-Modell an folgende Stellen übergeben:
+``` 
+{ 
+    series: [{ data: <data>, name: <name>, type: <type> },...],
+    yAxis: [{ axisLabel: fn(<digits>, <suffix>) },...],    
+    legend: { data: [<name>,...] }
+}
+```
+### Level Element Chart options
+Hier kann das Chart individuell über eine entsprechende JSON-Definition angepasst werden. (siehe auch [ECharts Konfiguration](https://echarts.apache.org/en/option.html#title))
+
+
+### Level Element Chart options2
+Diese Definition kann bei Verwendung von [maximizable](#element-expandable) verwendet werden, um das Chart anders darzustellen, wenn das Panel maximiert ist. Die Definition erfolgt wie unter [Chart options](#level-element-chart-options) beschrieben.
 
 ## Bereich Info
 Der Infobereich befindet sich im unteren Teil. Er dient dazu, weitere Werte des Sonsors oder Aktors in Form von Icons oder Text darzustellen. Es können bis zu 6 Spalten für die Anzeige von Icons bzw. Texten verwendet werden.

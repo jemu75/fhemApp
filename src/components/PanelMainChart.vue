@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, computed, onMounted } from 'vue'
+    import { ref, computed } from 'vue'
     import { useFhemStore } from '@/stores/fhem'    
     import { useTheme, useDisplay } from 'vuetify'
     import { useI18n } from 'vue-i18n'
@@ -13,147 +13,158 @@
     })
 
     const fhem = useFhemStore()
-
     const theme = useTheme()
-
     const { mobile } = useDisplay()
-
     const i18n = useI18n()
-
-    const dateSelector = ref({
-        from: new Date(),
-        to: new Date(),
-        fromMenu: false,
-        toMenu: false
-    })
-
-    const chartStyle = computed(() => {
-        return 'height: ' + (fhem.app.panelMaximized ? (window.innerHeight - 250) + 'px' : props.height)
-    })
 
     const option = ref({})
 
-    const loaded = ref(false)
+    const chart = ref({
+        from: null,
+        to: null,
+        fromMenu: false,
+        toMenu: false,
+        loaded: false
+    })
+
+    let data = []
+
+    const chartStyle = computed(() => {
+        loadSeries()
+
+        return 'height: ' + (fhem.app.panelMaximized ? (window.innerHeight - 250) + 'px' : props.height)
+    })
 
     function toLocaleDate(val) {
         return i18n.d(val, { dateStyle: mobile.value ? 'short' : 'long' })
     }
 
-    function getDate(val) {
+    function getDate(val, from) {
+        let res
 
-        if(typeof val === 'object') {
-            const offset = val.getTimezoneOffset()
-            const newDate = new Date(val.getTime() - (offset * 60 * 1000))
-            val = newDate.toISOString().split('T')[0]
-        }
+        if(chart.value.from && from) res = chart.value.from
+        if(chart.value.to && !from) res = chart.value.to
 
-        if(isNaN(val)) {
-            return val
-        } else {
-            return ( d => new Date(d.setDate(d.getDate() + (Number(val) || 0))).toISOString() )(new Date).split('T')[0]
-        }
+        if(!res && !isNaN(val)) res = (d => new Date(d.setDate(d.getDate() + (Number(val) || 0))))(new Date) 
+        if(!res) res = new Date(/.*T.*/.test(val) ? val : val + 'T00:00:00')
+
+        if(!chart.value.from && from) chart.value.from = res
+        if(!chart.value.to && !from) chart.value.to = res
+
+        res = new Date(res.getTime() - (res.getTimezoneOffset() * 60 * 1000))
+
+        return res.toISOString().split('T')[0]        
     }
 
-    async function readLogData(cmd, digits, update) {
-        let cmdParts = cmd.split(' '),
+    async function loadData() {
+        let defs = fhem.handleDefs(props.el.serie, ['data', 'name', 'digits', 'suffix', 'type'], [null, '', 0, '', 'line'], true),
+            cmd,
             logData,
             rows = [],
+            cols,
             ts,
             val,
+            data,
+            xAxisType,
             res = []
+            
 
-        for(const device of props.devices) if(device.split(':')[0] === cmdParts[1]) cmdParts[1] = device.split(':')[1]
-        cmdParts[4] = getDate(update === 'from' ? getDate(dateSelector.value.from) : cmdParts[4])
-        cmdParts[5] = getDate(update === 'to' ? getDate(dateSelector.value.to) : cmdParts[5])
+        if(defs.length > 0) {
+            for(const def of defs) {
+                if(/^get.*/.test(def.data)) {
+                    xAxisType = 'time'
+                    cmd = def.data.split(' ')
 
-        if(!update) {
-            dateSelector.value.from = new Date(cmdParts[4])
-            dateSelector.value.to = new Date(cmdParts[5])
-        }
+                    for(const device of props.devices) if(device.split(':')[0] === cmd[1]) cmd[1] = device.split(':')[1]
+                    cmd[4] = getDate(cmd[4], true)
+                    cmd[5] = getDate(cmd[5], false)
 
-        logData = await fhem.request('text', cmdParts.join(' '))
+                    logData = await fhem.request('text', cmd.join(' '))
+                    
+                    data = []
+                    rows = logData.split('\n')
 
-        rows = logData.split('\n')
+                    if(rows.length > 0) {
+                        for(const row of rows) {
+                            cols = row.split(' ')
+                            
+                            if(cols.length > 1) {
+                                ts = new Date(cols[0].replace('_','T'))
+                                val = parseFloat(cols[1]).toFixed(def.digits)
 
-        if(rows.length > 0) {
-            for(const row of rows) {
-                ts = new Date(row.split(' ')[0].replace('_','T'))
-                val = parseFloat(row.split(' ')[1]).toFixed(digits)
+                                data.push([ts, val])
+                            }
+                        }
+                    }
+                } else {
+                    xAxisType = 'category'
+                    logData = /,/.test(def.data) ? def.data : def.data.replace(/ /g,',')
 
-                res.push([ts, val])
+                    if(!/^\[.*\]$/.test(loadData)) logData = '[' + logData + ']'
+
+                    data = fhem.stringToJson(logData)
+                }
+
+                res.push({ xAxisType: xAxisType, type: def.type, name: def.name, digits: def.digits, suffix: def.suffix, data })
             }
         }
-  
+
         return res
     }
 
-    function readValues(data) {
-        let vals = /,/.test(data) ? data : data.replace(/ /g,',')
+    async function loadSeries() {
+        let preset = {
+            tooltip: { trigger: 'axis' },
+            legend: { data: [], bottom: 10 },
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+            grid: { top: 30, bottom: 60, left: 60, right: 60 },
+            animationDuration: 300,
+            series: [],
+            yAxis: [],
+            xAxis: {}
+        },
+        axisLabel,
+        options = JSON.parse(JSON.stringify(fhem.getEl(props.el, ['options']) || {})),
+        options2 = JSON.parse(JSON.stringify(fhem.getEl(props.el, ['options2']) || {})),
+        opts = Object.assign(preset, fhem.app.panelMaximized && Object.keys(options2).length > 0 ? options2 : options )
 
-        if(!/^\[.*\]$/.test(vals)) vals = '[' + vals + ']'
+        chart.value.fromMenu = false
+        chart.value.toMenu = false
+        chart.value.loaded = false
 
-        return fhem.stringToJson(vals)
-    }
+        data = await loadData()
 
-    async function loadSeries(update) {
-        let data,
-            defs = fhem.handleDefs(props.el.serie, ['data', 'name', 'digits', 'suffix', 'type'], [null, '', 0, '', 'line'], true),
-            opts = {
-                tooltip: { trigger: 'axis' },
-                legend: { data: [], bottom: 10 },
-                backgroundColor: 'rgba(255, 255, 255, 0)',
-                grid: { top: 30, bottom: 60, left: 60, right: 60 },
-                animationDuration: 300,
-                series: [],
-                yAxis: [],
-                xAxis: {}
-            },
-            presets = JSON.parse(JSON.stringify(fhem.getEl(props.el, ['options']) || {})),
-            presetSeries = [],
-            axisLabel
-
-        if(update) dateSelector.value[update + 'Menu'] = false
-
-        loaded.value = false
-
-        if(defs.length > 0) {
-            if(presets.series && presets.series.length > 0) {
-                presetSeries = presets.series
-                delete presets.series
+        for(const [ idx, serie ] of Object.entries(data)) {
+            axisLabel = { 
+                formatter: (val) => { 
+                    return val.toLocaleString(i18n.locale.value, { minimumFractionDigits: serie.digits, maximumFractionDigits: serie.digits }) + serie.suffix 
+                } 
             }
 
-            for(const [ idx, def ] of Object.entries(defs)) {
-                data = /^get.*/.test(def.data) ? await readLogData(def.data, def.digits, update) : readValues(def.data)
-                axisLabel = { 
-                    formatter: (val) => { 
-                        return val.toLocaleString(i18n.locale.value, { minimumFractionDigits: def.digits, maximumFractionDigits: def.digits }) + def.suffix 
-                    } 
-                }
+            if(!opts.series[idx]) opts.series[idx] = {}
+            if(!opts.yAxis[idx]) opts.yAxis[idx] = {}
+            if(!opts.legend.data) opts.legend.data = []
 
-                opts.xAxis.type = /^get.*/.test(def.data) ? 'time' : 'category' //woher kommen die Kategorienamen?
-                opts.series.push(Object.assign({ name: def.name, type: def.type, data }, (presetSeries[idx] || {})))
-                opts.yAxis.push({ type: 'value', axisLabel })
-                opts.legend.data.push(def.name)
-            }
+            if(!opts.xAxis.type) opts.xAxis.type = serie.xAxisType
+            if(!opts.series[idx].name) opts.series[idx].name = serie.name
+            if(!opts.series[idx].type) opts.series[idx].type = serie.type
+            if(!opts.series[idx].data) opts.series[idx].data = serie.data
+            if(!opts.yAxis[idx].type) opts.yAxis[idx].type = 'value'
+            if(!opts.yAxis[idx].axisLabel) opts.yAxis[idx].axisLabel = axisLabel
+            if(!opts.legend.data[idx]) opts.legend.data[idx] = serie.name
+        }
 
-            if(Object.keys(presets).length > 0) Object.assign(opts, presets)
+        fhem.log(7, 'Chartdata chart.loaded.', opts)
 
-            fhem.log(7, 'Chartdata loaded.', opts)
-
-            option.value = Object.assign({}, opts)
-            loaded.value = true
-        }        
+        option.value = Object.assign({}, opts)
+        chart.value.loaded = true
     }
-
-    onMounted(() => {
-        loadSeries()               
-    })
 </script>
 
 <template>
     <div v-if="fhem.app.panelMaximized" class="mx-4 my-4 text-right">
         <v-menu
-            v-model="dateSelector.fromMenu"
+            v-model="chart.fromMenu"
             :close-on-content-click="false">
             
             <template v-slot:activator="{ props }">
@@ -162,21 +173,21 @@
                     variant="outlined" 
                     append-icon="mdi-calendar"
                     class="mr-2">
-                    {{ toLocaleDate(dateSelector.from) }}
+                    {{ toLocaleDate(chart.from) }}
                 </v-btn>
             </template>
             
             <v-locale-provider :locale="i18n.locale.value">
                 <v-date-picker 
-                    v-model="dateSelector.from" 
+                    v-model="chart.from" 
                     color="secondary" 
-                    @update:model-value="loadSeries('from')">
+                    @update:model-value="loadSeries()">
                 </v-date-picker>
             </v-locale-provider>
         </v-menu>
         -
         <v-menu
-            v-model="dateSelector.toMenu"
+            v-model="chart.toMenu"
             :close-on-content-click="false">
             
             <template v-slot:activator="{ props }">
@@ -185,22 +196,22 @@
                     variant="outlined" 
                     append-icon="mdi-calendar"
                     class="ml-2">
-                    {{ toLocaleDate(dateSelector.to) }}
+                    {{ toLocaleDate(chart.to) }}
                 </v-btn>
             </template>
             
             <v-locale-provider :locale="i18n.locale.value">
                 <v-date-picker 
-                    v-model="dateSelector.to" 
+                    v-model="chart.to" 
                     color="secondary" 
-                    @update:model-value="loadSeries('to')">
+                    @update:model-value="loadSeries()">
                 </v-date-picker>
             </v-locale-provider>
         </v-menu>
     </div>
 
     <div :style="chartStyle">
-        <v-skeleton-loader v-if="!loaded" type="text, image, text" />
-        <v-chart v-if="loaded" :option="option" :theme="theme.global.name.value === 'dark' ? 'dark' : 'light'" autoresize />
+        <v-skeleton-loader v-if="!chart.loaded" type="text, image, text" />
+        <v-chart v-if="chart.loaded" :option="option" :theme="theme.global.name.value === 'dark' ? 'dark' : 'light'" autoresize />
     </div>
 </template>

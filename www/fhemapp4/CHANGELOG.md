@@ -1,3 +1,7 @@
+# v4.0.13-beta (24.01.2024)
+## Component Chart
+- Preview
+- Documentation
 # v4.0.12-beta (18.01.2024)
 ## Component Chart
 - Sizing and Preview
