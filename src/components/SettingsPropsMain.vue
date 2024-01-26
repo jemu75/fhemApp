@@ -27,7 +27,8 @@
         { title: 'slider', value: 'slider' },
         { title: 'image', value: 'image' },
         { title: 'menu', value: 'menu' },
-        { title: 'chart', value: 'chart' }
+        { title: 'chart', value: 'chart' },
+        { title: 'colorpicker', value: 'colorpicker' }
     ]
 
     const listItemDefs = {
@@ -78,6 +79,11 @@
             { type: 'defs', required: false, prop: 'serie', def: 'reading:value:data:name:digits:suffix:type', help: 'level-element-chart-serie' },
             { type: 'json', required: false, prop: 'options', def: '', help: 'level-element-chart-options' },
             { type: 'json', required: false, prop: 'options2', def: '', help: 'level-element-chart-options' },
+            { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider' },
+            { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size' }
+        ],
+        colorpicker: [
+            { type: 'defs', required: false, prop: 'picker', def: 'reading:value:cmd:current', help: 'level-element-colorpicker-picker' },
             { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider' },
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size' }
         ]

@@ -13,6 +13,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@radial-color-picker/vue-color-picker": "^5.0.1",
     "echarts": "^5.4.3",
     "pinia": "^2.1.7",
     "prismjs": "^1.29.0",

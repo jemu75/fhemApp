@@ -1,3 +1,6 @@
+# v4.0.14-beta (26.01.2024)
+## Component Colorpicker
+- Develpoment
 # v4.0.13-beta (24.01.2024)
 ## Component Chart
 - Preview
