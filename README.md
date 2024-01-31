@@ -283,6 +283,7 @@ Es stehen folgende Typen zur Verfügung
 |image|Es kann ein Bild über eine URL angezeigt werden|
 |menu|Es kann ein DropDown-Menü zur Steuerung verschiedener Aktoren bzw. Aktorwerte konfiguriert werden|
 |chart|Es kann ein Chart angezeigt werden|
+|colorpicker|Es kann ein Slider zur Steuerung von RGB Lights konfiguriert werden|
 ### Level Element divider
 Zeigt eine vertikale Linie auf der rechten Seite der Spalte an.
 
@@ -458,11 +459,17 @@ Die zurückgegebenen Daten werden an das EChart Object-Modell an folgende Stelle
 ```
 ### Level Element Chart options
 Hier kann das Chart individuell über eine entsprechende JSON-Definition angepasst werden. (siehe auch [ECharts Konfiguration](https://echarts.apache.org/en/option.html#title))
-
-
 ### Level Element Chart options2
 Diese Definition kann bei Verwendung von [maximizable](#element-expandable) verwendet werden, um das Chart anders darzustellen, wenn das Panel maximiert ist. Die Definition erfolgt wie unter [Chart options](#level-element-chart-options) beschrieben.
+### Level Element Colorpicker picker
+Zeigt einen Colorpicker zum Steuern von RGB Lights.
 
+Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|cmd||FHEM Kommando. Die Ersetzung **%v** repräsentiert den aktuellen Wert des Colorpickers. (siehe auch [Ersetzungen](#ersetzungen)) [string]|
+|current||aktueller Wert des Colorpickers [string]|
 ## Bereich Info
 Der Infobereich befindet sich im unteren Teil. Er dient dazu, weitere Werte des Sonsors oder Aktors in Form von Icons oder Text darzustellen. Es können bis zu 6 Spalten für die Anzeige von Icons bzw. Texten verwendet werden.
 ### Element info

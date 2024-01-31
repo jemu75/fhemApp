@@ -28,7 +28,6 @@
             if(RegExp(defParts[0]).test(cmd)) cmd = cmd.replace(defParts[0], defParts[1])
         }
 
-        //console.log(cmd)
         fhem.request('text', cmd)
     }
 
@@ -45,6 +44,8 @@
     }
 
     function hexToHSL(hex) {
+        if(hex.split(' ').length > 1) hex = hex.split(' ').slice(-1)[0]        
+
         hex = hex.replace(/^#/, '')
 
         let bigint = parseInt(hex, 16),
