@@ -48,33 +48,33 @@
 </script>
 
 <template>
-    <v-list>
+    <v-list class="pa-0">
         <v-list-item v-if="fhem.app.config[props.type][props.typeIdx][props.section][props.mainIdx][props.mainSection][props.prop]" class="pa-0">
-            <v-row v-for="(def, idx) of fhem.app.config[props.type][props.typeIdx][props.section][props.mainIdx][props.mainSection][props.prop]" :key="idx" no-gutters class="pt-3">
+            <v-row v-for="(def, idx) of fhem.app.config[props.type][props.typeIdx][props.section][props.mainIdx][props.mainSection][props.prop]" :key="idx" no-gutters class="pt-3 align-center">
                 <v-col>
                     <v-text-field
                         density="compact" 
                         variant="outlined" 
                         persistent-placeholder
+                        hide-details
                         :placeholder="props.propDef"
                         :label="'Definition ' + (idx + 1)"
                         v-model="fhem.app.config[props.type][props.typeIdx][props.section][props.mainIdx][props.mainSection][props.prop][idx]">
                     </v-text-field>
                 </v-col>
-                <v-col cols="1" class="text-right">
-                    <v-btn variant="text" icon="mdi-delete" @click="deleteDef(idx)"></v-btn>
-                </v-col>
+                <v-btn variant="plain" icon="mdi-delete" @click="deleteDef(idx)"></v-btn>
             </v-row>
         </v-list-item>
         <v-list-item class="pa-0">
             <v-form ref="form">
-                <v-row no-gutters class="pt-3">
-                    <v-col>
+                <v-row no-gutters class="pt-3 align-center">
+                    <v-col cols="10">
                         <v-text-field
                             v-model="newDef"    
                             density="compact" 
                             variant="outlined" 
                             persistent-placeholder
+                            hide-details
                             :placeholder="props.propDef"
                             label="new Definition"
                             :append-inner-icon="props.propHelp ? 'mdi-help-circle' : ''"
@@ -82,9 +82,7 @@
                             @click:append-inner="fhem.help(propHelp)">
                         </v-text-field>                        
                     </v-col>
-                    <v-col cols="1" class="text-right">                                                
-                        <v-btn variant="text" icon="mdi-plus" :disabled="!newDef" @click="addDef()"></v-btn>
-                    </v-col>
+                    <v-btn variant="plain" icon="mdi-plus" :disabled="!newDef" @click="addDef()"></v-btn>
                 </v-row>
             </v-form>
         </v-list-item>

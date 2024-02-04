@@ -7,6 +7,17 @@
     import VueJsonPretty from 'vue-json-pretty'
     import 'vue-json-pretty/lib/styles.css'
 
+    import { PrismEditor } from 'vue-prism-editor'
+    import 'vue-prism-editor/dist/prismeditor.min.css' // import the styles somewhere
+
+    // import highlighting library (you can use any library you want just return html string)
+    import { highlight, languages } from 'prismjs/components/prism-core'
+    import 'prismjs/components/prism-clike'
+    import 'prismjs/components/prism-javascript'
+    import 'prismjs/themes/prism-tomorrow.css' // import syntax highlighting styles
+
+    import useClipboard from 'vue-clipboard3'
+
     import PanelCard from '../components/PanelCard.vue'
     import SettingsPropsList from './SettingsPropsList.vue'
     import SettingsPropsMain from './SettingsPropsMain.vue'
@@ -20,6 +31,8 @@
     const i18n = useI18n()
 
     const { mobile } = useDisplay()
+
+    const { toClipboard } = useClipboard()
 
     const preLang = '_app.settings.' + props.type + '.'
 
@@ -118,6 +131,10 @@
         return res
     })
 
+    const jsonHeight = computed(() => {
+        return (window.innerHeight - 350) + 'px'
+    })
+
     const settings = ref({
         search: '',
         newItem: '',
@@ -126,7 +143,9 @@
         rawMode: false,
         section: 'panel',
         panel: null,
-        preview: 'panel'
+        preview: 'panel',
+        jsonDef: null,
+        jsonError: null
     })
 
     function updatePanel(panel) {
@@ -168,10 +187,31 @@
         settings.value.itemIdx = idx
 
         settings.value.extended = items.value[items.value.map((e) => e.idx).indexOf(idx)].advanced !== '-' ? true : false
+
+        if(typeof item.value === 'object') {
+            settings.value.jsonDef = JSON.stringify(item.value, null, '\t')
+            settings.value.jsonError = null
+        }
     }
 
     function deleteItem(idx) {
         fhem.app.config[props.type].splice(idx, 1)
+    }
+
+    function highlighter(code) {
+        return highlight(code, languages.js)
+    }
+
+    function changed() {
+        let res = fhem.stringToJson(settings.value.jsonDef, true)
+
+        settings.value.jsonError = res.error
+
+        if(!settings.value.jsonError) fhem.app.config[props.type][settings.value.itemIdx] = res.result
+    }
+
+    function copyBtn() {
+        toClipboard(settings.value.jsonDef)
     }
  </script>
 
@@ -252,7 +292,7 @@
                         <v-btn variant="plain" icon="mdi-arrow-up-left" @click="item = null"></v-btn>
 
                         <v-col cols="10" md="">
-                            <v-autocomplete 
+                            <v-autocomplete v-if="!settings.rawMode"
                                 v-model="settings.section"                                
                                 :items="sections"
                                 :disabled="settings.extended || props.type === 'templates' ? false : true"
@@ -271,6 +311,15 @@
                                 @update:modelValue="!$event ? settings.section = 'panel' : null">
                             </v-switch>
                         </v-col>
+                        <v-snackbar 
+                            v-if="settings.rawMode"
+                            :timeout="2000"              
+                            rounded="pill">
+                            <template v-slot:activator="{ props }">
+                                <v-btn v-bind="props" variant="text" icon="mdi-clipboard-multiple-outline" size="small" @click="copyBtn"></v-btn>
+                            </template>
+                            {{ $t('_app.messages.clipboard.text') }}
+                        </v-snackbar>
                         <v-col cols="6" md="auto" class="pl-5">
                             <v-switch
                                 v-model="settings.rawMode"
@@ -281,7 +330,7 @@
                             </v-switch>
                         </v-col>
                     </v-row>
-                    <v-row no-gutters>
+                    <v-row v-if="!settings.rawMode" no-gutters>
                         <v-col>
                             <SettingsPropsList 
                                 v-if="settings.section !== 'main'" 
@@ -296,6 +345,19 @@
                                 :typeIdx="settings.itemIdx"
                                 :section="settings.section" >
                             </SettingsPropsMain>
+                        </v-col>
+                    </v-row>
+                    <v-row v-if="settings.rawMode" no-gutters>
+                        <v-col>
+                            <v-card :variant="settings.jsonError ? 'tonal' : 'outlined'" :color="settings.jsonError ? 'error' : ''"  class="pa-1 mt-2" :height="jsonHeight">
+                                <prism-editor
+                                    v-model="settings.jsonDef"
+                                    :highlight="highlighter"            
+                                    line-numbers
+                                    @input="changed">
+                                </prism-editor>
+                                <v-alert v-if="settings.jsonError" color="error" density="compact">{{ settings.jsonError }}</v-alert>
+                            </v-card>
                         </v-col>
                     </v-row>
                 </v-col>
