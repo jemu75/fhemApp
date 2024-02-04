@@ -1,3 +1,6 @@
+# v4.0.16-beta (04.02.2024)
+## Settings
+- Optimization Panel and Template Settings
 # v4.0.15-beta (31.01.2024)
 ## Component Colorpicker
 - Develpoment

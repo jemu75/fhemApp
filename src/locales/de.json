@@ -63,11 +63,16 @@
             },
             "panels": {
                 "title": "Panel | Panels",
-                "extendedSettings": "erweiterte Konfiguration",
-                "preview": "Panel Vorschau"
+                "extended": "erweitert",
+                "rawMode": "raw Mode",
+                "preview": "Panel Vorschau",
+                "search": "Panel suchen",
+                "new": "Name für neues Panel"
             },
             "templates": {
-                "title": "Vorlage | Vorlagen"
+                "title": "Vorlage | Vorlagen",
+                "search": "Vorlage suchen",
+                "new": "Name für neue Vorlage"
             },
             "colors": {
                 "title": "Farben",

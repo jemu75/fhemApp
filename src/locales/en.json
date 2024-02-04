@@ -63,11 +63,16 @@
             },
             "panels": {
                 "title": "Panel | Panels",
-                "extendedSettings": "Advanced configuration",
-                "preview": "Panel Preview"
+                "extended": "Advanced",
+                "rawMode": "raw Mode",
+                "preview": "Panel Preview",
+                "search": "Panel search",
+                "new": "Name for new Panel"
             },
             "templates": {
-                "title": "Template | Templates"
+                "title": "Template | Templates",
+                "search": "Template search",
+                "new": "Name for new Template"
             },
             "colors": {
                 "title": "Colors",

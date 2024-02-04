@@ -1,14 +1,15 @@
 <script setup>
-    import { ref, computed } from 'vue'
+    import { computed, ref } from 'vue'
     import { useFhemStore } from '@/stores/fhem'
+    import { useI18n } from 'vue-i18n'
     import { useDisplay } from 'vuetify'
 
     import VueJsonPretty from 'vue-json-pretty'
     import 'vue-json-pretty/lib/styles.css'
 
+    import PanelCard from '../components/PanelCard.vue'
     import SettingsPropsList from './SettingsPropsList.vue'
     import SettingsPropsMain from './SettingsPropsMain.vue'
-    import PanelCard from '../components/PanelCard.vue'
 
     const props = defineProps({
         type: String
@@ -16,85 +17,131 @@
 
     const fhem = useFhemStore()
 
+    const i18n = useI18n()
+
     const { mobile } = useDisplay()
 
     const preLang = '_app.settings.' + props.type + '.'
 
-    const selector = [
-        { section: 'panel', color: 'grey' },
-        { section: 'status', color: 'green' },
-        { section: 'main', height: 80, color: 'orange' },
-        { section: 'info', color: 'blue' },
-    ]
+    const headers = computed(() => {
+        let res = [
+            { key: 'name', title: i18n.t(preLang + 'title'), sortable: true, align: 'start' },
+            { key: 'actions', title: '', sortable: false, align: 'end' }
+        ]
 
-    const selectorPart = ref(0)
-
-    const items = computed(() => {
-        let res = []
-
-        for(const e of fhem.app.config[props.type]) if(!e.dist) res.push(e.name)
-
-        res.sort((a,b) => (a > b) ? 1 : (b > a) ? -1 : 0)
+        if(!mobile.value) {
+            if(props.type === 'panels') {
+                res = [
+                    { key: 'name', title: i18n.t(preLang + 'title'), sortable: true, align: 'start' },
+                    { key: 'devices', title: 'Devices', sortable: true, align: 'start' },
+                    { key: 'advanced', title: i18n.t(preLang + 'extended'), sortable: true },
+                    { key: 'actions', title: '', sortable: false, align: 'end' }
+                ]
+            } else {
+                res = [
+                    { key: 'name', title: i18n.t(preLang + 'title'), sortable: true, align: 'start' },
+                    { key: 'panels', title: i18n.t('_app.settings.panels.title', 2), sortable: true, align: 'end' },
+                    { key: 'actions', title: '', sortable: false, align: 'end' }
+                ]
+            }
+        }
 
         return res
     })
-        
-    const item = ref(items.value[0])
 
-    const itemIdx = computed(() => {
-        return fhem.app.config[props.type].map((e) => e.name).indexOf(item.value)
+    const item = ref()
+
+    const items = computed(() => {
+        let res = [],
+            advanced = [],
+            devices = '',
+            panelCount = null
+
+        for(const [ idx, el ] of Object.entries(fhem.app.config[props.type])) {
+            if(!el.dist) {
+                advanced = []
+                if(props.type === 'panels') {
+                    if(Object.keys(el.status).length > 0) advanced.push('status')
+                    if(el.main.length > 1 || Object.keys(el.main[0].level).length > 0) advanced.push('main')
+                    if(Object.keys(el.info).length > 0) advanced.push('info')
+
+                    devices = el.panel.devices.join(', ')
+                } else {
+                    panelCount = fhem.app.config.panels.map((e) => e.template).filter(e => e === el.name).length
+                }
+
+                res.push({ 
+                    idx: parseFloat(idx), 
+                    name: el.name, 
+                    advanced: advanced.length > 0 ? advanced.join(', ') : '-', 
+                    panels: !panelCount ? '-' : panelCount,
+                    devices: devices
+                })
+            }
+        }
+
+        res.sort((a,b) => (a.name.toUpperCase() > b.name.toUpperCase()) ? 1 : (b.name.toUpperCase() > a.name.toUpperCase()) ? -1 : 0)
+
+        return res
     })
 
-    const lastItem = ref(null)
-
-    const panel = ref(null)
-
-    function updatePanel(item) {
-        panel.value = item
-    }
+    const newCheck = computed(() => {
+        return settings.value.newItem && items.value.map((e) => e.name).indexOf(settings.value.newItem) === -1 ? false : true
+    })
 
     const panels = computed(() => {
         let res = []
 
-        for(const panel of fhem.app.config.panels) if(panel.template === item.value) res.push(panel.name)
+        for(const panel of fhem.app.config.panels) {
+            if(panel.template === item.value.name) {
+                res.push(panel.name)
+            }
+        }
 
-        res.sort((a,b) => (a > b) ? 1 : (b > a) ? -1 : 0)
+        res.sort((a, b) => (a.toUpperCase() > b.toUpperCase()) ? 1 : (b.toUpperCase() > a.toUpperCase()) ? -1 : 0)
 
         updatePanel(res[0])
 
         return res
     })
 
-    const showNew = ref(true)
+    const sections = computed(() => {
+        let res = [
+            { value: 'panel' },
+            { value: 'status' },
+            { value: 'main' },
+            { value: 'info' },
+        ]
 
-    const preview = ref('panel')
+        for(const el of res) el.title = i18n.t('_app.settings.props.' + el.value)
 
-    const extendedSettings = ref(props.type === 'panels' ? false : true )
+        return res
+    })
 
-    const isFormValid = ref(false)
+    const settings = ref({
+        search: '',
+        newItem: '',
+        itemIdx: null,
+        extended: props.type === 'panels' ? false : true,
+        rawMode: false,
+        section: 'panel',
+        panel: null,
+        preview: 'panel'
+    })
 
-    const rules = {
-        required: value => !!value || fhem.replacer('%t(_app.settings.rules.required)'),
-        uniqe: value => items.value.indexOf(value) === -1 || fhem.replacer('%t(_app.settings.rules.panelUniqe)')
+    function updatePanel(panel) {
+        settings.value.panel = panel
     }
 
     function getPreviewPanel() {
-        let idx = fhem.app.panelList.map((e) => e.name).indexOf(props.type === 'templates' ? panel.value : item.value)
+        let idx = fhem.app.panelList.map((e) => e.name).indexOf(props.type === 'templates' ? settings.value.panel : item.value.name)
 
         return idx !== -1 ? fhem.app.panelList[idx] : null
     }
 
-    function deleteItem() {
-        fhem.app.config[props.type].splice(itemIdx.value, 1)
-
-        item.value = fhem.app.config[props.type].length > 0 ? fhem.app.config[props.type][0].name : ''
-        extendedSettings.value = props.type === 'panels' ? false : true
-        selectorPart.value = 0
-    }
-
     function addItem() {
         let newPanel = {
-                name: item.value,                
+                name: settings.value.newItem,                
                 template: null,
                 panel: {},
                 status: {},
@@ -102,7 +149,7 @@
                 info: {}
             },
             newTemplate = {
-                name: item.value,
+                name: settings.value.newItem,
                 author: null,
                 date: null,
                 panel: {},
@@ -112,149 +159,176 @@
             }
 
         fhem.app.config[props.type].push(props.type === 'panels' ? newPanel : newTemplate)
+        settings.value.newItem = ''
+        //hier gleich in Edit-Modus wechseln
     }
-</script>
+
+    function editItem(idx) {
+        item.value = fhem.app.config[props.type][idx]
+        settings.value.itemIdx = idx
+
+        settings.value.extended = items.value[items.value.map((e) => e.idx).indexOf(idx)].advanced !== '-' ? true : false
+    }
+
+    function deleteItem(idx) {
+        fhem.app.config[props.type].splice(idx, 1)
+    }
+ </script>
 
 <template>
     <v-list>
-        <v-row no-gutters>
-            <v-col v-if="itemIdx === -1">
-                <v-list-item :title="$t(preLang + 'title')"> 
-                    <template v-slot:append>
-                        <v-btn
-                            color="info"
-                            icon="mdi-help-circle"
-                            variant="text"
-                            @click="fhem.help(props.type === 'panels' ? 'panels' : 'vorlagen')">
-                        </v-btn>
-                    </template>
-                </v-list-item>
-            </v-col>
-            <v-col v-if="itemIdx !== -1">                
-                <SettingsPropsList 
-                    v-if="selector[selectorPart].section !== 'main'" 
-                    :type="type" 
-                    :typeIdx="itemIdx" 
-                    :section="selector[selectorPart].section" 
-                    :extended="extendedSettings">
-                </SettingsPropsList>
-                <SettingsPropsMain
-                    v-if="selector[selectorPart].section === 'main'"
-                    :type="type" 
-                    :typeIdx="itemIdx"
-                    :section="selector[selectorPart].section" >
-                </SettingsPropsMain>
-            </v-col>
-            <v-divider :vertical="!mobile"></v-divider>
-            <v-col cols="12" lg="4">
-                <v-list-item v-if="props.type === 'panels'" class="pa-0">
-                    <v-switch 
-                        v-model="extendedSettings"
-                        :label="$t('_app.settings.panels.extendedSettings')" 
-                        color="blue" 
-                        hide-details
-                        @update:modelValue="!$event ? selectorPart = 0 : null"
-                        class="ml-4">
-                    </v-switch>
-                </v-list-item>
-                <v-list-item>
-                    <v-row v-if="showNew" no-gutters class="pt-1">
-                        <v-col cols="8" class="pt-1">
-                            <v-autocomplete
-                                v-model="item"                                
-                                :items="items"
-                                :label="$t(preLang + 'title')"
-                                :disabled="items.length === 0"
+        <v-list-item :title="$t(preLang + 'title', item ? 1 : 2) + (item ? ' (' + item.name + ')' : '')"> 
+            <template v-slot:append>
+                <v-btn
+                    color="info"
+                    icon="mdi-help-circle"
+                    variant="text"
+                    @click="fhem.help(props.type === 'panels' ? 'panels' : 'vorlagen')">
+                </v-btn>
+            </template>
+        </v-list-item>
+        <v-list-item v-if="!item">
+            <v-row no-gutters>
+                <v-col>
+                    <v-text-field
+                        v-model="settings.search"
+                        :label="$t(preLang + 'search')"
+                        prepend-inner-icon="mdi-magnify"
+                        single-line
+                        clearable
+                        density="compact"
+                        variant="outlined">
+                    </v-text-field>
+                </v-col>                
+                <v-col class="mx-2">
+                    <v-text-field
+                        v-model="settings.newItem"
+                        :label="$t(preLang + 'new')"
+                        single-line
+                        clearable
+                        density="compact"
+                        variant="outlined">
+                        <template v-slot:append>
+                            <v-btn 
+                                variant="text" 
+                                icon="mdi-plus"
+                                :disabled="newCheck"
                                 density="compact"
+                                @click="addItem()">
+                            </v-btn>
+                        </template>
+                    </v-text-field>
+                </v-col>
+            </v-row>
+        </v-list-item>
+        <v-list-item v-if="!item">
+            <v-data-table
+                :headers="headers"
+                :items="items"                
+                :search="settings.search"                                              
+                density="compact">
+                <template v-slot:item.actions="{ item }">
+                    <v-btn 
+                        icon="mdi-pencil"
+                        variant="plain"
+                        density="compact"
+                        class="mr-3"
+                        @click="editItem(item.idx)">
+                    </v-btn>
+                    <v-btn 
+                        icon="mdi-delete"
+                        variant="plain"
+                        density="compact"
+                        @click="deleteItem(item.idx)">
+                    </v-btn>
+                </template>
+            </v-data-table>
+        </v-list-item>
+        
+        <v-list-item v-if="item">
+            <v-row>
+                <v-col>
+                    <v-row class="align-center">
+                        <v-btn variant="plain" icon="mdi-arrow-up-left" @click="item = null"></v-btn>
+
+                        <v-col cols="10" md="">
+                            <v-autocomplete 
+                                v-model="settings.section"                                
+                                :items="sections"
+                                :disabled="settings.extended || props.type === 'templates' ? false : true"
+                                density="compact"
+                                hide-details
                                 variant="outlined">
                             </v-autocomplete>
                         </v-col>
-                        <v-col class="text-right">
-                            <v-btn 
-                                variant="text" 
-                                icon="mdi-plus" 
-                                @click="showNew = !showNew; lastItem = item; item = null">
-                            </v-btn>
-                            <v-btn 
-                                variant="text" 
-                                icon="mdi-delete" 
-                                :disabled="itemIdx === -1" 
-                                @click="deleteItem()">
-                            </v-btn>
+
+                        <v-col v-if="props.type === 'panels'" cols="6" md="auto" class="pl-5">
+                            <v-switch  
+                                v-model="settings.extended"
+                                :label="$t('_app.settings.panels.extended')" 
+                                color="blue" 
+                                hide-details
+                                @update:modelValue="!$event ? settings.section = 'panel' : null">
+                            </v-switch>
+                        </v-col>
+                        <v-col cols="6" md="auto" class="pl-5">
+                            <v-switch
+                                v-model="settings.rawMode"
+                                :label="$t('_app.settings.panels.rawMode')"
+                                color="blue"
+                                hide-details 
+                                >
+                            </v-switch>
                         </v-col>
                     </v-row>
-                    <v-form v-model="isFormValid">
-                        <v-row v-if="!showNew" no-gutters class="pt-1">
-                            <v-col cols="8" class="pt-1">
-                                <v-text-field
-                                    v-model="item"
-                                    :label="$t(preLang + 'title')"
-                                    :rules="[rules.required, rules.uniqe]"
-                                    density="compact"
-                                    variant="outlined">
-                                </v-text-field>
-                            </v-col>
-                            <v-col class="text-right">
-                                <v-btn 
-                                    variant="text" 
-                                    icon="mdi-check"
-                                    :disabled="!isFormValid" 
-                                    @click="addItem(); showNew = !showNew">
-                                </v-btn>
-                                <v-btn 
-                                    variant="text" 
-                                    icon="mdi-cancel" 
-                                    @click="showNew = !showNew; item = lastItem">
-                                </v-btn>
-                            </v-col>
-                        </v-row>
-                    </v-form>
-                    <v-item-group v-if="extendedSettings" v-model="selectorPart" mandatory>
-                        <v-row class="text-center pb-3" no-gutters>
-                            <v-col v-for="part of selector" :key="part.section" cols="12">
-                                <v-item v-slot="{ isSelected, toggle }">
-                                    <v-card
-                                        :subtitle="$t('_app.settings.props.' + part.section)"                                                                                   
-                                        :color="isSelected ? part.color : part.color + '-lighten-5'"
-                                        variant="flat"                                                
-                                        class="ma-1 pa-0"
-                                        :height="part.height"                                                
-                                        @click="toggle">                                                
-                                    </v-card>
-                                </v-item>
-                            </v-col>
-                        </v-row>
-                    </v-item-group>
-                    <v-divider class="pb-3"></v-divider>
-                    <v-row v-if="props.type === 'templates'" no-gutters>
-                        <v-col cols="8" class="pt-1">
-                            <v-autocomplete
-                                v-model="panel"                                
+                    <v-row no-gutters>
+                        <v-col>
+                            <SettingsPropsList 
+                                v-if="settings.section !== 'main'" 
+                                :type="type" 
+                                :typeIdx="settings.itemIdx" 
+                                :section="settings.section" 
+                                :extended="settings.extended">
+                            </SettingsPropsList>
+                            <SettingsPropsMain
+                                v-if="settings.section === 'main'"
+                                :type="type" 
+                                :typeIdx="settings.itemIdx"
+                                :section="settings.section" >
+                            </SettingsPropsMain>
+                        </v-col>
+                    </v-row>
+                </v-col>
+                <v-divider :vertical="!mobile"></v-divider>
+                <v-col cols="12" lg="4">
+                    <v-row class="align-center pt-2">
+                        <v-col>
+                            <v-autocomplete 
+                                v-model="settings.panel"                                
                                 :items="panels"
                                 :label="$t('_app.settings.panels.preview')"
-                                :disabled="items.length === 0"
+                                :disabled="props.type === 'templates' ? false : true"                        
                                 density="compact"
+                                hide-details
                                 variant="outlined">
                             </v-autocomplete>
                         </v-col>
-                        <v-col class="text-right">
-                            <v-btn
-                                variant="text"
-                                :icon="preview === 'panel' ? 'mdi-code-json' : 'mdi-view-day'"
-                                @click="preview = preview === 'panel' ? 'json' : 'panel'">
-                            </v-btn>
-                        </v-col>
-                    </v-row>
-                    <v-row v-if="fhem.app.isReady && getPreviewPanel()" no-gutters>
-                        <v-col v-if="preview === 'panel'">
+                        <v-btn
+                            class="mr-3"
+                            variant="plain"                            
+                            :icon="settings.preview === 'panel' ? 'mdi-code-json' : 'mdi-view-day'"
+                            @click="settings.preview = settings.preview === 'panel' ? 'json' : 'panel'">
+                        </v-btn>
+
+                        <v-col v-if="settings.preview === 'panel' && fhem.app.isReady && getPreviewPanel()" cols="12" class="pt-0">
                             <PanelCard :panel="getPreviewPanel()"></PanelCard>
                         </v-col>
-                        <v-col v-if="preview === 'json'">                            
+                        <v-col v-if="settings.preview === 'json'" cols="12">                            
                             <vue-json-pretty :data="getPreviewPanel()" :deep="1" :showLine="false"/>
                         </v-col>
                     </v-row>
-                </v-list-item>
-            </v-col>
-        </v-row>
-    </v-list>
+                </v-col>
+            </v-row>
+        </v-list-item>
+</v-list>
 </template>

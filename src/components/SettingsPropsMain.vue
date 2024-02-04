@@ -177,16 +177,6 @@
 </script>
 
 <template>
-    <v-list-item :title="$t('_app.settings.title') + ' ' + $t('_app.settings.props.main') + ' (' + $t('_app.settings.' + props.type + '.' + 'title') + ': ' + fhem.app.config[props.type][props.typeIdx].name + ')'">
-        <template v-slot:append>
-            <v-btn
-                color="info"
-                icon="mdi-help-circle"
-                variant="text"
-                @click="fhem.help('bereich-main')">
-            </v-btn>
-        </template>
-    </v-list-item>
     <v-list-item>
         <v-item-group v-model="subSectionIdx" mandatory>
             <v-row class="text-center" no-gutters>

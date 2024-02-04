@@ -103,6 +103,9 @@
                     if(!/^\[.*\]$/.test(loadData)) logData = '[' + logData + ']'
 
                     data = fhem.stringToJson(logData)
+
+                    //on effect on gauge
+                    //for(const [ idx, value] of Object.entries(data)) data[idx] = parseFloat(value).toFixed(def.digits)
                 }
 
                 res.push({ xAxisType: xAxisType, type: def.type, name: def.name, digits: def.digits, suffix: def.suffix, data })

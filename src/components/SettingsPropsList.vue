@@ -84,16 +84,6 @@
 </script>
 
 <template>
-    <v-list-item :title="$t('_app.settings.title') + ' ' + $t('_app.settings.props.' + section) + ' (' + $t('_app.settings.' + type + '.' + 'title') + ': ' + fhem.app.config[type][typeIdx].name + ')'">
-        <template v-slot:append>
-            <v-btn
-                color="info"
-                icon="mdi-help-circle"
-                variant="text"
-                @click="fhem.help(section === 'panel' ? 'panel-allgemein' : section === 'status' ? 'bereich-status' : 'bereich-info')">
-            </v-btn>
-        </template>
-    </v-list-item>
     <v-list-item>
         <v-expansion-panels>
             <v-expansion-panel v-for="def of listItems" :key="def.prop">
