@@ -119,6 +119,10 @@
                 "title": "Internal error",
                 "text": "Error processing the configuration. The decoding of the base64-encoded configuration data has failed. For more information, you should activate error logging via the URL parameter (?loglevel=7)."
             },
+            "noConfig": {
+                "title": "No settings found",
+                "text": "No settings have yet been made for this instance. Please make and save the basic settings for FHEMapp first."
+            },
             "config": {
                 "title": "Failed to load the configuration",
                 "text": "No configuration data could be processed. For more information, you should activate error logging via the URL parameter (?loglevel=7)."

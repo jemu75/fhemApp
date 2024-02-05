@@ -47,7 +47,8 @@ export const useFhemStore = defineStore('fhem', () => {
         navigation: [],
         panelMaximized: false,
         threads: [],
-        distTemplates: [],        
+        distTemplates: [],
+        noConfig: null,        
         isReady: false,
         message: false,
         currentView: null,
@@ -297,16 +298,24 @@ export const useFhemStore = defineStore('fhem', () => {
         resText = base64ToString(res)
         cfg = typeof resText === 'string' ? stringToJson(resText) : false
 
+        app.noConfig = false
+
         if(!cfg) {
             log(2, 'Loading the Configuration of FHEM failed.', res, 'config')
             return false
         }
 
         if(cfg.error) {
-            //ToDo
-            //evtl. Hinweis in Oberfläche anzeigen
-            //mit Standardkonfiguration weitermachen
-            console.log(cfg.error)
+            if(cfg.error === 'No config found!') {
+                app.noConfig = true
+                router.push({ name: 'settings', query: router.currentRoute.value.query })
+                log(3, cfg.error, null)
+            } else {
+                //ToDo
+                //ggf. weitere Fehler von FHEM, die beim Laden der Konfiguration auftreten, abfangen
+                console.log(cfg.error)
+            }
+            
         }
 
         for(const cfgPart of Object.keys(app.config)) {
@@ -808,11 +817,11 @@ export const useFhemStore = defineStore('fhem', () => {
         return navObj
     }
 
+    //subFunction for createNavigation()
     function sortNavItems(group) {
         for(const item of group) {
             if(item.sort && item.group && item.group.length > 1) {
-                item.group.sort((a, b) => (a.title > b.title) ? 1 : (b.title > a.title) ? -1 : 0)
-                //console.log(item)
+                item.group.sort((a, b) => (a.title.toUpperCase() > b.title.toUpperCase()) ? 1 : (b.title.toUpperCase() > a.title.toUpperCase()) ? -1 : 0)
             }
 
             if(item.group) sortNavItems(item.group)

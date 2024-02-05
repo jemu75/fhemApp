@@ -1,4 +1,7 @@
-# v4.0.16-beta (04.02.2024)
+# v4.0.17-beta (04.02.2024)
+## Core
+- Optimization in case of new Instance
+# v4.0.16-beta (03.02.2024)
 ## Settings
 - Optimization Panel and Template Settings
 - Add rawMode

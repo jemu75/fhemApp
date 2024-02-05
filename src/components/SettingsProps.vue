@@ -78,7 +78,7 @@
                     if(el.main.length > 1 || Object.keys(el.main[0].level).length > 0) advanced.push('main')
                     if(Object.keys(el.info).length > 0) advanced.push('info')
 
-                    devices = el.panel.devices.join(', ')
+                    if(el.panel.devices) devices = el.panel.devices.join(', ')
                 } else {
                     panelCount = fhem.app.config.panels.map((e) => e.template).filter(e => e === el.name).length
                 }

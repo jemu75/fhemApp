@@ -119,6 +119,10 @@
                 "title": "Interner Fehler",
                 "text": "Fehler bei der Verarbeitung der Konfiguration. Die Decodierung der base64-codierten Konfiguarationsdaten ist fehlgeschlagen. Für weitere Informationen solltest du das Fehlerlogging über den URL Parameter (?loglevel=7) aktivieren."
             },
+            "noConfig": {
+                "title": "Keine Einstellungen gefunden",
+                "text": "Für diese Instanz wurden noch keine Einstellungen vorgenommen. Bitte zuerst die Grundeinstellungen für FHEMapp vornehmen und speichern."
+            },
             "config": {
                 "title": "Laden der Konfiguration fehalgeschlagen",
                 "text": "Es konnten keine Konfiguationsdaten verarbeitet werden. Für weitere Informationen solltest du das Fehlerlogging über den URL Parameter (?loglevel=7) aktivieren."

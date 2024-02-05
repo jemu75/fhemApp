@@ -7,6 +7,7 @@
   import SettingsProps from '../components/SettingsProps.vue'
   import SettingsColors from '../components/SettingsColors.vue'
   import SettingsContent from '../components/SettingsContent.vue'
+import { onMounted } from 'vue'
 
   const tabs = ['header', 'panels', 'templates', 'navigation', 'colors', 'content']
 
@@ -35,6 +36,10 @@
     await fhem.createSession()
     configIsChanged.value = false
   }
+
+  onMounted(() => {
+    if(fhem.app.noConfig) fhem.log(3, 'Settings View - No Config handling', null, 'noConfig')
+  })
 
 </script>
 
