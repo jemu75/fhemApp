@@ -132,7 +132,7 @@
     })
 
     const jsonHeight = computed(() => {
-        return (window.innerHeight - 350) + 'px'
+        return (window.innerHeight - (settings.value.jsonError ? 380 : 340)) + 'px'
     })
 
     const settings = ref({
@@ -356,8 +356,8 @@
                                     line-numbers
                                     @input="changed">
                                 </prism-editor>
-                                <v-alert v-if="settings.jsonError" color="error" density="compact">{{ settings.jsonError }}</v-alert>
                             </v-card>
+                            <v-alert v-if="settings.jsonError" color="error" density="compact">{{ settings.jsonError }}</v-alert>
                         </v-col>
                     </v-row>
                 </v-col>

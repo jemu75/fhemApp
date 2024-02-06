@@ -136,7 +136,6 @@
                 </v-card-title>
             </v-img>
         </v-sheet>
-        <v-divider/>
 
         <PanelMain :main="panel.main" :levels="levels" :iconmap="panel.panel.iconmap" :devices="panel.panel.devices"></PanelMain>
         
