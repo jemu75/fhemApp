@@ -1,39 +1,52 @@
-> [!WARNING]
-> Achtung: Diese Version von **FHEMApp** ist noch nicht für den produktiven Einsatz geeignet. Aktuell steht diese Version nur zum Testen zur Verfügung!
+# FHEMApp
+**FHEMApp** ist eine Web-Application zur Steuerung deiner Smarthome Umgebung. Sie wurde als Frontend für den Einsatz unter FHEM(tm) entwickelt. **FHEMApp** ist für den Betrieb auf unterschiedlichen Betriebssystemen und Geräten optimiert. **FHEMApp** kann sehr einfach konfiguriert werden, ohne das dafür Programmierkenntnisse erforderlich sind.
 
-# FHEMApp 4
-**FHEMApp** ist eine webbasierende, grafische Benutzeroberfläche für FHEM. Sie unterstützt die optimale Darstellung auf verschiedenen Geräten wie Desktop-PCs, Tablets oder Smartphones. **FHEMApp** bietet eine Vielzahl von Einstellungen ermöglicht die einfache Erstellung von Benutzeroberflächen. Programmierkenntnisse sind dabei nicht notwendig.
+![](./docs/media/example_desktop_1.png)*Beispiel für eine Startseite in der Desktopansicht*
+
+![](./docs/media/example_desktop_2.png)*Beispiel für Geräte in der Desktopansicht*
+
+![](./docs/media/example_desktop_3.png)*Beispiel für Grafiken in der Desktopansicht*
+
+![](./docs/media/example_mobile_1.png)*Beispiele für mobile Ansicht*
+
+![](./docs/media/example_mobile_2.png)*Beispiele für mobile Ansicht*
+
+![](./docs/media/example_settings_1.png)*Beispiel für Einstellungen*
+
+![](./docs/media/example_settings_2.png)*Beispiel für Konfiguration von Templates*
+
+![](./docs/media/example_settings_3.png)*Beispiel für Konfiguration von Sprachvariablen*
+
+
 # Systemanforderungen
 Für den Einsatz von **FHEMApp** wird FHEM(tm) benötigt. Weitere Informationen zu FHEM findest du unter https://fhem.de/
 # Installation und Updates
-Die Installation von **FHEMApp** kann direkt in FHEM erfolgen. Hierfür erstellt du in FHEM ein *fhemapp*-Device. 
+Die Installation von **FHEMApp** erfolgt in FHEM. Hierfür erstellst du in FHEM über den folgenden Befehl ein *fhemapp*-Device. 
 
 ```
-define myapp fhemapp fhemapp4
+define myapp fhemapp ./www/fhemapp4
 ```
 Das *fhemapp*-Device ist für das Laden und Speichern der Konfigurationsdaten von **FHEMApp** zuständig und dient zudem für die Installation und Updates von **FHEMApp**. 
 
-Bei der Installation wird automatisch ein neuer Ordner in deiner FHEM Installation unter *./opt/fhem/www/* erstellt. In diesem wird **FHEMApp** installiert. Weiterhin wird in deiner FHEM Installation unter *./opt/fhem/conf/* die Konfiguation abgelegt, die alle Einstellungen enthält. Für jedes *fhemapp*-Device wird dabei eine separate Konfigurationsdatei erstellt. Diese erthält den Name des *fhemapp*-Devices (z.B. *myapp*_config.fhemapp)
+Bei der Installation wird automatisch ein neuer Ordner in deiner FHEM Installation unter */opt/fhem/www/* erstellt. In diesem wird **FHEMApp** installiert. Weiterhin wird in deiner FHEM Installation unter */opt/fhem/conf/* eine Konfigurationsdatei abgelegt, die alle Einstellungen enthält. Für jedes *fhemapp*-Device wird dabei eine separate Konfigurationsdatei erstellt. Diese erthält den Name des *fhemapp*-Devices (z.B. *myapp*_config.fhemapp)
 
-Updates von **FHEMApp** können ebenfalls direkt in FHEM ausgeführt werden.
-```
-set myapp update
-```
-> [!CAUTION]
-> Beschreibung mit Benni abstimmen!
 # Instanzen
 In FHEM können mehrere *fhemapp*-Devices definiert werden. Hinter jedem Device wird eine separate Konfiguration gespeichert. Dies ermöglicht die Betrieb von beliebig vielen **FHEMApp**-Instanzen. Beim Aufruf von **FHEMApp** kann dann auf die jeweilige Instanz verwiesen. 
-# Aufruf der App
-Der Aufruf von **FHEMApp** erfolgt über einen Web-Browser. Nach dem `...#/` wird muss der Name des *fhemapp*-Device aus FHEM angegeben. Dessen Konfiguration wird beim Aufruf von **FHEMApp** verwendet. Bei der Installation in FHEM erfolgt der Aufruf nach folgendem Schema:
+![](./docs/media/example_fhem_fhemapp_devices.png)*Beispiel für zwei unterschiedliche FHEMApp-Instanzen in FHEM*
+
+# Aufruf von FHEMApp
+Der Aufruf von **FHEMApp** erfolgt grundsätzlich über die gleiche URL, über die auch FHEM erreichbar ist. Die URL muss wie folgt aufgebaut sein, damit die richtige Installation und Instanz von **FHEMApp** aufgerufen wird.
 ```
-http(s)://<server>:<port>/<pfad>/index.html#/<fhemapp_config>
+http(s)://<fhem_ip>:<fhem_port>/fhem/<fhemapp_verzeichnis>/index.html#/<fhemapp_instanz>
 ```
 Beispiel zum Aufruf von FHEMapp
 ```
 http://fhem:8083/fhem/fhemapp4/index.html#/myapp
 ```
+Wenn **FHEMApp** auf einem separaten Web-Server betrieben wird, dann muss die URL mit `#/<fhem_instanz>` enden.
 ## zusätzliche URL-Parameter
-Zum Aufruf von **FHEMApp** können optionale URL-Parameter verwendet werden. Diese sind u.a. beim Betrieb von **FHEMApp** auf einem separaten Web-Server nötig. Die Angabe der URL-Parameter erfolgt in Form eines URL-Querystring z.B. `.../?dark=1&lang=en&loglevel=7`
+Es können zusätzliche Parameter als Querystring in der URL angegeben werden.
+Diese sind u.a. beim Betrieb von **FHEMApp** auf einem separaten Web-Server nötig. 
 
 > [!IMPORTANT]
 > Beim Betrieb von **FHEMApp** auf einem separaten Web-Server müssen die Verbidungsparameter `protocol`, `server`, `port` und `path` angegeben werden!
@@ -54,24 +67,23 @@ Beispiel zum Aufruf von FHEMapp mit zusätzlichen Parametern
 http://fhem:8083/fhem/fhemapp4/index.html#/myapp/?dark=1&lang=en
 ```
 # Einstellungen
-**FHEMApp** ist in drei wesentliche Bereiche untergliedert, welche individuell konfiguriert werden können. 
-* die **Kopfzeile** im oberen Bereich
-* die **Navigationsleiste** auf der linken Seite
-* den Anzeigebereich für die **Panels**
+Für die Konfiguration deiner **FHEMApp**-Instanz(en) bietet die App einen separaten Bereich, in dem alle Einstellungen vorgenommen werden können. Nach dem Erstellen einer neuen Instanz gelangt man beim ersten Aufruf von **FHEMApp** direkt zu den Einstellungen.
+
+Für den späteren Zugriff auf die Einstellungen kann man den Menüpunkt im [Optionsmenü](#optionsmenü) aktivieren. Alternativ kann man auch direkt über den entsprechenden URL-Pfad `...<fhemapp_instanz>/settings/` auf die Einstellungen zugreifen.
 
 Nachdem Einstellungen in **FHEMApp** angepasst wurden, müssen diese gespeichert werden. Dies erfolgt über den Button zum Speichern oben rechts im Einstellungsfenster. Hier können Einstellungen, die seit dem letzten Speichern vorgenommen wurden, auch wieder rückgängig gemacht werden.
 
-Der Zugriff auf die Einstellungen über **FHEMApp** ist im standardmäßig ausgeblendet, damit die Konfiguration nicht von jedem Benutzer verändert werden kann. Wenn der Menüpunkt *Einstellungen* im [Optionsmenü](#optionsmenü) ausgeblendet ist, gelangt man durch Angabe des Parameters `/settings` in der URL zu den Einstellungen.
-```
-http://fhem:8083/fhem/fhemapp4/index.html#/myapp/settings
-```
+![](./docs/media/example_settings_4.png)*Beispiel für Konfiguration von Sprachvariablen*
 
 # Kopfzeile
-Unter den [Einstellungen](#einstellungen) im Bereich Kopfzeile kann die Anzeige für das aktuelle Datum und Uhrzeit aktiviert werden. Die Anzeige für Datum und Uhrzeit erfolgt nur bei großen Bildschirmauflösungen. In der mobilen Ansicht werden Datum und Uhrzeit nicht angezeigt.
+In den Einstellungen für die Kopfzeile kann die Anzeige für das aktuelle Datum und Uhrzeit aktiviert werden. Die Anzeige für Datum und Uhrzeit erfolgt nur in der Desktopansicht. In der mobilen Ansicht werden Datum und Uhrzeit ausgeblendet.
 
 Weiterhin kann ein Hintergrundbild für die Kopfzeile festgelegt werden. Die Verwendung des Farbfilters mit einer [CSS Linear Gradient Definition](https://www.w3schools.com/css/css3_gradients.asp) ermöglicht ein Anpassung des Hintergrundbildes an das festgelegte Farbschema. 
 ## Optionsmenü
-Durch Aktivierung dieser Optionen wird das Optionsmenü oben rechts in der Kopfleiste eingeblendet. Folgende Optionen können aktiviert werden
+Durch Aktivierung der folgenden Optionen wird das Optionsmenü oben rechts in der Kopfleiste eingeblendet.
+![](./docs/media/example_option_menu.png)
+*Beispiel für Optionsmenü*
+
 |Option|Beschreibung|
 |---|---|
 |Tag/Nacht-Modus|Umschaltung zwischen hellem und dunklem Farbschema|
@@ -81,32 +93,38 @@ Durch Aktivierung dieser Optionen wird das Optionsmenü oben rechts in der Kopfl
 
 ## Optionsmenü FHEM Befehle
 Neben den festen Optionen können im Optionsmenü auch FHEM Befehle hinterlegt werden. Es können beliebig viele FHEM Befehle im Optionsmenü hinterlegt werden. Jeder Befehl kann mit einer individuellen Beschriftung und optional mehrsprachig (siehe auch [Sprachen](#sprachen)) sowie mit einem Icon versehen werden. Zudem muss das vollständige FHEM-Kommando angegeben werden.  
-# Panels
-Panels bilden den Kernbaustein von **FHEMApp**. Alle Geräte die du in FHEM eingebunden hast, können in **FHEMApp** über Panels visualisiert und gesteuert werden. Jedes Panel besteht aus drei **Bereichen**. Jeder **Bereich** enthält verschiedene **Elemente**. Jedes **Element** kann mit *Readings*, *Attributes* oder *Internals* von FHEM Devices verknüpft werden. Damit die Konfiguration nicht für jedes Panel erfolgen muss, können [Vorlagen](#vorlagen) erstellt werden. Panels können in beliebigen Gruppen (z.B. nach Räumen oder Geräteart) zusammengefasst und dann über die Navigationsleiste zur Anzeige gebracht werden.
 
-Panels enthalten drei konfigurierbare Bereiche
-* den Bereich [status](#bereich-status) im oberen Teil des Panels
-* den Bereich [main](#bereich-main) im mittleren Teil des Panels
-* den Bereich [info](#bereich-info) im unteren Teil des Panels
+# Panels
+Alle Geräte die du in FHEM eingebunden hast, können innerhalb von **FHEMApp** in Panels angezeigt und gesteuert werden. Jedes Panel enthält drei **Bereiche**. Jeder Bereich enthält verschiedene **Elemente**. Jedes Element kann mit *Readings*, *Attributes* oder *Internals* von FHEM Devices verknüpft und abhängig von deren Wert gesteuert werden. Damit die Konfiguration nicht für jedes Panel erfolgen muss, können [Vorlagen](#vorlagen) erstellt werden. Panels können in beliebigen Gruppen (z.B. nach Räumen oder Geräteart) zusammengefasst und dann über die Navigationsleiste zur Anzeige gebracht werden.
+
+* Bereich [status](#bereich-status) im oberen Teil des Panels
+* Bereich [main](#bereich-main) im mittleren Teil des Panels
+* Bereich [info](#bereich-info) im unteren Teil des Panels
+
+![](./docs/media/example_panel.png)
+<br>*Beispiel für ein Panel*
+
 ## Konfiguration der Elemente
 Die Konfiguration der Elemente in den verschiedenen Bereichen des Panels erfolgt nach einem einheitlichen Definitions-Schema. 
-```
-reading:value:prop1:prop2:...
-```
+`reading:value:prop1:prop2:...`
+
 Jede Definition beginnt mit den beiden Parametern `reading` und `value`. Diese dienen dazu, das Element mit einem FHEM-Device zu verbinden und optional auf einen bestimmten Wert zu prüfen. Folgende Beispiele zeigen, wie der Parameter `reading` verwendet werden kann. 
 
 |Beispiel|Beschreibung|
 |---|---|
-|`state`|liefert das FHEM **Reading** `state` vom Device das als erstes im Panel definiert ist|
-|`state-ts`|liefert den **Zeitstempel** des FHEM Readings `state` vom Device das als erstes im Panel definiert ist|
-|`a-alias`|liefert das FHEM **Attribut** `alias` vom Device das als erstes im Panel definiert ist|
-|`i-NAME`|liefert das FHEM **Internal** `NAME` vom Device das als erstes im Panel definiert ist|
-|`switch-state`|liefert das FHEM **Reading** `state` vom Device das mit dem Key `switch` im Panel definiert ist|
-|`switch-state-ts`|liefert den **Zeitstempel** des FHEM Readings `state` vom Device das mit dem Key `switch` im Panel definiert ist|
-|`switch-a-alias`|liefert das FHEM **Attribut** `alias` vom Device das mit dem Key `switch` im Panel definiert ist|
-|`switch-i-NAME`|liefert das FHEM **Internal** `NAME` vom Device das mit dem Key `switch` im Panel definiert ist|
+|`state`|liefert das FHEM **Reading** `state`|
+|`state-ts`|liefert den **Zeitstempel** des FHEM Readings `state`|
+|`a-alias`|liefert das FHEM **Attribut** `alias`|
+|`i-NAME`|liefert das FHEM **Internal** `NAME`|
 
-Eine Definition wird verwendet, wenn der Wert im Parameter `value` zutrifft. Es wird immer die erste zutreffende Definition verwendet.  Der Parameter `value` wird wie folgt geprüft.
+Wenn ein Panel mit mehreren FHEM-Devices verbunden wird, dann muss das Device vorangestellt werden.
+
+|Beispiel|Beschreibung|
+|---|---|
+|`sw1-state`|liefert das FHEM **Reading** `state` vom Device das mit dem Key `sw1` im Panel definiert ist|
+|`thermo-measured-temp-ts`|liefert das FHEM **Reading** `measured-temp` vom Device das mit dem Key `thermo` im Panel definiert ist.|
+
+Eine Definition wird verwendet, wenn der Wert im Parameter `value` zutrifft. Bei der Prüfung wird grundsätzlich zwischen Zahlen und Text unterschieden. Bei Zahlen gilt immer `reading>=value`. Bei Text wird geprüft, ob dieser im *Reading* enthalten ist. Weiterhin können Definitionen mit Hilfe von Regular-Expressions geprüft werden.
 
 |Beispiel|Beschreibung|
 |---|---|
@@ -114,7 +132,14 @@ Eine Definition wird verwendet, wenn der Wert im Parameter `value` zutrifft. Es 
 |`state:on:...`|Text -> trifft zu wenn das *Reading* den Text `on` **enthält**|
 |`state:^on:...`|RegExp -> triff zu wenn das *Reading* mit dem Text `on` **beginnt**|
 |`state:^(?!on):..-`|RegExp -> trifft zu wenn das *Reading* **nicht** den Wert `on` hat|
-|`state::...`|Es erfolgt **keine weitere Prüfung**. die Definition wird verwendet.
+|`state::...`|Es erfolgt **keine weitere Prüfung**. die Definition wird verwendet.|
+
+Es wird immer die erste zutreffende Definition verwendet.  Der Parameter `value` wird wie folgt geprüft.
+
+
+![](./docs/media/example_element_definition.png)
+<br>*Beispiel für eine Element Definition*
+
 ## Ersetzungen
 Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zurückzugeben und zu formatieren. Folgende Möglichkeiten für Ersetzungen gibt es.
 |Ersetzung|gibt den Wert vom Parameter `reading`|
