@@ -32,7 +32,8 @@ Bei der Installation wird automatisch ein neuer Ordner in deiner FHEM Installati
 
 # Instanzen
 In FHEM können mehrere *fhemapp*-Devices definiert werden. Hinter jedem Device wird eine separate Konfiguration gespeichert. Dies ermöglicht die Betrieb von beliebig vielen **FHEMApp**-Instanzen. Beim Aufruf von **FHEMApp** kann dann auf die jeweilige Instanz verwiesen. 
-![](./docs/media/example_fhem_fhemapp_devices.png)*Beispiel für zwei unterschiedliche FHEMApp-Instanzen in FHEM*
+![](./docs/media/example_fhem_fhemapp_devices.png)
+<br>*Beispiel für zwei unterschiedliche FHEMApp-Instanzen in FHEM*
 
 # Aufruf von FHEMApp
 Der Aufruf von **FHEMApp** erfolgt grundsätzlich über die gleiche URL, über die auch FHEM erreichbar ist. Die URL muss wie folgt aufgebaut sein, damit die richtige Installation und Instanz von **FHEMApp** aufgerufen wird.
