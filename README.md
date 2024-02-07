@@ -125,18 +125,17 @@ Wenn ein Panel mit mehreren FHEM-Devices verbunden wird, dann muss das Device vo
 |`sw1-state`|liefert das FHEM **Reading** `state` vom Device das mit dem Key `sw1` im Panel definiert ist|
 |`thermo-measured-temp-ts`|liefert den **Zeistempel** für das FHEM Reading `measured-temp` vom Device das mit dem Key `thermo` im Panel definiert ist.|
 
-Eine Definition wird verwendet, wenn der Parameter `value` zutrifft. Bei der Prüfung wird grundsätzlich zwischen Zahlen und Text unterschieden. Bei Zahlen gilt immer `reading >= value`. Bei Text wird geprüft, ob dieser im *Reading* enthalten ist. Weiterhin können Definitionen mit Hilfe von Regular-Expressions geprüft werden.
+Eine Definition wird verwendet, wenn der Parameter `value` zutrifft. Bei der Prüfung wird grundsätzlich zwischen Zahlen und Text unterschieden. Bei Zahlen gilt immer **reading >= value**. Bei Text wird geprüft, ob dieser **im Reading enthalten** ist. Weiterhin können Definitionen mit Hilfe von Regular-Expressions geprüft werden.
 
 |Beispiel|Beschreibung|
 |---|---|
-|`temperature:12:...`|Zahlenwert -> trifft zu wenn das *Reading* **größer oder gleich** *12* ist|
-|`state:on:...`|Text -> trifft zu wenn das *Reading* den Text `on` **enthält**|
-|`state:^on:...`|RegExp -> triff zu wenn das *Reading* mit dem Text `on` **beginnt**|
-|`state:^(?!on):..-`|RegExp -> trifft zu wenn das *Reading* **nicht** den Wert `on` hat|
+|`temperature:12:...`|trifft zu wenn das *Reading* **größer oder gleich** *12* ist|
+|`state:on:...`|trifft zu wenn das *Reading* den Text `on` **enthält**|
+|`state:^on:...`|triff zu wenn das *Reading* mit dem Text `on` **beginnt**|
+|`state:^(?!on):...`|trifft zu wenn das *Reading* **nicht** den Wert `on` hat|
 |`state::...`|Es erfolgt **keine weitere Prüfung**. die Definition wird verwendet.|
 
-Es wird immer die erste zutreffende Definition verwendet.  Der Parameter `value` wird wie folgt geprüft.
-
+Wenn ein Element mehrere Definitionen enthält, dann wird immer die erste zutreffende Definition verwendet. Nachfolgende Definitionen werden ignoriert. Deshalb muss die Reihenfolge der Definitionen beachtet werden. 
 
 ![](./docs/media/example_element_definition.png)
 <br>*Beispiel für eine Element Definition*
