@@ -35,7 +35,7 @@ In FHEM können mehrere *fhemapp*-Devices definiert werden. Hinter jedem Device 
 ![](./docs/media/example_fhem_fhemapp_devices.png)
 <br>*Beispiel für zwei unterschiedliche FHEMApp-Instanzen in FHEM*
 
-# Aufruf von FHEMApp
+# Aufruf
 Der Aufruf von **FHEMApp** erfolgt grundsätzlich über die gleiche URL, über die auch FHEM erreichbar ist. Die URL muss wie folgt aufgebaut sein, damit die richtige Installation und Instanz von **FHEMApp** aufgerufen wird.
 ```
 http(s)://<fhem_ip>:<fhem_port>/fhem/<fhemapp_verzeichnis>/index.html#/<fhemapp_instanz>
@@ -68,16 +68,16 @@ Beispiel zum Aufruf von FHEMapp mit zusätzlichen Parametern
 http://fhem:8083/fhem/fhemapp4/index.html#/myapp/?dark=1&lang=en
 ```
 # Einstellungen
-Für die Konfiguration deiner **FHEMApp**-Instanz(en) bietet die App einen separaten Bereich, in dem alle Einstellungen vorgenommen werden können. Nach dem Erstellen einer neuen Instanz gelangt man beim ersten Aufruf von **FHEMApp** direkt zu den Einstellungen.
+Für die Konfiguration deiner **FHEMApp**-Instanz(en) bietet die App einen separaten Bereich, in dem alle Einstellungen vorgenommen werden können. Nach dem Erstellen einer neuen Instanz gelangst du beim ersten Aufruf von **FHEMApp** direkt zu den Einstellungen.
 
 Für den späteren Zugriff auf die Einstellungen kann man den Menüpunkt im [Optionsmenü](#optionsmenü) aktivieren. Alternativ kann man auch direkt über den entsprechenden URL-Pfad `...<fhemapp_instanz>/settings/` auf die Einstellungen zugreifen.
 
-Nachdem Einstellungen in **FHEMApp** angepasst wurden, müssen diese gespeichert werden. Dies erfolgt über den Button zum Speichern oben rechts im Einstellungsfenster. Hier können Einstellungen, die seit dem letzten Speichern vorgenommen wurden, auch wieder rückgängig gemacht werden.
+Nachdem du Einstellungen in **FHEMApp** angepasst hast, müssen diese gespeichert werden. Dies erfolgt über den Button zum Speichern oben rechts im Einstellungsfenster. Hier kannst du Änderungen seit dem letzten Speichern auch wieder rückgängig machen.
 
-![](./docs/media/example_settings_4.png)*Beispiel für Konfiguration von Sprachvariablen*
+![](./docs/media/example_settings_4.png)*Beispiel für Einstellungen*
 
 # Kopfzeile
-In den Einstellungen für die Kopfzeile kann die Anzeige für das aktuelle Datum und Uhrzeit aktiviert werden. Die Anzeige für Datum und Uhrzeit erfolgt nur in der Desktopansicht. In der mobilen Ansicht werden Datum und Uhrzeit ausgeblendet.
+In den Einstellungen für die Kopfzeile kann die Anzeige für das aktuelle Datum und Uhrzeit aktiviert werden. Die Anzeige für Datum und Uhrzeit erfolgt nur in der Desktopansicht. In der mobilen Ansicht werden Datum und Uhrzeit nicht angezeigt.
 
 Weiterhin kann ein Hintergrundbild für die Kopfzeile festgelegt werden. Die Verwendung des Farbfilters mit einer [CSS Linear Gradient Definition](https://www.w3schools.com/css/css3_gradients.asp) ermöglicht ein Anpassung des Hintergrundbildes an das festgelegte Farbschema. 
 ## Optionsmenü
@@ -96,7 +96,7 @@ Durch Aktivierung der folgenden Optionen wird das Optionsmenü oben rechts in de
 Neben den festen Optionen können im Optionsmenü auch FHEM Befehle hinterlegt werden. Es können beliebig viele FHEM Befehle im Optionsmenü hinterlegt werden. Jeder Befehl kann mit einer individuellen Beschriftung und optional mehrsprachig (siehe auch [Sprachen](#sprachen)) sowie mit einem Icon versehen werden. Zudem muss das vollständige FHEM-Kommando angegeben werden.  
 
 # Panels
-Alle Geräte die du in FHEM eingebunden hast, können innerhalb von **FHEMApp** in Panels angezeigt und gesteuert werden. Jedes Panel enthält drei **Bereiche**. Jeder Bereich enthält verschiedene **Elemente**. Jedes Element kann mit *Readings*, *Attributes* oder *Internals* von FHEM Devices verknüpft und abhängig von deren Wert gesteuert werden. Damit die Konfiguration nicht für jedes Panel erfolgen muss, können [Vorlagen](#vorlagen) erstellt werden. Panels können in beliebigen Gruppen (z.B. nach Räumen oder Geräteart) zusammengefasst und dann über die Navigationsleiste zur Anzeige gebracht werden.
+Alle Geräte die du in FHEM eingebunden hast, können innerhalb von **FHEMApp** in Panels angezeigt und gesteuert werden. Jedes Panel enthält drei **Bereiche**. Jeder Bereich enthält verschiedene **Elemente**. Jedes Element kann mit *Readings*, *Attributes* oder *Internals* von FHEM Devices verknüpft und abhängig von deren Werten gesteuert werden. Konfigurationen können auch als [Vorlagen](#vorlagen) gespeichert und für mehrere Panels verwendet werden. Panels können in beliebigen Gruppen (z.B. nach Räumen oder Geräteart) zusammengefasst und dann über die Navigationsleiste zur Anzeige gebracht werden.
 
 * Bereich [status](#bereich-status) im oberen Teil des Panels
 * Bereich [main](#bereich-main) im mittleren Teil des Panels
@@ -123,9 +123,9 @@ Wenn ein Panel mit mehreren FHEM-Devices verbunden wird, dann muss das Device vo
 |Beispiel|Beschreibung|
 |---|---|
 |`sw1-state`|liefert das FHEM **Reading** `state` vom Device das mit dem Key `sw1` im Panel definiert ist|
-|`thermo-measured-temp-ts`|liefert das FHEM **Reading** `measured-temp` vom Device das mit dem Key `thermo` im Panel definiert ist.|
+|`thermo-measured-temp-ts`|liefert den **Zeistempel** für das FHEM Reading `measured-temp` vom Device das mit dem Key `thermo` im Panel definiert ist.|
 
-Eine Definition wird verwendet, wenn der Wert im Parameter `value` zutrifft. Bei der Prüfung wird grundsätzlich zwischen Zahlen und Text unterschieden. Bei Zahlen gilt immer `reading>=value`. Bei Text wird geprüft, ob dieser im *Reading* enthalten ist. Weiterhin können Definitionen mit Hilfe von Regular-Expressions geprüft werden.
+Eine Definition wird verwendet, wenn der Parameter `value` zutrifft. Bei der Prüfung wird grundsätzlich zwischen Zahlen und Text unterschieden. Bei Zahlen gilt immer `reading >= value`. Bei Text wird geprüft, ob dieser im *Reading* enthalten ist. Weiterhin können Definitionen mit Hilfe von Regular-Expressions geprüft werden.
 
 |Beispiel|Beschreibung|
 |---|---|
