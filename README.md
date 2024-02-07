@@ -125,7 +125,7 @@ Wenn ein Panel mit mehreren FHEM-Devices verbunden wird, dann muss das Device vo
 |`sw1-state`|liefert das FHEM **Reading** `state` vom Device das mit dem Key `sw1` im Panel definiert ist|
 |`thermo-measured-temp-ts`|liefert den **Zeistempel** für das FHEM Reading `measured-temp` vom Device das mit dem Key `thermo` im Panel definiert ist.|
 
-Eine Definition wird verwendet, wenn der Parameter `value` zutrifft. Bei der Prüfung wird grundsätzlich zwischen Zahlen und Text unterschieden. Bei Zahlen gilt immer **reading >= value**. Bei Text wird geprüft, ob dieser **im Reading enthalten** ist. Weiterhin können Definitionen mit Hilfe von Regular-Expressions geprüft werden.
+Eine Definition wird verwendet, wenn der Parameter `value` zutrifft. Bei der Prüfung wird grundsätzlich zwischen Zahlen und Text unterschieden. Bei Zahlen gilt immer **reading >= value**. Bei Text wird geprüft, ob dieser **im Reading enthalten** ist. Weiterhin können Definitionen mit Hilfe von [regular expression](https://regex101.com/) geprüft werden.
 
 |Beispiel|Beschreibung|
 |---|---|
