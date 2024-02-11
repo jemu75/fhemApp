@@ -12,7 +12,9 @@ use Data::Dumper;
 
 use GPUtils qw(:all);
 
-use File::Temp qw(tempfile tempdir);
+use File::Temp qw(tempfile tempdir cleanup);
+use File::Path qw(rmtree);
+
 #$dir = File::Temp->newdir();
 
 #https://www.perl-howto.de/2008/07/temporare-dateien-sicher-erzeugen.html
@@ -40,6 +42,8 @@ BEGIN {
 		init_done
 		FW_CSRF
 		FW_confdir
+		FW_dir
+		FW_ME
 		CommandAttr
 		CommandDeleteAttr
 		devspec2array
@@ -137,58 +141,171 @@ eval {
 #########################################################################
 
 use constant {
-	FA_VERSION 				=> '0.2.0',			#Version of this Modul
+	FA_VERSION 					=> '0.2.0',			#Version of this Modul
 	FA_DEFAULT_FOLDER 		=> './www/fhemapp',	#Default Path to FHEMapp
-	FA_VERSION_FILENAME 	=> 'CHANGELOG.md',	#Default Version Filename
-	FA_INIT_INTERVAL		=> 60,				#Default Startup Interval
+	FA_VERSION_FILENAME 		=> 'CHANGELOG.md',	#Default Version Filename
+	FA_INIT_INTERVAL			=> 60,				#Default Startup Interval
 	FA_DEFAULT_INTERVAL		=> 3600,			#Default Interval
-	FA_GITHUB_URL 			=> 'https://github.com/jemu75/fhemApp',
-	FA_GITHUB_LATEST_SUB    => 'releases/latest',
-	FA_GITHUB_PACKAGE_SUB   => 'archive/refs/tags',
-	FA_MOD_TYPE 			=> (split('::',__PACKAGE__))[-1],
-	INT_SOURCE_URL			=> 'SOURCE_URL',	#INTERNAL NAME
+	FA_GITHUB_URL 				=> 'https://github.com/jemu75/fhemApp',
+	#FA_GITHUB_LATEST_SUB    => 'releases/latest',
+	#FA_GITHUB_PACKAGE_SUB   => 'archive/refs/tags',
+	FA_GITHUB_API_BASEURL	=> 'https://api.github.com/repos/jemu75/fhemApp',
+	FA_GITHUB_API_OWNER     => 'jemu75',
+	FA_GITHUB_API_REPO	   => 'fhemApp',
+	FA_GITHUB_API_RELEASES  => 'releases',
+	FA_TAR_SUB_FOLDER			=> 'www/fhemapp4',
+	FA_VERSION_LOWEST    	=> '4.0.0',
+	FA_MOD_TYPE 				=> (split('::',__PACKAGE__))[-1],
+	INT_SOURCE_URL				=> 'SOURCE_URL',	#INTERNAL NAME
 	INT_CONFIG_FILE			=> 'CONFIG_FILE',	#INTERNAL NAME
-	INT_INTERVAL			=> 'INTERVAL',		#INTERNAL NAME
-	INT_VERSION				=> 'VERSION',		#INTERNAL NAME
-	INT_JSON_LIB			=> '.JSON_LIB',		#INTERNAL NAME
-	INT_LOCAL_INST			=> 'LOCAL',			#INTERNAL NAME
-	INT_PATH				=> 'PATH'			#INTERNAL NAME
+	INT_INTERVAL				=> 'INTERVAL',		#INTERNAL NAME
+	INT_VERSION					=> 'VERSION',		#INTERNAL NAME
+	INT_JSON_LIB				=> '.JSON_LIB',	#INTERNAL NAME
+	INT_LOCAL_INST				=> 'LOCAL',			#INTERNAL NAME
+	INT_PATH						=> 'PATH',			#INTERNAL NAME
+	INT_LINK						=> 'FHEMAPP_UI',  #INTERNAL NAME
+	INT_FANAME					=> 'FHEMAPP_NAME' #INTERNAL NAME
 };
 
 
 #Preparing attribute list
+# dark:1,0 -removed
+# view     -removed
+
 no warnings 'qw';
 my @attrList = qw(
-	dark:1,0
 	disable:1,toggle
 	interval
 	sourceUrl
-	view
+	updatePath:beta
+	autoUpdate:1
 );
 use warnings 'qw';
 
 
 
-sub
+sub 
 #========================================================================
-create_fhemapp_folder()
+version_compare
 #========================================================================
 {
-	my $name=shift // return;	
-	my $destFolder=InternalVal($name,INT_PATH,'none');	
+	#returns 1  if v1 > v2
+	#returns -1 if v1 < v1
+	#returns 0  if v1 = v2
+	#if number of version parts are different, only minimum number of
+	#version parts are compared. So '1.4' = '1.4.2' and '1.4' = '1.4.8' ...
+	my $v1=shift // return;
+	my $v2=shift // return;
+
+	$v1=$v1 =~ s/[^0-9.]//rg;
+	$v1=$v1 =~ s/^\.//gr; 
+
+	$v2=$v2 =~ s/[^0-9.]//rg;
+	$v2=$v2 =~ s/^\.//gr; 
+
+	#print("version_compare($v1,$v2)");
+
+
+
+	my @sv1= split /\./, $v1;
+	my @sv2= split /\./, $v2;
+	
+	return if($#sv1 < 0 || $#sv2 < 0);
+	
+	my $min=$#sv1;
+    if($#sv2 < $min) {
+        $min=$#sv2
+    }
+
+	my $result=0;
+
+    for(my $i=0;$i<=$min;$i++) {
+        if($sv1[$i]+0 > $sv2[$i]+0) {
+            $result=1;
+            last;
+        } elsif($sv1[$i]+0 < $sv2[$i]+0) {
+            $result=-1;
+            last;
+        }
+    }
+    
+   return $result;
+	
+}
+
+sub
+#========================================================================
+create_fhemapp_folder
+#========================================================================
+{
+	my $hash=shift // return;
+	my $name=$hash->{NAME};
+
+	my $localInst=InternalVal($name,INT_LOCAL_INST,0);
+	if(!$localInst) {
+		Log($name,"create_fhemapp_folder: no local fhemapp-instance!",2);
+		return 0;
+	}
+	my $fld=InternalVal($name,INT_PATH,undef);
+	if(!$fld) {
+		Log($name,"no path specification found check DEF of $name",2);
+		return 0;
+	}
+	if(-d $fld) {
+		Log($name,"create_fhemapp_folder: folder already exists: '$fld'",2);
+		return 0;
+	}
+
+	mkdir($fld);
+	if(-d $fld) {
+		Log($name,"create_fhemapp_folder: folder successfully created: '$fld'",4);
+		return 1;
+	} else {
+		Log($name,"create_chemapp_folder: unable to create folder '$fld'",2);
+		return 0;
+	}
+
+	#my $name=shift // return;	
+	#my $destFolder=InternalVal($name,INT_PATH,'none');	
 }
 
 
 sub
-update
-{
+#========================================================================
+update {
+#========================================================================
+
 	my $hash=shift // return;
 
-    my $name = $hash->{NAME};
-	
+   my $name = $hash->{NAME};
 
-	my $url=ReadingsVal($name,'.latest_package',undef);
+	my $continueUpdate = shift;
+	$continueUpdate //=0;
 	
+	#TODO: Get Releases ... this is a non-blocking (async) process ...
+   #      ... need to wait until finished ... non-blocking :(
+	if(!$continueUpdate) {
+		Log($name,"Update ... first checking versions ...",4);
+		check_local_version($hash);
+		Request_Releases($hash,1);
+		return;
+	} else {
+		Log($name,"Update ... got releases ... continuing...",4);
+	}
+
+
+#return;
+	#Find required tarball-URL
+	my $url=undef;
+	my $updatePath=AttrVal($name,'updatePath','stable');
+	if( $updatePath eq 'beta') {
+		$url=ReadingsVal($name,'.pre_tarball_url',undef);
+	} else {
+		$url=ReadingsVal($name,'.stable_tarball_url',undef);
+	}
+	
+	#Build non-blocking request to download tarball from github
+	#Donwload is handled in callback sub 'update_response'
 	if($url) {
 		Log($name,"Requesting: $url",4);
 		my $param = {
@@ -199,8 +316,9 @@ update
 						header     => "User-Agent: TeleHeater/2.2.3\r\nAccept: application/json",                            
 						callback   => \&update_response                                                                  
 					};
-
-		HttpUtils_NonblockingGet($param);                                                                                    	
+		HttpUtils_NonblockingGet($param); 
+	} else {
+		Log($name, "Update: No url for current update-path '$updatePath' available!",4);
 	}
 	return;
 
@@ -214,37 +332,126 @@ update_response{
     my $hash = $param->{hash};
     my $name = $hash->{NAME};
 
+	 my $localPath=get_local_path($hash);
 
+	 my $fname="fhemapp_update.tar.gz";
+	 Log($name,"request-header: ".$param->{httpheader},5);
 
+	#Extracting the package filename from httpheader
+	if($param->{httpheader} =~/filename=(.+.tar.gz)/gm) {
+		$fname=$1;
+	}
+	Log($name,"filename for update package is $fname");
+	 #{my $v1="ertuy";;if($v1 =~ /er(tu)y/gm) {$1}}
+	 
+	 my @hdr=split('\n',$param->{httpheader});
+	 Log($name,"http-header:".Dumper(@hdr),5);
 
-    if($err ne "")                                                                                                      
-    {
-        Log($name,"error while requesting ".$param->{url}." - $err",4);                                               
-        readingsSingleUpdate($hash, ".fullResponse", "ERROR: $err", 0);  		
-    }
-
-    elsif($data ne "")                                                                                                  
-    {
-        Log($name,"update data recieved ".$param->{url},4);                                               
-		#my $dir = File::Temp->newdir();
-		my $dir = tempdir();
+   if($err ne "")                                                                                                      
+   {
+		#An Error occured during request
+      Log($name,"error while requesting ".$param->{url}." - $err",4);                                               
+      readingsSingleUpdate($hash, ".fullResponse", "ERROR: $err", 0);  		
+   }
+   elsif($data ne "")                                                                                                  
+   {
+		#Incoming data ... saving file
+      Log($name,"update data recieved ".$param->{url},4);                                               
+		my $dir = tempdir(CLEANUP=>1);
 		$dir=~ s!/*$!/!;
-		my $filename="${dir}fhemapp.latest.tar.gz";
+		my $filename="${dir}$fname";
 		my @content;
 		push @content,$data;
-		
-        Log($name,"writing $filename ",4);                                               
-		
-		#FileWrite($filename,@content);
-		FileWrite({FileName => $filename,ForceType => 'file'},@content);
-		my $cmd="tar -xvzf $filename -C $dir";
-        Log($name,"extract cmd '$cmd' ",4);                                               
-		my $res=system($cmd);
-		#sleep 30;
-    }
+				
+		#FileWrite($filename,@content); #-> Added one, unwanted character (probably a \n)
+		#So doing "native" file-write here:
+      Log($name,"writing $filename ",4);                                               
+		open(FH, '>', $filename);
+		print FH $data;
+		close(FH);
+
+		#my $topfolder=`tar -tzf $filename' | head -1 | cut -f1 -d"/"`;
+		#chomp $topfolder;
+		my $tarlist=`tar -tzf $filename`;
+		my $topfolder=(split /\n/, $tarlist )[0];
+		chop $topfolder if($topfolder =~ /.*\/$/);
+		Log($name,"top folder in '$filename' is $topfolder");
+
+		if(!$topfolder) {
+			Log($name, "Unable to get top folder from '$filename'",4);
+			temp_cleanup($hash);
+			return;
+		}
+
+		my $fullTarFolder="$topfolder/".FA_TAR_SUB_FOLDER;
+		my $depth=scalar(split("/",$fullTarFolder));
+
+		my $lpath=get_local_path($hash);
+
+		my $bpath=undef;
+		if($lpath) {
+			Log($name,"Local path already exists: '$lpath'",4);
+			$bpath="$lpath.bak";
+
+			#TODO: Do not remove --> should introduce a force variant
+			if($bpath && -d $bpath) {
+			   Log($name,"Trying to remove previously left backup folder '$bpath'",3);
+				my $res=rmtree($bpath,0,1);
+			}
+
+			Log($name,"-> renaming to '$bpath'",4);
+			if(!rename($lpath,$bpath)) {
+				Log($name,"Error renaming folder '$lpath' to '$bpath'",2);
+				temp_cleanup($hash);
+				return;
+			}
+		}
+
+		if(!$lpath || ! -d $lpath) {
+			if(create_fhemapp_folder($hash)) {
+				$lpath=get_local_path($hash);
+				my $cmd="tar xf $filename -C $lpath $topfolder/". FA_TAR_SUB_FOLDER . " --strip-components $depth";
+				Log($name,"extract cmd '$cmd' ",4);                                               
+
+				my $res=system($cmd);
+				Log($name,"extract result: $res",4);
+
+			} 
+		} else {
+			Log($name, "Local path still exists (shouldn't): '$lpath'",2);
+			temp_cleanup($hash);
+			return;
+		}
+
+		#Trying to cleanup temp-folder ...
+		temp_cleanup($hash);
+		#Updating local version (Readings)
+
+		if($bpath && -d $bpath) {
+			Log($name,"Removing backup folder '$bpath' after sucessfull installlation",4);
+			my $res=rmtree($bpath,0,1);
+		}
+		check_local_version($hash);
+
+   }
 	return;
-    
 }	
+
+sub 
+#========================================================================
+temp_cleanup{
+#========================================================================
+	my $hash=shift // return;
+	my $name=$hash->{NAME};
+
+	if(cleanup()==0) {
+		Log($name,"Successfully cleaned temp folder",4);
+	} else {
+		Log($name,"Cleanup of temp folder failed!",2)
+	}
+
+}
+
 
 
 sub 
@@ -254,9 +461,9 @@ Initialize
 {
 	my $hash=shift // return;
 	
-    $hash->{DefFn}     = \&Define;
-    $hash->{GetFn}     = \&Get;
-    $hash->{SetFn}     = \&Set;
+   $hash->{DefFn}     = \&Define;
+   $hash->{GetFn}     = \&Get;
+   $hash->{SetFn}     = \&Set;
 	$hash->{DeleteFn}  = \&Delete;
 	$hash->{CopyFn}    = \&DeviceCopied;
 	$hash->{RenameFn}  = \&DeviceRenamed;
@@ -267,17 +474,22 @@ Initialize
 }
 
 
+
 sub 
 #========================================================================
-Request_UpdateData($)
+Request_Releases
 #========================================================================
 {
-    my ($hash, $def) = @_;
+    my $hash=shift // return;
     my $name = $hash->{NAME};
+
+	 my $continueUpdate=shift;
+	 $continueUpdate //= 0;
 	
-	my $url=AttrVal($name,'sourceUrl',FA_GITHUB_URL); #FA_GITHUB_URL;
+	
+	my $url=AttrVal($name,'sourceUrl',FA_GITHUB_API_BASEURL); 
 	$url=~ s!/*$!/!;
-	$url.=FA_GITHUB_LATEST_SUB;
+	$url.=FA_GITHUB_API_RELEASES;
 	
 	Log($name,"Requesting: $url",4);
     my $param = {
@@ -286,7 +498,8 @@ Request_UpdateData($)
                     hash       => $hash,                                                                                 
                     method     => "GET",                                                                                 
                     header     => "User-Agent: TeleHeater/2.2.3\r\nAccept: application/json",                            
-                    callback   => \&Reaponse_UpdateData                                                                  
+                    callback   => \&Request_Releases_Response,
+						  continueUpdate => $continueUpdate                                                                  
                 };
 
     HttpUtils_NonblockingGet($param);                                                                                    
@@ -294,46 +507,108 @@ Request_UpdateData($)
 }
 
 #========================================================================
-sub Reaponse_UpdateData($)
+sub Request_Releases_Response($)
 #========================================================================
 {
     my ($param, $err, $data) = @_;
     my $hash = $param->{hash};
     my $name = $hash->{NAME};
-
+	 
     if($err ne "")                                                                                                      
     {
-        Log($name,"error while requesting ".$param->{url}." - $err",4);                                               
-        readingsSingleUpdate($hash, ".fullResponse", "ERROR: $err", 0);  		
+        Log($name,"error while requesting ".$param->{url}." - $err",5);                                               
+        #readingsSingleUpdate($hash, ".fullResponse", "ERROR: $err", 0);  
     }
-
     elsif($data ne "")                                                                                                  
     {
         Log($name,"url ".$param->{url}." returned: $data",5);                                                         
 		#Log3 $name, 3, Dumper $data;
 		
-		my $decode_json =  decode_json($data);
-		
-		my $tag=$decode_json->{tag_name};
-		my $ver=(split('v.',$tag))[-1];
-		readingsBeginUpdate($hash);
-		readingsBulkUpdateIfChanged($hash,'.latest_url',$param->{url},0);
-		readingsBulkUpdateIfChanged($hash,'.latest_version',$tag,0);
-		
-		my $package_url=AttrVal($name,'sourceUrl',FA_GITHUB_URL); #FA_GITHUB_URL;
-		$package_url=~ s!/*$!/!;
-		$package_url.=FA_GITHUB_PACKAGE_SUB;
-		$package_url=~ s!/*$!/!;
-		
+		my $rels =  decode_json($data);
 
-		readingsBulkUpdateIfChanged($hash,'.latest_package',$package_url.$decode_json->{tag_name}.'.tar.gz',0);
-		
-		readingsBulkUpdateIfChanged($hash,'latest_release',$ver);
-        readingsBulkUpdate($hash, ".fullResponse", $data,0); 
+		my $latestPre=undef;
+		my $latestFull=undef;
+
+		foreach my $rel (@{$rels}){
+			Log($name,"Release: " . $rel->{tag_name},5);
+			my $isVer=version_compare($rel->{tag_name},FA_VERSION_LOWEST);
+			Log($name,"Lowest: " . FA_VERSION_LOWEST . " is: $isVer",5);
+			if($isVer < 0) {
+				next;
+			}
+			if( !$latestPre && $rel->{prerelease})  {
+				$latestPre=$rel;
+			}
+			if(!$latestFull && !$rel->{prerelease}) {
+				$latestFull=$rel;
+			}
+		}
+
+		my $updateAvailable=0;
+		my $updatePath=AttrVal($name,'updatePath','stable');
+
+
+		#Updating device readings
+		readingsBeginUpdate($hash);
+			readingsBulkUpdateIfChanged($hash,'.latest_url',$param->{url},0);
+
+			if($latestPre) {
+				Log($name,"Latest-Pre: " . $latestPre->{tag_name},4);
+				readingsBulkUpdateIfChanged($hash,'pre_tag_name',$latestPre->{tag_name},1);
+				readingsBulkUpdateIfChanged($hash,'pre_html_url',$latestPre->{html_url},1);
+				readingsBulkUpdateIfChanged($hash,'.pre_tarball_url',$latestPre->{tarball_url},0);
+				readingsBulkUpdateIfChanged($hash,'pre_info',$latestPre->{body},1);
+				readingsBulkUpdateIfChanged($hash,'pre_published_at',$latestPre->{published_at},1);
+			} else {
+				readingsBulkUpdateIfChanged($hash,'pre_tag_name','unknown',1);
+			}
+			if($latestFull) {
+				Log($name,"Latest-Stable: " . $latestFull->{tag_name},4);
+				readingsBulkUpdateIfChanged($hash,'stable_tag_name',$latestFull->{tag_name},1);
+				readingsBulkUpdateIfChanged($hash,'stable_html_url',$latestFull->{html_url},1);
+				readingsBulkUpdateIfChanged($hash,'.stable_tarball_url',$latestFull->{tarball_url},0);
+				readingsBulkUpdateIfChanged($hash,'stable_info',$latestFull->{body},1);
+				readingsBulkUpdateIfChanged($hash,'stable_published_at',$latestFull->{published_at},1);
+			} else {
+				readingsBulkUpdateIfChanged($hash,'stable_tag_name','unknown',1);
+			}
+
+			#In case of error ....
+			#readingsBulkUpdate($hash, ".fullResponse", $data,0); 
+			if($err) {
+				readingsBulkUpdateIfChanged($hash,'request_result','error',1);
+				readingsBulkUpdate($hash,'request_error',$err,1);
+			} else {
+				readingsBulkUpdateIfChanged($hash,'request_result','success',1);
+			}
 		readingsEndUpdate($hash,1);
+
+		#Delete un-fillable version information readings 
+		if(!$latestPre) {
+			readingsDelete($hash,'pre_html_url');
+			readingsDelete($hash,'.pre_tarball_url');
+			readingsDelete($hash,'pre_info');
+			readingsDelete($hash,'pre_published_at');
+		}
+		if(!$latestFull) {
+			readingsDelete($hash,'stable_html_url');
+			readingsDelete($hash,'.stable_tarball_url');
+			readingsDelete($hash,'stable_info');
+			readingsDelete($hash,'stable_published_at');
+		}
+		if(!$err) {
+			readingsDelete($hash,'request_error');
+		}
     }
+
+	if($param->{continueUpdate}) {
+		#if called during update process ... continue with update
+		update($hash,1);
+	}
     
 }
+
+
 #========================================================================
 sub Attr	# AttrFn
 #========================================================================
@@ -364,7 +639,9 @@ sub Attr	# AttrFn
 		if($cmd eq 'set') {
 			$val+=0;
 			if($val < FA_INIT_INTERVAL) {
-				return "Interval should not be set lower than ".FA_INIT_INTERVAL;
+				$val=0;
+				#will be disabled if < 60 seconds => set to 0
+				#return "Interval should not be set lower than ".FA_INIT_INTERVAL;
 			} 
 			elsif($val > 86400) {
 				return "Interval should not be longer than 1 day (86400 sec)";
@@ -430,6 +707,23 @@ Notify	# NofifyFn
   return;
 }
 
+sub 
+#========================================================================
+set_fhemapp_link {
+#========================================================================
+	my $hash=shift // return;
+	my $name=$hash->{NAME};
+	my $fa_name=$hash->{&INT_FANAME};
+
+	if($hash->{&INT_LOCAL_INST}) {
+		my $fw_me=$FW_ME;
+		$fw_me //= '/fhem';
+		my $link="$fw_me/$fa_name/index.html#/$name";
+		$hash->{&INT_LINK}="<html><a href=\"$link\">$link</a></html>";
+	} else {
+		delete($hash->{&INT_LINK});
+	}
+}
 
 
 
@@ -445,7 +739,7 @@ Define	# DefFn
 
   my $name=shift @a;
   my $type=shift @a;
-  my $url=shift@a;
+  my $fa_name= shift @a;
   
   Log(undef,"DefFn called for $name $init_done",4);
   
@@ -456,18 +750,20 @@ Define	# DefFn
   $hash->{&INT_JSON_LIB}=$JSON;
   $hash->{&INT_CONFIG_FILE}=get_config_file($name);
   $hash->{&INT_INTERVAL}=AttrVal($name,'interval',FA_DEFAULT_INTERVAL);  
-  $hash->{&INT_PATH}=$url;  
+  $hash->{&INT_FANAME}=$fa_name;
 
   $hash->{NOTIFYDEV}="global";
   
   #Internal PATH is only available if local path is specified in DEF
-  if($url eq 'none') {
+  if($fa_name eq 'none') {
 	delete($hash->{&INT_PATH});
 	$hash->{&INT_LOCAL_INST}=0;
   } else {
+   $hash->{&INT_PATH}="$FW_dir/$fa_name";
   	$hash->{&INT_LOCAL_INST}=1;
   }
   
+  set_fhemapp_link($hash);
 	
   #Setting defined state
   if(!$init_done) {
@@ -491,7 +787,7 @@ Define	# DefFn
   	readingsSingleUpdate($hash,'state','defined',0); 
   }
   
-  return "Wrong syntax: use define <name> fhemapp <localFhemappPath|none>" if(!$url);
+  return "Wrong syntax: use define <name> fhemapp <localFhemappPath|none>" if(!$fa_name);
 }
 
 
@@ -516,7 +812,12 @@ Get		# GetFn
 		return AttrOptions_json($name);
 	}	
 	elsif($opt eq 'version') {
-		return get_local_version($hash);
+		check_local_version($hash);
+		return ReadingsVal($name,'local_version','unknown');
+		#return get_local_version($hash);
+	}	
+	elsif($opt eq 'localfolder') {
+		return get_local_path($hash);
 	}	
 	else
 	{
@@ -553,10 +854,17 @@ Set		# SetFn
 	}
 	elsif($opt eq "checkVersions") {
 		check_local_version($hash);
-		Request_UpdateData($hash);
+		Request_Releases($hash);
 	}
+	elsif($opt eq "createfolder") {
+		create_fhemapp_folder($hash);
+	}
+	elsif($opt eq "refreshLink") {
+		set_fhemapp_link($hash);
+	}
+
 	else {
-		return "Unknown argument $opt, choose one of checkVersions:noArg update:noArg";
+		return "Unknown argument $opt, choose one of checkVersions:noArg update:noArg refreshLink:noArg";
 	}
     return undef;
 }
@@ -856,7 +1164,7 @@ get_local_version
 		} else {
 			#handling CHANGELOG.md
 			my $vLine=shift @content;
-			return (split(' ',$vLine))[-1];
+			return (split(' ',$vLine))[-2];
 		}
 	}
 	
@@ -874,14 +1182,35 @@ check_local_version
 	if($hash->{&INT_LOCAL_INST}) {
 		readingsBeginUpdate($hash);
 
-		my $ver=get_local_version($hash);
-		if($ver) {
-			readingsBulkUpdateIfChanged($hash,'local_version',$ver,1);
-		} 
-		else 
-		{
-			readingsBulkUpdateIfChanged($hash,'local_version','not found',1);
+		#my $ver=get_local_version($hash);
+
+
+		#---
+		my $filename=get_local_path($hash,FA_VERSION_FILENAME);
+		
+		my $ver='unknown';
+		if($filename) {
+			my ($err,@content)=FileRead({FileName => $filename,ForceType => 'file'});
+		
+			my $config='';
+			
+			readingsBulkUpdateIfChanged($hash,'.local_version_src',FA_VERSION_FILENAME,1);
+			
+			if(FA_VERSION_FILENAME=~/\.json/) {
+				#handling vesion.json
+				if(!$err) {
+					$config=join('',@content);	
+				}
+				my $data=decode_json($config);
+				$ver=$data->{version};		
+			} else {
+				#handling CHANGELOG.md
+				my $vLine=shift @content;
+				$ver=(split(' ',$vLine))[-2];
+			}
 		}
+
+			readingsBulkUpdateIfChanged($hash,'local_version',$ver,1);
 		
 		readingsEndUpdate($hash,1);
 
@@ -889,6 +1218,7 @@ check_local_version
 	else 
 	{
 		readingsDelete($hash,'local_version');		
+		readingsDelete($hash,'.local_version_src');		
 	}
 	return;
 }
@@ -905,6 +1235,12 @@ StartLoop
 	
 	my $name=$hash->{NAME};
 	
+	my $currentInterval=AttrVal($name,'interval',FA_DEFAULT_INTERVAL);
+	if($currentInterval < FA_DEFAULT_INTERVAL) {
+		StopLoop($hash);
+		Log($name,"Interval is lower than " . FA_DEFAULT_INTERVAL . " seconds. Stopping all loop activities",5);
+		return;
+	}
 	if(!IsDisabled($name) or $force) {
 		$stop //= 1;
 		$time //= 0;
@@ -929,7 +1265,7 @@ sub Loop
 	Log($name,"Internal timer loop elapsed",5);
 	
 	check_local_version($hash);
-	Request_UpdateData($hash);
+	Request_Releases($hash);
 	
 	StartLoop($hash);
 	
