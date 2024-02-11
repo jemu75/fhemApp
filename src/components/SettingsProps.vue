@@ -179,7 +179,8 @@
 
         fhem.app.config[props.type].push(props.type === 'panels' ? newPanel : newTemplate)
         settings.value.newItem = ''
-        //hier gleich in Edit-Modus wechseln
+        
+        editItem(fhem.app.config[props.type].length - 1)
     }
 
     function editItem(idx) {

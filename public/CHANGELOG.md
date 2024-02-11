@@ -1,3 +1,6 @@
+# v4.0.18-beta (11.02.2024)
+## Settings
+- Optimization Panel and Template Settings
 # v4.0.17-beta (04.02.2024)
 ## Core
 - Optimization in case of new Instance

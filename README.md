@@ -105,6 +105,22 @@ Alle Geräte die du in FHEM eingebunden hast, können innerhalb von **FHEMApp** 
 ![](./docs/media/example_panel.png)
 <br>*Beispiel für ein Panel*
 
+## neues Panel erstellen
+Über die Einstellungen in **FHEMApp** kannst du neue Panels erstellen. Nachdem du ein **neues Panel** mit einem **eindeutigem Name** erstellt hast, solltest du dieses zuerst mit mindestens einem FHEM-Device verbinden. 
+
+Du kannst ein Panel auch mit mehreren FHEM-Devices verbinden. Jedes FHEM-Device, welches Du mit dem Panel verbindest benötigt dabei einen **Schlüssel**, der innerhalb des Panels eindeutig sein muss. Insbesondere bei der Verwendung von [Vorlagen](#vorlagen) wird somit gewährleistet, dass das gewünschte FHEM-Device angesprochen wird.
+
+**Beispiel:**
+|Panel 1|Panel 2|Beschreibung|
+|---|---|---|
+|`thermo:temp.eg.wohnen`|`thermo:temp.og.buero`|verbindet das erste Panel mit dem FHEM-Device `temp.eg.wohnen` und ein zweites Panel mit dem FHEM-Device `temp.og.buero`. Für die Konfiguration der Elemente im Panel wurde der Schlüssel `thermo` vergeben.| 
+|`valve:heiz.eg.wohnen`|`valve:heiz.og.buero`|verbindet das erste Panel mit dem FHEM-Device `heiz.eg.wohnen` und ein zweites Panel mit dem FHEM-Device `heiz.og.buero`. Für die Konfiguration der Elemente im Panel wurde der Schlüssel `valve` vergeben.| 
+
+Nun kann man in der passenden [Vorlage](#vorlagen) oder in den beiden [Panels](#panels) die vergebenen Schlüssel `thermo` bzw. `valve` zum Abrufen von FHEM Readings oder dem Senden von FHEM set-Befehlen verwenden. Ein FHEM set-Befehl kann nun wie folgt geschrieben werden `set valve pct 50`.
+
+![](./docs/media/example_element_definition_devices.png)
+<br>*Beispiel für die Definition von Devices in einem Panel*
+
 ## Konfiguration der Elemente
 Die Konfiguration der Elemente in den verschiedenen Bereichen des Panels erfolgt nach einem einheitlichen Definitions-Schema. 
 `reading:value:prop1:prop2:...`
@@ -118,12 +134,12 @@ Jede Definition beginnt mit den beiden Parametern `reading` und `value`. Diese d
 |`a-alias`|liefert das FHEM **Attribut** `alias`|
 |`i-NAME`|liefert das FHEM **Internal** `NAME`|
 
-Wenn ein Panel mit mehreren FHEM-Devices verbunden wird, dann muss das Device vorangestellt werden.
+Wenn ein Panel mit mehreren FHEM-Devices verbunden wird, dann muss der Schlüssel für das Device vorangestellt werden.
 
 |Beispiel|Beschreibung|
 |---|---|
-|`sw1-state`|liefert das FHEM **Reading** `state` vom Device das mit dem Key `sw1` im Panel definiert ist|
-|`thermo-measured-temp-ts`|liefert den **Zeistempel** für das FHEM Reading `measured-temp` vom Device das mit dem Key `thermo` im Panel definiert ist.|
+|`valve-state`|liefert das FHEM **Reading** `state` vom Device das mit dem Schlüssel `valve` im Panel definiert ist|
+|`thermo-measured-temp-ts`|liefert den **Zeistempel** für das FHEM Reading `measured-temp` vom Device das mit dem Schlüssel `thermo` im Panel definiert ist.|
 
 Eine Definition wird verwendet, wenn der Parameter `value` zutrifft. Bei der Prüfung wird grundsätzlich zwischen Zahlen und Text unterschieden. Bei Zahlen gilt immer **reading >= value**. Bei Text wird geprüft, ob dieser **im Reading enthalten** ist. Weiterhin können Definitionen mit Hilfe von [regular expression](https://regex101.com/) geprüft werden.
 
@@ -174,16 +190,17 @@ Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zu
 ## Panel allgemein
 In den allgemeinen Einstellungen für Panels wird festgelegt, mit welchen FHEM **Devices** das Panel verknüpft ist und ob eine **Vorlage** zur Darstellung des Panels verwendet werden soll. Weiterhin wird festgelegt, unter welchen Navigationspunkten das Panel zur Anzeige gebracht werden soll. Zusätzlich können verschiedene Einstellung zur Darstellung des Panels erfolgen.
 
-Die Aktivierung der **erweitere Konfiguration** ermöglicht die Anpassung aller Bereiche und Elemente des Panels, wenn keine [Vorlage](#vorlagen) verwendet werden soll, oder bestimmte Einstellung einer verwendeten Vorlage überschrieben werden sollen.
+Wenn für ein Panel keine [Vorlage](#vorlagen) verwendet werden soll, oder bestimmte Einstellungen der Vorlage für das Panel angepasst werden sollen, kann die **erweitere Konfiguration** aktiviert werden.
+
 ### Element devices
-Liste der FHEM-Devices, die mit dem Panel verknüpft sind. Es muss mindestens ein FHEM-Device mit einem Panel verknüpft werden.
+Liste der FHEM-Devices, die mit dem Panel verknüpft sind. Es muss mindestens ein FHEM-Device mit einem Panel verknüpft werden. (siehe auch [neues Panel erstellen](#neues-panel-erstellen))
 
 |Parameter|Beschreibung|
 |---|---|
-|key|eindeutiger Schlüssel, der für Element-Definitionen benötigt wird. Es wird empfohlen, die Art des FHEM-Device (z.B. switch, contact, thermo,...) als Schlüssel zu verwenden.|
+|key|eindeutiger Schlüssel, der für Element-Definitionen benötigt wird.|
 |device|Name des FHEM Device, mit dem das Panel verknüpft ist|
 ### Element template
-Optional kann eine [Vorlage](#vorlagen) ausgewählt werden, die für die Darstellung des Panels verwendet werden soll. Elemente die im Panel (unter **erweiterte Konfiguration**) definiert wurden, behalten ihre Gültigkeit wenn eine Vorlage verwendet wird. In diesem Fall werden die betreffenden Definitionen aus der Vorlage ignoriert. 
+Optional kann eine [Vorlage](#vorlagen) ausgewählt werden, die für die Darstellung des Panels verwendet werden soll. Elemente die im Panel (unter **erweiterte Konfiguration**) definiert wurden, behalten ihre Gültigkeit auch wenn eine Vorlage verwendet wird. In diesem Fall werden die betreffenden Definitionen aus der Vorlage ignoriert. 
 ### Element navigation
 Liste der Navigationspunkte, unter denen das Panel angezeigt wird. Im Gegensatz zu normalen Definitionen, werden hier **alle** Definitionen verwendet, deren Bedingungen zutreffen.  
 
@@ -191,7 +208,15 @@ Liste der Navigationspunkte, unter denen das Panel angezeigt wird. Im Gegensatz 
 |---|---|
 |reading|siehe Parameter [reading](#konfiguration-der-elemente)|
 |value|siehe Parameter [value](#konfiguration-der-elemente)|
-|route|Navigationspunkt unter dem das Panel angezeigt werden soll. Die Angabe kann auf gleiche Weise wie im FHEM-Attribut [room](https://wiki.fhem.de/wiki/Room) erfolgen.  
+|route|Navigationspunkt unter dem das Panel angezeigt werden soll. Die Angabe kann auf gleiche Weise wie im FHEM-Attribut [room](https://wiki.fhem.de/wiki/Room) erfolgen.
+
+|Beispiel|Beschreibung|
+|---|---|
+|`::home`|Das Panel wird im Navigationsmenü unter dem Menüpunkt `home` angezeigt|
+|`::groups->Licht`|Das Panel wird im Navigationsmenü innherhalb von `groups` unter `Licht` angezeigt|
+|`::groups->Licht,rooms->Arbeiten`| Das Panel wird im Navigationsmenü unter `groups` und unter `rooms` in den jeweiligen Untergruppen `Licht`bzw. `Arbeiten` angezeigt.|
+|`a-room::rooms->%s`|Das Panel wird im Navigationsmenü innerhalb von `rooms` unter dem Name angezeigt, der im zugeordneten FHEM Device im Attribut *room* hinterlegt ist.| 
+
 ### Element expandable
 Panels können ausgeklappt werden sobald mehr als eine aktive Ebene im Bereich [main](#bereich-main) enthalten. Weiterhin kann festgelegt werden, ob das Panel beim Laden bereits ausgeklappt sein soll und ob das Panel auf die voll Bildschirmgröße maximiert werden kann.
 
@@ -361,12 +386,12 @@ Legt den Befehl fest, der bei kurzem Drücken des Button ausgeführt wird.
 |cmd|| FHEM Kommando, Route oder Link [string]|
 |type|cmd| cmd, route, url [string]|
 
-|Beispiele|Erklärung|
+|Beispiel|Erklärung|
 |---|---|
-|::set switch on|sendet den Befehl `set switch on` an FHEM. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `switch` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt. Kann kein entsprechender Schlüssel gefunden werden, so wird der Befehl unverändert an FHEM gesendet.|
-|::home:route|wechselt zum Navigationspunkt `home` in **FHEMApp**. Die angegebene Route muss existieren und der Route in der URL (.../devices/{route}/?...)|
-|::https\\://fhem.de:url|wechsel direkt zu der URL `https://fhem.de`. Bei direkter Eingabe von URLs müssen Doppelpunkte entsprechend ersetzt werden. (siehe auch [Ersetzungen](#ersetzungen))|
-|cam-link::%s:url|wechsel direkt zu der URL, die im Device `cam` im Reading `link` hinterlegt ist|
+|`::set switch on`|sendet den Befehl `set switch on` an FHEM. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `switch` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt. Kann kein entsprechender Schlüssel gefunden werden, so wird der Befehl unverändert an FHEM gesendet.|
+|`::home:route`|wechselt zum Navigationspunkt `home` in **FHEMApp**. Die angegebene Route muss existieren und der Route in der URL (.../devices/{route}/?...)|
+|`::https\\://fhem.de:url`|wechsel direkt zu der URL `https://fhem.de`. Bei direkter Eingabe von URLs müssen Doppelpunkte entsprechend ersetzt werden. (siehe auch [Ersetzungen](#ersetzungen))|
+|`cam-link::%s:url`|wechsel direkt zu der URL, die im Device `cam` im Reading `link` hinterlegt ist|
 ### Level Element Button longClick
 Legt den Befehl fest, der bei langem Drücken des Button ausgeführt wird. Der Button muss dabei mindestens 1 Sekunde gedrückt werden.
 
@@ -376,7 +401,7 @@ Legt den Befehl fest, der nach dem Loslassen des Button ausgeführt wird, wenn d
 
 Parameter siehe [Button click](#level-element-button-click)
 ### Level Element Slider slider
-Zeigt einen horizontalen Schieberegler an und sendet einen entsprechenden Befehl an FHEM.
+Zeigt einen Schieberegler an und sendet einen entsprechenden Befehl an FHEM.
 
 |Parameter|Default|Beschreibung|
 |---|---|---|
@@ -392,9 +417,9 @@ Zeigt einen horizontalen Schieberegler an und sendet einen entsprechenden Befehl
 |size|4|legt die Breite des Sliders fest [number]|
 |vertical|false|zeigt den Slider in vertikaler Richtung an [boolean]|
 
-|Beispiel|Erklärung|
+|Beispiel|Beschreibung|
 |---|---|
-|dimmer-pct::set dimmer pct %v:%n()|setzt den Slider auf den aktuellen Wert des readings `pct` aus dem Device `dimmer` und sendet nach dem Verschieben den Befehl `set dimmer %v` an FHEM. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `dimmer` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt. Kann kein entsprechender Schlüssel gefunden werden, so wird der Befehl unverändert an FHEM gesendet. Weiterhin wird `%v` durch den aktuellen Wert des Sliders ersetzt.|
+|`dimmer-pct::set dimmer pct %v:%n()`|setzt den Slider auf den aktuellen Wert des readings `pct` aus dem Device `dimmer` und sendet nach dem Verschieben den Befehl `set dimmer %v` an FHEM. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `dimmer` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt. Kann kein entsprechender Schlüssel gefunden werden, so wird der Befehl unverändert an FHEM gesendet. Weiterhin wird `%v` durch den aktuellen Wert des Sliders ersetzt.|
 ### Level Element Image image
 Zeigt ein Bild an.
 
@@ -416,10 +441,10 @@ Menüeinträge können auch von FHEM übergeben werden. Dafür muss der Inhalt d
 |name||Name der im DropDown-Menü angezeiugt wird [string]|
 |cmd||FHEM Befehl, der beim Klick auf den Menüpunkt an FHEM gesendet wird. [string]|
 
-|Beispiel|Erklärung|
+|Beispiel|Beschreibung|
 |---|---|
-|::30 Minuten:set switch on-for-timer 1800|sendet den Befehl `set switch on-for-timer 1800` an FHEM. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `switch` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt.|
-|switch-a-dropdown::%s:%s|übernimmt die Definition der Menüeinträge aus dem *Attribute* `dropdown` vom Device `switch`. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `switch` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt.|
+|`::30 Minuten:set switch on-for-timer 1800`|Zeigt im Menü den Menüpunkt `30 Minuten` an und sendet bei Klick den Befehl `set switch on-for-timer 1800` an FHEM. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `switch` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt.|
+|`switch-a-dropdown::%s:%s`|übernimmt die Definition der Menüeinträge aus dem FHEM Attribut `dropdown` vom Device `switch`. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `switch` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt.|
 ### Level Element Info text
 Zeigt bis zu 3 Texte (text, text2, text3) an. Dabei wird `text` immer über `text2` und `text3` angezeigt. Weiterhin wird `text2` immer links neben `text3` angezeigt.
 
@@ -430,14 +455,14 @@ Parameter|Default|Beschreibung|
 |text||Text der ausgegeben wird [string]|
 |format||Angaben zur Größe, Ausrichtung und Farbe des Textes. Es können mehrere Formatangaben kombiniert werden. Diese müssen durch Leernzeichen voneinander getrennt werden. [string]|
 
-|Beispiel|Erklärung|
+|Beispiel für Formatierung|Beschreibung|
 |---|---|
-|text-success|zeigt den Text in der Farbe grün an (siehe auch [Farben](#farben))|
-|text-left|richtet den Text linksbündig aus|
-|text-right|richtet den Text linksbündig aus|
-|text-h4|Text in großer Schrift (weitere Möglichkeiten siehe auch [Text und Typografie](https://vuetifyjs.com/en/styles/text-and-typography/))
+|`text-success`|zeigt den Text in der Farbe grün an (siehe auch [Farben](#farben))|
+|`text-left`|richtet den Text linksbündig aus|
+|`text-right`|richtet den Text linksbündig aus|
+|`text-h4`|Text in großer Schrift (weitere Möglichkeiten siehe auch [Text und Typografie](https://vuetifyjs.com/en/styles/text-and-typography/))
 ### Level Element Info icon
-Zeigt ein Icon zwischen `text` und `text2/text3` an.
+Zeigt ein Icon unterhalb von `text` und oberhalb von `text2` bzw. `text3` an.
 
 Parameter|Default|Beschreibung|
 |---|---|---|
@@ -447,7 +472,7 @@ Parameter|Default|Beschreibung|
 |color||legt die Farbe für das Icon fest. (siehe auch [Farben](#farben)) [string]|
 |size|x-large| Größe des Icons (x-small, small, medium, large, x-large) [string]|
 ### Level Element Info status
-Zeigt eine runde Statusbar oder eine horizontale Statusbar zwischen `text` und `text2/text3` an.
+Zeigt eine runde Statusbar oder eine horizontale Statusbar unterhalb von  `text` und oberhalb von `text2` bzw. `text3` an.
 
 Parameter|Default|Beschreibung|
 |---|---|---|
@@ -460,7 +485,9 @@ Parameter|Default|Beschreibung|
 |reverse|false|Die Startrichtung in der die Bar farblich hervorgehoben wird, wird umgekehrt [boolean]|
 |linear|false|zeigt eine horizontale oder runde Statusbar an [boolean]|
 ### Level Element Chart serie
-Zeigt ein Chart. Im Gegensatz zu normalen Definitionen, werden zur Anzeige der Datenreihen **alle** Definitionen verwendet, deren Bedingungen zutreffen. Für die Darstellung von Charts kommt [Apache ECharts](https://echarts.apache.org) zum Einsatz. Diese bietet eine sehr große Vielfalt an Charts und Anpassungsmöglichkeiten.
+Zeigt ein Chart. Im Gegensatz zu normalen Definitionen, werden zur Anzeige der Datenreihen **alle** Definitionen verwendet, deren Bedingungen zutreffen. Jede definierte Serie repräsentiert eine Datenreihe im Chart. 
+
+Für die Darstellung von Charts kommt [Apache ECharts](https://echarts.apache.org) zum Einsatz. Diese bietet eine sehr große Vielfalt an Charts und Anpassungsmöglichkeiten.
 
 Parameter|Default|Beschreibung|
 |---|---|---|
@@ -472,7 +499,7 @@ Parameter|Default|Beschreibung|
 |suffix||Einheit für die Zahlenwerte (z.B. % oder °C)|
 |type|line|Charttyp der Datenreihe (z.B. line, bar, scatter, gauge und weitere siehe auch [ECharts Beispiele](https://echarts.apache.org/examples/en/index.html))|
 
-Bei Verwendung der FHEM-Anweisung `get` können statt fester Datumsangaben im ISO-Format auch Offsetwerte verwendet werden. z.B. `get log1 - - -14 0 4\:level` Dabei entspricht `-14` dem aktuellen Datum - 14 Tage und `0` dem aktuellen Datum. Da in der FHEM-Anweisung `get` auch Doppelpunkte zum Einsatz kommen ist die Schreibweise `\:` innerhalb der Anweisung zu beachten. (siehe auch [Ersetzungen](#ersetzungen)) Das Ergebnis der `get` Anweisung muss immer zwei Spalten zurückgeben. Die linke Spalte muss der Zeitstempel und die rechte Spalte den zugehörigen Zahlenwert enthalten. 
+Bei Verwendung der FHEM-Anweisung `get` können statt fester Datumsangaben im ISO-Format auch Offsetwerte verwendet werden. z.B. `get log1 - - -14 0 4\:level` Dabei entspricht `-14` dem aktuellen Datum - 14 Tage und `0` dem aktuellen Datum. Da in der FHEM-Anweisung `get` auch Doppelpunkte zum Einsatz kommen ist die Schreibweise `\:` innerhalb der Anweisung zu beachten. (siehe auch [Ersetzungen](#ersetzungen)) Das Ergebnis der `get` Anweisung muss immer zwei Spalten zurückgeben. Die linke Spalte muss den Zeitstempel und die rechte Spalte den zugehörigen Zahlenwert enthalten. 
 
 Die zurückgegebenen Daten werden an das EChart Object-Modell an folgende Stellen übergeben:
 ``` 
@@ -513,13 +540,38 @@ Damit Konfigurationen nicht für jedes Panel erstellt werden müssen, können di
 Nachdem eine Vorlage erstellt wurde, kann diese den gewünschten Panels in der [Panelkonfiguration](#panelkonfiguration) unter den [allgemeinen Einstellungen](#panel-allgemein) im Element [template](#element-template) zugewiesen werden.
 
 Grundsätzlich können alle Elemente, die in einem Panel konfigurierbar sind auch in Vorlagen konfiguriert werden. 
-
-> [!IMPORTANT] 
-> Paneleinstellungen behalten ihre Gültigkeit auch dann, wenn dem Panel eine Vorlage zugewiesen wurde.
 # Navigation
-...
+Das Navigationsmenü von **FHEMApp** kann individuell angepasst werden. So ist es möglich die Reihenfolge der einzelnen Navigationspunkte festzulegen, Navigationspunkte mit einem Icon zu versehen oder alternative Beschriftungen für die Navigationspunkte festzulegen. 
+
+Die alternativen Beschriftungen können somit auch für die Erstellung mehrsprachiger Instanzen von **FHEMApp** verwendet werden. Hierbei kann die Ersetzung `%t(...)` (siehe auch [Ersetzungen](#ersetzungen)) eingesetzt werden.
+
+![](./docs/media/example_settings_5.png)
+<br>*Beispiel für ein angepasstes Navigationsmenü*
 # Farben
-...
+In **FHEMApp** können altrnativ zu hexadezimalen Farbangaben auch  Farbvariablen eingesetzt werden. Damit können Themen erstellt und Farben schnell angepasst werden. Grundsätzlich steht ein helles und ein dunkles Farbschema für jede Instanz von **FHEMApp** zur Verfügung. 
+
+Neben frei definierbaren Farbvariablen, die Elementdefinitionen zur Angabe von Farbwerten eingesetzt werden können, gibt es feste Farbvariablen.
+
+|feste Farbvariable|Beschreibung|
+|---|---|
+|`primary`|Hintergrundfarbe für die Kopfzeile von **FHEMApp**|
+|`secondary`|Hintergrundfarbe für das Navigationsmenü, sowie den Statusbereich und den Infobereich von Panels|
+|`success`|Standardfarbe für Statusanzeigen und Slider|
+|`info`|Farbe für interne Meldungen von **FHEMApp**|
+|`warning`|Farbe für interne Warnungen von **FHEMApp**|
+|`error`|Farbe für interne Fehler von **FHEMApp**|
+
+![](./docs/media/example_settings_6.png)
+<br>*Beispiel für Definition von Farbvariablen*
 # Sprachen
-https://de.wikipedia.org/wiki/Liste_der_ISO-639-1-Codes
-...
+In **FHEMapp** können mehrsprachige Instanzen erstellt werden. Die Umstellung der Benutzersprache kann über [URL Paramter](#zusätzliche-url-parameter) oder über das [Optionsmenü](#optionsmenü) erfolgen. 
+
+Jede Instanz von **FHEMApp** enthält standardmäßig die beiden Sprachen *Deutsch* und *Englisch*. Es ist jedoch möglich, weitere eigene Sprachen in **FHEMApp** zu integrieren und mit den entsprechenden Übersetzungen zu befüllen. Neue Benutzersprachen sollten nach den ISO-Sprachcodes (siehe [ISO-639-1-Codes](https://de.wikipedia.org/wiki/Liste_der_ISO-639-1-Codes)) benannt 
+
+Um Inhalte in **FHEMApp** in der jeweiligen Benutzersprache anzuzeigen, muss die Ersetzung `%t(<sprachvariable>)` (siehe [Ersetzungen](#ersetzungen)) verwendet werden. Die *Sprachvariablen* werden dabei in den Einstellungen von **FHEMApp** definiert. 
+
+Neben festen Sprachvariablen kann die Ersetzung `%t()` auch mit den Werten von FHEM Readings befüllt werden. So kann z.B. der in FHEM häufig vorkommende Wert `on` in state-Readings in die gewünschte Benutzersprache übersetzt werden.
+
+|Beispiel Elementdefinition|Sprachvariable|de|en|fr|es|
+|---|---|---|---|---|---|
+|`state::%t(%s)`|`on`|an|on|allumé|encendida|
