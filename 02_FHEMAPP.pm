@@ -142,7 +142,7 @@ eval {
 
 use constant {
 	FA_VERSION 					=> '0.2.0',			#Version of this Modul
-	FA_DEFAULT_FOLDER 		=> './www/fhemapp',	#Default Path to FHEMapp
+	FA_DEFAULT_FOLDER 		=> './www/fhemapp4',	#Default Path to FHEMapp
 	FA_VERSION_FILENAME 		=> 'CHANGELOG.md',	#Default Version Filename
 	FA_INIT_INTERVAL			=> 60,				#Default Startup Interval
 	FA_DEFAULT_INTERVAL		=> 3600,			#Default Interval
