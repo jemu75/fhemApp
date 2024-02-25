@@ -1,3 +1,7 @@
+# v4.0.19-beta (25.02.2024)
+## Core
+- Bugfix for Navigation if panel is not showed
+- Bugfix Sorting Panelview
 # v4.0.18-beta (11.02.2024)
 ## Settings
 - Optimization Panel and Template Settings

@@ -1,22 +1,18 @@
 <script setup>
-  import { ref, computed } from 'vue'
+  import { ref } from 'vue'
   import VueJsonPretty from 'vue-json-pretty'
   import 'vue-json-pretty/lib/styles.css'
   import { useFhemStore } from '@/stores/fhem' 
   import useClipboard from 'vue-clipboard3'
 
-  const cfgOnly = ref(false)
+  const cfgOnly = ref(true)
   
   const fhem = useFhemStore()
 
   const { toClipboard } = useClipboard()
 
-  const jsonData = computed(() => {
-    return cfgOnly.value ? fhem.app.config : fhem.app
-  })
-
   function copyBtn() {
-    toClipboard(JSON.stringify(jsonData.value, null, '  '))
+    toClipboard(JSON.stringify(cfgOnly.value ? fhem.app.config : fhem.app, null, '  '))
   }
 </script>
 
@@ -42,7 +38,7 @@
           </v-col>
         </v-row>
         <v-divider class="pb-3"></v-divider>
-        <vue-json-pretty :data="jsonData" :deep="cfgOnly ? 2 : 1" :showLine="false" :showIcon="true" :showLength="true"/>
+        <vue-json-pretty :data="cfgOnly ? fhem.app.config : fhem.app" :deep="1" :showLine="false" :showIcon="true" :showLength="true"/>
       </v-card-text>
   </v-card>
 </template>

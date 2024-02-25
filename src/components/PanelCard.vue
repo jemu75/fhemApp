@@ -27,6 +27,10 @@
         return fhem.handleDefs(item.panel.status.imageUrl, ['url'],[''])
     })
 
+    const sortby = computed(() => {
+        return fhem.handleDefs(item.panel.panel.sortby, ['sortby'], [null])
+    })
+
     const title = computed(() => {
         return fhem.handleDefs(item.panel.status.title, ['title'],[''])        
     })
@@ -129,6 +133,9 @@
                             {{  title.title }}
                         </v-col>
                         <v-spacer></v-spacer>
+                        <v-col v-if="fhem.app.settings.loglevel > 6" class="text-right">
+                            {{ sortby.sortby }}
+                        </v-col>
                         <v-col v-if="expandIcon" cols="1" class="text-right">
                             <v-btn :icon="expandIcon" size="small" variant="plain" density="compact" @click="levelSwitch(false)"></v-btn>
                         </v-col>

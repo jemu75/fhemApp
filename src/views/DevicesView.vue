@@ -31,7 +31,7 @@
   })
 
   function s(obj) {
-    return fhem.handleDefs(obj.panel.sortby, ['sortby'], ['999']).sortby
+    return fhem.handleDefs(obj.panel.sortby, ['sortby'], [null]).sortby || '999'
   }
 </script>
 

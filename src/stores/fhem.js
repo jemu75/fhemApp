@@ -128,7 +128,6 @@ export const useFhemStore = defineStore('fhem', () => {
     //coreFunction to open online HelpPage (README.md)
     function help(anchor) {
         window.open(app.helpURL + anchor, '_blank')
-        //console.log(app.helpURL + anchor)
     }
 
     //coreFunction to handle url params and query-string
@@ -836,7 +835,10 @@ export const useFhemStore = defineStore('fhem', () => {
         for(const panel of app.panelList) {
             if(panel.panel.navigation) {
                 routes = handleDefs(panel.panel.navigation, ['route'], [''], true, ',')
-                for(const item of routes) createNavItems(item.route, app.navigation)
+
+                if(handleDefs(panel.panel.show, ['show'], [true]).show) {
+                    for(const item of routes) createNavItems(item.route, app.navigation)
+                } 
             }
         }
 
@@ -873,7 +875,7 @@ export const useFhemStore = defineStore('fhem', () => {
         let res = true
         let tid = thread()
 
-        log(4, 'Create Session...')
+        log(4, connect ? 'Create Session...' : 'Refresh Session...')
 
         app.isReady = false
         stat.panelMap = []
@@ -892,21 +894,21 @@ export const useFhemStore = defineStore('fhem', () => {
         } else {
             app.message = false
             app.isReady = true
-            log(1, 'FHEMApp launched.', app)
+            log(1, connect ? 'FHEMApp launched.' : 'Session refreshed.', app)
         }        
 
         thread(tid)
         return res
     }
-
-    //mainFunction to Initialze FHEMApp
+      
+    //Initialize FHEMApp
     function init() {
         log(1, 'FHEMApp launching...')
 
         //register eventHandler
         router.afterEach((to) => {
             let res = handleURL(to)
-            
+
             if(res.langChanged) i18n.locale.value = app.settings.lang
             if(res.darkChanged) theme.global.name.value = app.settings.dark === '0' ? 'light' : 'dark'
             if(res.connChanged || !app.isReady) return createSession(true)
@@ -918,9 +920,8 @@ export const useFhemStore = defineStore('fhem', () => {
         initClock()
     }
 
-    //Initialize FHEMApp
+    //FHEMApp entryPoint
     router.isReady().then(init())
 
-    //only for production
     return { app, getEl, handleDefs, getIcon, replacer, createSession, request, thread, stringToJson, log, help }
 })
