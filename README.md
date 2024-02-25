@@ -24,7 +24,7 @@ Für den Einsatz von **FHEMApp** wird FHEM(tm) benötigt. Weitere Informationen 
 Die Installation von **FHEMApp** erfolgt in FHEM. Hierfür erstellst du in FHEM über den folgenden Befehl ein *fhemapp*-Device. 
 
 ```
-define myapp fhemapp ./www/fhemapp4
+define myapp fhemapp fhemapp4
 ```
 Das *fhemapp*-Device ist für das Laden und Speichern der Konfigurationsdaten von **FHEMApp** zuständig und dient zudem für die Installation und Updates von **FHEMApp**. 
 

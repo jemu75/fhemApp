@@ -106,7 +106,17 @@ export const useFhemStore = defineStore('fhem', () => {
 
     //coreFunction to read Version
     async function getVersion() {
-        let log = await fetch('CHANGELOG.md')
+        let  header = new Headers()
+
+        header.append('pragma', 'no-cache')
+        header.append('cache-control', 'no-cache')
+
+        let init = {
+            method: 'GET',
+            headers: header
+        }
+        
+        let log = await fetch('CHANGELOG.md', init)
             .then((res) => {
                 return res.text()
             })
