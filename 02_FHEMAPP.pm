@@ -141,8 +141,8 @@ eval {
 #########################################################################
 
 use constant {
-	FA_VERSION 					=> '0.2.0',			#Version of this Modul
-	FA_DEFAULT_FOLDER 		=> './www/fhemapp4',	#Default Path to FHEMapp
+	FA_VERSION 					=> '0.3.0',			#Version of this Modul
+	#FA_DEFAULT_FOLDER 		=> 'fhemapp',	#Default Path to FHEMapp
 	FA_VERSION_FILENAME 		=> 'CHANGELOG.md',	#Default Version Filename
 	FA_INIT_INTERVAL			=> 60,				#Default Startup Interval
 	FA_DEFAULT_INTERVAL		=> 3600,			#Default Interval
@@ -178,8 +178,8 @@ my @attrList = qw(
 	interval
 	sourceUrl
 	updatePath:beta
-	autoUpdate:1
 );
+# autoUpdate:1
 use warnings 'qw';
 
 
@@ -821,11 +821,12 @@ Get		# GetFn
 	}	
 	else
 	{
-		my $loc_gets='version:noArg';
+		#my $loc_gets='version:noArg';
+		my $loc_gets='';
 		if(get_local_path($hash)) {
-			return "Unknown argument $opt, choose one of config:noArg rawconfig:noArg $loc_gets";
+			return "Unknown argument $opt, choose one of rawconfig:noArg $loc_gets";
 		} else {
-			return "Unknown argument $opt, choose one of config:noArg rawconfig:noArg";		
+			return "Unknown argument $opt, choose one of rawconfig:noArg";		
 		}
 	}
 }
@@ -864,7 +865,7 @@ Set		# SetFn
 	}
 
 	else {
-		return "Unknown argument $opt, choose one of checkVersions:noArg update:noArg refreshLink:noArg";
+		return "Unknown argument $opt, choose one of checkVersions:noArg update:noArg";
 	}
     return undef;
 }
@@ -1337,7 +1338,7 @@ Log
 
 	pathToLocalFolder = A local folder that could be accessed by FHEM and
 	from which FHEMapp UI is provided via FHEMWEB.
-	Usually this is a folder below ./www
+	Usually this is a folder below ./www (this will automatcally resolved)
 	<br><br>
 	If no local installations should be managed by this device you could
 	specify none instead of a folder path.
@@ -1345,7 +1346,7 @@ Log
 
     Examples:
     <ul>
-      <code>define fa FHEMAPP ./www/fhemapp</code><br>
+      <code>define fa FHEMAPP fhemapp</code><br>
     </ul>
     <ul>
       <code>define fa2 FHEMAPP none</code><br>
@@ -1360,13 +1361,17 @@ Log
 	Executes the version check, which is usually performed cyclic, immediately.
 	This has no effect on the actual version check cycle itself.
 	</li>
+    <li>update<br>
+	Updates the locally managed fhemapp installation to the latest release or
+	pre-release, depending on the updatePath (see attribute).
+	</li>
   </ul>
   <br>
 
   <a id="FHEMAPP-get"></a>
   <b>Get</b> 
   <ul>
-    <li>config<br>
+    <li>rawconfig<br>
 	returns the currently saved config for FHEMapp in json format.
 	This is usually only used by FHEMapp itself, but can be useful
 	for debugging purposes.
@@ -1400,7 +1405,13 @@ Log
 	  version checking, update and installation. This is usally a
 	  github repository<br>
 	  See also INTERNAL SOURCE_URL
-	  </li>
+	</li>
+
+    <li><a id="FHEMAPP-attr-updatePath">updatePath</a><br>
+      Defines the update path for fhemapp updates and installations.
+		Can be set to "beta" to retreive pre-releases. Default is 
+		stable (attribute is unset).
+	</li>
 
   </ul>
   <br>
@@ -1428,14 +1439,14 @@ Log
 	
 	pathToLocalFolder = Ein lokaler Ordner, der von FHEM aus erreicht werden
 	kann und unter dem das FHEMapp UI von FHEMWEB bereitgestellt wird.
-	Normalerweise ist das ein Ordner unterhalb von ./www
+	Normalerweise ist das ein Ordner unterhalb von ./www (wird autom. erg&auml;nzt)
 	<br><br>
 	Sollen keine lokalen FHEMapp UI Installationen durch das Modul verwaltet
 	werden, kann hier statt des Pfade none angegeben werden.
 	<br><br>
     Beispiele:
     <ul>
-      <code>define fa FHEMAPP ./www/fhemapp</code><br>
+      <code>define fa FHEMAPP fhemapp</code><br>
     </ul>
     <ul>
       <code>define fa2 FHEMAPP none</code><br>
@@ -1450,21 +1461,20 @@ Log
 	F&uuml;hrt den Check, der nmormalerweise zyklisch ausgef&uuml;hrt wird, 
 	sofort aus. Der normale Abfragezyklus wird davon nicht beeinflu&szlig;t.
 	</li>
+    <li>update<br>
+	F&uuml;hrt ein update der lokal verwalteten fhemapp-Installation auf die
+	aktuellste Version im gewählten Update-Pfad durch.
+	</li>
   </ul>
   <br>
 
   <a id="FHEMAPP-get"></a>
   <b>Get</b> 
   <ul>
-    <li>config<br>
+    <li>rawconfig<br>
 	Gibt die aktuell gespeicherte Konfiguration von FHEMapp aus.
 	Diese Funktion wird normalerweise ausschlie&szlig;lich durch FHEMapp direkt
 	verwendet, kann aber f&uuml;r Debugging-Zwecke n&uuml;tzlich sein.
-	</li>
-	<li>version<br>
-	Gibt die Versionsnummer der lokalen FHEMapp-Installation zur&uuml;ck.
-	Sollte keine lokale FHEMapp-Instanz vorhanden sein (s. define),
-	so wird hier kein Ergebnis (undef) zur&uuml;ckgeliefert.
 	</li>
   </ul>
   <br>
@@ -1490,6 +1500,12 @@ Log
 	  Versions-Abfragen, Installation und Aktualisierungen verwendet werden soll
 	  &uuml;berschrieben werden. Das ist i.d.R. ein github-Repository.<br>
 	  Siehe auch INTERNAL SOURCE_URL</li>
+
+    <li><a id="FHEMAPP-attr-updatePath">updatePath</a><br>
+      Mit diesem Attribut kann der Update-Pfad festgelegt werden, sprich welche
+		Updates &uuml;berhaupt installiert werden sollen. Das Attribut kann auf "beta" 
+		gesetzt werden, um pre-releases zu erhalten. Default ist "stable" (Wenn
+		das Attribut nicht gesetzt ist)</li>
 
   </ul>
   <br>
