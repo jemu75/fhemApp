@@ -141,7 +141,7 @@ eval {
 #########################################################################
 
 use constant {
-	FA_VERSION 					=> '0.3.0',			#Version of this Modul
+	FA_VERSION 					=> '0.3.1',			#Version of this Modul
 	#FA_DEFAULT_FOLDER 		=> 'fhemapp',	#Default Path to FHEMapp
 	FA_VERSION_FILENAME 		=> 'CHANGELOG.md',	#Default Version Filename
 	FA_INIT_INTERVAL			=> 60,				#Default Startup Interval
@@ -1389,9 +1389,6 @@ Log
   <ul>
     <li><a href="#disable">disable</a><br>
 	this will only disable the cyclic version checking!</li>
-    <li><a id="FHEMAPP-attr-dark">dark</a><br>
-      Defines whether FHEMapp UI will be displayed in dark mode (dark=1)
-	  or in light mod (dark=0)</li>
 
     <li><a id="FHEMAPP-attr-interval">interval</a><br>
       Overrides the default interval (3600 seconds) for cyclic version 
@@ -1484,10 +1481,6 @@ Log
   <ul>
     <li><a href="#disable">disable</a>
 	Es wird lediglich die zyklische Versionspr&uuml;fung deaktiviert!</li>
-
-    <li><a id="FHEMAPP-attr-dark">dark</a><br>
-      Bestimmt, ob das FHEMapp-UI im dark-Mode (dark=1) angezeigt wird oder
-	  im light-Mode (dark=0)</li>
 
     <li><a id="FHEMAPP-attr-interval">interval</a><br>
       &uuml;berschreibt das Default-Intervall (alle 3600 Sekunden) für die zyklische
