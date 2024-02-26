@@ -103,10 +103,6 @@
                 "title": "Connection to FHEM failed",
                 "text": "Check if FHEM is reachable or if the URL connection parameters (?protocol=...&server=...&port=...&path=...) are correct, if specified."
             },
-            "csrf": {
-                "title": "Failed to retrieve the CSRF token",
-                "text": "Check if FHEM is reachable and reload FHEMapp. If the error occurs again, check whether the FHEM settings for CSRF tokens are correct."
-            },
             "wrongDevice": {
                 "title": "FHEM Config Device not found",
                 "text": "The FHEM device specified in the URL (http://url/index.html#/fhemappdevice/...) could not be found."

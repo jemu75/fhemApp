@@ -197,13 +197,13 @@ export const useFhemStore = defineStore('fhem', () => {
             options = { method: 'POST' },
             result
         
-        if(type !== 'token') params += '&fwcsrf=' + stat.csrf
+        if(type !== 'token' && stat.csrf) params += '&fwcsrf=' + stat.csrf
         if(cmd) options.body = 'cmd=' + cmd
 
         log(4, 'Request send to FHEM.', { url: createURL(params), options })
 
         return await fetch(createURL(params), options)
-            .then((res) => {                
+            .then((res) => {
                 if(type === 'token') result = res.headers.get('x-fhem-csrftoken')
                 if(type === 'json') result = res.json()
                 if(type === 'text') result = res.text()
@@ -218,16 +218,8 @@ export const useFhemStore = defineStore('fhem', () => {
 
     //coreFunction fill settings (session)
     async function getToken() {
-        let res = await request('token')
-
-        if(typeof res === 'string' && res.length > 0) {
-            stat.csrf = res            
-            log(4, 'CSRF Token retrieved.', res)
-            return res
-        } else {
-            if(!res) res = log(2, 'No CSRF Token received.', 'csrf')
-            return false            
-        }
+        stat.csrf = await request('token')
+        return true
     }
 
     //coreFunction convert String to JSON

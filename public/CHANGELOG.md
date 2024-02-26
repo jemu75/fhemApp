@@ -1,3 +1,6 @@
+# v4.0.20-beta (26.02.2024)
+## Core
+- csrf handling changed
 # v4.0.19-beta (25.02.2024)
 ## Core
 - Bugfix for Navigation if panel is not showed
