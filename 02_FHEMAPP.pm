@@ -863,9 +863,11 @@ Set		# SetFn
 	elsif($opt eq "refreshLink") {
 		set_fhemapp_link($hash);
 	}
-
+	elsif($opt eq "rereadCfg") {
+		ReadConfig($hash,1);
+	}
 	else {
-		return "Unknown argument $opt, choose one of checkVersions:noArg update:noArg";
+		return "Unknown argument $opt, choose one of checkVersions:noArg update:noArg rereadCfg:noArg";
 	}
     return undef;
 }
@@ -1040,6 +1042,10 @@ ReadConfig
 #========================================================================
 {
 	my $hash=shift // return;
+	my $event=shift;
+	$event //=0;
+	$event=1 if($event ne 0);
+
 	my $name=$hash->{NAME};
 	my $filename=get_config_file($name);
 
@@ -1048,9 +1054,9 @@ ReadConfig
 	my ($err,@content)=FileRead($filename);	
 	if(!$err) {
 		$hash->{helper}{config}=join('',@content);
-		readingsSingleUpdate($hash,'configLastRead',localtime(),0);
+		readingsSingleUpdate($hash,'configLastRead',localtime(),$event);
 	} else {
-		readingsSingleUpdate($hash,'configLastRead',$err,0);
+		readingsSingleUpdate($hash,'configLastRead',$err,$event);
 		Log($name,"ERROR: Reading config!",2);
 		Log($name,$err,2);
 	}
@@ -1316,8 +1322,8 @@ Log
 
 =pod
 =item helper
-=item summary Settings and special functions for FHEMapp
-=item summary_DE Einstellungen und Spezialfunktionalitaet fuer FHEMapp
+=item summary Settings and special functions for FHEMapp-UI
+=item summary_DE Einstellungen und Spezialfunktionalitaet fuer das FHEMapp-UI
 
 =begin html
 
@@ -1364,6 +1370,10 @@ Log
     <li>update<br>
 	Updates the locally managed fhemapp installation to the latest release or
 	pre-release, depending on the updatePath (see attribute).
+	</li>
+    <li>rereadCfg<br>
+	Reloads the config from the fhemapp config file. Could be used in case of
+	changes to the file were made manually.
 	</li>
   </ul>
   <br>
@@ -1461,6 +1471,10 @@ Log
     <li>update<br>
 	F&uuml;hrt ein update der lokal verwalteten fhemapp-Installation auf die
 	aktuellste Version im gewählten Update-Pfad durch.
+	</li>
+    <li>rereadCfg<br>
+	Erzwingt ein erneutes Einlesen der fhemapp Config-Datei. Dies kann notwendig
+	sein, wenn manuell &Auml;nderungen an der Datei vorgenommen wurden.
 	</li>
   </ul>
   <br>
