@@ -20,6 +20,7 @@
   const preLang = '_app.settings.header.'
 
   function addItem() {
+    if(!fhem.app.config.header.commands) fhem.app.config.header.commands = []
     fhem.app.config.header.commands.push(JSON.parse(JSON.stringify((newItem))))
     form.value.reset()
   }

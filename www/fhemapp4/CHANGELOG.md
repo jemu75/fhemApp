@@ -1,3 +1,6 @@
+# v4.0.21-beta (26.02.2024)
+## Settings
+- Bugfix for fhem commands in Header Settings
 # v4.0.20-beta (26.02.2024)
 ## Core
 - csrf handling changed
