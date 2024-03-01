@@ -1,3 +1,10 @@
+# v4.0.22-beta (01.03.2024)
+## Framework
+- Bugfix for vuetify3 extention panel -> version rollback
+## Settings
+- Bugfix for synchronisation between raw-mode and ui-mode
+## Core
+- Bugfix for reconnect
 # v4.0.21-beta (26.02.2024)
 ## Settings
 - Bugfix for fhem commands in Header Settings

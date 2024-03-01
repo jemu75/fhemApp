@@ -203,6 +203,12 @@
         return highlight(code, languages.js)
     }
 
+    function loadJsonDef(evt) {
+        if(evt) {
+            settings.value.jsonDef = JSON.stringify(fhem.app.config[props.type][settings.value.itemIdx], null, '\t')
+        }
+    }
+
     function changed() {
         let res = fhem.stringToJson(settings.value.jsonDef, true)
 
@@ -326,7 +332,8 @@
                                 v-model="settings.rawMode"
                                 :label="$t('_app.settings.panels.rawMode')"
                                 color="blue"
-                                hide-details 
+                                hide-details
+                                @update:model-value="loadJsonDef($event)"
                                 >
                             </v-switch>
                         </v-col>

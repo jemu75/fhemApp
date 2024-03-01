@@ -204,7 +204,7 @@ export const useFhemStore = defineStore('fhem', () => {
 
         return await fetch(createURL(params), options)
             .then((res) => {
-                if(type === 'token') result = res.headers.get('x-fhem-csrftoken')
+                if(type === 'token') result = { token: res.headers.get('x-fhem-csrftoken') }
                 if(type === 'json') result = res.json()
                 if(type === 'text') result = res.text()
 
@@ -218,7 +218,11 @@ export const useFhemStore = defineStore('fhem', () => {
 
     //coreFunction fill settings (session)
     async function getToken() {
-        stat.csrf = await request('token')
+        let res = await request('token')
+
+        if(!res) return false
+        stat.csrf = res.token
+
         return true
     }
 
