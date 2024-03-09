@@ -693,16 +693,17 @@ export const useFhemStore = defineStore('fhem', () => {
 
         if(/%n\(.*\)/.test(res)) {
             res = res.replace('%n()','%n(0)')
-            let def = /%n\(.*[0-9]\)/.exec(res)
+            let def = /%n\(.*\)/.exec(res)
             let chkNum = /-?[0-9]/.exec(val)
 
             if(!chkNum) return null
 
             let opts = def[0].slice(3,-1).split(',')
             let ofs = parseFloat(opts[1] || 0)
+            let digits = parseFloat(opts[0] || 0)
             let num = parseFloat(val.slice(chkNum.index)) + ofs
 
-            res = def.input.replace(def[0], ofs !== 0 ? num.toFixed(opts[0] || 0) : i18n.n(num, { minimumFractionDigits: opts[0] || 0, maximumFractionDigits: opts[0] || 0 }))
+            res = def.input.replace(def[0], opts[2] === 'true' ? num.toFixed(digits) : i18n.n(num, { minimumFractionDigits: digits, maximumFractionDigits: digits }))
         }
 
         if(/%d\(.*\)/.test(res)) {

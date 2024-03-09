@@ -137,6 +137,9 @@
             },
             "clipboard": {
                 "text": "Daten wurden in die Zwischenablage kopiert."
+            },
+            "checkDefs": {
+                "text": "Prüfe die Reihenfolge der Definitionen. Die Definition ohne Bedingung sollte immer am Ende stehen."
             }
         },
         "default": "Standard"

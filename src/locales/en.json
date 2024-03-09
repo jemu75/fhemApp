@@ -137,6 +137,9 @@
             },
             "clipboard": {
                 "text": "Data has been copied to the clipboard."
+            },
+            "checkDefs": {
+                "text": "Check the order of the definitions. The definition without a condition should always be at the end."
             }
         },
         "default": "Default"

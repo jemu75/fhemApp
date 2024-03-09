@@ -67,7 +67,6 @@
             data,
             xAxisType,
             res = []
-            
 
         if(defs.length > 0) {
             for(const def of defs) {

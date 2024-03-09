@@ -62,6 +62,7 @@
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size' }
         ],
         menu: [
+            { type: 'defs', required: false, prop: 'btn', def: 'reading:value:icon:disabled:color:variant', help: 'level-element-menu-btn' },    
             { type: 'defs', required: false, prop: 'menu', def: 'reading:value:name:cmd', help: 'level-element-menu-menu' },
             { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider' },
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size' }

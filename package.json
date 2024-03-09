@@ -24,6 +24,7 @@
     "vue-json-pretty": "^2.3.0",
     "vue-prism-editor": "^2.0.0-alpha.2",
     "vue-router": "^4.2.5",
+    "vuedraggable": "^4.1.0",
     "vuetify": "^3.3.22"
   },
   "devDependencies": {

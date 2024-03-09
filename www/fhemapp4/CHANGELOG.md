@@ -1,3 +1,10 @@
+# v4.0.23-beta (09.03.2024)
+## Core
+- replacer %n new option noLocaleNumber
+## Settings
+- make Definitions sortable via drag and drop
+## Panel
+- Element Menu Button is configurable
 # v4.0.22-beta (01.03.2024)
 ## Framework
 - Bugfix for vuetify3 extention panel -> version rollback

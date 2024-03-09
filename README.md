@@ -165,6 +165,7 @@ Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zu
 |%n(2)|als Zahl mit 2 Nachkommastellen zurück|
 |%n(0,1)|als Ganzzahl mit einem **Offset** von +1 zurück|
 |%n(1,-1.5)|als Zahl mit einer Nachkommastelle und einem **Offset** von -1,5 zurück|
+|%n(1,0,true)|verhindert, dass die Zahl in das lokale Zahlenformat umgewandelt wird|
 |%d()|als Zeitstempel im gewählten Sprachschema zurück|
 |%d(time)|als Zeitwert im gewählten Sprachschema zurück|
 |%d(date)|als Datum im gewählten Sprachschema zurück|
@@ -181,6 +182,7 @@ Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zu
 |`state::%s`|on|on|
 |`temperature::%n(0)`|12.5|13|
 |`desired-temp::%n(1,2)`|22.5|24,5|Komma und tausender Trennzeichen abhängig vom Sprachschema|
+|`desired-temp::%n(1,0,true)`|22.48|22.5|Zahl wird nicht in lokales Format gewandelt|
 |`state-ts::%d()`|2023-12-17 17:53:32|17.12.2023 17:53:32|abhängig vom Sprachschema|
 |`state-ts::%d(time)`|2023-12-17 17:53:32|17:53:32|abhängig vom Sprachschema|
 |`state-ts::%d(date)`|2023-12-17 17:53:32|17.12.2023|abhängig vom Sprachschema|
@@ -429,8 +431,20 @@ Zeigt ein Bild an.
 |value||siehe Parameter [value](#konfiguration-der-elemente)|
 |source||URL die auf ein Bild verweist. Bei direkter Eingabe von URLs müssen Doppelpunkte entsprechend ersetzt werden. (siehe auch [Ersetzungen](#ersetzungen)) [string]|
 |height||legt die absolute Höhe des Bildes in Pixeln fest [string]|
+### Level Element Menu btn
+Zeigt einen Button an, der beim Klicken ein DropDown-Menü öffnet. Wenn dieses Element nicht definiert ist wird ein Standard-Button angezeigt, sobald mindestens ein [Menüeintrag](#level-element-menu-menu) definiert ist.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|icon||Icon das agezeigt wird (siehe auch [mdi Icons](https://pictogrammers.com/library/mdi/) und [Icon Mapping](#element-iconmap)) [string]|
+|disabled|false|legt fest ob der Button aktiv oder inaktiv ist [boolean]|
+|color||legt die Farbe für den Button fest (siehe auch [Farben](#farben)) [string]|
+|variant||passt die Darstellung des Button an (outlined, tonal, plain) [string]|
+
 ### Level Element Menu menu
-Zeigt einen Button an, der beim Klicken ein DropDown-Menü öffnet. Bei Klick auf einen Menüpunkt wird der hinterlegte Befehl an FHEM gesendet. Im Gegensatz zu normalen Definitionen, werden zur Anzeige der Menüpunkte **alle** Definitionen verwendet, deren Bedingungen zutreffen.
+Definiert die Menüeinträge, die beim Öffnen des DropDown-Menü angezeigt werden. Bei Klick auf einen Menüpunkt wird der hinterlegte Befehl an FHEM gesendet. Im Gegensatz zu normalen Definitionen, werden zur Anzeige der Menüpunkte **alle** Definitionen verwendet, deren Bedingungen zutreffen.
 
 Menüeinträge können auch von FHEM übergeben werden. Dafür muss der Inhalt des FHEM *readings* oder *attributes* folgender Form entsprechen: `Name1:cmd1,Name2:cmd2,...`
 

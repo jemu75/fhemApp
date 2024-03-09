@@ -11,6 +11,14 @@
 
     const fhem = useFhemStore()
 
+    const btn = computed(() => {
+        let res = fhem.handleDefs(props.el.btn, ['icon', 'disabled', 'color', 'variant'], ['mdi-dots-vertical', false, '', 'text'])
+
+        if(res.icon) res.icon = fhem.getIcon(res.icon, props.iconmap)
+
+        return res
+    })
+
     const menu = computed(() => {
         let res = [],            
             defs = fhem.handleDefs(props.el.menu, ['name', 'cmd'], ['',''], true, ','),
@@ -43,9 +51,15 @@
 <template>
     <v-menu>
         <template v-slot:activator="{ props }">
-            <v-btn icon variant="text" v-bind="props" :disabled="menu.length < 1">
+            <v-btn
+                v-bind="props"
+                icon 
+                :variant="btn.variant"
+                :disabled="btn.disabled || menu.length < 1" 
+                :color="btn.color" 
+                class="my-2">
                 <v-icon size="large">
-                    mdi-dots-vertical
+                    {{ btn.icon }}
                 </v-icon>
             </v-btn>
         </template>
