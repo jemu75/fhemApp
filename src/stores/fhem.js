@@ -140,6 +140,17 @@ export const useFhemStore = defineStore('fhem', () => {
         window.open(app.helpURL + anchor, '_blank')
     }
 
+    //coreFunction to change darkMode
+    function initDarkMode() {
+        let darkMode = window.matchMedia('(prefers-color-scheme: dark')
+
+        theme.global.name.value = darkMode.matches ? 'dark' : 'light'
+
+        darkMode.addEventListener('change', (obj) => {
+            if(!app.settings.dark) theme.global.name.value = obj.matches ? 'dark' : 'light'
+        })
+    } 
+
     //coreFunction to handle url params and query-string
     function handleURL(route) {
         let res = {
@@ -912,6 +923,10 @@ export const useFhemStore = defineStore('fhem', () => {
     function init() {
         log(1, 'FHEMApp launching...')
 
+        getVersion()
+        initDarkMode()
+        initClock()
+
         //register eventHandler
         router.afterEach((to) => {
             let res = handleURL(to)
@@ -922,9 +937,6 @@ export const useFhemStore = defineStore('fhem', () => {
             if(res.configChanged) return location.reload()
             if(res.routeChanged) loadPanelView()
         })
-
-        getVersion()
-        initClock()
     }
 
     //FHEMApp entryPoint

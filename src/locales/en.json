@@ -81,12 +81,16 @@
             "content": {
                 "title": "Language | Languages",
                 "newKey": "new variable",
-                "newLang": "new Language (ISO-639)"
+                "newLang": "new Language (ISO-639)",
+                "search": "Key search",
+                "key": "Key"
             },
             "rules": {
                 "required": "Required!",
-                "panelUniqe": "Panel is already defined!",
-                "iso639code": "Input must correspond to ISO 639-1 code!"
+                "panelUnique": "Panel is already defined!",
+                "iso639code": "Input must correspond to ISO 639-1 code!",
+                "langUnique": "Language is already defined!",
+                "keyUnique": "Key is already defined!"
             }
         },
         "options": {

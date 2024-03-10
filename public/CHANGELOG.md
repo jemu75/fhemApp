@@ -1,3 +1,10 @@
+# v4.0.24-beta (10.03.2024)
+## Core
+- detect darkMode from OS
+## Settings
+- bugfix for panels with extended settings
+- pageSize on List of Templates and Panels will be saved in the current session
+- optimization language settings
 # v4.0.23-beta (09.03.2024)
 ## Core
 - replacer %n new option noLocaleNumber

@@ -74,6 +74,12 @@
             if(!el.dist) {
                 advanced = []
                 if(props.type === 'panels') {
+                    for(const e of Object.keys(el.panel)) {
+                        if(['devices', 'template'].indexOf(e) === -1) {
+                            advanced.push('panel')
+                            break
+                        }
+                    }
                     if(Object.keys(el.status).length > 0) advanced.push('status')
                     if(el.main.length > 1 || Object.keys(el.main[0].level).length > 0) advanced.push('main')
                     if(Object.keys(el.info).length > 0) advanced.push('info')
@@ -139,6 +145,7 @@
         search: '',
         newItem: '',
         itemIdx: null,
+        pageSize: 10,
         extended: props.type === 'panels' ? false : true,
         rawMode: false,
         section: 'panel',
@@ -271,9 +278,11 @@
         <v-list-item v-if="!item">
             <v-data-table
                 :headers="headers"
-                :items="items"                
+                :items="items"
+                :items-per-page="settings.pageSize"                
                 :search="settings.search"                                              
-                density="compact">
+                density="compact"
+                @update:itemsPerPage = "settings.pageSize = $event">
                 <template v-slot:item.actions="{ item }">
                     <v-btn 
                         icon="mdi-pencil"

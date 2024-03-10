@@ -1,54 +1,81 @@
 <script setup>
     import { useFhemStore } from '@/stores/fhem'
-    import { useDisplay } from 'vuetify'
+    import { useI18n } from 'vue-i18n'
     import { computed, ref } from 'vue'
 
     const preLang = '_app.settings.content.'
 
-    const { mobile } = useDisplay()
-
     const fhem = useFhemStore()
 
-    const newKey = ref()
+    const i18n = useI18n()
 
-    const language = ref()
-
-    const showNew = ref(false)
-
-    const isFormValid = ref(false)
-
-    const languages = computed(() => {
-        return Object.keys(fhem.app.config.content)
+    const settings = ref({
+        search: '',
+        pageSize: 10,
+        newKey: null,
+        editKey: false,
+        lang: null,
+        showNew: false,
+        isLangValid: false,
+        isKeyValid: false
     })
 
-    const contentKeys = computed(() => {
-        let res = []
+    const headers = computed(() => {
+        let res = [
+            { key: 'key', title: i18n.t(preLang + 'key'), sortable: true, align: 'start' }            
+        ]
 
-        for(const lang of languages.value) {
-            for(const contentKey of Object.keys(fhem.app.config.content[lang])) if(res.indexOf(contentKey) === -1) res.push(contentKey)
+        for(const lang of languages.value) res.push({ key: lang, title: lang, sortable: true, align: 'start' })
+
+        res.push({ key: 'actions', title: '', sortable: false, align: 'end' })
+
+        return res
+    })
+
+    const items = computed(() => {
+        let res = [],
+            idx
+
+        for(const lang of Object.keys(fhem.app.config.content)) {
+            for(const contentKey of Object.keys(fhem.app.config.content[lang])) {
+                if(res.map((e) => e.key).indexOf(contentKey) === -1) res.push({ key: contentKey, title: contentKey })
+            }
+        }
+
+        for(const lang of Object.keys(fhem.app.config.content)) {
+            for(const contentKey of Object.keys(fhem.app.config.content[lang])) {
+                idx = res.map((e) => e.key).indexOf(contentKey)
+                res[idx][lang] = fhem.app.config.content[lang][contentKey]
+            }
         }
 
         return res
     })
 
+    const languages = computed(() => {
+        return Object.keys(fhem.app.config.content)
+    })
+
     const rules = {
-        iso639code: value => /^[a-z]{2}$/.test(value) || fhem.replacer('%t(_app.settings.rules.iso639code)')
+        iso639code: value => /^[a-z]{2}$/.test(value) || fhem.replacer('%t(_app.settings.rules.iso639code)'),
+        uniqueLang: value => languages.value.indexOf(value) === -1 || fhem.replacer('%t(_app.settings.rules.langUnique)'),
+        uniqueKey: value => items.value.map((e) => e.key).indexOf(value) === -1 || fhem.replacer('%t(_app.settings.rules.keyUnique)')
+    }
+
+    function editKey(key) {
+        settings.value.editKey = key ? true : false
+        settings.value.newKey = key
     }
 
     function addKey() {
-        fhem.app.config.content[languages.value[0]][newKey.value] = ''
-        newKey.value = null
+        fhem.app.config.content[languages.value[0]][settings.value.newKey] = ''
+        settings.value.newKey = null
     }
 
     function addLang() {
-        fhem.app.config.content[language.value] = {}
-        language.value = null
-        showNew.value = false
-    }
-
-    function deleteLang() {
-        delete fhem.app.config.content[language.value]
-        language.value = null
+        fhem.app.config.content[settings.value.lang] = {}
+        settings.value.lang = null
+        settings.value.showNew = false
     }
 
     function deleteKey(contentKey) {
@@ -56,11 +83,16 @@
             delete fhem.app.config.content[lang][contentKey]
         }
     }
+
+    function deleteLang() {
+        delete fhem.app.config.content[settings.value.lang]
+        settings.value.lang = null
+    }
 </script>
 
 <template>
     <v-list>
-        <v-list-item :title="$t(preLang + 'title', 2)">
+        <v-list-item v-if="!settings.editKey" :title="$t(preLang + 'title', 2)">
             <template v-slot:append>
                 <v-btn
                 color="info"
@@ -70,96 +102,145 @@
                 </v-btn>
             </template>
         </v-list-item>
-        <v-list-item>
-            <v-row no-gutters class="text-right">
-                <v-col>
-                    <v-row v-for="contentKey of contentKeys" :key="contentKey" no-gutters class="pt-3">
-                        <v-col v-for="lang of languages" :key="lang" cols="12" lg="" class="pa-2">
-                            <v-text-field 
-                                density="compact" 
-                                variant="outlined" 
-                                hide-details
-                                clearable
-                                :label="contentKey + ' [' + lang + ']'"
-                                v-model="fhem.app.config.content[lang][contentKey]"/>
-                        </v-col>
-                        <v-col cols="12" lg="1" class="pt-1">
-                            <v-btn variant="text" icon="mdi-delete" @click="deleteKey(contentKey)"></v-btn>
-                        </v-col>
-                        <v-divider v-if="mobile"></v-divider>
-                    </v-row>
-                </v-col>
-                <v-divider v-if="!mobile" vertical class="mx-5"></v-divider>
-                <v-col cols="12" lg="3">
-                    <v-row no-gutters class="pt-3">
-                        <v-col class="pt-2">
-                            <v-text-field 
-                                density="compact" 
-                                variant="outlined"
-                                clearable
-                                :disabled="languages.length < 1"
-                                :label="$t(preLang + 'newKey')" 
-                                v-model="newKey"/>
-                        </v-col>
-                        <v-col cols="4" class="pt-1">
-                            <v-btn 
-                                variant="text" 
-                                icon="mdi-plus" 
-                                :disabled="languages.length < 1"
-                                @click="addKey()"/>
-                        </v-col>
-                    </v-row>
 
-                    <v-form v-model="isFormValid">
-                        <v-row no-gutters>
-                            <v-col v-if="showNew">
-                                <v-text-field 
-                                    density="compact" 
-                                    variant="outlined"
-                                    clearable                        
-                                    :label="$t(preLang + 'newLang')"
-                                    :rules="[rules.iso639code]"
-                                    append-inner-icon="mdi-help-circle" 
-                                    @click:append-inner="openHelp('Sprachcodes')"
-                                    v-model="language"/>
-                            </v-col>
-                            <v-col v-if="showNew" cols="4">
+        <v-list-item v-if="!settings.editKey">
+            <v-row no-gutters>
+                <v-col>
+                    <v-text-field
+                        v-model="settings.search"
+                        :label="$t(preLang + 'search')"
+                        prepend-inner-icon="mdi-magnify"
+                        single-line
+                        clearable
+                        density="compact"
+                        variant="outlined"
+                        class="mr-4">
+                    </v-text-field>
+                </v-col>                
+                <v-col>
+                    <v-form v-model="settings.isKeyValid">
+                        <v-text-field 
+                            v-model="settings.newKey"    
+                            :label="$t(preLang + 'newKey')" 
+                            :rules="[rules.uniqueKey]"
+                            single-line
+                            clearable
+                            :disabled="languages.length < 1"                        
+                            density="compact" 
+                            variant="outlined"
+                            class="mr-4">
+                            <template v-slot:append>
+                                <v-btn 
+                                    variant="text" 
+                                    icon="mdi-plus" 
+                                    :disabled="languages.length < 1 || !settings.isKeyValid || !settings.newKey"
+                                    density="compact"
+                                    @click="addKey()">
+                                </v-btn>
+                            </template>
+                        </v-text-field>
+                    </v-form>
+                </v-col>
+                <v-col>
+                    <v-form v-if="settings.showNew" v-model="settings.isLangValid">
+                        <v-text-field 
+                            v-model="settings.lang"    
+                            :label="$t(preLang + 'newLang')"
+                            :rules="[rules.iso639code, rules.uniqueLang]"
+                            single-line
+                            clearable
+                            density="compact" 
+                            variant="outlined"
+                            append-inner-icon="mdi-help-circle" 
+                            @click:append-inner="openHelp('Sprachcodes')">
+                            <template v-slot:append>
                                 <v-btn
                                     variant="text" 
                                     icon="mdi-check"
-                                    :disabled="!isFormValid" 
-                                    @click="addLang()"/>
+                                    :disabled="!settings.isLangValid"
+                                    density="compact" 
+                                    @click="addLang()"
+                                    class="mr-2">
+                                </v-btn>
                                 <v-btn
                                     variant="text" 
                                     icon="mdi-cancel"
-                                    @click="showNew = !showNew; language = null"/>
-                            </v-col>
-
-                            <v-col v-if="!showNew">
-                                <v-autocomplete
-                                    v-model="language"                                
-                                    :items="languages"
-                                    :label="$t(preLang + 'title')"
-                                    :disabled="languages.length === 0"
                                     density="compact"
-                                    variant="outlined">
-                                </v-autocomplete>
-                            </v-col>
-                            <v-col v-if="!showNew" cols="4">
-                                <v-btn
-                                    variant="text" 
-                                    icon="mdi-plus"                            
-                                    @click="showNew = !showNew; language = null"/>
-                                <v-btn
-                                    variant="text" 
-                                    icon="mdi-delete"
-                                    :disabled="languages.length === 0 || languages.indexOf(language) === -1" 
-                                    @click="deleteLang()"/>
-                            </v-col>
-                        </v-row>
+                                    @click="settings.lang = null; settings.showNew = !settings.showNew">
+                                </v-btn>
+                            </template>
+                        </v-text-field>
                     </v-form>
+                    
+                    <v-select
+                        v-if="!settings.showNew"
+                        v-model="settings.lang"
+                        single-line                                
+                        :items="languages"
+                        :label="$t(preLang + 'title')"                                                
+                        density="compact"
+                        variant="outlined">
+                        <template v-slot:append>
+                            <v-btn
+                                variant="text" 
+                                icon="mdi-plus"
+                                density="compact"                            
+                                @click="settings.showNew = !settings.showNew; settings.lang = null"
+                                class="mr-2">
+                            </v-btn>
+                            <v-btn
+                                variant="text" 
+                                icon="mdi-delete"
+                                :disabled="languages.length === 0 || languages.indexOf(settings.lang) === -1" 
+                                density="compact"
+                                @click="deleteLang()">
+                            </v-btn>
+                        </template>
+                    </v-select>
                 </v-col>
             </v-row>
+        </v-list-item>
+
+        <v-list-item v-if="!settings.editKey">
+            <v-data-table
+                :headers="headers"
+                :items="items"
+                :items-per-page="settings.pageSize"                
+                :search="settings.search"                                              
+                density="compact"
+                @update:itemsPerPage = "settings.pageSize = $event">
+                <template v-slot:item.actions="{ item }">
+                    <v-btn 
+                        icon="mdi-pencil"
+                        variant="plain"
+                        density="compact"
+                        class="mr-3"
+                        @click="editKey(item.key)">
+                    </v-btn>
+                    <v-btn 
+                        icon="mdi-delete"
+                        variant="plain"
+                        density="compact"
+                        @click="deleteKey(item.key)">
+                    </v-btn>
+                </template>
+            </v-data-table>
+        </v-list-item>
+
+        <v-list-item v-if="settings.editKey" :title="$t(preLang + 'key', 2) + ' (' + settings.newKey + ')'">
+            <v-btn variant="plain" icon="mdi-arrow-up-left" @click="editKey()"></v-btn>
+        </v-list-item>
+
+        <v-list-item v-if="settings.editKey">
+            <div v-for="lang of languages" :key="lang" class="mt-2">
+                <v-text-field 
+                    v-model="fhem.app.config.content[lang][settings.newKey]"    
+                    :label="lang"
+                    clearable
+                    density="compact" 
+                    variant="outlined">
+                </v-text-field>            
+            </div>
         </v-list-item>
     </v-list>
 </template>

@@ -81,12 +81,16 @@
             "content": {
                 "title": "Sprache | Sprachen",
                 "newKey": "neue Variable",
-                "newLang": "neue Sprache (ISO-639)"
+                "newLang": "neue Sprache (ISO-639)",
+                "search": "Variable suchen",
+                "key": "Variable"
             },
             "rules": {
                 "required": "Erforderlich!",
-                "panelUniqe": "Panel ist bereits vorhanden!",
-                "iso639code": "Eingabe muss ISO-639-1-Code entsprechen!"
+                "panelUnique": "Panel ist bereits vorhanden!",
+                "iso639code": "Eingabe muss ISO-639-1-Code entsprechen!",
+                "langUnique": "Sprache ist bereits vorhanden!",
+                "keyUnique": "Variable ist bereits vorhanden!"
             }
         },
         "options": {
