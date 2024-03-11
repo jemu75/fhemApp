@@ -1,3 +1,9 @@
+# v4.0.25-beta (11.03.2024)
+## Settings
+- add option for header in mobile view
+- optimization language settings
+## Panels
+- optimization for section info
 # v4.0.24-beta (10.03.2024)
 ## Core
 - detect darkMode from OS

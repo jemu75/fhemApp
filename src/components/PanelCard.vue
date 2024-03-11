@@ -146,31 +146,23 @@
 
         <PanelMain :main="panel.main" :levels="levels" :iconmap="panel.panel.iconmap" :devices="panel.panel.devices"></PanelMain>
         
-        <v-sheet color="secondary">
-            <v-card-text class="pa-1">
-                <v-row no-gutters>
-                    <v-col class="text-truncate text-left">
-                        <v-icon v-if="infoLeft1.icon" :icon="infoLeft1.icon" :color="infoLeft1.color" size="small"></v-icon>
-                        <span v-if="infoLeft1.text">{{ infoLeft1.text }}</span>
-                        <v-icon v-if="infoLeft2.icon" :icon="infoLeft2.icon" :color="infoLeft2.color" size="small" class="ml-2"></v-icon>
-                        <span v-if="infoLeft2.text">{{ infoLeft2.text }}</span>
-                    </v-col>
-
-                    <v-col class="text-truncate text-center" :cols="getMidSize()">
-                        <v-icon v-if="infoMid1.icon" :icon="infoMid1.icon" :color="infoMid1.color" size="small"></v-icon>
-                        <span v-if="infoMid1.text">{{ infoMid1.text }}</span>
-                        <v-icon v-if="infoMid2.icon" :icon="infoMid2.icon" :color="infoMid2.color" size="small" class="ml-2"></v-icon>
-                        <span v-if="infoMid2.text">{{ infoMid2.text }}</span>
-                    </v-col>
-
-                    <v-col class="text-truncate text-right">
-                        <v-icon v-if="infoRight1.icon" :icon="infoRight1.icon" :color="infoRight1.color" size="small"></v-icon>
-                        <span v-if="infoRight1.text">{{ infoRight1.text }}</span>
-                        <v-icon v-if="infoRight2.icon" :icon="infoRight2.icon" :color="infoRight2.color" size="small" class="ml-2"></v-icon>
-                        <span v-if="infoRight2.text">{{ infoRight2.text }}</span>
-                    </v-col>
-                </v-row>
-            </v-card-text>
-        </v-sheet>
+        <v-layout style="height:24px">
+            <v-system-bar color="secondary">
+                <v-icon v-if="infoLeft1.icon" :icon="infoLeft1.icon" :color="infoLeft1.color"></v-icon>
+                <span v-if="infoLeft1.text">{{ infoLeft1.text }}</span>
+                <v-icon v-if="infoLeft2.icon" :icon="infoLeft2.icon" :color="infoLeft2.color" class="ml-2"></v-icon>
+                <span v-if="infoLeft2.text">{{ infoLeft2.text }}</span>
+                <v-spacer></v-spacer>
+                <v-icon v-if="infoMid1.icon" :icon="infoMid1.icon" :color="infoMid1.color"></v-icon>
+                <span v-if="infoMid1.text">{{ infoMid1.text }}</span>
+                <v-icon v-if="infoMid2.icon" :icon="infoMid2.icon" :color="infoMid2.color" class="ml-2"></v-icon>
+                <span v-if="infoMid2.text">{{ infoMid2.text }}</span>
+                <v-spacer></v-spacer>
+                <v-icon v-if="infoRight1.icon" :icon="infoRight1.icon" :color="infoRight1.color"></v-icon>
+                <span v-if="infoRight1.text">{{ infoRight1.text }}</span>
+                <v-icon v-if="infoRight2.icon" :icon="infoRight2.icon" :color="infoRight2.color" class="ml-2"></v-icon>
+                <span v-if="infoRight2.text">{{ infoRight2.text }}</span>
+            </v-system-bar>
+        </v-layout>
     </v-card>
 </template>

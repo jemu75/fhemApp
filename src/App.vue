@@ -64,6 +64,7 @@
         </template>
 
         <div v-if="!mobile && fhem.app.header.showDate" class="text-h5">{{ $d(fhem.app.header.time, fhem.app.header.dateFormat) }}</div>
+        <div v-if="mobile && fhem.app.header.showTitle" class="text-h5">{{ fhem.app.header.title }}</div>
 
         <template v-slot:append>
           <v-btn v-if="fhem.app.settings.loglevel > 6" icon="mdi-information" @click="showInternals()"></v-btn>

@@ -77,7 +77,7 @@ Nachdem du Einstellungen in **FHEMApp** angepasst hast, müssen diese gespeicher
 ![](./docs/media/example_settings_4.png)*Beispiel für Einstellungen*
 
 # Kopfzeile
-In den Einstellungen für die Kopfzeile kann die Anzeige für das aktuelle Datum und Uhrzeit aktiviert werden. Die Anzeige für Datum und Uhrzeit erfolgt nur in der Desktopansicht. In der mobilen Ansicht werden Datum und Uhrzeit nicht angezeigt.
+In den Einstellungen für die Kopfzeile kann die Anzeige für das aktuelle Datum, die Uhrzeit und die aktuelle Navigationauswahl aktiviert werden. Die Anzeige für Datum und Uhrzeit erfolgt nur in der Desktopansicht. In der mobilen Ansicht werden Datum und Uhrzeit nicht angezeigt. Die Anzeige für die Navigationsauswahl erfolgt nur in der mobilen Ansicht.
 
 Weiterhin kann ein Hintergrundbild für die Kopfzeile festgelegt werden. Die Verwendung des Farbfilters mit einer [CSS Linear Gradient Definition](https://www.w3schools.com/css/css3_gradients.asp) ermöglicht ein Anpassung des Hintergrundbildes an das festgelegte Farbschema. 
 ## Optionsmenü

@@ -13,6 +13,8 @@
                 "showTimeHint": "Show time in the header",
                 "showDate": "Date",
                 "showDateHint": "Show date in the header",
+                "showTitle": "Navigation",
+                "showTitleHint": "Show navigationpoint in the header",
                 "optionsTitle":"Optionsmenu",
                 "showDarkMode": "Day/Night mode",
                 "showDarkModeHint": "",

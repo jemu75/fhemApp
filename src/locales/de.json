@@ -13,6 +13,8 @@
                 "showTimeHint": "Anzeige der Uhrzeit in der Kopfzeile",
                 "showDate": "Datum",
                 "showDateHint": "Anzeige des Datums in der Kopfzeile",
+                "showTitle": "Navigation",
+                "showTitleHint": "Anzeige des aktuellen Navigationspunktes in der Kopfzeile",
                 "optionsTitle":"Optionsmenü",
                 "showDarkMode": "Tag/Nacht Modus",
                 "showDarkModeHint": "",

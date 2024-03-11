@@ -54,7 +54,7 @@
             :label="$t(preLang + 'imageUrl')"
             v-model="fhem.app.config.header.imageUrl"/>
         </v-col>
-        <v-col cols="12" lg="5" class="pt-3 pr-3">
+        <v-col cols="12" lg="4" class="pt-3 pr-3">
           <v-text-field 
             density="compact" 
             variant="outlined" 
@@ -75,6 +75,12 @@
             :hint="$t(preLang + 'showDateHint')"              
             :label="$t(preLang + 'showDate')"
             v-model="fhem.app.config.header.showDate"/>
+        </v-col>
+        <v-col cols="6" lg="" class="pt-1">
+          <v-checkbox
+            :hint="$t(preLang + 'showTitleHint')"              
+            :label="$t(preLang + 'showTitle')"
+            v-model="fhem.app.config.header.showTitle"/>
         </v-col>
       </v-row>
     </v-list-item>

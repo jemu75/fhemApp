@@ -28,11 +28,13 @@ export const useFhemStore = defineStore('fhem', () => {
             colors: {}
         },
         header: {
+            title: null,
             time: new Date(),
             timeFormat: { hour: '2-digit', minute: '2-digit' },
             dateFormat: { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' },
             showTime: false,
             showDate: false,
+            showTitle: true,
             showHomeBtn: false,
             imageUrl: null,
             imageGradient: null,
