@@ -13,18 +13,18 @@
 
     const options = computed(() => {
         let res = [],
-            options = fhem.app.header,
+            opts = fhem.app.header,
             presets = {
                 darkMode: { name: 'darkMode', title: "%t(_app.options.darkMode)" ,icon: 'mdi-theme-light-dark' },
                 reloadPage: { name: 'reloadPage', title: "%t(_app.options.reload)", icon: 'mdi-reload' },
                 settings: { name:'settings', title: "%t(_app.options.settings)", icon: 'mdi-cogs' }
             }
 
-        if(options.showDarkMode) res.push(presets.darkMode)
-        if(options.showReloadPage) res.push(presets.reloadPage)
-        if(options.showSettings) res.push(presets.settings)
+        if(opts.showDarkMode) res.push(presets.darkMode)
+        if(opts.showReloadPage) res.push(presets.reloadPage)
+        if(opts.showSettings) res.push(presets.settings)
 
-        res.push(...options.commands)
+        res.push(...opts.commands)
 
         return res
     })
@@ -54,7 +54,7 @@
             <v-btn icon="mdi-dots-vertical" v-bind="props"></v-btn>
         </template>
 
-        <v-list nav>
+        <v-list>
             <v-list-item v-for="(option, idx) in options"
                 rounded="pill"
                 :key="idx"

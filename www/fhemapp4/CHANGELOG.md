@@ -1,3 +1,9 @@
+# v4.0.26-beta (13.03.2024)
+## Core
+- bugfix for spaces at readings 
+- local Loop to update reading directly without response from FHEM
+## Panel
+- optimization for section info
 # v4.0.25-beta (11.03.2024)
 ## Settings
 - add option for header in mobile view

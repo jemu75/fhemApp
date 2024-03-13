@@ -55,14 +55,14 @@
             longClick = fhem.handleDefs(props.el.longClick, ['cmd', 'type'], ['', 'cmd']),
             longRelease = fhem.handleDefs(props.el.longRelease, ['cmd', 'type'], ['', 'cmd'])
 
-        if(evt === 'touchStart' || evt === 'mouseStart') {
+        if(evt === 'mouseStart') {
             btnState.timer = setTimeout(() => {
                 btnState.long = true
                 if(longClick.cmd) doCmd(longClick)
             }, 1000)
         }
 
-        if(evt === 'touchEnd' || evt === 'mouseEnd') {
+        if(evt === 'mouseEnd') {
             if(btnState.long) {
                 if(longRelease.cmd) doCmd(longRelease)
             } else {
@@ -88,8 +88,6 @@
         :variant="btn.variant"
         :disabled="btn.disabled" 
         :color="btn.color" 
-        @touchstart="btnClick('touchStart')"
-        @touchend="btnClick('touchEnd')"
         @mousedown="btnClick('mouseStart')"
         @mouseup="btnClick('mouseEnd')"
         class="my-2">

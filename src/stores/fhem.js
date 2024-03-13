@@ -208,10 +208,19 @@ export const useFhemStore = defineStore('fhem', () => {
     async function request(type, cmd) {
         let params = '?XHR=1',
             options = { method: 'POST' },
+            cmdParts = [],
             result
         
         if(type !== 'token' && stat.csrf) params += '&fwcsrf=' + stat.csrf
         if(cmd) options.body = 'cmd=' + cmd
+
+        //local Loop to update reading directly without response from FHEM
+        if(/^set.*/.test(cmd)) {
+            cmdParts = cmd.split(' ')
+            
+            stat.evtBuffer.push({ reading: cmdParts.slice(1, 3).join('-'), value: cmdParts[3] })
+            handleEventBuffer(true)
+        }
 
         log(4, 'Request send to FHEM.', { url: createURL(params), options })
 
@@ -397,7 +406,7 @@ export const useFhemStore = defineStore('fhem', () => {
     }
 
     //coreFunction to handle all Events in Buffer
-    function handleEventBuffer() {
+    function handleEventBuffer(localLoop) {
         let idx,
             evts = stat.evtBuffer.length
         
@@ -407,12 +416,12 @@ export const useFhemStore = defineStore('fhem', () => {
             idx = stat.panelMap.map((e) => e.reading).indexOf(evt.reading)
 
             if(idx !== -1) {
-                log(6, 'Data from FHEM handled.', evt)
+                if(!localLoop) log(6, 'Data from FHEM handled.', evt)
                 for(const path of stat.panelMap[idx].items) {
                     doUpdate(app.panelList, path, evt.value)
                 }
             } else {
-                log(8, 'Data from FHEM received.', evt)
+                if(!localLoop)  log(8, 'Data from FHEM received.', evt)
             }
         }
 
@@ -507,7 +516,7 @@ export const useFhemStore = defineStore('fhem', () => {
 
     //helperFunction called from createPanelMap for handle reading-definitions in Panels
     function getReading(devices, reading) {
-        let parts = reading.split('-'),
+        let parts = reading.trim().split('-'),
             idx = devices.map((e) => e.key).indexOf(parts[0])
 
         if(idx !== -1) {
@@ -546,7 +555,7 @@ export const useFhemStore = defineStore('fhem', () => {
                     }
                 }
             }
-        }
+        }        
     }
 
     //helperFunction called from createPanelList

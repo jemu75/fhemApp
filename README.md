@@ -330,7 +330,6 @@ Es stehen folgende Typen zur Verfügung
 |none|Spalte wird nicht angezeigt|
 |button|Es kann ein Button zur Steuerung von Aktoren konfiguriert werden|
 |info|Es können bis zu 3 Textelemente und ein Icon zur Anzeige von Statuswerten konfiguriert werden|
-|status|Es kann eine runde Statusbar zur Anzeige von Statuswerten konfiguriert werden|
 |slider|Es kann ein Slider zu Steuerung von Aktoren konfiguriert werden|
 |image|Es kann ein Bild über eine URL angezeigt werden|
 |menu|Es kann ein DropDown-Menü zur Steuerung verschiedener Aktoren bzw. Aktorwerte konfiguriert werden|

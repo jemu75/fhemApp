@@ -86,12 +86,14 @@
         return res
     }
 
-    function getMidSize() {
-        let leftText = infoLeft1.value.text || infoLeft2.value.text ? true : false
-        let midText = infoMid1.value.text || infoMid2.value.text ? true : false
-        let rightText = infoRight1.value.text || infoRight2.value.text ? true : false
-        
-        return !leftText && midText && !rightText ? 7 : null
+    function getInfoClass(pos) {
+        let sections = ['left1', 'left2', 'mid1', 'mid2', 'right1', 'right2'],
+            posEl = getInfo(pos),
+            leftEl = getInfo(sections[sections.indexOf(pos) - 1])
+
+            if(leftEl.text && posEl.text && !posEl.icon) return 'ml-1 text-truncate'
+        if(posEl.text) return 'text-truncate'
+        return ''
     }
 
     const infoLeft1 = computed(() => getInfo('left1'))
@@ -149,19 +151,19 @@
         <v-layout style="height:24px">
             <v-system-bar color="secondary">
                 <v-icon v-if="infoLeft1.icon" :icon="infoLeft1.icon" :color="infoLeft1.color"></v-icon>
-                <span v-if="infoLeft1.text">{{ infoLeft1.text }}</span>
-                <v-icon v-if="infoLeft2.icon" :icon="infoLeft2.icon" :color="infoLeft2.color" class="ml-2"></v-icon>
-                <span v-if="infoLeft2.text">{{ infoLeft2.text }}</span>
+                <span v-if="infoLeft1.text" :class="getInfoClass('left1')">{{ infoLeft1.text }}</span>
+                <v-icon v-if="infoLeft2.icon" :icon="infoLeft2.icon" :color="infoLeft2.color"></v-icon>
+                <span v-if="infoLeft2.text" :class="getInfoClass('left2')">{{ infoLeft2.text }}</span>
                 <v-spacer></v-spacer>
                 <v-icon v-if="infoMid1.icon" :icon="infoMid1.icon" :color="infoMid1.color"></v-icon>
-                <span v-if="infoMid1.text">{{ infoMid1.text }}</span>
-                <v-icon v-if="infoMid2.icon" :icon="infoMid2.icon" :color="infoMid2.color" class="ml-2"></v-icon>
-                <span v-if="infoMid2.text">{{ infoMid2.text }}</span>
+                <span v-if="infoMid1.text" :class="getInfoClass('mid1')">{{ infoMid1.text }}</span>
+                <v-icon v-if="infoMid2.icon" :icon="infoMid2.icon" :color="infoMid2.color"></v-icon>
+                <span v-if="infoMid2.text" :class="getInfoClass('mid2')">{{ infoMid2.text }}</span>
                 <v-spacer></v-spacer>
                 <v-icon v-if="infoRight1.icon" :icon="infoRight1.icon" :color="infoRight1.color"></v-icon>
-                <span v-if="infoRight1.text">{{ infoRight1.text }}</span>
-                <v-icon v-if="infoRight2.icon" :icon="infoRight2.icon" :color="infoRight2.color" class="ml-2"></v-icon>
-                <span v-if="infoRight2.text">{{ infoRight2.text }}</span>
+                <span v-if="infoRight1.text" :class="getInfoClass('right1')">{{ infoRight1.text }}</span>
+                <v-icon v-if="infoRight2.icon" :icon="infoRight2.icon" :color="infoRight2.color"></v-icon>
+                <span v-if="infoRight2.text" :class="getInfoClass('right2')">{{ infoRight2.text }}</span>
             </v-system-bar>
         </v-layout>
     </v-card>

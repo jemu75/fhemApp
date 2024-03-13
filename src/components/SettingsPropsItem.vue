@@ -73,7 +73,7 @@
         item-key="id">
         <template #item={index}>
             <v-row no-gutters class="py-3 align-center">
-                <v-icon icon="mdi-drag-vertical" class="dd_zone pr-5"></v-icon>
+                <v-icon icon="mdi-drag-vertical" class="dd_zone pr-5" :disabled="disable"></v-icon>
                 <v-col>
                     <v-text-field 
                         density="compact" 
