@@ -165,7 +165,6 @@ Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zu
 |%n(2)|als Zahl mit 2 Nachkommastellen zurück|
 |%n(0,1)|als Ganzzahl mit einem **Offset** von +1 zurück|
 |%n(1,-1.5)|als Zahl mit einer Nachkommastelle und einem **Offset** von -1,5 zurück|
-|%n(1,0,true)|verhindert, dass die Zahl in das lokale Zahlenformat umgewandelt wird|
 |%d()|als Zeitstempel im gewählten Sprachschema zurück|
 |%d(time)|als Zeitwert im gewählten Sprachschema zurück|
 |%d(date)|als Datum im gewählten Sprachschema zurück|
@@ -182,7 +181,6 @@ Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zu
 |`state::%s`|on|on|
 |`temperature::%n(0)`|12.5|13|
 |`desired-temp::%n(1,2)`|22.5|24,5|Komma und tausender Trennzeichen abhängig vom Sprachschema|
-|`desired-temp::%n(1,0,true)`|22.48|22.5|Zahl wird nicht in lokales Format gewandelt|
 |`state-ts::%d()`|2023-12-17 17:53:32|17.12.2023 17:53:32|abhängig vom Sprachschema|
 |`state-ts::%d(time)`|2023-12-17 17:53:32|17:53:32|abhängig vom Sprachschema|
 |`state-ts::%d(date)`|2023-12-17 17:53:32|17.12.2023|abhängig vom Sprachschema|

@@ -51,9 +51,9 @@
     }
 
     function btnClick(evt) {
-        let click = fhem.handleDefs(props.el.click, ['cmd', 'type'], ['', 'cmd']),
-            longClick = fhem.handleDefs(props.el.longClick, ['cmd', 'type'], ['', 'cmd']),
-            longRelease = fhem.handleDefs(props.el.longRelease, ['cmd', 'type'], ['', 'cmd'])
+        let click = fhem.handleDefs(props.el.click, ['cmd', 'type'], ['', 'cmd'], false, null, true),
+            longClick = fhem.handleDefs(props.el.longClick, ['cmd', 'type'], ['', 'cmd'], false, null, true),
+            longRelease = fhem.handleDefs(props.el.longRelease, ['cmd', 'type'], ['', 'cmd'], false, null, true)
 
         if(evt === 'mouseStart') {
             btnState.timer = setTimeout(() => {

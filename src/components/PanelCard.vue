@@ -1,5 +1,5 @@
 <script setup>
-    import { computed, onMounted, ref } from 'vue'
+    import { computed, watch, onMounted, ref } from 'vue'
     import { useFhemStore } from '@/stores/fhem'
     import PanelMain from './PanelMain.vue'
 
@@ -35,48 +35,48 @@
         return fhem.handleDefs(item.panel.status.title, ['title'],[''])        
     })
 
-    const expand = computed(() => {
-        return fhem.handleDefs(item.panel.panel.expandable, ['expandable','expanded','maximizable'],[false, false, false])        
+    const levelOpts = ref(fhem.handleDefs(item.panel.panel.expandable, ['expandable','expanded','maximizable'],[false, false, false]))
+
+    watch(item.panel.main, (newVal) => {
+        let activeLevels = levelsActive(newVal)
+
+        if(levelOpts.value.activeLevels.join('-') !== activeLevels.join('-')) {
+            levelOpts.value.activeLevels = activeLevels
+            levelClick()
+        }
     })
 
-    const expanded = ref(expand.value.expanded)
-
-    const expandIcon = computed(() => {
-        let res = null
-
-        if(expand.value.expandable) res = expanded.value ? 'mdi-arrow-collapse' : 'mdi-arrow-expand'
-        if(!expand.value.expandable && !expand.value.expanded && item.panel.main.length > 1) res = 'mdi-swap-vertical'
-       
-        return res
-    })
-
-    const levelsActive = computed(() => {
+    function levelsActive(obj) {
         let res = []
 
-        for(const [idx, lvl] of Object.entries(item.panel.main)) {
+        for(const [idx, lvl] of Object.entries(obj)) {
             if(fhem.handleDefs(lvl.level.show, ['show'], [true]).show) res.push(Number(idx))
         }
 
         return res
-    })
-
-    function levelSwitch(init) {
-        let idx = -1
-
-        if(expand.value.expandable || (!expand.value.expandable && expand.value.expanded)) {
-            if(!init) {
-                if(expand.value.maximizable) fhem.app.panelMaximized = expanded.value ? false : item.panel
-                expanded.value = !expanded.value
-            }
-
-            levels.value = expanded.value ? levelsActive.value : [levelsActive.value[0]] 
-        } else {
-            idx = levelsActive.value.indexOf(levels.value ? levels.value[0] : null)
-            levels.value = (idx === -1 || idx === levelsActive.value.length - 1) ? [levelsActive.value[0]] : [levelsActive.value[idx + 1]]
-        }
     }
 
-    const levels = ref([])
+    function levelClick(init) {
+        let opts = levelOpts.value,
+            idx
+        
+        if(init) opts.activeLevels = levelsActive(item.panel.main)
+
+        if(opts.expandable && !init) opts.expanded = !opts.expanded
+
+        if(opts.expanded) {
+            opts.levels = opts.activeLevels
+        } else {
+            if(opts.expandable || init) {
+                opts.levels = [opts.activeLevels[0]]
+            } else {
+                idx = opts.activeLevels.indexOf(opts.levels[0])
+                opts.levels = [opts.activeLevels[idx + 1] >= 0 ? opts.activeLevels[idx + 1] : opts.activeLevels[0]]
+            }
+        }
+
+        opts.icon = opts.activeLevels.length > 1 ? opts.expandable ? opts.expanded ? 'mdi-arrow-collapse' : 'mdi-arrow-expand' : !opts.expanded ? 'mdi-swap-vertical' : '' : ''
+    }
 
     function getInfo(pos) {
         let res = fhem.handleDefs(item.panel.info[pos], ['text', 'icon', 'color'],['', '', ''])
@@ -103,7 +103,7 @@
     const infoRight1 = computed(() => getInfo('right1'))
     const infoRight2 = computed(() => getInfo('right2'))
 
-    levelSwitch(true)
+    levelClick(true)
 </script>
 
 <template>
@@ -138,15 +138,15 @@
                         <v-col v-if="fhem.app.settings.loglevel > 6" class="text-right">
                             {{ sortby.sortby }}
                         </v-col>
-                        <v-col v-if="expandIcon" cols="1" class="text-right">
-                            <v-btn :icon="expandIcon" size="small" variant="plain" density="compact" @click="levelSwitch(false)"></v-btn>
+                        <v-col v-if="levelOpts.icon" cols="1" class="text-right">
+                            <v-btn :icon="levelOpts.icon" size="small" variant="plain" density="compact" @click="levelClick(false)"></v-btn>
                         </v-col>
                     </v-row>
                 </v-card-title>
             </v-img>
         </v-sheet>
 
-        <PanelMain :main="panel.main" :levels="levels" :iconmap="panel.panel.iconmap" :devices="panel.panel.devices"></PanelMain>
+        <PanelMain :main="panel.main" :levels="levelOpts.levels" :iconmap="panel.panel.iconmap" :devices="panel.panel.devices"></PanelMain>
         
         <v-layout style="height:24px">
             <v-system-bar color="secondary">

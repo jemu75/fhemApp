@@ -1,3 +1,9 @@
+# v4.0.27-beta (16.03.2024)
+## Core
+- replacer %n option noLocaleNumber deprecated -> removed!
+- bugfix for update readings directly
+## Panel
+- bugfix for hide/show Levels
 # v4.0.26-beta (13.03.2024)
 ## Core
 - bugfix for spaces at readings 

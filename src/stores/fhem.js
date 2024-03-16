@@ -217,9 +217,11 @@ export const useFhemStore = defineStore('fhem', () => {
         //local Loop to update reading directly without response from FHEM
         if(/^set.*/.test(cmd)) {
             cmdParts = cmd.split(' ')
-            
-            stat.evtBuffer.push({ reading: cmdParts.slice(1, 3).join('-'), value: cmdParts[3] })
-            handleEventBuffer(true)
+
+            if(cmdParts.length > 2) {
+                stat.evtBuffer.push({ reading: cmdParts.slice(1, 3).join('-'), value: cmdParts.slice(-1) })
+                handleEventBuffer(true)
+            }
         }
 
         log(4, 'Request send to FHEM.', { url: createURL(params), options })
@@ -703,7 +705,7 @@ export const useFhemStore = defineStore('fhem', () => {
     }
 
     //coreFunction Replace Values %s %n() %d() %t() &#058;
-    function replacer(prop, val) {
+    function replacer(prop, val, noLocalConv) {
         let res = prop
 
         if(typeof prop !== 'string') return prop
@@ -725,7 +727,7 @@ export const useFhemStore = defineStore('fhem', () => {
             let digits = parseFloat(opts[0] || 0)
             let num = parseFloat(val.slice(chkNum.index)) + ofs
 
-            res = def.input.replace(def[0], opts[2] === 'true' ? num.toFixed(digits) : i18n.n(num, { minimumFractionDigits: digits, maximumFractionDigits: digits }))
+            res = def.input.replace(def[0], noLocalConv ? num.toFixed(digits) : i18n.n(num, { minimumFractionDigits: digits, maximumFractionDigits: digits }))
         }
 
         if(/%d\(.*\)/.test(res)) {
@@ -758,7 +760,7 @@ export const useFhemStore = defineStore('fhem', () => {
     }
 
     //coreFunction to handle Definitions
-    function handleDefs(defs, props, defaults, isList, splitter) {
+    function handleDefs(defs, props, defaults, isList, splitter, noLocalConv) {
         let res = isList ? [] : {},
             defList,
             defParts,
@@ -812,7 +814,7 @@ export const useFhemStore = defineStore('fhem', () => {
                     if(prop === 'true') prop = true
                     if(prop === 'false') prop = false
 
-                    if(prop !== '') obj[hasProps && props[idx] ? props[idx] : [idx]] = replacer(prop, defParts[0])
+                    if(prop !== '') obj[hasProps && props[idx] ? props[idx] : [idx]] = replacer(prop, defParts[0], noLocalConv)
                 }
 
                 if(isList) { 
