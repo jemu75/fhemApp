@@ -2,12 +2,9 @@
     import { computed } from 'vue'    
     import { useFhemStore } from '@/stores/fhem'
     import router from '@/router'
-    import { useTheme } from 'vuetify'
     import { useI18n } from 'vue-i18n'
 
     const fhem = useFhemStore()
-
-    const theme = useTheme()
 
     const i18n = useI18n()
 
@@ -40,10 +37,8 @@
 
         if(option.name === 'settings') router.push({ name: 'settings', query: router.currentRoute.value.query })
 
-        if(option.name === 'darkMode') {
-            theme.global.name.value = theme.global.name.value === 'dark' ? 'light' : 'dark'
-        }
-
+        if(option.name === 'darkMode') fhem.changeDarkMode()
+        
         if(option.cmd) fhem.request('text', option.cmd)
     }
 </script>

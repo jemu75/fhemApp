@@ -142,14 +142,28 @@ export const useFhemStore = defineStore('fhem', () => {
         window.open(app.helpURL + anchor, '_blank')
     }
 
+    //coreFunction to switch darkMode
+    function changeDarkMode(mode) {
+        let primaryColor
+
+        if(mode !== theme.global.name.value) {
+            theme.global.name.value = theme.global.name.value === 'dark'? 'light' : 'dark'
+
+            if(!app.config.header.imageGradient) {
+                primaryColor = theme.global.current.value.colors.primary        
+                app.header.imageGradient = "to top ," + hexToRgbA(primaryColor, 0.6) + ", " + hexToRgbA(primaryColor, 0.6)
+            }
+        }
+    }
+
     //coreFunction to change darkMode
     function initDarkMode() {
         let darkMode = window.matchMedia('(prefers-color-scheme: dark')
 
-        theme.global.name.value = darkMode.matches ? 'dark' : 'light'
+        changeDarkMode(darkMode.matches ? 'dark' : 'light')
 
         darkMode.addEventListener('change', (obj) => {
-            if(!app.settings.dark) theme.global.name.value = obj.matches ? 'dark' : 'light'
+            if(!app.settings.dark) changeDarkMode(obj.matches ? 'dark' : 'light')
         })
     } 
 
@@ -945,7 +959,7 @@ export const useFhemStore = defineStore('fhem', () => {
             let res = handleURL(to)
 
             if(res.langChanged) i18n.locale.value = app.settings.lang
-            if(res.darkChanged) theme.global.name.value = app.settings.dark === '0' ? 'light' : 'dark'
+            if(res.darkChanged) changeDarkMode(app.settings.dark === '0' ? 'light' : 'dark')
             if(res.connChanged || !app.isReady) return createSession(true)
             if(res.configChanged) return location.reload()
             if(res.routeChanged) loadPanelView()
@@ -955,5 +969,5 @@ export const useFhemStore = defineStore('fhem', () => {
     //FHEMApp entryPoint
     router.isReady().then(init())
 
-    return { app, getEl, handleDefs, getIcon, replacer, createSession, request, thread, stringToJson, log, help }
+    return { app, getEl, handleDefs, getIcon, replacer, createSession, request, thread, stringToJson, log, help, changeDarkMode }
 })

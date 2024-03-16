@@ -2,6 +2,7 @@
 ## Core
 - replacer %n option noLocaleNumber deprecated -> removed!
 - bugfix for update readings directly
+- bugfix for change imageGradient in case of changing theme
 ## Panel
 - bugfix for hide/show Levels
 # v4.0.26-beta (13.03.2024)
