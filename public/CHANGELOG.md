@@ -1,3 +1,6 @@
+# v4.0.29-beta (17.03.2024)
+## Core
+- bugfix for change imageGradient in case of changing theme
 # v4.0.28-beta (17.03.2024)
 ## Panel
 - bugfix for hide/show Levels

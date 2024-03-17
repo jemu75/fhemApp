@@ -146,13 +146,11 @@ export const useFhemStore = defineStore('fhem', () => {
     function changeDarkMode(mode) {
         let primaryColor
 
-        if(mode !== theme.global.name.value) {
-            theme.global.name.value = theme.global.name.value === 'dark'? 'light' : 'dark'
+        if(mode !== theme.global.name.value) theme.global.name.value = theme.global.name.value === 'dark'? 'light' : 'dark'
 
-            if(!app.config.header.imageGradient) {
-                primaryColor = theme.global.current.value.colors.primary        
-                app.header.imageGradient = "to top ," + hexToRgbA(primaryColor, 0.6) + ", " + hexToRgbA(primaryColor, 0.6)
-            }
+        if(!app.config.header.imageGradient) {
+            primaryColor = theme.global.current.value.colors.primary        
+            app.header.imageGradient = "to top ," + hexToRgbA(primaryColor, 0.6) + ", " + hexToRgbA(primaryColor, 0.6)
         }
     }
 
@@ -330,8 +328,7 @@ export const useFhemStore = defineStore('fhem', () => {
     async function loadConfig() {
         let res = await request('text', 'get ' + app.fhemDevice + ' config'),            
             resText,
-            cfg,
-            primaryColor
+            cfg
 
         if(RegExp('Please define '+ app.fhemDevice +' first').test(res)) {
             log(2, 'Wrong FHEM Config-Device in URL.', { fhemResult: res }, 'wrongDevice')
@@ -380,10 +377,7 @@ export const useFhemStore = defineStore('fhem', () => {
         
         //merge header
         Object.assign(app.header, JSON.parse(JSON.stringify(app.config.header)))
-        if(!app.header.imageGradient) {
-            primaryColor = theme.global.current.value.colors.primary        
-            app.header.imageGradient = "to top ," + hexToRgbA(primaryColor, 0.6) + ", " + hexToRgbA(primaryColor, 0.6)
-        }
+        changeDarkMode(theme.global.name.value)
 
         log(4, 'Config loaded.', cfg)
         return true
