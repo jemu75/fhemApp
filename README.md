@@ -156,6 +156,16 @@ Wenn ein Element mehrere Definitionen enthält, dann wird immer die erste zutref
 ![](./docs/media/example_element_definition.png)
 <br>*Beispiel für eine Element Definition*
 
+Folgende Schreibweisen sind für Definitionen zulässig.
+Im folgenden Beispiel wurde das Panel mit zwei FHEM Devices `temp:thermostat_wohnen` und `valve:heizung_wohnen` verbunden.  
+
+|Definition|Erklärung|
+|---|---|
+|`state::...`|Wird dem Reading kein Device vorangestellt, so wird immer das erste im Panel definierte Device verwendet.|
+|`temp-state::...`|Es wird das Device verwendet, welches dem Reading vorangestellt ist.|
+|`::text:mdi-check`|Das Element wird mit keinem Reading verbunden und es werden zwei Parameter für das Element übergeben|
+|`true`|Das Element wird mit keinem Reading verbunden und für den erste Parameter der Definition wird der Wert `true` übergeben
+
 ## Ersetzungen
 Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zurückzugeben und zu formatieren. Folgende Möglichkeiten für Ersetzungen gibt es.
 |Ersetzung|gibt den Wert vom Parameter `reading`|

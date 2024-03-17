@@ -42,7 +42,7 @@
 
         if(levelOpts.value.activeLevels.join('-') !== activeLevels.join('-')) {
             levelOpts.value.activeLevels = activeLevels
-            levelClick()
+            levelClick(true)
         }
     })
 
@@ -60,9 +60,12 @@
         let opts = levelOpts.value,
             idx
         
-        if(init) opts.activeLevels = levelsActive(item.panel.main)
-
-        if(opts.expandable && !init) opts.expanded = !opts.expanded
+        if(init) {
+            opts.activeLevels = levelsActive(item.panel.main)
+        } else {
+            if(opts.expandable) opts.expanded = !opts.expanded
+            if(opts.maximizable) fhem.app.panelMaximized = opts.expanded ?  item.panel : false
+        }
 
         if(opts.expanded) {
             opts.levels = opts.activeLevels
@@ -75,7 +78,11 @@
             }
         }
 
-        opts.icon = opts.activeLevels.length > 1 ? opts.expandable ? opts.expanded ? 'mdi-arrow-collapse' : 'mdi-arrow-expand' : !opts.expanded ? 'mdi-swap-vertical' : '' : ''
+        if(opts.activeLevels.length > 1 || opts.maximizable) {
+            opts.icon = !opts.expandable ? !opts.expanded ? 'mdi-swap-vertical' : '' : opts.expanded ? 'mdi-arrow-collapse' : 'mdi-arrow-expand'
+        } else {
+            opts.icon = ''
+        }
     }
 
     function getInfo(pos) {
