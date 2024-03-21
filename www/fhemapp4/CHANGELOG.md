@@ -1,3 +1,11 @@
+# v4.0.30-beta (20.03.2024)
+## Core
+- bugfix for euro-sign inside from definitions
+## Component Chart
+- Optimization for displaying formatted values
+## Settings
+- Wizard for devices definitions in panels 
+- new element devicekeys in templates
 # v4.0.29-beta (17.03.2024)
 ## Core
 - bugfix for change imageGradient in case of changing theme

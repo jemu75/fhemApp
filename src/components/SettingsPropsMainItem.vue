@@ -36,7 +36,7 @@
 
     const checkDefs = computed(() => {
         let res = false,
-            defs = fhem.app.config[props.type][props.typeIdx][props.section][props.mainIdx][props.mainSection][props.prop]
+            defs = fhem.getEl(fhem.app.config[props.type][props.typeIdx][props.section], [props.mainIdx, props.mainSection, props.prop])
 
         if(['menu', 'serie'].indexOf(props.prop) !== -1) return res
 

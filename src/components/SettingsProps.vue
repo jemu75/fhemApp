@@ -46,14 +46,14 @@
             if(props.type === 'panels') {
                 res = [
                     { key: 'name', title: i18n.t(preLang + 'title'), sortable: true, align: 'start' },
-                    { key: 'devices', title: 'Devices', sortable: true, align: 'start' },
-                    { key: 'advanced', title: i18n.t(preLang + 'extended'), sortable: true },
+                    { key: 'devices', title: 'Devices', sortable: true, align: 'start', filterable: false },
+                    { key: 'advanced', title: i18n.t(preLang + 'extended'), sortable: true, filterable: false },
                     { key: 'actions', title: '', sortable: false, align: 'end' }
                 ]
             } else {
                 res = [
                     { key: 'name', title: i18n.t(preLang + 'title'), sortable: true, align: 'start' },
-                    { key: 'panels', title: i18n.t('_app.settings.panels.title', 2), sortable: true, align: 'end' },
+                    { key: 'panels', title: i18n.t('_app.settings.panels.title', 2), sortable: true, align: 'end', filterable: false },
                     { key: 'actions', title: '', sortable: false, align: 'end' }
                 ]
             }
@@ -81,7 +81,7 @@
                         }
                     }
                     if(Object.keys(el.status).length > 0) advanced.push('status')
-                    if(el.main.length > 1 || Object.keys(el.main[0].level).length > 0) advanced.push('main')
+                    if(el.main && JSON.stringify(el.main) !== '[{"level":{}}]') advanced.push('main')                    
                     if(Object.keys(el.info).length > 0) advanced.push('info')
 
                     if(el.panel.devices) devices = el.panel.devices.join(', ')

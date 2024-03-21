@@ -93,6 +93,11 @@
                 "iso639code": "Eingabe muss ISO-639-1-Code entsprechen!",
                 "langUnique": "Sprache ist bereits vorhanden!",
                 "keyUnique": "Variable ist bereits vorhanden!"
+            },
+            "assist": {
+                "title": "Assistent",
+                "ok": "Ok",
+                "cancel": "Abbruch"
             }
         },
         "options": {

@@ -95,16 +95,10 @@
                             }
                         }
                     }
+                } else if(/^\[.*\]/.test(def.data)) {
+                    data = fhem.stringToJson(def.data)
                 } else {
-                    xAxisType = 'category'
-                    logData = /,/.test(def.data) ? def.data : def.data.replace(/ /g,',')
-
-                    if(!/^\[.*\]$/.test(loadData)) logData = '[' + logData + ']'
-
-                    data = fhem.stringToJson(logData)
-
-                    //on effect on gauge
-                    //for(const [ idx, value] of Object.entries(data)) data[idx] = parseFloat(value).toFixed(def.digits)
+                    data = [fhem.replacer('%n(' + def.digits + ')', def.data, true)]
                 }
 
                 res.push({ xAxisType: xAxisType, type: def.type, name: def.name, digits: def.digits, suffix: def.suffix, data })
@@ -124,11 +118,11 @@
             series: [],
             yAxis: [],
             xAxis: {}
-        },
-        axisLabel,
+        },        
         options = JSON.parse(JSON.stringify(fhem.getEl(props.el, ['options']) || {})),
         options2 = JSON.parse(JSON.stringify(fhem.getEl(props.el, ['options2']) || {})),
-        opts = Object.assign(preset, fhem.app.panelMaximized && Object.keys(options2).length > 0 ? options2 : options )
+        opts = Object.assign(preset, fhem.app.panelMaximized && Object.keys(options2).length > 0 ? options2 : options ),
+        label
 
         chart.value.fromMenu = false
         chart.value.toMenu = false
@@ -137,9 +131,9 @@
         data = await loadData()
 
         for(const [ idx, serie ] of Object.entries(data)) {
-            axisLabel = { 
+            label = { 
                 formatter: (val) => { 
-                    return val.toLocaleString(i18n.locale.value, { minimumFractionDigits: serie.digits, maximumFractionDigits: serie.digits }) + serie.suffix 
+                    return val.toLocaleString(i18n.locale.value, { minimumFractionDigits: serie.digits, maximumFractionDigits: serie.digits }) + serie.suffix
                 } 
             }
 
@@ -148,12 +142,17 @@
             if(!opts.legend.data) opts.legend.data = []
 
             if(!opts.xAxis.type) opts.xAxis.type = serie.xAxisType
+            if(!opts.yAxis[idx].type) opts.yAxis[idx].type = 'value'
+            if(!opts.yAxis[idx].axisLabel) opts.yAxis[idx].axisLabel = {}
+            if(!opts.yAxis[idx].axisLabel.formatter) opts.yAxis[idx].axisLabel.formatter = label.formatter
+            if(!opts.legend.data[idx]) opts.legend.data[idx] = serie.name
             if(!opts.series[idx].name) opts.series[idx].name = serie.name
             if(!opts.series[idx].type) opts.series[idx].type = serie.type
             if(!opts.series[idx].data) opts.series[idx].data = serie.data
-            if(!opts.yAxis[idx].type) opts.yAxis[idx].type = 'value'
-            if(!opts.yAxis[idx].axisLabel) opts.yAxis[idx].axisLabel = axisLabel
-            if(!opts.legend.data[idx]) opts.legend.data[idx] = serie.name
+            if(!opts.series[idx].detail) opts.series[idx].detail = {}
+            if(!opts.series[idx].detail.formatter) opts.series[idx].detail.formatter = label.formatter
+            if(!opts.series[idx].tooltip) opts.series[idx].tooltip = {}
+            if(!opts.series[idx].tooltip.valueFormatter) opts.series[idx].tooltip.valueFormatter = label.formatter
         }
 
         fhem.log(7, 'Chartdata chart.loaded.', opts)

@@ -93,6 +93,11 @@
                 "iso639code": "Input must correspond to ISO 639-1 code!",
                 "langUnique": "Language is already defined!",
                 "keyUnique": "Key is already defined!"
+            },
+            "assist": {
+                "title": "Wizard",
+                "ok": "Ok",
+                "cancel": "Cancel"
             }
         },
         "options": {

@@ -95,11 +95,13 @@
     const subSectionIdx = ref(0)
 
     function subSectionDisabled(segment) {
-        return !fhem.app.config[props.type][props.typeIdx][props.section][lvl.value - 1]['level'][segment] && segment !== 'level' ? true : false
+        return !fhem.getEl(fhem.app.config[props.type][props.typeIdx][props.section][lvl.value - 1], ['level', segment]) && segment !== 'level' ? true : false
     }
 
     const listType = computed(() => {
-        return fhem.app.config[props.type][props.typeIdx][props.section][lvl.value - 1]['level'][subSections[subSectionIdx.value]['name']]
+        let res = fhem.getEl(fhem.app.config[props.type][props.typeIdx][props.section][lvl.value - 1], ['level', subSections[subSectionIdx.value],'name'])
+
+        return res
     })
 
     const listItems = computed(() => {
@@ -149,7 +151,7 @@
 
         if(subSectionDisabled(subSection)) return { icon: '', color: '' }
         
-        if(fhem.app.config[props.type][props.typeIdx][props.section][lvl.value - 1][subSection]) {
+        if(fhem.getEl(fhem.app.config[props.type][props.typeIdx][props.section][lvl.value - 1], [subSection])) {
             for(const subSectionKey of Object.keys(fhem.app.config[props.type][props.typeIdx][props.section][lvl.value - 1][subSection])) {
                 if(fhem.app.config[props.type][props.typeIdx][props.section][lvl.value - 1][subSection][subSectionKey]) {
                     res.icon = 'mdi-check'

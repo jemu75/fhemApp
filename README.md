@@ -202,12 +202,26 @@ In den allgemeinen Einstellungen für Panels wird festgelegt, mit welchen FHEM *
 
 Wenn für ein Panel keine [Vorlage](#vorlagen) verwendet werden soll, oder bestimmte Einstellungen der Vorlage für das Panel angepasst werden sollen, kann die **erweitere Konfiguration** aktiviert werden.
 
+### Element deviceskeys
+Die *devicekeys* werden in [Vorlagen](#vorlagen) definiert. Ein *devicekey* ist eine Variable, welche in einer Vorlage (Template) an Stelle eines konkreten FHEM-Devicenamen verwendet wird. Bei der späteren Verwendung der Vorlage, wird in der Panelkonfiguration jeder *devicekey* einem konkreten FHEM-Device zugeordnet.
+
+Somit können [Vorlagen](#vorlagen) für beliebig viele Panels verwendet werden. Die Defintion für einen Button, der einen bestimmten Befehl an FHEM sendet wird dann beispielsweise in Form von `set switch on` statt `set <fhem_device_name> on` in der betreffenden Definition hinterlegt. Die Variable `switch` wird deshalb als *devicekey* definiert und später in der Panelkonfigurtation mit dem tatsächlichen FHEM-Device `<fhem_device_name>` verknüpft.
+
+Für jede Vorlage muss mindestens ein *devicekey* festgelegt werden.
+
+|Parameter|Beschreibung|
+|---|---|
+|key|eindeutiger Schlüssel, der für Element-Definitionen an Stelle von festen FHEM-Devicenamen verwendet werden soll|
+|description|kurze Beschreibung des jeweiligen FHEM Devicetypen|
+
+
+
 ### Element devices
 Liste der FHEM-Devices, die mit dem Panel verknüpft sind. Es muss mindestens ein FHEM-Device mit einem Panel verknüpft werden. (siehe auch [neues Panel erstellen](#neues-panel-erstellen))
 
 |Parameter|Beschreibung|
 |---|---|
-|key|eindeutiger Schlüssel, der für Element-Definitionen benötigt wird.|
+|key|eindeutiger Schlüssel, der für Element-Definitionen benötigt wird|
 |device|Name des FHEM Device, mit dem das Panel verknüpft ist|
 ### Element template
 Optional kann eine [Vorlage](#vorlagen) ausgewählt werden, die für die Darstellung des Panels verwendet werden soll. Elemente die im Panel (unter **erweiterte Konfiguration**) definiert wurden, behalten ihre Gültigkeit auch wenn eine Vorlage verwendet wird. In diesem Fall werden die betreffenden Definitionen aus der Vorlage ignoriert. 
@@ -510,11 +524,19 @@ Zeigt ein Chart. Im Gegensatz zu normalen Definitionen, werden zur Anzeige der D
 
 Für die Darstellung von Charts kommt [Apache ECharts](https://echarts.apache.org) zum Einsatz. Diese bietet eine sehr große Vielfalt an Charts und Anpassungsmöglichkeiten.
 
+Grundsätzlich können alle Charttypen, die [Apache ECharts](https://echarts.apache.org) bereitstellt, verwendet werden. Die Konfiguration von [Apache ECharts](https://echarts.apache.org) erfolgt als JSON-Definition. Die Konfigurationsmöglichkeiten der jeweiligen Charts sind in der Dokumentation von [Apache ECharts](https://echarts.apache.org) beschrieben. Die jeweilige JSON-Konfiguration muss in **FHEMApp** in [chart-options](#level-element-chart-options) bzw. in [chart-options2](#level-element-chart-options) übernommen werden. Zu beachten ist, dass keine Java-Script Funktionen innerhalb der JSON-Konfiguration an **FHEMApp** übergeben werden können. Wird keine JSON-Konfiguration in **FHEMApp** hinterlegt, so werden die Daten aus FHEM in Form eines einfachen Line-Chart dargestellt.
+
+Es gibt 3 Möglichkeiten, Daten aus FHEM an ein Chart zu übergeben.
+1. einzelner Zahlenwert aus einem *reading* z.B. `22.4 C`
+2. ein Array mit Zahlenwerten aus einem *reading* z.B. `[12, 13.5, 0.7, 4, ...]`
+3. Werte aus einem FHEM DBLog bzw. LogFile
+
+
 Parameter|Default|Beschreibung|
 |---|---|---|
 |reading||siehe Parameter [reading](#konfiguration-der-elemente)|
 |value||siehe Parameter [value](#konfiguration-der-elemente)|
-|data||kann sowohl eine FHEM-Anweisung `get` für FileLog-Devices bzw. DBLog-Devices enthalten oder eine Reihe von Werten, welche durch ein Leerzeichen oder Komma voneinander getrennt sind.|
+|data||kan einen einzelnen Zahlenwert, oder ein Array mit Zahlenwerten oder eine FHEM-Anweisung `get` für FileLog-Devices bzw. DBLog-Devices enthalten|
 |name||Name der Datenreihe|
 |digits|0|Anzahl der Nachkommastellen, die im Diagramm angezeigt werden.|
 |suffix||Einheit für die Zahlenwerte (z.B. % oder °C)|
@@ -522,11 +544,25 @@ Parameter|Default|Beschreibung|
 
 Bei Verwendung der FHEM-Anweisung `get` können statt fester Datumsangaben im ISO-Format auch Offsetwerte verwendet werden. z.B. `get log1 - - -14 0 4\:level` Dabei entspricht `-14` dem aktuellen Datum - 14 Tage und `0` dem aktuellen Datum. Da in der FHEM-Anweisung `get` auch Doppelpunkte zum Einsatz kommen ist die Schreibweise `\:` innerhalb der Anweisung zu beachten. (siehe auch [Ersetzungen](#ersetzungen)) Das Ergebnis der `get` Anweisung muss immer zwei Spalten zurückgeben. Die linke Spalte muss den Zeitstempel und die rechte Spalte den zugehörigen Zahlenwert enthalten. 
 
-Die zurückgegebenen Daten werden an das EChart Object-Modell an folgende Stellen übergeben:
+Die Daten aus der Definition werden an das EChart Object-Modell an folgende Stellen übergeben:
 ``` 
 { 
-    series: [{ data: <data>, name: <name>, type: <type> },...],
-    yAxis: [{ axisLabel: fn(<digits>, <suffix>) },...],    
+    series: [{ 
+        data: <data>, 
+        name: <name>, 
+        type: <type>, 
+        detail: {
+            formatter: fn(<digits>, <suffix>)
+        }, 
+        tooltip: {
+            formatter: fn(<digits>, <suffix>)
+        } 
+    }],    
+    yAxis: [{ 
+        axisLabel: {
+            formatter: fn(<digits>, <suffix>)
+        }
+    }],    
     legend: { data: [<name>,...] }
 }
 ```

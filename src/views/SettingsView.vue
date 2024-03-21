@@ -22,14 +22,16 @@ import { onMounted } from 'vue'
   })
 
   async function saveSettings(save) {
-    let config = null
+    let config = null,
+        re = new RegExp('€', 'g'),
+        eur = '&#x20AC;'
     
     if(save) {
       for(const [idx, template] of Object.entries(fhem.app.config.templates)) {
         if(template.dist) fhem.app.config.templates.splice(idx, 1)
       }
 
-      config = encodeURIComponent(btoa(JSON.stringify(fhem.app.config)))
+      config = encodeURIComponent(btoa(JSON.stringify(fhem.app.config).replace(re, eur)))
       await fhem.request('text', 'set ' + fhem.app.fhemDevice + ' config ' + config)
     }
     

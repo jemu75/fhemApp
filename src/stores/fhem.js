@@ -328,14 +328,16 @@ export const useFhemStore = defineStore('fhem', () => {
     async function loadConfig() {
         let res = await request('text', 'get ' + app.fhemDevice + ' config'),            
             resText,
-            cfg
+            cfg,
+            re = new RegExp('&#x20AC;', 'g'),
+            eur = '€'
 
         if(RegExp('Please define '+ app.fhemDevice +' first').test(res)) {
             log(2, 'Wrong FHEM Config-Device in URL.', { fhemResult: res }, 'wrongDevice')
             return false
         }
 
-        resText = base64ToString(res)
+        resText = base64ToString(res).replace(re, eur)
         cfg = typeof resText === 'string' ? stringToJson(resText) : false
 
         app.noConfig = false
@@ -605,10 +607,12 @@ export const useFhemStore = defineStore('fhem', () => {
                 for(const section of Object.keys(panelDef)) {
                     if(section === 'main') {
                         for(const [lvlIdx, mainLevel] of Object.entries(panelDef.main)) {
-                            for(const key of Object.keys(mainLevel.level)) {
-                                if(mainLevel.level[key]) {
-                                    panel.main[lvlIdx] = mainLevel
-                                    break
+                            if(mainLevel.level) {
+                                for(const key of Object.keys(mainLevel.level)) {
+                                    if(mainLevel.level[key]) {
+                                        panel.main[lvlIdx] = mainLevel
+                                        break
+                                    }
                                 }
                             }
                         }

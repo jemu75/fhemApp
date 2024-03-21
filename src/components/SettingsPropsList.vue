@@ -14,10 +14,11 @@
 
     const listItemDefs = {
         panel: [
-            { type: 'defs', show: ['panels', 'extended.panels'], required: true, prop: 'devices', def: 'key:fhem_device', help: 'element-devices' },
+            { type: 'defs', show: ['panels', 'extended.panels'], required: true, prop: 'devices', def: 'key:fhem_device', help: 'element-devices', assist: 'devices' },
             { type: 'template', show: ['panels', 'extended.panels'], required: false, prop: 'template', help: 'element-template' },
             { type: 'text', show: ['templates'], required: false, prop: 'author', def: 'text' },
             { type: 'text', show: ['templates'], required: false, prop: 'date', def: 'text' },
+            { type: 'defs', show: ['templates'], required: true, prop: 'devicekeys', def: 'key:description', help: 'element-devicekeys' },
             { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'navigation', def: 'reading:value:route', help: 'element-navigation' },
             { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'expandable', def: 'reading:value:expandable:expanded:maximizable', help: 'element-expandable' },
             { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'sortby', def: 'reading:value:sortkey', help: 'element-sortkey' },
@@ -102,7 +103,8 @@
                         :section="props.section"
                         :prop="def.prop" 
                         :propDef="def.def"
-                        :propHelp="def.help">
+                        :propHelp="def.help"
+                        :propAssist="def.assist">
                     </SettingsPropsItem>
 
                     <v-autocomplete v-if="def.type === 'template'"
