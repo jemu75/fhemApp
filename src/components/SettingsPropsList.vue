@@ -7,6 +7,7 @@
         type: String,
         typeIdx: Number,
         section: String,
+        devices: Object,
         extended: Boolean
     })
 
@@ -19,25 +20,25 @@
             { type: 'text', show: ['templates'], required: false, prop: 'author', def: 'text' },
             { type: 'text', show: ['templates'], required: false, prop: 'date', def: 'text' },
             { type: 'defs', show: ['templates'], required: true, prop: 'devicekeys', def: 'key:description', help: 'element-devicekeys' },
-            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'navigation', def: 'reading:value:route', help: 'element-navigation' },
-            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'expandable', def: 'reading:value:expandable:expanded:maximizable', help: 'element-expandable' },
-            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'sortby', def: 'reading:value:sortkey', help: 'element-sortkey' },
-            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'show', def: 'reading:value:show', help: 'element-show' },
+            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'navigation', def: 'reading:value:route', help: 'element-navigation', assist: 'props' },
+            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'expandable', def: 'reading:value:expandable:expanded:maximizable', help: 'element-expandable', assist: 'props' },
+            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'sortby', def: 'reading:value:sortkey', help: 'element-sortkey', assist: 'props' },
+            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'show', def: 'reading:value:show', help: 'element-show', assist: 'props' },
             { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'iconmap', def: 'search:icon', help: 'element-iconmap' }
         ],
         status: [
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'bar', def: 'reading:value:level:color:min:max:reverse', help: 'element-bar' },
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'bar2', def: 'reading:value:level:color:min:max:reverse', help: 'element-bar' },
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'imageUrl', def: 'reading:value:url', help: 'element-imageurl' },
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: true, prop: 'title', def: 'reading:value:title', help: 'element-title' }
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'bar', def: 'reading:value:level:color:min:max:reverse', help: 'element-bar', assist: 'props' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'bar2', def: 'reading:value:level:color:min:max:reverse', help: 'element-bar', assist: 'props' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'imageUrl', def: 'reading:value:url', help: 'element-imageurl', assist: 'props' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: true, prop: 'title', def: 'reading:value:title', help: 'element-title', assist: 'props' }
         ],
         info: [
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'left1', def: 'reading:value:text:icon:color', help: 'element-info' },
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'left2', def: 'reading:value:text:icon:color', help: 'element-info' },
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'mid1', def: 'reading:value:text:icon:color', help: 'element-info' },
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'mid2', def: 'reading:value:text:icon:color', help: 'element-info' },
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'right1', def: 'reading:value:text:icon:color', help: 'element-info' },
-            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'right2', def: 'reading:value:text:icon:color', help: 'element-info' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'left1', def: 'reading:value:text:icon:color', help: 'element-info', assist: 'props' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'left2', def: 'reading:value:text:icon:color', help: 'element-info', assist: 'props' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'mid1', def: 'reading:value:text:icon:color', help: 'element-info', assist: 'props' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'mid2', def: 'reading:value:text:icon:color', help: 'element-info', assist: 'props' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'right1', def: 'reading:value:text:icon:color', help: 'element-info', assist: 'props' },
+            { type: 'defs', show: ['panels', 'extended.panels', 'templates'], required: false, prop: 'right2', def: 'reading:value:text:icon:color', help: 'element-info', assist: 'props' },
         ]
     }
 
@@ -104,7 +105,8 @@
                         :prop="def.prop" 
                         :propDef="def.def"
                         :propHelp="def.help"
-                        :propAssist="def.assist">
+                        :propAssist="def.assist"
+                        :propAssistDevices="props.devices">
                     </SettingsPropsItem>
 
                     <v-autocomplete v-if="def.type === 'template'"

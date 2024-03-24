@@ -10,7 +10,8 @@
         prop: String,
         propDef: String,
         propHelp: String,
-        propAssist: String
+        propAssist: String,
+        propAssistDevices: Object
     })
 
     //type = panels|templates
@@ -34,6 +35,17 @@
             key: null,
             device: null,
             idx: -1
+        },
+        props: {
+            devices: [],
+            device: null,
+            reading: null,
+            timestamp: false,
+            val: null,
+            props: [],
+            defs: [],
+            show: false,
+            idx: -1
         }
     })
 
@@ -55,6 +67,14 @@
         return res
     })
 
+    const readings = computed(() => {
+        let res = []
+
+        if(assist.value.props.device) res.push(...props.propAssistDevices[assist.value.props.device])
+
+        return res
+    })
+
     function addDef() { 
         if(!fhem.app.config[props.type][props.typeIdx][props.section][props.prop]) {
             fhem.app.config[props.type][props.typeIdx][props.section][props.prop] = [newDef.value]
@@ -62,6 +82,7 @@
             fhem.app.config[props.type][props.typeIdx][props.section][props.prop].push(newDef.value)
         }
         
+        newDef.value = null
         form.value.reset()
     }
 
@@ -110,7 +131,9 @@
     }
 
     async function openAssist(idx) {
-        let def
+        let def,
+            defParts,
+            deviceIdx
 
         if(props.propAssist === 'devices') {
             assist.value.devices.keys = getDevicesKeys()
@@ -128,16 +151,71 @@
             assist.value.devices.idx = idx
             assist.value.devices.show = true
         }
+
+        if(props.propAssist === 'props') {
+            assist.value.props.devices = Object.keys(props.propAssistDevices)
+            assist.value.props.device = null
+            assist.value.props.reading = null
+            assist.value.props.timestamp = false
+            assist.value.props.val = null
+            assist.value.props.defs = props.propDef.split(':').slice(2)
+            assist.value.props.props = []
+
+            if(idx !== -1) {
+                def = fhem.app.config[props.type][props.typeIdx][props.section][props.prop][idx]
+                defParts = def.split(/(?<!\\):/)
+
+                if(defParts.length > 2) {
+                    if(defParts[0]) {
+                        deviceIdx = assist.value.props.devices.indexOf(defParts[0].split('-')[0])
+                        assist.value.props.device = deviceIdx !== -1 ? defParts[0].split('-')[0] : assist.value.props.devices[0]
+                        if(assist.value.props.device) defParts[0] = defParts[0].replace(assist.value.props.device + '-', '')
+                        if(/-ts$/.test(defParts[0])) assist.value.props.timestamp = true
+                        if(assist.value.props.timestamp) defParts[0] = defParts[0].replace(/-ts$/, '')
+                        assist.value.props.reading = /(^i-)|(^a-)/.test(defParts[0]) ? defParts[0] : 'r-' + defParts[0]
+                    }
+                    assist.value.props.val = defParts[1]
+                    defParts.splice(0, 2)
+                    assist.value.props.props.push(...defParts)
+                }
+            }
+
+            assist.value.props.idx = idx
+            assist.value.props.show = true
+        }
     }
 
     function confirmAssist() {
-        if(assist.value.devices.idx !== -1) {
-            fhem.app.config[props.type][props.typeIdx][props.section][props.prop][assist.value.devices.idx] = assist.value.devices.key + ':' + assist.value.devices.device
-        } else {
-            newDef.value = assist.value.devices.key + ':' + assist.value.devices.device
-            addDef()
+        if(props.propAssist === 'devices') {
+            if(assist.value.devices.idx !== -1) {
+                fhem.app.config[props.type][props.typeIdx][props.section][props.prop][assist.value.devices.idx] = assist.value.devices.key + ':' + assist.value.devices.device
+            } else {
+                newDef.value = assist.value.devices.key + ':' + assist.value.devices.device
+                addDef()
+            }
+
+            assist.value.devices.show = false
         }
-        assist.value.devices.show = false
+
+        if(props.propAssist === 'props') {
+            if(assist.value.props.props.length === 0) assist.value.props.props.push('') 
+            assist.value.props.props.unshift(assist.value.props.val)
+            if(/^r-/.test(assist.value.props.reading) && assist.value.props.timestamp) assist.value.props.reading += '-ts'
+
+            assist.value.props.props.unshift(
+                (assist.value.props.device ? assist.value.props.device + '-' : '') + 
+                (assist.value.props.reading ? assist.value.props.reading.replace(/^r-/, '') : '')
+            )
+
+            if(assist.value.props.idx !== -1) {
+                fhem.app.config[props.type][props.typeIdx][props.section][props.prop][assist.value.props.idx] = assist.value.props.props.join(':')
+            } else {
+                newDef.value = assist.value.props.props.join(':')
+                addDef()
+            }
+
+            assist.value.props.show = false
+        }
     }
 </script>
 
@@ -209,7 +287,6 @@
                             hide-details
                             density="compact"
                             variant="outlined">
-
                         </v-select>
                     </v-col>
                     <v-col cols="12" md="8">
@@ -218,7 +295,6 @@
                             :items="assist.devices.fhemDevices"
                             :label="props.propDef.split(':')[1]"
                             hide-details
-                            clearable
                             density="compact"
                             variant="outlined">
 
@@ -231,6 +307,90 @@
                 <v-spacer></v-spacer>
                 <v-btn @click="confirmAssist()" :disabled="!assist.devices.key || !assist.devices.device">{{ $t('_app.settings.assist.ok') }}</v-btn>
                 <v-btn @click="assist.devices.show = false">{{ $t('_app.settings.assist.cancel') }}</v-btn>
+            </v-card-actions>
+        </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="assist.props.show" max-width="850px">
+        <v-card>
+            <v-sheet color="primary">
+                <v-card-title>{{ $t('_app.settings.assist.title') }}</v-card-title>
+            </v-sheet>
+            <v-card-text>
+                <v-row class="align-center">
+                    <v-col class="text-h6">
+                        {{ prop }}
+                    </v-col>
+                    <v-btn 
+                        :icon="propHelp ? 'mdi-help-circle' : ''"
+                        variant="plain"
+                        density="compact"
+                        @click="fhem.help(propHelp)">
+                    </v-btn>
+                </v-row>
+                <v-row class="align-center">
+                    <v-col cols="12" md="3">
+                        <v-select
+                            v-model="assist.props.device"
+                            :items="assist.props.devices"
+                            label="device"
+                            hide-details
+                            density="compact"
+                            variant="outlined">
+                        </v-select>
+                    </v-col>
+
+                    <v-col cols="8" md="4">
+                        <v-autocomplete
+                            v-model="assist.props.reading"
+                            :items="readings"
+                            :disabled="assist.props.device ? false : true"
+                            label="reading"
+                            hide-details                            
+                            density="compact"
+                            variant="outlined">
+                        </v-autocomplete>
+                    </v-col>
+                    <v-col v-if="/^r-/.test(assist.props.reading)" cols="4" md="1">
+                        <v-checkbox
+                            v-model="assist.props.timestamp"
+                            label="ts"
+                            hide-details
+                            density="compact">
+
+                        </v-checkbox>
+                    </v-col>
+                    <v-col>
+                        <v-text-field
+                            v-model="assist.props.val"
+                            :disabled="assist.props.device ? false : true"
+                            label="value"
+                            clearable
+                            hide-details
+                            density="compact"
+                            variant="outlined">
+                        </v-text-field>
+                    </v-col>
+                </v-row>
+                <v-divider class="my-4"></v-divider>
+                <v-row class="align-center">
+                    <v-col cols="12" :md="['url', 'cmd', 'data', 'text'].indexOf(prop) !== -1 ? 12 : 4" v-for="(prop, idx) of assist.props.defs" :key="prop">
+                        <v-text-field
+                            v-model="assist.props.props[idx]"
+                            :label="prop"
+                            clearable
+                            hide-details
+                            density="compact"
+                            variant="outlined">
+                        </v-text-field>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn @click="confirmAssist()" :disabled="assist.props.reading || assist.props.props.join('') ? false : true">{{ $t('_app.settings.assist.ok') }}</v-btn>
+                <v-btn @click="assist.props.show = false">{{ $t('_app.settings.assist.cancel') }}</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>

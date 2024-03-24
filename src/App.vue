@@ -1,5 +1,5 @@
 <script setup>  
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
   import { useFhemStore } from '@/stores/fhem'  
   import { useDisplay } from 'vuetify'
   import router from '@/router'
@@ -10,6 +10,30 @@
   const fhem = useFhemStore()
   const { mobile } = useDisplay()
   const drawer = ref(true)
+
+  const mobileTitle = computed(() => {
+    let navPath = [],
+        navIdx,
+        res
+
+    navPath.push(...fhem.app.navigation)
+
+    if(fhem.app.currentView) {
+      for(const navNode of fhem.app.currentView.split('->')) {
+        navIdx = navPath.map((e) => e.name).indexOf(navNode)
+        if(navIdx !== -1) {
+          res = fhem.replacer(navPath[navIdx].title, '')
+          if(navPath[navIdx].group && navPath[navIdx].group.length > 0) {
+            navPath = navPath[navIdx].group
+          }
+        } else {
+          res = navNode
+        }
+      }
+    }
+    
+    return res
+  })
 
   function showInternals() {
     router.push({ name: 'internals', query: router.currentRoute.value.query })
@@ -64,7 +88,7 @@
         </template>
 
         <div v-if="!mobile && fhem.app.header.showDate" class="text-h5">{{ $d(fhem.app.header.time, fhem.app.header.dateFormat) }}</div>
-        <div v-if="mobile && fhem.app.header.showTitle" class="text-h5">{{ fhem.app.header.title }}</div>
+        <div v-if="mobile && fhem.app.header.showTitle" class="text-h5">{{ mobileTitle }}</div>
 
         <template v-slot:append>
           <v-btn v-if="fhem.app.settings.loglevel > 6" icon="mdi-information" @click="showInternals()"></v-btn>

@@ -1,3 +1,9 @@
+# v4.0.31-beta (24.03.2024)
+## App
+- bugfix for mobile Header
+## Settings
+- bugfix panel/template edit level items
+- Wizard for element definitions
 # v4.0.30-beta (20.03.2024)
 ## Core
 - bugfix for euro-sign inside from definitions

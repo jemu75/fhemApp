@@ -16,8 +16,6 @@
   }
 
   const loadView = (idx) => {
-    fhem.app.header.title = fhem.replacer(props.items[idx].title, '')
-
     router.push({ name: 'devices', params: { view: getPath(props.items[idx].name) }, query: router.currentRoute.value.query })
   }
 </script>

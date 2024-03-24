@@ -27,8 +27,7 @@ export const useFhemStore = defineStore('fhem', () => {
             content: {},
             colors: {}
         },
-        header: {
-            title: null,
+        header: {            
             time: new Date(),
             timeFormat: { hour: '2-digit', minute: '2-digit' },
             dateFormat: { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' },

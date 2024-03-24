@@ -150,6 +150,7 @@
         rawMode: false,
         section: 'panel',
         panel: null,
+        devices: {},
         preview: 'panel',
         jsonDef: null,
         jsonError: null
@@ -163,6 +164,34 @@
         let idx = fhem.app.panelList.map((e) => e.name).indexOf(props.type === 'templates' ? settings.value.panel : item.value.name)
 
         return idx !== -1 ? fhem.app.panelList[idx] : null
+    }
+
+    async function getReadings(devices) {
+        let devParts,
+            res,
+            readings = [],
+            result = {}
+
+        if(devices.length > 0) {
+            for(const device of devices) {
+                devParts = device.split(':')
+                if(devParts[1]) {
+                    res = await fhem.request('json', 'jsonList2 ' + devParts[1])
+
+                    if(res && res.Results.length > 0) {
+                        readings = []
+
+                        for(const parts of ['Internals', 'Readings', 'Attributes']) {
+                            for(const el of Object.keys(res.Results[0][parts])) readings.push(parts[0].toLowerCase() + '-' + el)
+                        }
+
+                        result[devParts[0]] = readings
+                    }
+                }
+            }
+        }
+
+        return result
     }
 
     function addItem() {
@@ -190,9 +219,22 @@
         editItem(fhem.app.config[props.type].length - 1)
     }
 
-    function editItem(idx) {
+    async function editItem(idx) {
+        let panelIdx,
+            devices = []
+
         item.value = fhem.app.config[props.type][idx]
         settings.value.itemIdx = idx
+
+        if(props.type === 'panels') {
+            if(item.value.panel.devices && item.value.panel.devices.length > 0) devices.push(...item.value.panel.devices)
+        } else {            
+            panelIdx = fhem.app.config.panels.map((e) => e.template).indexOf(item.value.name)
+
+            if(panelIdx !== -1 && fhem.app.config.panels[panelIdx].panel.devices) devices.push(...fhem.app.config.panels[panelIdx].panel.devices)
+        }
+
+        settings.value.devices = await getReadings(devices)
 
         settings.value.extended = items.value[items.value.map((e) => e.idx).indexOf(idx)].advanced !== '-' ? true : false
 
@@ -305,7 +347,7 @@
             <v-row>
                 <v-col>
                     <v-row class="align-center">
-                        <v-btn variant="plain" icon="mdi-arrow-up-left" @click="item = null"></v-btn>
+                        <v-btn variant="plain" icon="mdi-arrow-up-left" @click="item = null; settings.panel = null"></v-btn>
 
                         <v-col cols="10" md="">
                             <v-autocomplete v-if="!settings.rawMode"
@@ -353,14 +395,16 @@
                                 v-if="settings.section !== 'main'" 
                                 :type="type" 
                                 :typeIdx="settings.itemIdx" 
-                                :section="settings.section" 
+                                :section="settings.section"
+                                :devices="settings.devices" 
                                 :extended="settings.extended">
                             </SettingsPropsList>
                             <SettingsPropsMain
                                 v-if="settings.section === 'main'"
                                 :type="type" 
                                 :typeIdx="settings.itemIdx"
-                                :section="settings.section" >
+                                :section="settings.section"
+                                :devices="settings.devices">
                             </SettingsPropsMain>
                         </v-col>
                     </v-row>
@@ -409,5 +453,5 @@
                 </v-col>
             </v-row>
         </v-list-item>
-</v-list>
+    </v-list>    
 </template>
