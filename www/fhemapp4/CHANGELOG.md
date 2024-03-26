@@ -1,3 +1,8 @@
+# v4.0.32-beta (26.03.2024)
+## Panel Button
+- bugfix if more than one FHEM Command will be sended 
+## Panel Slider
+- optimization Labelcolor in case of dark mode
 # v4.0.31-beta (24.03.2024)
 ## App
 - bugfix for mobile Header

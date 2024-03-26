@@ -35,12 +35,14 @@
 
     function doCmd(obj) {
         let defParts = [],
-            cmd = obj.cmd
+            cmd = obj.cmd,
+            rp
 
         if(obj.type === 'cmd') {
             for(const device of props.devices) {
                 defParts = device.split(':')
-                if(RegExp(defParts[0]).test(cmd)) cmd = cmd.replace(defParts[0], defParts[1])
+                rp = RegExp(defParts[0], 'g')
+                if(rp.test(cmd)) cmd = cmd.replace(rp, defParts[1])
             }
 
             fhem.request('text', cmd)

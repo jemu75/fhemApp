@@ -65,5 +65,10 @@
         thumb-label
         @update:modelValue="doCmd($event)"
         >
+        <template v-slot:thumb-label="{ modelValue }">
+            <div class="text-white">
+                {{ modelValue }}
+            </div>
+        </template>
     </v-slider>
 </template>
