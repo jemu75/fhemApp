@@ -136,9 +136,9 @@
     
         <v-sheet color="secondary">
             <v-img :src="img.url" :gradient="img.url ? fhem.app.header.imageGradient : ''" height="48" cover>
-                <v-card-title v-if="panel.status.title">
+                <v-card-title>
                     <v-row no-gutters>
-                        <v-col>
+                        <v-col v-if="panel.status.title">
                             {{  title.title }}
                         </v-col>
                         <v-spacer></v-spacer>

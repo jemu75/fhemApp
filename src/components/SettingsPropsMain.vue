@@ -256,21 +256,19 @@
     <v-list-item>
         <v-row no-gutters>
             <v-col>
-                <v-pagination v-model="lvl" :length="lvlCount" total-visible="5" rounded="circle"></v-pagination>
+                <v-pagination v-model="lvl" :length="lvlCount" total-visible="5" rounded="circle" density="compact" @update:model-value="subSectionIdx = 0"></v-pagination>
             </v-col>
-            <v-col cols="2" class="text-right">
-                <v-btn 
-                    variant="text" 
-                    icon="mdi-plus" 
-                    @click="addLevel()">
-                </v-btn>
-                <v-btn 
-                    variant="text" 
-                    icon="mdi-delete" 
-                    :disabled="lvlCount < 2" 
-                    @click="deleteLevel()">
-                </v-btn>
-            </v-col>
+            <v-btn 
+                variant="plain" 
+                icon="mdi-plus" 
+                @click="addLevel()">
+            </v-btn>
+            <v-btn 
+                variant="plain" 
+                icon="mdi-delete" 
+                :disabled="lvlCount < 2" 
+                @click="deleteLevel()">
+            </v-btn>
         </v-row>
     </v-list-item>
 </template>

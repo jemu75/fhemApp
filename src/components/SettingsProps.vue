@@ -166,11 +166,21 @@
         return idx !== -1 ? fhem.app.panelList[idx] : null
     }
 
-    async function getReadings(devices) {
+    async function getReadings() {
         let devParts,
             res,
+            panelIdx,
+            devices = [],
             readings = [],
             result = {}
+
+        if(props.type === 'panels') {
+            if(item.value.panel.devices && item.value.panel.devices.length > 0) devices.push(...item.value.panel.devices)
+        } else {            
+            panelIdx = fhem.app.config.panels.map((e) => e.template).indexOf(item.value.name)
+
+            if(panelIdx !== -1 && fhem.app.config.panels[panelIdx].panel.devices) devices.push(...fhem.app.config.panels[panelIdx].panel.devices)
+        }
 
         if(devices.length > 0) {
             for(const device of devices) {
@@ -184,14 +194,14 @@
                         for(const parts of ['Internals', 'Readings', 'Attributes']) {
                             for(const el of Object.keys(res.Results[0][parts])) readings.push(parts[0].toLowerCase() + '-' + el)
                         }
-
-                        result[devParts[0]] = readings
                     }
+
+                    result[devParts[0]] = readings
                 }
             }
         }
 
-        return result
+        settings.value.devices = result
     }
 
     function addItem() {
@@ -219,22 +229,11 @@
         editItem(fhem.app.config[props.type].length - 1)
     }
 
-    async function editItem(idx) {
-        let panelIdx,
-            devices = []
-
+    function editItem(idx) {
         item.value = fhem.app.config[props.type][idx]
         settings.value.itemIdx = idx
 
-        if(props.type === 'panels') {
-            if(item.value.panel.devices && item.value.panel.devices.length > 0) devices.push(...item.value.panel.devices)
-        } else {            
-            panelIdx = fhem.app.config.panels.map((e) => e.template).indexOf(item.value.name)
-
-            if(panelIdx !== -1 && fhem.app.config.panels[panelIdx].panel.devices) devices.push(...fhem.app.config.panels[panelIdx].panel.devices)
-        }
-
-        settings.value.devices = await getReadings(devices)
+        getReadings()
 
         settings.value.extended = items.value[items.value.map((e) => e.idx).indexOf(idx)].advanced !== '-' ? true : false
 

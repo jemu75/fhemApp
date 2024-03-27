@@ -5,11 +5,12 @@
   "dist": true,
   "panel": {
     "navigation": [ "a-group::groups->%s", "a-room::rooms->%s" ],
-    "sortby": [ "a-sortby::%s" ]
+    "sortby": [ "a-sortby::%s" ],
+    "devicekeys": ["switch:FHEM switch Device"]
   },
   "status": {
     "title": [ "a-alias::%s" ],
-    "bar": [ "state:on:100:on", "::0:on" ],
+    "bar": [ "state:on:100:success", "::0:success" ],
     "imageUrl": [ "::https\\://picsum.photos/1920/1080?random" ]
   },
   "main": [
@@ -17,8 +18,8 @@
       "level": { "left1": "btn", "left2": null, "mid": "info", "right1": null, "right2": "btn" },
       "mid": {
         "text": [ "state:off:aus", "relay_0_power:0.1:an", "relay_0_power:0:standby", "state:on:an" ],
-        "divider": [ "true" ],
-        "size": [ "8" ]
+        "divider": [ "::true" ],
+        "size": [ "::8" ]
       },
       "right2": {
           "btn": [ "::mdi-power-on" ],

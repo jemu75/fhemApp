@@ -411,7 +411,7 @@ Legt den Befehl fest, der bei kurzem Drücken des Button ausgeführt wird.
 
 |Beispiel|Erklärung|
 |---|---|
-|`::set switch on`|sendet den Befehl `set switch on` an FHEM. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `switch` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt. Kann kein entsprechender Schlüssel gefunden werden, so wird der Befehl unverändert an FHEM gesendet.|
+|`::set switch on`|sendet den Befehl `set switch on` an FHEM. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `switch` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt. Kann kein entsprechender Schlüssel gefunden werden, so wird der Befehl unverändert an FHEM gesendet. Es können auch mehrere Befehle (durch Semikolon getrennt) an FHEM gesendet werden.|
 |`::home:route`|wechselt zum Navigationspunkt `home` in **FHEMApp**. Die angegebene Route muss existieren und der Route in der URL (.../devices/{route}/?...)|
 |`::https\\://fhem.de:url`|wechsel direkt zu der URL `https://fhem.de`. Bei direkter Eingabe von URLs müssen Doppelpunkte entsprechend ersetzt werden. (siehe auch [Ersetzungen](#ersetzungen))|
 |`cam-link::%s:url`|wechsel direkt zu der URL, die im Device `cam` im Reading `link` hinterlegt ist|
@@ -596,7 +596,9 @@ Damit Konfigurationen nicht für jedes Panel erstellt werden müssen, können di
 
 Nachdem eine Vorlage erstellt wurde, kann diese den gewünschten Panels in der [Panelkonfiguration](#panelkonfiguration) unter den [allgemeinen Einstellungen](#panel-allgemein) im Element [template](#element-template) zugewiesen werden.
 
-Grundsätzlich können alle Elemente, die in einem Panel konfigurierbar sind auch in Vorlagen konfiguriert werden. 
+Grundsätzlich können alle Elemente, die in einem Panel konfigurierbar sind auch in Vorlagen konfiguriert werden.
+
+Mit **FHEMApp** werden verschiedene [Standardvorlagen](#standardvorlagen) bereitgestellt, welche direkt verwendet werden können.
 # Navigation
 Das Navigationsmenü von **FHEMApp** kann individuell angepasst werden. So ist es möglich die Reihenfolge der einzelnen Navigationspunkte festzulegen, Navigationspunkte mit einem Icon zu versehen oder alternative Beschriftungen für die Navigationspunkte festzulegen. 
 
@@ -632,3 +634,10 @@ Neben festen Sprachvariablen kann die Ersetzung `%t()` auch mit den Werten von F
 |Beispiel Elementdefinition|Sprachvariable|de|en|fr|es|
 |---|---|---|---|---|---|
 |`state::%t(%s)`|`on`|an|on|allumé|encendida|
+
+## Standardvorlagen
+Mit **FHEMApp** werden verschiedene Standardvorlagen bereitgestellt, die den Einstieg besonders einfach machen.
+|Vorlage|Beispiel|
+|---|---|
+|[shellyPlus_1pm](./public/templates/shellyPlus_1pm.json)|![](./docs/media/example_panel.png)|
+|...||

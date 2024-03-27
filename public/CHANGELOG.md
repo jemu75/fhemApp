@@ -1,3 +1,8 @@
+# v4.0.33-beta (27.03.2024)
+## Settings
+- bugfix for panel / template settings
+## Panel
+- bugfix show expand icon if no title is defined
 # v4.0.32-beta (26.03.2024)
 ## Panel Button
 - bugfix if more than one FHEM Command will be sended 

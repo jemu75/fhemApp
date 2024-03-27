@@ -15,8 +15,8 @@
 
     const listItemDefs = {
         panel: [
-            { type: 'defs', show: ['panels', 'extended.panels'], required: true, prop: 'devices', def: 'key:fhem_device', help: 'element-devices', assist: 'devices' },
             { type: 'template', show: ['panels', 'extended.panels'], required: false, prop: 'template', help: 'element-template' },
+            { type: 'defs', show: ['panels', 'extended.panels'], required: true, prop: 'devices', def: 'key:fhem_device', help: 'element-devices', assist: 'devices' },
             { type: 'text', show: ['templates'], required: false, prop: 'author', def: 'text' },
             { type: 'text', show: ['templates'], required: false, prop: 'date', def: 'text' },
             { type: 'defs', show: ['templates'], required: true, prop: 'devicekeys', def: 'key:description', help: 'element-devicekeys' },
@@ -56,12 +56,16 @@
 
         for(const template of fhem.app.config.templates) if(!template.dist) res.push({ title: template.name, value: template.name })
 
-        res.sort((a, b) => (a.title > b.title) ? 1 : (b.title > a.title) ? -1 : 0)
+        if(res.length > 0) res.sort((a, b) => (a.title > b.title) ? 1 : (b.title > a.title) ? -1 : 0)
 
         for(const dist of fhem.app.distTemplates) res.push({ title: dist + ' (' + fhem.replacer('%t(_app.default)', '') + ')', value: dist })
 
         return res
     })
+
+    function loadDevices() {
+        console.log('hier versuchen, funktion von parent auszuführen')
+    }
 
     function panelIcon(def) {
         let res = {
@@ -113,7 +117,7 @@
                         v-model="fhem.app.config.panels[props.typeIdx]['template']"                                
                         :items="templates"
                         :label="$t('_app.settings.templates.title')"
-                        :disabled="fhem.app.config.templates.length === 0"
+                        :disabled="templates.length === 0"
                         density="compact"
                         variant="outlined"
                         class="pt-3">
