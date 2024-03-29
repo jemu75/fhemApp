@@ -1,3 +1,6 @@
+# v4.0.34-beta (29.03.2024)
+## Panel Button
+- When selecting the type "route" on click/longClick/longRelease, individual panels can now also be addressed
 # v4.0.33-beta (27.03.2024)
 ## Settings
 - bugfix for panel / template settings

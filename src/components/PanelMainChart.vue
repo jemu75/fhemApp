@@ -32,7 +32,7 @@
     const chartStyle = computed(() => {
         loadSeries()
 
-        return 'height: ' + (fhem.app.panelMaximized ? (window.innerHeight - 250) + 'px' : props.height)
+        return 'height: ' + (/=maximized$/.test(fhem.app.currentView) ? (window.innerHeight - 250) + 'px' : props.height)
     })
 
     function toLocaleDate(val) {
@@ -121,7 +121,7 @@
         },        
         options = JSON.parse(JSON.stringify(fhem.getEl(props.el, ['options']) || {})),
         options2 = JSON.parse(JSON.stringify(fhem.getEl(props.el, ['options2']) || {})),
-        opts = Object.assign(preset, fhem.app.panelMaximized && Object.keys(options2).length > 0 ? options2 : options ),
+        opts = Object.assign(preset, /=maximized$/.test(fhem.app.currentView) && Object.keys(options2).length > 0 ? options2 : options ),
         label
 
         chart.value.fromMenu = false
@@ -163,7 +163,7 @@
 </script>
 
 <template>
-    <div v-if="fhem.app.panelMaximized" class="mx-4 my-4 text-right">
+    <div v-if="/=maximized$/.test(fhem.app.currentView)" class="mx-4 my-4 text-right">
         <v-menu
             v-model="chart.fromMenu"
             :close-on-content-click="false">

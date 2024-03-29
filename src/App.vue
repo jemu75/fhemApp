@@ -16,9 +16,9 @@
         navIdx,
         res
 
-    navPath.push(...fhem.app.navigation)
+    if(fhem.app.currentView && !/^panel=/.test(fhem.app.currentView)) {
+      navPath.push(...fhem.app.navigation)
 
-    if(fhem.app.currentView) {
       for(const navNode of fhem.app.currentView.split('->')) {
         navIdx = navPath.map((e) => e.name).indexOf(navNode)
         if(navIdx !== -1) {

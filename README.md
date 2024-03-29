@@ -412,7 +412,8 @@ Legt den Befehl fest, der bei kurzem Drücken des Button ausgeführt wird.
 |Beispiel|Erklärung|
 |---|---|
 |`::set switch on`|sendet den Befehl `set switch on` an FHEM. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `switch` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt. Kann kein entsprechender Schlüssel gefunden werden, so wird der Befehl unverändert an FHEM gesendet. Es können auch mehrere Befehle (durch Semikolon getrennt) an FHEM gesendet werden.|
-|`::home:route`|wechselt zum Navigationspunkt `home` in **FHEMApp**. Die angegebene Route muss existieren und der Route in der URL (.../devices/{route}/?...)|
+|`::home:route`|wechselt zum Navigationspunkt `home` in **FHEMApp**. Die angegebene Route muss existieren und der Route in der URL (.../devices/{route}/?...) entsprechen|
+|`::panel=licht_bad:route`|wechselt zum Panel `licht_bad` in **FHEMApp**. Das angegebene Panel muss existieren|
 |`::https\\://fhem.de:url`|wechsel direkt zu der URL `https://fhem.de`. Bei direkter Eingabe von URLs müssen Doppelpunkte entsprechend ersetzt werden. (siehe auch [Ersetzungen](#ersetzungen))|
 |`cam-link::%s:url`|wechsel direkt zu der URL, die im Device `cam` im Reading `link` hinterlegt ist|
 ### Level Element Button longClick

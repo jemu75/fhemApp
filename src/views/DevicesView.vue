@@ -25,7 +25,7 @@
   const cols = computed(() => {
     let res = { cols: 12, sm: 6, lg: 4 }
 
-    if(fhem.app.panelMaximized) res = { cols: 12 }
+    if(/=maximized$/.test(fhem.app.currentView)) res = { cols: 12 }
 
     return res
   })

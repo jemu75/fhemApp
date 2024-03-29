@@ -46,7 +46,6 @@ export const useFhemStore = defineStore('fhem', () => {
         panelView: [],
         panelList: [],
         navigation: [],
-        panelMaximized: false,
         threads: [],
         distTemplates: [],
         noConfig: null,        
@@ -892,16 +891,22 @@ export const useFhemStore = defineStore('fhem', () => {
 
     //coreFunction load Panels in View
     function loadPanelView() {
-        let routes
-        let tid = thread()
+        let routes,
+            panelIdx,
+            tid = thread()
 
         app.panelView = []
 
-        for(const [idx, panel] of Object.entries(app.panelList)) {
-            if(panel.panel.navigation) {
-                routes = handleDefs(panel.panel.navigation, ['route'], [''], true, ',')
-
-                if(routes.map((e) => e.route).indexOf(app.currentView) !== -1) app.panelView.push(idx)
+        if(/^panel=.*/.test(app.currentView)) {
+            panelIdx = app.panelList.map((e) => e.name).indexOf(app.currentView.split('=')[1])
+            if(panelIdx !== -1) app.panelView.push(panelIdx)
+        } else {
+            for(const [idx, panel] of Object.entries(app.panelList)) {
+                if(panel.panel.navigation) {
+                    routes = handleDefs(panel.panel.navigation, ['route'], [''], true, ',')
+    
+                    if(routes.map((e) => e.route).indexOf(app.currentView) !== -1) app.panelView.push(idx)
+                }
             }
         }
         

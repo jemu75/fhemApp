@@ -1,5 +1,6 @@
 <script setup>
     import { computed, watch, onMounted, ref } from 'vue'
+    import router from '@/router'
     import { useFhemStore } from '@/stores/fhem'
     import PanelMain from './PanelMain.vue'
 
@@ -64,7 +65,13 @@
             opts.activeLevels = levelsActive(item.panel.main)
         } else {
             if(opts.expandable) opts.expanded = !opts.expanded
-            if(opts.maximizable) fhem.app.panelMaximized = opts.expanded ?  item.panel : false
+            if(opts.maximizable) {
+                if(opts.expanded) {
+                    router.push({ name: 'devices', params: { view: 'panel=' + item.panel.name + '=maximized' }, query: router.currentRoute.value.query })
+                } else {
+                    router.back()
+                }   
+            }
         }
 
         if(opts.expanded) {
