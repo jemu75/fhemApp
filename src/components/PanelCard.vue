@@ -121,7 +121,7 @@
 </script>
 
 <template>
-    <v-card variant="tonal">
+    <v-card variant="tonal" v-if="fhem.app.isReady">
         <v-row no-gutters>
             <v-col v-if="panel.status.bar">
                 <v-progress-linear
@@ -161,7 +161,11 @@
         </v-sheet>
 
         <PanelMain :main="panel.main" :levels="levelOpts.levels" :iconmap="panel.panel.iconmap" :devices="panel.panel.devices"></PanelMain>
-        
+
+        <v-card-text v-if="item.panel.internals">
+            {{ item.panel.internals }}
+        </v-card-text>
+
         <v-layout style="height:24px">
             <v-system-bar color="secondary">
                 <v-icon v-if="infoLeft1.icon" :icon="infoLeft1.icon" :color="infoLeft1.color"></v-icon>

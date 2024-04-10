@@ -7,9 +7,8 @@
   import SettingsProps from '../components/SettingsProps.vue'
   import SettingsColors from '../components/SettingsColors.vue'
   import SettingsContent from '../components/SettingsContent.vue'
-import { onMounted } from 'vue'
 
-  const tabs = ['header', 'panels', 'templates', 'navigation', 'colors', 'content']
+  const tabs = ['general', 'panels', 'templates', 'navigation', 'colors', 'content']
 
   const settingsTab = ref(tabs[0])
   const configIsChanged = ref(false)
@@ -22,16 +21,16 @@ import { onMounted } from 'vue'
   })
 
   async function saveSettings(save) {
-    let config = null,
-        re = new RegExp('€', 'g'),
-        eur = '&#x20AC;'
+    let config = null
     
     if(save) {
       for(const [idx, template] of Object.entries(fhem.app.config.templates)) {
         if(template.dist) fhem.app.config.templates.splice(idx, 1)
       }
+      
+      const utfStr = new TextEncoder().encode(JSON.stringify(fhem.app.config))
+      config = encodeURIComponent(btoa(String.fromCodePoint(...utfStr)))
 
-      config = encodeURIComponent(btoa(JSON.stringify(fhem.app.config).replace(re, eur)))
       await fhem.request('text', 'set ' + fhem.app.fhemDevice + ' config ' + config)
     }
     
@@ -39,10 +38,7 @@ import { onMounted } from 'vue'
     configIsChanged.value = false
   }
 
-  onMounted(() => {
-    if(fhem.app.noConfig) fhem.log(3, 'Settings View - No Config handling', null, 'noConfig')
-  })
-
+  if(fhem.app.noConfig) fhem.log(3, 'Settings View - No Config handling', null, 'noConfig')
 </script>
 
 <template>
@@ -70,7 +66,7 @@ import { onMounted } from 'vue'
       <v-tab v-for="tab of tabs" :value="tab" :key="tab">{{ $t('_app.settings.' + tab + '.title', 2) }}</v-tab>
     </v-tabs>
 
-    <SettingsHeader v-if="settingsTab === 'header'"></SettingsHeader>
+    <SettingsHeader v-if="settingsTab === 'general'"></SettingsHeader>
     <SettingsNavigation v-if="settingsTab === 'navigation'"></SettingsNavigation>
     <SettingsProps v-if="settingsTab === 'panels'" :type="settingsTab"></SettingsProps>
     <SettingsProps v-if="settingsTab === 'templates'" :type="settingsTab"></SettingsProps>

@@ -39,8 +39,10 @@ export const useFhemStore = defineStore('fhem', () => {
             imageGradient: null,
             showDarkMode: false,
             showReloadPage: false,
+            showUpdate: false,
             showSettings: false,
-            commands: []
+            commands: [],
+            darkModeOverFhem: null
         },
         fhemDevice: null,
         panelView: [],
@@ -53,6 +55,8 @@ export const useFhemStore = defineStore('fhem', () => {
         message: false,
         currentView: null,
         version: null,
+        updateAvailable: false,
+        updateProgress: false,
         helpURL: 'https://github.com/jemu75/fhemApp/tree/dev-v4?tab=readme-ov-file#'        
     })
 
@@ -62,7 +66,7 @@ export const useFhemStore = defineStore('fhem', () => {
         xhrOffset: 0,
         xhrBuffer: '',
         evtBuffer: [],
-        panelMap: []        
+        panelMap: []
     }
 
     //coreFunction emit messages 1=status, 2=error, 3=warning, 4=info, 5=send, 6=receive, 7=details
@@ -104,8 +108,8 @@ export const useFhemStore = defineStore('fhem', () => {
         }, 1000)
     }
 
-    //coreFunction to read Version
-    async function getVersion() {
+     //coreFunction to read Version
+     async function getVersion() {
         let  header = new Headers()
 
         header.append('pragma', 'no-cache')
@@ -197,7 +201,6 @@ export const useFhemStore = defineStore('fhem', () => {
         }
 
         app.message = false
-        app.panelMaximized = false
 
         log(4, 'URL processed.', route)
 
@@ -280,8 +283,8 @@ export const useFhemStore = defineStore('fhem', () => {
     function base64ToString(val) {
         try {
             const decoded = atob(val)
-            if (decoded && typeof decoded === "string") {
-              return decoded
+            if(decoded && typeof decoded === 'string') {
+                return new TextDecoder().decode(Uint8Array.from(decoded, (m) => m.codePointAt(0)))
             }
         } catch { 
             log(2, 'Base64 decode failed.', val, 'base64')
@@ -326,16 +329,14 @@ export const useFhemStore = defineStore('fhem', () => {
     async function loadConfig() {
         let res = await request('text', 'get ' + app.fhemDevice + ' config'),            
             resText,
-            cfg,
-            re = new RegExp('&#x20AC;', 'g'),
-            eur = '€'
+            cfg
 
         if(RegExp('Please define '+ app.fhemDevice +' first').test(res)) {
             log(2, 'Wrong FHEM Config-Device in URL.', { fhemResult: res }, 'wrongDevice')
             return false
         }
 
-        resText = base64ToString(res).replace(re, eur)
+        resText = base64ToString(res)
         cfg = typeof resText === 'string' ? stringToJson(resText) : false
 
         app.noConfig = false
@@ -402,6 +403,21 @@ export const useFhemStore = defineStore('fhem', () => {
         return true
     }
 
+    //coreFunction start App-Update
+    function appUpdate() {
+        thread()
+        app.updateProgress = true
+        request('text', 'set ' + app.fhemDevice + ' update')
+    }
+
+    //subFunction for handle internal tasks triggered from FHEM (update, darkMode) called from handleEventBuffer and initialLoad
+    function handleInternalTask(task, val) {
+        if(task === 'update' && val === '1') app.updateAvailable = true
+        if(task === 'update' && val === '0' && app.updateProgress) location.reload()
+
+        if(task === 'darkMode') changeDarkMode(handleDefs([[app.header.darkModeOverFhem.split(':')[1], val, 'true'].join(':')], ['dark'], [false]).dark ? 'dark' : 'light')
+    }
+
     //subFunction for update values in panelList
     function doUpdate(obj, path, value) {
         let parts
@@ -426,10 +442,15 @@ export const useFhemStore = defineStore('fhem', () => {
             idx = stat.panelMap.map((e) => e.reading).indexOf(evt.reading)
 
             if(idx !== -1) {
-                if(!localLoop) log(6, 'Data from FHEM handled.', evt)
-                for(const path of stat.panelMap[idx].items) {
-                    doUpdate(app.panelList, path, evt.value)
+                if(stat.panelMap[idx].items) {
+                    for(const path of stat.panelMap[idx].items) {
+                        doUpdate(app.panelList, path, evt.value)
+                    }
+                } else {
+                    handleInternalTask(stat.panelMap[idx].task, evt.value)
                 }
+
+                if(!localLoop) log(6, 'Data from FHEM handled.', evt)
             } else {
                 if(!localLoop)  log(8, 'Data from FHEM received.', evt)
             }
@@ -589,7 +610,8 @@ export const useFhemStore = defineStore('fhem', () => {
             devices,
             panels = JSON.parse(JSON.stringify(app.config.panels)),
             templates = JSON.parse(JSON.stringify(app.config.templates)),
-            templateIdx
+            templateIdx,
+            darkModeDef
         
         if(app.config.panels.length === 0) log(3, 'No Panels defined.', null, 'noPanels')
 
@@ -631,6 +653,13 @@ export const useFhemStore = defineStore('fhem', () => {
                 createPanelMap(devices, panel, [idx])
                 app.panelList.push(panel)
             }
+        }
+
+        //add watching for updates
+        stat.panelMap.push({ reading: app.fhemDevice + '-update_available', task: 'update' })
+        if(app.header.darkModeOverFhem) {
+            darkModeDef = app.header.darkModeOverFhem.split(':')
+            if(darkModeDef.length === 2) stat.panelMap.push({ reading: darkModeDef[0], task: 'darkMode'})
         }
 
         log(4, 'PanelList and PanelMapping created.', { panelList: app.panelList, panelMap: stat.panelMap })
@@ -689,7 +718,11 @@ export const useFhemStore = defineStore('fhem', () => {
 
             val = getEl(res.Results[idx], jsonList2Item)
 
-            for(const path of item.items) doUpdate(panelList, path, val)
+            if(item.items) {
+                for(const path of item.items) doUpdate(panelList, path, val)
+            } else {
+                handleInternalTask(item.task, val)
+            }
         }
 
         app.panelList = panelList
@@ -788,7 +821,9 @@ export const useFhemStore = defineStore('fhem', () => {
             }
         }
 
-        if(!defs) return isList ? res : prototyp
+        if(!isList) res = Object.assign({}, prototyp)
+
+        if(!defs) return res
 
         defList = JSON.parse(JSON.stringify(defs))
 
@@ -952,8 +987,8 @@ export const useFhemStore = defineStore('fhem', () => {
     function init() {
         log(1, 'FHEMApp launching...')
 
-        getVersion()
         initDarkMode()
+        getVersion()
         initClock()
 
         //register eventHandler
@@ -971,5 +1006,5 @@ export const useFhemStore = defineStore('fhem', () => {
     //FHEMApp entryPoint
     router.isReady().then(init())
 
-    return { app, getEl, handleDefs, getIcon, replacer, createSession, request, thread, stringToJson, log, help, changeDarkMode }
+    return { app, getEl, handleDefs, getIcon, replacer, createSession, request, thread, stringToJson, log, help, changeDarkMode, appUpdate }
 })

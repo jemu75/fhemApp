@@ -2,6 +2,9 @@
     "_app": {
         "settings": {
             "title": "Settings",
+            "general": {
+                "title": "General" 
+            },
             "header": {
                 "title": "Header",
                 "barTitle":"Header",
@@ -20,11 +23,14 @@
                 "showDarkModeHint": "",
                 "showReloadPage": "Page refresh",
                 "showReloadPageHint": "",
+                "showUpdate": "show Update",
+                "showUpdateHint": "",
                 "showSettings": "Sesstings",
                 "showSettingsHint": "",
                 "showLanguages": "Languages",
                 "showLanguagesHint": "",
                 "optionsCommandTitle":"Optionsmenu FHEM Commands",
+                "darkModeOverFhem": "DarkMode over FHEM Reading",
                 "commandName": "Name",
                 "commandNamePlaceholder": "restart",
                 "commandNameRules": "Input required!",
@@ -103,7 +109,8 @@
         "options": {
             "darkMode": "Day/Night Mode",
             "reload": "Refresh",
-            "settings": "Settings"
+            "settings": "Settings",
+            "update": "Update"
         },
         "internals": {
             "title": "Internals",

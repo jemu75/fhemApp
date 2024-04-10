@@ -1,6 +1,12 @@
+# v4.0.35-beta (10.04.2024)
+## OptionsMenu
+- App Update Function
+## Core
+- Changing DarkMode over FHEM reading
+- Solving unicode problem https://developer.mozilla.org/en-US/docs/Glossary/Base64#the_unicode_problem 
 # v4.0.34-beta (29.03.2024)
 ## Panel Button
-- When selecting the type "route" on click/longClick/longRelease, individual panels can now also be addressed.
+- When selecting the type "route" on click/longClick/longRelease, individual panels can now also be addressed
 # v4.0.33-beta (27.03.2024)
 ## Settings
 - bugfix for panel / template settings

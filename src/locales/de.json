@@ -2,6 +2,9 @@
     "_app": {
         "settings": {
             "title": "Einstellungen",
+            "general": {
+                "title": "Allgemein" 
+            },
             "header": {
                 "title": "Kopfzeile",
                 "barTitle":"Kopfzeile",
@@ -20,11 +23,14 @@
                 "showDarkModeHint": "",
                 "showReloadPage": "Seite aktualsieren",
                 "showReloadPageHint": "",
+                "showUpdate": "Update anzeigen",
+                "showUpdateHint": "",
                 "showSettings": "Einstellungen",
                 "showSettingsHint": "",
                 "showLanguages": "Sprachen",
                 "showLanguagesHint": "",
                 "optionsCommandTitle":"Optionsmenü FHEM Befehle",
+                "darkModeOverFhem": "DarkMode über FHEM Reading",
                 "commandName": "Name",
                 "commandNamePlaceholder": "restart",
                 "commandNameRules": "Eingabe erforderlich!",
@@ -103,7 +109,8 @@
         "options": {
             "darkMode": "Tag/Nacht Modus",
             "reload": "Aktualisieren",
-            "settings": "Einstellungen"
+            "settings": "Einstellungen",
+            "update": "Aktualisierung"
         },
         "internals": {
             "title": "Systeminformationen",

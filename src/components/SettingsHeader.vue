@@ -84,6 +84,35 @@
         </v-col>
       </v-row>
     </v-list-item>
+
+    <v-divider></v-divider>
+    <v-list-item :title="$t(preLang + 'darkModeOverFhem')">
+      <template v-slot:append>
+        <v-btn
+          color="info"
+          icon="mdi-help-circle"
+          variant="text"
+          @click="fhem.help('farbschema')"
+        ></v-btn>
+      </template>
+    </v-list-item>
+    <v-list-item>
+      <v-row no-gutters>
+        <v-col cols="12" md="4" class="pt-3">
+          <v-text-field 
+            density="compact" 
+            variant="outlined" 
+            clearable
+            persistent-placeholder
+            placeholder="device-reading:value"
+            label="Definition"
+            v-model="fhem.app.config.header.darkModeOverFhem"        
+            >
+          </v-text-field>
+        </v-col>
+      </v-row>
+    </v-list-item>
+
     <v-divider></v-divider>
     <v-list-item :title="$t(preLang + 'optionsTitle')">
       <template v-slot:append>
@@ -111,6 +140,11 @@
           <v-checkbox
             :label="$t(preLang + 'showSettings')"
             v-model="fhem.app.config.header.showSettings"/>
+        </v-col>
+        <v-col cols="6" lg="">
+          <v-checkbox
+            :label="$t(preLang + 'showUpdate')"
+            v-model="fhem.app.config.header.showUpdate"/>
         </v-col>
         <v-col cols="6" lg="">
           <v-checkbox

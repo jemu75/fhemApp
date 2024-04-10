@@ -58,7 +58,7 @@ Diese sind u.a. beim Betrieb von **FHEMApp** auf einem separaten Web-Server nöt
 |server|url bzw. IP-Adresse unter der FHEM erreichbar ist|fhem|
 |port|Port über den FHEM erreichbar ist|8083|
 |path|Pfad der FHEM Installation|fhem|
-|dark|Festlegen ob **FHEMApp** im dunklen Farbschema geöffnet wird|1
+|dark|Festlegen ob **FHEMApp** im dunklen Farbschema geöffnet wird (siehe auch [Farbschema](#farbschema))|1
 |lang|Sprache in der **FHEMApp** geöffnet wird|de, en, ...|
 |xhr|Umschaltung auf Longpoll wenn Browser kein websocket unterstützt|1|
 |loglevel|Detailgrad der Protokollierung für Fehleranalyse über die Browserkonsole. Ab dem loglevel 7 wird die Kopfzeile von **FHEMApp** umgeschaltet und ein Infosymbol angzeigt. Bei Klick auf das Infosymbol werden weitere Systeminformationen von **FHEMApp** angezeigt. (*1=status, 2=error, 3=warnings, 4=infos, 5=all request to fhem, 6=received events from fhem, 7=details, 8=all received events from FHEM*)|1...8|
@@ -76,10 +76,30 @@ Nachdem du Einstellungen in **FHEMApp** angepasst hast, müssen diese gespeicher
 
 ![](./docs/media/example_settings_4.png)*Beispiel für Einstellungen*
 
-# Kopfzeile
+# Allgemeine Einstellungen
+
+## Kopfzeile
 In den Einstellungen für die Kopfzeile kann die Anzeige für das aktuelle Datum, die Uhrzeit und die aktuelle Navigationauswahl aktiviert werden. Die Anzeige für Datum und Uhrzeit erfolgt nur in der Desktopansicht. In der mobilen Ansicht werden Datum und Uhrzeit nicht angezeigt. Die Anzeige für die Navigationsauswahl erfolgt nur in der mobilen Ansicht.
 
 Weiterhin kann ein Hintergrundbild für die Kopfzeile festgelegt werden. Die Verwendung des Farbfilters mit einer [CSS Linear Gradient Definition](https://www.w3schools.com/css/css3_gradients.asp) ermöglicht ein Anpassung des Hintergrundbildes an das festgelegte Farbschema. 
+
+## Farbschema
+In **FHEMApp** werden zwei Farbschemen (dunkel und hell) unterstützt. Die einzelnen Farben können für beide Farbschemen wie im Abschnitt [Farben](#farben) beschrieben, angepasst werden. Beim Öffnen von **FHEMApp** wird das Farbschema (dunkel bzw. hell) aus den Einstellungen des Browsers bzw. des Betriebssystems verwendet. Zusätzlich kann das Farbschema wie folgt gesteuert werden.
+1. über den URL-Parameter `dark` (siehe auch [zusätzliche URL-Parameter](#zusätzliche-url-parameter))
+2. über ein FHEM Reading
+3. über das Optionsmenü (siehe auch [Optionsmenü](#optionsmenü))
+
+Wenn das Farbschema über den **URL-Parameter** `dark` festgelegt wird, dann wird **FHEMApp** in diesem geöffnet und die Browsereinstellung bzw. Betriebssystemeinstellung ignoriert.
+
+Wenn das Farbschema über ein **FHEM Reading** gesteuert wird, dann wird die Browerseinstellung bzw. Betriebssystemeinstellung und (sofern festgelegt) der URL-Parameter `dark` ignoriert. Jede Änderung des FHEM Reading hat dann eine Umschaltung aller gerade geöffneten **FHEMApp's** zur Folge. Das festgelegte FHEM Reading wird auf seinen Wahrheitswert geprüft. Wenn dieses zutrifft, dann wird **FHEMApp** in das dunkle Farbschema geschaltet. Ansonsten wird **FHEMApp** in das helle Farbschema geschaltet.
+
+|Parameter|Beschreibung|
+|---|---|
+|reading|siehe Parameter [reading](#konfiguration-der-elemente)|
+|value|siehe Parameter [value](#konfiguration-der-elemente)|
+
+Die Umschaltung des Farbschema über das **Optionsmenü** kann zur Laufzeit immer erfolgen, wird jedoch nicht gespeichert.
+
 ## Optionsmenü
 Durch Aktivierung der folgenden Optionen wird das Optionsmenü oben rechts in der Kopfleiste eingeblendet.
 ![](./docs/media/example_option_menu.png)
@@ -608,7 +628,7 @@ Die alternativen Beschriftungen können somit auch für die Erstellung mehrsprac
 ![](./docs/media/example_settings_5.png)
 <br>*Beispiel für ein angepasstes Navigationsmenü*
 # Farben
-In **FHEMApp** können altrnativ zu hexadezimalen Farbangaben auch  Farbvariablen eingesetzt werden. Damit können Themen erstellt und Farben schnell angepasst werden. Grundsätzlich steht ein helles und ein dunkles Farbschema für jede Instanz von **FHEMApp** zur Verfügung. 
+In **FHEMApp** können altrnativ zu hexadezimalen Farbangaben auch  Farbvariablen eingesetzt werden. Damit können Themen erstellt und Farben schnell angepasst werden. Grundsätzlich steht ein helles und ein dunkles Farbschema für jede Instanz von **FHEMApp** zur Verfügung. (siehe auch [Farbschema](#farbschema))
 
 Neben frei definierbaren Farbvariablen, die Elementdefinitionen zur Angabe von Farbwerten eingesetzt werden können, gibt es feste Farbvariablen.
 
