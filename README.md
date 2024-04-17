@@ -110,6 +110,7 @@ Durch Aktivierung der folgenden Optionen wird das Optionsmenü oben rechts in de
 |Tag/Nacht-Modus|Umschaltung zwischen hellem und dunklem Farbschema|
 |Seite aktualisieren|Neuladen von **FHEMApp** auslösen. Diese Option ist im Normalfall nicht nötig. Sie kann jedoch im Einzelfall helfen, wenn Panels bei Longpoll-verbindungen nicht aktualisiert werden|
 |Einstellungen|Aktiviert direkten Zugriff auf die Einstellungen von **FHEMApp** über das Optionsmenü|
+|Updates|der Punkt "Aktualisierung" wird angezeigt, sobald ein Update für **FHEMApp** verfügbar ist. Die Funktion prüft das Reading `update_available`. Damit sind Updates von FHEMApp einfach und direkt über FHEMApp möglich. Nachdem ein Update ausgeführt wurde, wird automatisch auch ein Reload von **FHEMApp** ausgeführt|
 |Sprachen|ermöglicht die Umstellung der Sprache. Siehe hierzu auch den Abschnitt [Sprachen](#sprachen)|
 
 ## Optionsmenü FHEM Befehle
@@ -658,7 +659,10 @@ Neben festen Sprachvariablen kann die Ersetzung `%t()` auch mit den Werten von F
 
 ## Standardvorlagen
 Mit **FHEMApp** werden verschiedene Standardvorlagen bereitgestellt, die den Einstieg besonders einfach machen.
-|Vorlage|Beispiel|
+|Beschreibung|Beispiel|
 |---|---|
-|[shellyPlus_1pm](./public/templates/shellyPlus_1pm.json)|![](./docs/media/example_panel.png)|
-|...||
+|Name: *switch* <br>Devicekeys: *switch*<br>Readings: *alias, **room**, group, **state*** <br><br>Einsatz: Steckdosen<br>JSON: [switch](./public/templates/switch.json)|![](./docs/media/template_switch.png)|
+|Name: *light* <br>Devicekeys: *light*<br>Readings: *alias, **room**, group, **state*** <br><br>Einsatz: Lichtschalter<br>JSON: [light](./public/templates/light.json)|![](./docs/media/template_light.png)|
+|Name: *dimmer* <br>Devicekeys: *dimmer*<br>Readings: *alias, **room**, group, **state**, **pct*** <br><br>Einsatz: Dimmer<br>JSON: [dimmer](./public/templates/dimmer.json)|![](./docs/media/template_dimmer.png)|
+|Name: *contact* <br>Devicekeys: *contact*<br>Readings: *alias, **room**, group, **state*** <br><br>Einsatz: Tür-/Fensterkontakte<br>JSON: [contact](./public/templates/contact.json)|![](./docs/media/template_contact.png)|
+|Name: *blind* <br>Devicekeys: *blind*<br>Readings: *alias, **room**, group, **state**, **pct**, motor* <br><br>Einsatz: Jalousien<br>JSON: [blind](./public/templates/blind.json)|![](./docs/media/template_blind.png)|

@@ -3,24 +3,24 @@
     "themes": {      
         "dark": {
             "colors": {
-                "primary": "#212121",
-                "secondary": "#424242",
-                "accent": "#4caf50",
+                "primary": "#263238",
+                "secondary": "#616161",
+                "accent": "#86f8bf",
                 "error": "#f44336",
                 "warning": "#FB8C00",
                 "info": "#607d8b",
-                "success": "#8bc34a"
+                "success": "#86f8bf"
             }
         },
         "light": {
             "colors": {
-                "primary": "#37474F",
-                "secondary": "#90A4AE",
-                "accent": "#4caf50",
+                "primary": "#01579b",
+                "secondary": "#757575",
+                "accent": "#00dfca",
                 "error": "#f44336",
                 "warning": "#FB8C00",
                 "info": "#607d8b",
-                "success": "#8bc34a"
+                "success": "#00dfca"
             }
         }
     }

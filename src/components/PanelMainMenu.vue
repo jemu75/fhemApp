@@ -44,7 +44,7 @@
             if(RegExp(defParts[0]).test(cmd)) cmd = cmd.replace(defParts[0], defParts[1])
         }
 
-        fhem.request('text', cmd)
+        return fhem.request('text', cmd)
     }
 </script>
 

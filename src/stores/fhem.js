@@ -395,7 +395,11 @@ export const useFhemStore = defineStore('fhem', () => {
             if(panel.template && app.config.templates.map((e) => e.name).indexOf(panel.template) === -1) {
                 if(app.distTemplates.indexOf(panel.template) !== -1) {
                     distTemplate = await getJsonFile('./templates/' + panel.template + '.json')
-                    if(distTemplate) app.config.templates.push(distTemplate)
+                    if(distTemplate) {
+                        distTemplate.dist = true
+                        app.config.templates.push(distTemplate)
+                    }
+                    
                 }
             }
         }        
@@ -886,7 +890,7 @@ export const useFhemStore = defineStore('fhem', () => {
         if(idx !== -1) {
             navObj[idx] = item
         } else {
-            navObj.push(item)
+            if(item.name) navObj.push(item)
         }
 
         return navObj

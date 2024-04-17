@@ -1,0 +1,77 @@
+{
+	"name": "switch",
+	"author": "jemu",
+	"date": "2024-04-16",	
+	"panel": {
+		"devicekeys": [
+			"switch:FHEM switch device"
+		],
+		"navigation": [
+			"switch-a-room::Räume->%s",
+			"switch-a-group::Gruppen->%s"
+		],
+		"sortby": [
+			"switch-a-sortby::%s"
+		]
+	},
+	"status": {
+		"title": [
+			"switch-a-alias:^.+$:%s",
+			"switch-i-NAME::%s"
+		],
+		"imageUrl": [
+			"::images/header_01.png"
+		],
+		"bar": [
+			"switch-state:on:100",
+			"switch-state::0"
+		]
+	},
+	"main": [
+		{
+			"level": {
+				"left1": "btn",
+				"mid": "info",
+				"right2": "btn"
+			},
+			"left1": {
+				"btn": [
+					"::mdi-power-off"
+				],
+				"divider": [
+					"::true"
+				],
+				"click": [
+					"::set switch off"
+				]
+			},
+			"mid": {
+				"text": [
+					"switch-state:on:an",
+					"switch-state:off:aus",
+					"switch-state::%s"
+				],
+				"divider": [
+					"::true"
+				],
+				"size": [
+					"::7"
+				]
+			},
+			"right2": {
+				"btn": [
+					"::mdi-power-on"
+				],
+				"click": [
+					"::set switch on"
+				]
+			}
+		}
+	],
+	"info": {
+		"left1": [
+			"switch-state:on::mdi-power-plug",
+			":::mdi-power-plug-off"
+		]
+	}
+}

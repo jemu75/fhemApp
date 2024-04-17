@@ -1,0 +1,50 @@
+{
+	"name": "contact",
+	"author": "jemu",
+	"date": "2024-04-16",	
+	"panel": {
+		"devicekeys": [
+			"contact:FHEM contact device"
+		],
+		"navigation": [
+			"contact-a-room::Räume->%s",
+			"contact-a-group::Gruppen->%s"
+		],
+		"sortby": [
+			"contact-a-sortby::%s"
+		]
+	},
+	"status": {
+		"title": [
+			"contact-a-alias:^.+$:%s",
+			"contact-i-NAME::%s"
+		],
+		"imageUrl": [
+			"::images/header_01.png"
+		],
+		"bar": [
+			"contact-state:closed:100",
+			"contact-state::0"
+		]
+	},
+	"main": [
+		{
+			"level": {
+				"mid": "info"
+			},
+			"mid": {
+				"text": [
+					"contact-state:closed:geschlossen",
+					"contact-state:open:offen",
+					"contact-state::%s"
+				]
+			}
+		}
+	],
+	"info": {
+		"left1": [
+			"contact-state:closed::mdi-door",			
+			":::mdi-door-open"
+		]
+	}
+}

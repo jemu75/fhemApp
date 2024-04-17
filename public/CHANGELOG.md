@@ -1,3 +1,8 @@
+# v4.0.36-beta (17.04.2024)
+## App
+- providing default templates
+## Core
+- bugfix don't show navigation items without name
 # v4.0.35-beta (10.04.2024)
 ## OptionsMenu
 - App Update Function

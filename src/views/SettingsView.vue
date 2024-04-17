@@ -21,12 +21,12 @@
   })
 
   async function saveSettings(save) {
-    let config = null
+    let config = null,
+        newTemplates = []
     
     if(save) {
-      for(const [idx, template] of Object.entries(fhem.app.config.templates)) {
-        if(template.dist) fhem.app.config.templates.splice(idx, 1)
-      }
+      for(const template of fhem.app.config.templates) if(!template.dist) newTemplates.push(template)
+      fhem.app.config.templates = newTemplates
       
       const utfStr = new TextEncoder().encode(JSON.stringify(fhem.app.config))
       config = encodeURIComponent(btoa(String.fromCodePoint(...utfStr)))

@@ -1,0 +1,70 @@
+{
+	"name": "dimmer",
+	"author": "jemu",
+	"date": "2024-04-16",	
+	"panel": {
+		"devicekeys": [
+			"dimmer:FHEM dimmer device"
+		],
+		"navigation": [
+			"dimmer-a-room::Räume->%s",
+			"dimmer-a-group::Gruppen->%s"
+		],
+		"sortby": [
+			"dimmer-a-sortby::%s"
+		]
+	},
+	"status": {
+		"title": [
+			"dimmer-a-alias:^.+$:%s",
+			"dimmer-i-NAME::%s"
+		],
+		"imageUrl": [
+			"::images/header_01.png"
+		],
+		"bar": [
+			"dimmer-state:off:0",
+			"dimmer-pct::%n(0)"
+		]
+	},
+	"main": [
+		{
+			"level": {
+				"mid": "slider",
+				"left1": "btn",
+				"right2": "btn"
+			},
+			"mid": {
+				"slider": [
+					"dimmer-pct::set dimmer pct %v:%n(0):success:0:100"
+				],
+				"size": [
+					"8"
+				]
+			},
+			"left1": {
+				"btn": [
+					"::mdi-lightbulb-outline"
+				],
+				"click": [
+					"::set dimmer off"
+				]
+			},
+			"right2": {
+				"btn": [
+					"::mdi-lightbulb-on-outline"
+				],
+				"click": [
+					"::set dimmer on"
+				]
+			}
+		}
+	],
+	"info": {
+		"left1": [
+			"dimmer-state:off::mdi-lightbulb-off",
+			"dimmer-pct:0.1::mdi-lightbulb",
+			":::mdi-lightbulb-off"
+		]
+	}
+}
