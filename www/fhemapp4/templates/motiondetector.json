@@ -1,0 +1,49 @@
+{
+	"name": "motiondetector",
+	"author": "jemu",
+	"date": "2024-04-16",	
+	"panel": {
+		"devicekeys": [
+			"sensor:FHEM motiondetector device"
+		],
+		"navigation": [
+			"sensor-a-room::Räume->%s",
+			"sensor-a-group::Gruppen->%s"
+		],
+		"sortby": [
+			"sensor-a-sortby::%s"
+		]
+	},
+	"status": {
+		"title": [
+			"sensor-a-alias:^.+$:%s",
+			"sensor-i-NAME::%s"
+		],
+		"imageUrl": [
+			"::images/header_01.png"
+		],
+		"bar": [
+			"sensor-motion:off:0",
+			"::100"
+		]
+	},
+	"main": [
+		{
+			"level": {
+				"mid": "info"
+			},
+			"mid": {
+				"text": [
+					"sensor-motion:off:bereit",
+					"::Bewegung erkannt"
+				]
+			}
+		}
+	],
+	"info": {
+		"left1": [
+			"sensor-motion:off::mdi-motion-sensor-off",
+			":::mdi-motion-sensor"
+		]
+	}
+}

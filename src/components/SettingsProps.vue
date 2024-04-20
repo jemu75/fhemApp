@@ -151,6 +151,7 @@
         section: 'panel',
         panel: null,
         devices: {},
+        fhemDevices: [], 
         preview: 'panel',
         jsonDef: null,
         jsonError: null
@@ -164,6 +165,21 @@
         let idx = fhem.app.panelList.map((e) => e.name).indexOf(props.type === 'templates' ? settings.value.panel : item.value.name)
 
         return idx !== -1 ? fhem.app.panelList[idx] : null
+    }
+
+    async function getFhemDevices() {
+        let threadId = fhem.thread(),
+            res = await fhem.request('json', 'jsonlist2 .* Name alias'),
+            alias
+
+        if(res && res.Results.length > 0) {
+            for(const dev of res.Results) {
+                alias = dev.Attributes.alias ? ' (' + dev.Attributes.alias + ')' : ''
+                settings.value.fhemDevices.push({ value: dev.Name, title: dev.Name + alias })
+            }
+        }
+
+        fhem.thread(threadId)
     }
 
     async function getReadings() {
@@ -268,6 +284,8 @@
     function copyBtn() {
         toClipboard(settings.value.jsonDef)
     }
+
+    getFhemDevices()
  </script>
 
 <template>
@@ -395,7 +413,8 @@
                                 :type="type" 
                                 :typeIdx="settings.itemIdx" 
                                 :section="settings.section"
-                                :devices="settings.devices" 
+                                :devices="settings.devices"
+                                :fhemDevices = "settings.fhemDevices" 
                                 :extended="settings.extended">
                             </SettingsPropsList>
                             <SettingsPropsMain

@@ -2,12 +2,14 @@
     import { computed } from 'vue'
     import { useFhemStore } from '@/stores/fhem'
     import SettingsPropsItem from './SettingsPropsItem.vue'
+    import SettingsPropsDevices from './SettingsPropsDevices.vue'
    
     const props = defineProps({
         type: String,
         typeIdx: Number,
         section: String,
         devices: Object,
+        fhemDevices: Array,
         extended: Boolean
     })
 
@@ -16,7 +18,7 @@
     const listItemDefs = {
         panel: [
             { type: 'template', show: ['panels', 'extended.panels'], required: false, prop: 'template', help: 'element-template' },
-            { type: 'defs', show: ['panels', 'extended.panels'], required: true, prop: 'devices', def: 'key:fhem_device', help: 'element-devices', assist: 'devices' },
+            { type: 'devices', show: ['panels', 'extended.panels'], required: true, prop: 'devices', help: 'element-devices' },
             { type: 'text', show: ['templates'], required: false, prop: 'author', def: 'text' },
             { type: 'text', show: ['templates'], required: false, prop: 'date', def: 'text' },
             { type: 'defs', show: ['templates'], required: true, prop: 'devicekeys', def: 'key:description', help: 'element-devicekeys' },
@@ -62,10 +64,6 @@
 
         return res
     })
-
-    function loadDevices() {
-        console.log('hier versuchen, funktion von parent auszuführen')
-    }
 
     function panelIcon(def) {
         let res = {
@@ -122,6 +120,13 @@
                         variant="outlined"
                         class="pt-3">
                     </v-autocomplete>
+
+                    <SettingsPropsDevices v-if="def.type === 'devices'"
+                        :type="props.type" 
+                        :typeIdx="props.typeIdx"
+                        :fhemDevices="props.fhemDevices"
+                        :extended="props.extended">
+                    </SettingsPropsDevices>
                     
                     <v-text-field v-if="def.type === 'text'"
                         v-model="fhem.app.config[props.type][props.typeIdx][def.prop]"

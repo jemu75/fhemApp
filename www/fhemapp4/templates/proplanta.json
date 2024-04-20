@@ -1,0 +1,313 @@
+{
+	"name": "proplanta",
+	"author": "jemu75",
+	"date": "2023-12-08",
+	"panel": {
+        "devicekeys": [
+            "weather:FHEM Proplanta Device"
+        ],
+		"iconmap": [
+			"t1.gif:mdi-weather-sunny",
+			"t2.gif:mdi-weather-sunny",
+			"t3.gif:mdi-weather-partly-cloudy",
+			"t4.gif:mdi-weather-partly-cloudy",
+			"t5.gif:mdi-weather-cloudy",
+			"t6.gif:mdi-weather-partly-rainy",
+			"t7.gif:mdi-weather-rainy",
+			"t8.gif:mdi-weather-lightning",
+			"t9.gif:mdi-weather-partly-snowy",
+			"t10.gif:mdi-weather-snowy",
+			"t11.gif:mdi-weather-snowy-rainy",
+			"t12.gif:mdi-weather-hazy",
+			"t13.gif:mdi-weather-fog",
+			"t14.gif:mdi-weather-rainy",
+			"n1.gif:mdi-weather-night",
+			"n2.gif:mdi-weather-night",
+			"n3.gif:mdi-weather-night-partly-cloudy",
+			"n4.gif:mdi-weather-night-partly-cloudy",
+			"n5.gif:mdi-weather-cloudy",
+			"n6.gif:mdi-weather-partly-rainy",
+			"n7.gif:mdi-weather-rainy",
+			"n8.gif:mdi-weather-lightning",
+			"n9.gif:mdi-weather-partly-snowy",
+			"n10.gif:mdi-weather-snowy",
+			"n11.gif:mdi-weather-snowy-rainy",
+			"n12.gif:mdi-weather-hazy",
+			"n13.gif:mdi-weather-fog",
+			"n14.gif:mdi-weather-rainy"
+		],
+		"expandable": [
+			"::true:false"
+		],
+		"navigation": [
+			"weather-a-group::Gruppen->%s",
+			"weather-a-room::Räume->%s"
+		]
+	},
+	"status": {
+		"bar": [
+			"weather-state:Tmin:100",
+			"::100:error"
+		],
+		"imageUrl": [
+			"::images/header_01.png"
+		],
+		"title": [
+			"weather-a-alias:^.+$:%s",
+			"weather-i-NAME::%s"
+		]
+	},
+	"main": [
+		{
+			"level": {
+				"mid": "info"
+			},
+			"mid": {
+				"text": [
+					"weather-weather::%s"
+				]
+			}
+		},
+		{
+			"level": {
+				"left1": "info",
+				"right2": "info",
+				"divider": [
+					"::true"
+				]
+			},
+			"left1": {
+				"text": [
+					"::Luftdruck"
+				],
+				"text2": [
+					"weather-pressure::%n()hPa"
+				]
+			},
+			"right2": {
+				"text": [
+					"::Wind"
+				],
+				"text2": [
+					"weather-wind::%n()km/h"
+				]
+			}
+		},
+		{
+			"level": {
+				"divider": [
+					"::true"
+				],
+				"left1": "info",
+				"mid": "info",
+				"right2": "info"
+			},
+			"left1": {
+				"text": [
+					"::Morgens"
+				],
+				"icon": [
+					"weather-fc0_weatherMorningIcon::%s"
+				]
+			},
+			"mid": {
+				"text": [
+					"::Mittags"
+				],
+				"icon": [
+					"weather-fc0_weatherDayIcon::%s"
+				]
+			},
+			"right2": {
+				"text": [
+					"::Abends"
+				],
+				"icon": [
+					"weather-fc0_weatherEveningIcon::%s"
+				]
+			}
+		},
+		{
+			"level": {
+				"left1": "info",
+				"mid": "info",
+				"right2": "info",
+				"height": [
+					"::55px"
+				]
+			},
+			"left1": {
+				"icon": [
+					"weather-fc0_weatherDayIcon::%s"
+				]
+			},
+			"mid": {
+				"text": [
+					"weather-fc0_date::%d({ \"weekday\"\\: \"long\" }):text-left"
+				],
+				"text3": [
+					"weather-fc0_weatherDay::%s:text-left text-caption"
+				],
+				"size": [
+					"::7"
+				]
+			},
+			"right2": {
+				"text": [
+					"weather-fc0_tempMax::%n()°C"
+				],
+				"text3": [
+					"weather-fc0_tempMin::%n()°C"
+				]
+			}
+		},
+		{
+			"level": {
+				"left1": "info",
+				"mid": "info",
+				"right2": "info",
+				"height": [
+					"::55px"
+				]
+			},
+			"left1": {
+				"icon": [
+					"weather-fc1_weatherDayIcon::%s"
+				]
+			},
+			"mid": {
+				"text": [
+					"weather-fc1_date::%d({ \"weekday\"\\: \"long\" }):text-left"
+				],
+				"text3": [
+					"weather-fc1_weatherDay::%s:text-left text-caption"
+				],
+				"size": [
+					"::7"
+				]
+			},
+			"right2": {
+				"text": [
+					"weather-fc1_tempMax::%n()°C"
+				],
+				"text3": [
+					"weather-fc1_tempMin::%n()°C"
+				]
+			}
+		},
+		{
+			"level": {
+				"left1": "info",
+				"mid": "info",
+				"right2": "info",
+				"height": [
+					"::55px"
+				]
+			},
+			"left1": {
+				"icon": [
+					"weather-fc2_weatherDayIcon::%s"
+				]
+			},
+			"mid": {
+				"text": [
+					"weather-fc2_date::%d({ \"weekday\"\\: \"long\" }):text-left"
+				],
+				"text3": [
+					"weather-fc2_weatherDay::%s:text-left text-caption"
+				],
+				"size": [
+					"::7"
+				]
+			},
+			"right2": {
+				"text": [
+					"weather-fc2_tempMax::%n()°C"
+				],
+				"text3": [
+					"weather-fc2_tempMin::%n()°C"
+				]
+			}
+		},
+		{
+			"level": {
+				"left1": "info",
+				"mid": "info",
+				"right2": "info",
+				"height": [
+					"::55px"
+				]
+			},
+			"left1": {
+				"icon": [
+					"weather-fc3_weatherDayIcon::%s"
+				]
+			},
+			"mid": {
+				"text": [
+					"weather-fc3_date::%d({ \"weekday\"\\: \"long\" }):text-left"
+				],
+				"text3": [
+					"weather-fc3_weatherDay::%s:text-left text-caption"
+				],
+				"size": [
+					"::7"
+				]
+			},
+			"right2": {
+				"text": [
+					"weather-fc3_tempMax::%n()°C"
+				],
+				"text3": [
+					"weather-fc3_tempMin::%n()°C"
+				]
+			}
+		},
+		{
+			"level": {
+				"left1": "info",
+				"mid": "info",
+				"right2": "info",
+				"height": [
+					"::55px"
+				]
+			},
+			"left1": {
+				"icon": [
+					"weather-fc4_weatherDayIcon::%s"
+				]
+			},
+			"mid": {
+				"text": [
+					"weather-fc4_date::%d({ \"weekday\"\\: \"long\" }):text-left"
+				],
+				"text3": [
+					"weather-fc4_weatherDay::%s:text-left text-caption"
+				],
+				"size": [
+					"::7"
+				]
+			},
+			"right2": {
+				"text": [
+					"weather-fc4_tempMax::%n()°C"
+				],
+				"text3": [
+					"weather-fc4_tempMin::%n()°C"
+				]
+			}
+		}
+	],
+	"info": {
+		"left1": [
+			"weather-weatherIcon:::%s"
+		],
+		"mid1": [
+			"weather-state-ts::%d(time)"
+		],
+		"right2": [
+			"weather-state:Tmin::mdi-sync",
+			":::mdi-sync-off"
+		]
+	}
+}

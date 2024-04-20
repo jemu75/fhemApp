@@ -28,14 +28,6 @@
     const newDef = ref()
 
     const assist = ref({
-        devices: {
-            show: false,
-            keys: [],
-            fhemDevices: [],
-            key: null,
-            device: null,
-            idx: -1
-        },
         props: {
             devices: [],
             device: null,
@@ -94,63 +86,10 @@
         }
     }
 
-    function getDevicesKeys() {
-        let template,
-            templateIdx,
-            res = []
-
-        template = fhem.app.config[props.type][props.typeIdx].template
-
-        if(template) {
-            templateIdx = fhem.app.config.templates.map((e) => e.name).indexOf(template) 
-
-            if(templateIdx !== -1) {
-                res
-                for(const key of fhem.app.config.templates[templateIdx].panel.devicekeys || []) {
-                    res.push(key.split(':')[0])
-                }
-            }
-        }
-
-        return res
-    }
-
-    async function getFhemDevices() {
-        let res = await fhem.request('json', 'jsonlist2 .* Name alias'),
-            alias,
-            list = []
-
-        if(res && res.Results.length > 0) {
-            for(const dev of res.Results) {
-                alias = dev.Attributes.alias ? ' (' + dev.Attributes.alias + ')' : ''
-                list.push({ title: dev.Name + alias, value: dev.Name})
-            }
-        }
-
-        return list
-    }
-
-    async function openAssist(idx) {
+    function openAssist(idx) {
         let def,
             defParts,
             deviceIdx
-
-        if(props.propAssist === 'devices') {
-            assist.value.devices.keys = getDevicesKeys()
-            assist.value.devices.fhemDevices = await getFhemDevices()
-
-            if(idx !== -1) {
-                def = fhem.app.config[props.type][props.typeIdx][props.section][props.prop][idx]
-                assist.value.devices.key = def.split(':')[0],
-                assist.value.devices.device = def.split(':')[1]
-            } else {
-                assist.value.devices.key = null,
-                assist.value.devices.device = null
-            }
-
-            assist.value.devices.idx = idx
-            assist.value.devices.show = true
-        }
 
         if(props.propAssist === 'props') {
             assist.value.props.devices = Object.keys(props.propAssistDevices)
@@ -186,17 +125,6 @@
     }
 
     function confirmAssist() {
-        if(props.propAssist === 'devices') {
-            if(assist.value.devices.idx !== -1) {
-                fhem.app.config[props.type][props.typeIdx][props.section][props.prop][assist.value.devices.idx] = assist.value.devices.key + ':' + assist.value.devices.device
-            } else {
-                newDef.value = assist.value.devices.key + ':' + assist.value.devices.device
-                addDef()
-            }
-
-            assist.value.devices.show = false
-        }
-
         if(props.propAssist === 'props') {
             if(assist.value.props.props.length === 0) assist.value.props.props.push('') 
             assist.value.props.props.unshift(assist.value.props.val)
@@ -270,46 +198,6 @@
             <v-btn variant="plain" icon="mdi-plus" :disabled="!newDef" @click="addDef()" class="mr-5"></v-btn>
         </v-row>
     </v-form>
-
-    <v-dialog v-model="assist.devices.show" max-width="650px">
-        <v-card>
-            <v-sheet color="primary">
-                <v-card-title>{{ $t('_app.settings.assist.title') }}</v-card-title>
-            </v-sheet>
-
-            <v-card-text>
-                <v-row class="align-center">
-                    <v-col cols="12" md="4">
-                        <v-select
-                            v-model="assist.devices.key"
-                            :items="assist.devices.keys"
-                            :label="props.propDef.split(':')[0]"
-                            hide-details
-                            density="compact"
-                            variant="outlined">
-                        </v-select>
-                    </v-col>
-                    <v-col cols="12" md="8">
-                        <v-autocomplete
-                            v-model="assist.devices.device"
-                            :items="assist.devices.fhemDevices"
-                            :label="props.propDef.split(':')[1]"
-                            hide-details
-                            density="compact"
-                            variant="outlined">
-
-                        </v-autocomplete>
-                    </v-col>
-                </v-row>
-            </v-card-text>
-                       
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn @click="confirmAssist()" :disabled="!assist.devices.key || !assist.devices.device">{{ $t('_app.settings.assist.ok') }}</v-btn>
-                <v-btn @click="assist.devices.show = false">{{ $t('_app.settings.assist.cancel') }}</v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
 
     <v-dialog v-model="assist.props.show" max-width="850px">
         <v-card>

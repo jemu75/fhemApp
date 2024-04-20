@@ -127,20 +127,14 @@ Alle Geräte die du in FHEM eingebunden hast, können innerhalb von **FHEMApp** 
 <br>*Beispiel für ein Panel*
 
 ## neues Panel erstellen
-Über die Einstellungen in **FHEMApp** kannst du neue Panels erstellen. Nachdem du ein **neues Panel** mit einem **eindeutigem Name** erstellt hast, solltest du dieses zuerst mit mindestens einem FHEM-Device verbinden. 
-
-Du kannst ein Panel auch mit mehreren FHEM-Devices verbinden. Jedes FHEM-Device, welches Du mit dem Panel verbindest benötigt dabei einen **Schlüssel**, der innerhalb des Panels eindeutig sein muss. Insbesondere bei der Verwendung von [Vorlagen](#vorlagen) wird somit gewährleistet, dass das gewünschte FHEM-Device angesprochen wird.
-
-**Beispiel:**
-|Panel 1|Panel 2|Beschreibung|
-|---|---|---|
-|`thermo:temp.eg.wohnen`|`thermo:temp.og.buero`|verbindet das erste Panel mit dem FHEM-Device `temp.eg.wohnen` und ein zweites Panel mit dem FHEM-Device `temp.og.buero`. Für die Konfiguration der Elemente im Panel wurde der Schlüssel `thermo` vergeben.| 
-|`valve:heiz.eg.wohnen`|`valve:heiz.og.buero`|verbindet das erste Panel mit dem FHEM-Device `heiz.eg.wohnen` und ein zweites Panel mit dem FHEM-Device `heiz.og.buero`. Für die Konfiguration der Elemente im Panel wurde der Schlüssel `valve` vergeben.| 
-
-Nun kann man in der passenden [Vorlage](#vorlagen) oder in den beiden [Panels](#panels) die vergebenen Schlüssel `thermo` bzw. `valve` zum Abrufen von FHEM Readings oder dem Senden von FHEM set-Befehlen verwenden. Ein FHEM set-Befehl kann nun wie folgt geschrieben werden `set valve pct 50`.
+Über die Einstellungen in **FHEMApp** kannst du neue Panels erstellen. Nachdem du ein **neues Panel** mit einem **eindeutigem Name** erstellt hast, wählst du eine passende [Vorlage](#vorlagen) aus und verbindest das Panel mit mindestens einem FHEM Device. Je nach Vorlage kann es auch sein, dass du mehrere FHEM Devices verbinden musst.
 
 ![](./docs/media/example_element_definition_devices.png)
 <br>*Beispiel für die Definition von Devices in einem Panel*
+
+Alternativ kannst du ein Panel auch ohne Verwendung einer Vorlage (Template) konfigurieren. Hier musst du die **erweiterte Ansicht** aktivieren und kannst nur alle Elemente des Panels manuell konfigurieren.
+
+Wenn du bei Verwendung einer Vorlage einzelne Elemente nur für das aktuelle Panel anpassen möchtest, kannst du ebenfalls die **erweiterte Ansicht** aktivieren. 
 
 ## Konfiguration der Elemente
 Die Konfiguration der Elemente in den verschiedenen Bereichen des Panels erfolgt nach einem einheitlichen Definitions-Schema. 
@@ -219,14 +213,14 @@ Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zu
 |`state::%t(on)`|on|an|wenn unter [Sprachen](#sprachen) für die Variable `on` im deutschen Sprachschema `an` hinterlegt wurde|
 |`temp::Temperatur\: %n(1)°C`|18.7|Temperatur: 18,7°C|
 ## Panel allgemein
-In den allgemeinen Einstellungen für Panels wird festgelegt, mit welchen FHEM **Devices** das Panel verknüpft ist und ob eine **Vorlage** zur Darstellung des Panels verwendet werden soll. Weiterhin wird festgelegt, unter welchen Navigationspunkten das Panel zur Anzeige gebracht werden soll. Zusätzlich können verschiedene Einstellung zur Darstellung des Panels erfolgen.
+In den allgemeinen Einstellungen für Panels wird festgelegt, ob eine **Vorlage** zur Darstellung des Panels verwendet werden soll und mit welchen FHEM **Devices** das Panel verknüpft ist. Weiterhin wird festgelegt, unter welchen Navigationspunkten das Panel zur Anzeige gebracht werden soll. Zusätzlich können verschiedene Einstellung zur Darstellung des Panels erfolgen.
 
-Wenn für ein Panel keine [Vorlage](#vorlagen) verwendet werden soll, oder bestimmte Einstellungen der Vorlage für das Panel angepasst werden sollen, kann die **erweitere Konfiguration** aktiviert werden.
+Wenn für ein Panel keine [Vorlage](#vorlagen) verwendet werden soll, oder bestimmte Einstellungen der Vorlage für das Panel angepasst werden sollen, kann die **erweiterte Ansicht** aktiviert werden.
 
 ### Element deviceskeys
 Die *devicekeys* werden in [Vorlagen](#vorlagen) definiert. Ein *devicekey* ist eine Variable, welche in einer Vorlage (Template) an Stelle eines konkreten FHEM-Devicenamen verwendet wird. Bei der späteren Verwendung der Vorlage, wird in der Panelkonfiguration jeder *devicekey* einem konkreten FHEM-Device zugeordnet.
 
-Somit können [Vorlagen](#vorlagen) für beliebig viele Panels verwendet werden. Die Defintion für einen Button, der einen bestimmten Befehl an FHEM sendet wird dann beispielsweise in Form von `set switch on` statt `set <fhem_device_name> on` in der betreffenden Definition hinterlegt. Die Variable `switch` wird deshalb als *devicekey* definiert und später in der Panelkonfigurtation mit dem tatsächlichen FHEM-Device `<fhem_device_name>` verknüpft.
+Somit können [Vorlagen](#vorlagen) für beliebig viele Panels verwendet werden. Die Defintion für einen Button, der einen bestimmten Befehl an FHEM sendet wird dann beispielsweise in Form von `set switch on` statt `set <fhem_device_name> on` in der betreffenden Definition hinterlegt. Die Variable `switch` wird dabei als *devicekey* definiert und später in der Panelkonfigurtation mit dem tatsächlichen FHEM-Device `<fhem_device_name>` verknüpft.
 
 Für jede Vorlage muss mindestens ein *devicekey* festgelegt werden.
 
@@ -245,7 +239,7 @@ Liste der FHEM-Devices, die mit dem Panel verknüpft sind. Es muss mindestens ei
 |key|eindeutiger Schlüssel, der für Element-Definitionen benötigt wird|
 |device|Name des FHEM Device, mit dem das Panel verknüpft ist|
 ### Element template
-Optional kann eine [Vorlage](#vorlagen) ausgewählt werden, die für die Darstellung des Panels verwendet werden soll. Elemente die im Panel (unter **erweiterte Konfiguration**) definiert wurden, behalten ihre Gültigkeit auch wenn eine Vorlage verwendet wird. In diesem Fall werden die betreffenden Definitionen aus der Vorlage ignoriert. 
+Optional kann eine [Vorlage](#vorlagen) ausgewählt werden, die für die Darstellung des Panels verwendet werden soll. Elemente die im Panel (unter **erweiterte Ansicht**) definiert wurden, behalten ihre Gültigkeit auch wenn eine Vorlage verwendet wird. In diesem Fall werden die betreffenden Definitionen aus der Vorlage ignoriert. 
 ### Element navigation
 Liste der Navigationspunkte, unter denen das Panel angezeigt wird. Im Gegensatz zu normalen Definitionen, werden hier **alle** Definitionen verwendet, deren Bedingungen zutreffen.  
 
@@ -614,13 +608,13 @@ Es wird ein Text und/oder ein Icon in einem der 6 Spalten (left1, left2, mid1, m
 |icon||Icon das agezeigt wird. (siehe auch [mdi Icons](https://pictogrammers.com/library/mdi/) und [Icon Mapping](#element-iconmap)) [string]|
 |color||legt die Farbe für das Icon fest. (siehe auch [Farben](#farben)) [string]|
 # Vorlagen
-Damit Konfigurationen nicht für jedes Panel erstellt werden müssen, können diese auch als Vorlage (template) erstellt und abgespeichert werden. Somit kann man Vorlagen für alle FHEM-Devices eines Typs (z.B. Schalter, Rolladenaktoren, Fensterkontakte, Thermostate...) erstellen. 
+Mit **FHEMApp** werden verschiedene [Standardvorlagen](#standardvorlagen) bereitgestellt, welche direkt verwendet werden können.
+
+Zudem gibt es in **FHEMApp** die Möglichkeit eigene Vorlagen (templates) zu erstellen. Somit kann man Vorlagen für alle FHEM-Devices eines Typs (z.B. Schalter, Rolladenaktoren, Fensterkontakte, Thermostate...) erstellen. 
 
 Nachdem eine Vorlage erstellt wurde, kann diese den gewünschten Panels in der [Panelkonfiguration](#panelkonfiguration) unter den [allgemeinen Einstellungen](#panel-allgemein) im Element [template](#element-template) zugewiesen werden.
 
 Grundsätzlich können alle Elemente, die in einem Panel konfigurierbar sind auch in Vorlagen konfiguriert werden.
-
-Mit **FHEMApp** werden verschiedene [Standardvorlagen](#standardvorlagen) bereitgestellt, welche direkt verwendet werden können.
 # Navigation
 Das Navigationsmenü von **FHEMApp** kann individuell angepasst werden. So ist es möglich die Reihenfolge der einzelnen Navigationspunkte festzulegen, Navigationspunkte mit einem Icon zu versehen oder alternative Beschriftungen für die Navigationspunkte festzulegen. 
 
@@ -661,8 +655,14 @@ Neben festen Sprachvariablen kann die Ersetzung `%t()` auch mit den Werten von F
 Mit **FHEMApp** werden verschiedene Standardvorlagen bereitgestellt, die den Einstieg besonders einfach machen.
 |Beschreibung|Beispiel|
 |---|---|
-|Name: *switch* <br>Devicekeys: *switch*<br>Readings: *alias, **room**, group, **state*** <br><br>Einsatz: Steckdosen<br>JSON: [switch](./public/templates/switch.json)|![](./docs/media/template_switch.png)|
-|Name: *light* <br>Devicekeys: *light*<br>Readings: *alias, **room**, group, **state*** <br><br>Einsatz: Lichtschalter<br>JSON: [light](./public/templates/light.json)|![](./docs/media/template_light.png)|
-|Name: *dimmer* <br>Devicekeys: *dimmer*<br>Readings: *alias, **room**, group, **state**, **pct*** <br><br>Einsatz: Dimmer<br>JSON: [dimmer](./public/templates/dimmer.json)|![](./docs/media/template_dimmer.png)|
-|Name: *contact* <br>Devicekeys: *contact*<br>Readings: *alias, **room**, group, **state*** <br><br>Einsatz: Tür-/Fensterkontakte<br>JSON: [contact](./public/templates/contact.json)|![](./docs/media/template_contact.png)|
-|Name: *blind* <br>Devicekeys: *blind*<br>Readings: *alias, **room**, group, **state**, **pct**, motor* <br><br>Einsatz: Jalousien<br>JSON: [blind](./public/templates/blind.json)|![](./docs/media/template_blind.png)|
+|Name: *switch* <br>Devicekeys: *switch*<br>Readings: *alias, **room**, group, sortby, **state*** <br><br>Einsatz: Steckdosen<br>JSON: [switch](./public/templates/switch.json)|![](./docs/media/template_switch.png)|
+|Name: *light* <br>Devicekeys: *light*<br>Readings: *alias, **room**, group, sortby, **state*** <br><br>Einsatz: Lichtschalter<br>JSON: [light](./public/templates/light.json)|![](./docs/media/template_light.png)|
+|Name: *dimmer* <br>Devicekeys: *dimmer*<br>Readings: *alias, **room**, group, sortby, **state**, **pct*** <br><br>Einsatz: Dimmer<br>JSON: [dimmer](./public/templates/dimmer.json)|![](./docs/media/template_dimmer.png)|
+|Name: *contact* <br>Devicekeys: *contact*<br>Readings: *alias, **room**, group, sortby, **state*** <br><br>Einsatz: Tür-/Fensterkontakte<br>JSON: [contact](./public/templates/contact.json)|![](./docs/media/template_contact.png)|
+|Name: *blind* <br>Devicekeys: *blind*<br>Readings: *alias, **room**, group, sortby, **state**, **pct**, motor* <br><br>Einsatz: Jalousien<br>JSON: [blind](./public/templates/blind.json)|![](./docs/media/template_blind.png)|
+|Name: *thermostat* <br>Devicekeys: *thermo, valve*<br>Readings: *alias, **room**,<br> group, sortby, measured-temp,<br> **desired-temp**, humidity,<br> R-dayTemp, R-nightTemp,<br> tempState, controlMode,<br> state (valve), pct (valve)* <br><br>Einsatz: Heizungsthermostate<br>JSON: [thermostat](./public/templates/thermostat.json)|![](./docs/media/template_thermostat.png)|
+|Name: *temperatur* <br>Devicekeys: *temp*<br>Readings: *alias, **room**, group, sortby, **temperature**, humidity* <br><br>Einsatz: Temperatursensoren<br>JSON: [temperatur](./public/templates/temperatur.json)|![](./docs/media/template_temperatur.png)|
+|Name: *smokedetector* <br>Devicekeys: *smoke*<br>Readings: *alias, **room**, group, sortby, **level*** <br><br>Einsatz: Rauchmelder<br>JSON: [smokedetector](./public/templates/smokedetector.json)|![](./docs/media/template_smokedetector.png)|
+|Name: *motiondetector* <br>Devicekeys: *sensor*<br>Readings: *alias, **room**, group, sortby, **motion*** <br><br>Einsatz: Bewegungsmeldung<br>JSON: [motiondetector](./public/templates/motiondetector.json)|![](./docs/media/template_motiondetector.png)|
+|Name: *sonosplayer* <br>Devicekeys: *player*<br>Readings: *alias, **room**, group, sortby,<br>and other readings...* <br><br>Einsatz: SONOS Player<br>JSON: [sonosplayer](./public/templates/sonosplayer.json)|![](./docs/media/template_sonosplayer.png)|
+|Name: *proplanta* <br>Devicekeys: *weather*<br>Readings: *alias, **room**, group, sortby,<br>and other readings...* <br><br>Einsatz: Wettervorhersage (Proplanta)<br>JSON: [proplanta](./public/templates/proplanta.json)|![](./docs/media/template_proplanta.png)|

@@ -42,7 +42,7 @@
 
 <template>
   <v-app class="noselect">
-    <v-layout>
+    <v-layout v-show="fhem.app.configLoaded">
       <v-overlay
         :model-value="fhem.app.threads.length > 0"
         class="align-center justify-center">

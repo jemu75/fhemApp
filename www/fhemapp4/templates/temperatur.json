@@ -1,0 +1,53 @@
+{
+	"name": "temperatur",
+	"author": "jemu",
+	"date": "2024-04-16",	
+	"panel": {
+		"devicekeys": [
+			"temp:FHEM temperatur device"
+		],
+		"navigation": [
+			"temp-a-room::Räume->%s",
+			"temp-a-group::Gruppen->%s"
+		],
+		"sortby": [
+			"temp-a-sortby::%s"
+		]
+	},
+	"status": {
+		"title": [
+			"temp-a-alias:^.+$:%s",
+			"temp-i-NAME::%s"
+		],
+		"imageUrl": [
+			"::images/header_01.png"
+		],
+		"bar": [
+			"::100"
+		]
+	},
+	"main": [
+		{
+			"level": {
+				"left1": "info",
+				"right2": "info"
+			},
+			"left1": {
+				"text": [
+					"temp-temperature::%n(1)°C"
+				]
+			},
+			"right2": {
+				"text": [
+					"temp-humidity::%n()%"
+				]
+			}
+		}
+	],
+	"info": {
+		"left1": [
+			"temp-temperature:0::mdi-thermometer",
+			"temp-temperature:::mdi-snowflake"
+		]
+	}
+}

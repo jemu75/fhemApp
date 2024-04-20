@@ -1,3 +1,10 @@
+# v4.0.37-beta (20.04.2024)
+## Settings
+- Selection of FHEM devices optimised
+## App
+- adding default templates
+## Core
+- load all default templates on inizialising FHEMApp
 # v4.0.36-beta (17.04.2024)
 ## App
 - providing default templates

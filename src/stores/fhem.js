@@ -50,7 +50,8 @@ export const useFhemStore = defineStore('fhem', () => {
         navigation: [],
         threads: [],
         distTemplates: [],
-        noConfig: null,        
+        noConfig: null,
+        configLoaded: false,        
         isReady: false,
         message: false,
         currentView: null,
@@ -380,29 +381,28 @@ export const useFhemStore = defineStore('fhem', () => {
         Object.assign(app.header, JSON.parse(JSON.stringify(app.config.header)))
         changeDarkMode(theme.global.name.value)
 
+        app.configLoaded = true
+
         log(4, 'Config loaded.', cfg)
         return true
     }
 
-    //coreFunction load default Templates if needed
+    //coreFunction load default all Templates
     async function loadDefaultTemplates() {
         let distTemplate
 
         app.distTemplates = await getJsonFile('./templates/templates.json')
         app.distTemplates.sort((a, b) => (a > b) ? 1 : (b > a) ? -1 : 0)
-
-        for (const panel of app.config.panels) {
-            if(panel.template && app.config.templates.map((e) => e.name).indexOf(panel.template) === -1) {
-                if(app.distTemplates.indexOf(panel.template) !== -1) {
-                    distTemplate = await getJsonFile('./templates/' + panel.template + '.json')
-                    if(distTemplate) {
-                        distTemplate.dist = true
-                        app.config.templates.push(distTemplate)
-                    }
-                    
+       
+        for(const template of app.distTemplates) {
+            if(app.config.templates.map((e) => e.name).indexOf(template) === -1) {
+                distTemplate = await getJsonFile('./templates/' + template + '.json')
+                if(distTemplate) {
+                    distTemplate.dist = true
+                    app.config.templates.push(distTemplate)
                 }
             }
-        }        
+        }
 
         return true
     }
