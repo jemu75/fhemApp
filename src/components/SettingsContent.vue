@@ -107,7 +107,7 @@
                 <v-col cols="12" md="6">
                     <v-form v-model="settings.isLangValid">
                         <v-text-field 
-                            v-model="settings.newlang"    
+                            v-model="settings.newLang"    
                             :label="$t(preLang + 'newLang')"
                             :rules="[rules.iso639code, rules.uniqueLang]"
                             single-line

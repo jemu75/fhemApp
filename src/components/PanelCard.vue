@@ -60,7 +60,7 @@
     function levelClick(init) {
         let opts = levelOpts.value,
             idx
-        
+
         if(init) {
             opts.activeLevels = levelsActive(item.panel.main)
         } else {
@@ -141,7 +141,7 @@
             </v-col>
         </v-row>
     
-        <v-sheet color="secondary">
+        <v-sheet color="primary">
             <v-img :src="img.url" :gradient="img.url ? fhem.app.header.imageGradient : ''" height="48" cover>
                 <v-card-title>
                     <v-row no-gutters>

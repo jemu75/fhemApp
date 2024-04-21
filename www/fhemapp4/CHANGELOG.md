@@ -1,3 +1,12 @@
+# v4.0.38-beta (21.04.2024)
+## Panel 
+- status now uses the colour variable *primary* analogous to the header of **FHEMApp**
+## Panel menu
+- add new function for handling FHEM get command
+## Settings
+- bugfix for adding new languages
+## App
+- adding default template lightscene
 # v4.0.37-beta (20.04.2024)
 ## Settings
 - Selection of FHEM devices optimised
@@ -5,6 +14,7 @@
 - adding default templates
 ## Core
 - load all default templates on inizialising FHEMApp
+- show header after config is loaded
 # v4.0.36-beta (17.04.2024)
 ## App
 - providing default templates

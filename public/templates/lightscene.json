@@ -1,0 +1,58 @@
+{
+	"name": "lightscene",
+	"author": "jemu",
+	"date": "2024-04-16",	
+	"panel": {
+		"devicekeys": [
+			"lightscene:FHEM lightScene device"
+		],
+		"navigation": [
+			"lightscene-a-room::Räume->%s",
+			"lightscene-a-group::Gruppen->%s"
+		],
+		"sortby": [
+			"lightscene-a-sortby::%s"
+		]
+	},
+	"status": {
+		"title": [
+			"lightscene-a-alias:^.+$:%s",
+			"lightscene-i-NAME::%s"
+		],
+		"imageUrl": [
+			"::images/header_01.png"
+		],
+		"bar": [
+			"::100"
+		]
+	},
+	"main": [
+		{
+			"level": {
+				"mid": "info",
+				"right1": "menu"
+			},
+			"mid": {
+				"text": [
+					"lightscene-state:unknown:individuell",
+					"lightscene-state::%s"
+				],
+				"divider": ["::true"],
+				"size": ["::9"]
+			},
+			"right1": {
+				"btn": [
+					"::mdi-dots-vertical"
+				],
+				"menu": [
+					"::get lightscene scenes:set lightscene scene %v"
+				]
+			}
+		}
+	],
+	"info": {
+		"left1": [
+			":::mdi-movie-open"
+		]
+	}
+}

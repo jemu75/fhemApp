@@ -198,7 +198,7 @@ Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zu
 |Ersetzung|Beschreibung|
 |---|---|
 |%t(on)|gibt die Übersetzung für die Variable `on` an. (siehe auch [Sprachen](#sprachen))|
-|%v|liefert den aktuellen Wert von Slidern
+|%v|liefert den aktuellen Wert von Slidern oder Menüeinträgen
 |\\:|wird zur Ausgabe von `:` innerhalb von Element-Definitionen verwendet|
 
 |Beispiel|Reading|Ausgabe|Hinweis|
@@ -483,19 +483,21 @@ Zeigt einen Button an, der beim Klicken ein DropDown-Menü öffnet. Wenn dieses 
 ### Level Element Menu menu
 Definiert die Menüeinträge, die beim Öffnen des DropDown-Menü angezeigt werden. Bei Klick auf einen Menüpunkt wird der hinterlegte Befehl an FHEM gesendet. Im Gegensatz zu normalen Definitionen, werden zur Anzeige der Menüpunkte **alle** Definitionen verwendet, deren Bedingungen zutreffen.
 
-Menüeinträge können auch von FHEM übergeben werden. Dafür muss der Inhalt des FHEM *readings* oder *attributes* folgender Form entsprechen: `Name1:cmd1,Name2:cmd2,...`
+Menüeinträge können auch dynamisch von FHEM übergeben werden. Der Rückgabewert vom FHEM Befehl *get* bzw. dem *reading* oder *attribute* muss dabei durch einen der folgenden Zeichen (`,` `|` `\n`) getrennt werden. Bei dynamisch erzeugten Menüeinträgen muss der FHEM *get-Befehl* oder *%s* bei Verwendung eines *reading* bzw. *attribute* in den Parameter `name` eingetragen werden. Im Parameter `cmd` kann dann die Ersetzung **%v** verwendet werden um den aktuellen Menüeinträge über einen *set-Befehl* an FHEM zu übergeben.
 
 |Parameter|Default|Beschreibung|
 |---|---|---|
 |reading||siehe Parameter [reading](#konfiguration-der-elemente)|
 |value||siehe Parameter [value](#konfiguration-der-elemente)|
-|name||Name der im DropDown-Menü angezeiugt wird [string]|
-|cmd||FHEM Befehl, der beim Klick auf den Menüpunkt an FHEM gesendet wird. [string]|
+|name||Name der im DropDown-Menü angezeiugt wird. Alternativ FHEM *get-Befehl* [string]|
+|cmd||FHEM Befehl, der beim Klick auf den Menüpunkt an FHEM gesendet wird. Bei dynamisch erzeugten Menüeinträgen kann die [Ersetzung](#ersetzungen) **%v** verwendet werden. [string]|
+|convert||**regExp** [string] Relevant bei Verwendung dynamisch erzeugter Menüeinträge. Der anstelle von **%v** verwendete Wert wird in einen regulären Ausdruck umgewandelt. Relevant bei SONOS Playern|
 
 |Beispiel|Beschreibung|
 |---|---|
 |`::30 Minuten:set switch on-for-timer 1800`|Zeigt im Menü den Menüpunkt `30 Minuten` an und sendet bei Klick den Befehl `set switch on-for-timer 1800` an FHEM. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `switch` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt.|
-|`switch-a-dropdown::%s:%s`|übernimmt die Definition der Menüeinträge aus dem FHEM Attribut `dropdown` vom Device `switch`. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `switch` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt.|
+|`::get dev scenes:set dev scene %v`|ermittelt für ein FHEM **lightScene** Device mit dem Devicekey `dev` alle Szenen und generiert dynamische Menüeinträge|
+|`player-FavouritesListAlias::%s:set player StartFavourite %v:regExp`|ermittelt für ein FHEM **SONOSplayer** Device alle Favouriten und generiert dynamische Menüeinträge. Über die Konvertierung **regExp** werden die Namen der Favouriten in reguläre Ausdrücke in den *set-Befehlen* umgewandelt.|
 ### Level Element Info text
 Zeigt bis zu 3 Texte (text, text2, text3) an. Dabei wird `text` immer über `text2` und `text3` angezeigt. Weiterhin wird `text2` immer links neben `text3` angezeigt.
 
@@ -663,6 +665,7 @@ Mit **FHEMApp** werden verschiedene Standardvorlagen bereitgestellt, die den Ein
 |Name: *thermostat* <br>Devicekeys: *thermo, valve*<br>Readings: *alias, **room**,<br> group, sortby, measured-temp,<br> **desired-temp**, humidity,<br> R-dayTemp, R-nightTemp,<br> tempState, controlMode,<br> state (valve), pct (valve)* <br><br>Einsatz: Heizungsthermostate<br>JSON: [thermostat](./public/templates/thermostat.json)|![](./docs/media/template_thermostat.png)|
 |Name: *temperatur* <br>Devicekeys: *temp*<br>Readings: *alias, **room**, group, sortby, **temperature**, humidity* <br><br>Einsatz: Temperatursensoren<br>JSON: [temperatur](./public/templates/temperatur.json)|![](./docs/media/template_temperatur.png)|
 |Name: *smokedetector* <br>Devicekeys: *smoke*<br>Readings: *alias, **room**, group, sortby, **level*** <br><br>Einsatz: Rauchmelder<br>JSON: [smokedetector](./public/templates/smokedetector.json)|![](./docs/media/template_smokedetector.png)|
-|Name: *motiondetector* <br>Devicekeys: *sensor*<br>Readings: *alias, **room**, group, sortby, **motion*** <br><br>Einsatz: Bewegungsmeldung<br>JSON: [motiondetector](./public/templates/motiondetector.json)|![](./docs/media/template_motiondetector.png)|
+|Name: *motiondetector* <br>Devicekeys: *sensor*<br>Readings: *alias, **room**, group, sortby, **motion*** <br><br>Einsatz: Bewegungsmelder<br>JSON: [motiondetector](./public/templates/motiondetector.json)|![](./docs/media/template_motiondetector.png)|
+|Name: *lightscene* <br>Devicekeys: *lightscene*<br>Readings: *alias, **room**, group, sortby, **scene*** <br><br>Einsatz: Szenarien<br>JSON: [lightscene](./public/templates/lightscene.json)|![](./docs/media/template_lightscene.png)|
 |Name: *sonosplayer* <br>Devicekeys: *player*<br>Readings: *alias, **room**, group, sortby,<br>and other readings...* <br><br>Einsatz: SONOS Player<br>JSON: [sonosplayer](./public/templates/sonosplayer.json)|![](./docs/media/template_sonosplayer.png)|
 |Name: *proplanta* <br>Devicekeys: *weather*<br>Readings: *alias, **room**, group, sortby,<br>and other readings...* <br><br>Einsatz: Wettervorhersage (Proplanta)<br>JSON: [proplanta](./public/templates/proplanta.json)|![](./docs/media/template_proplanta.png)|
