@@ -1,3 +1,13 @@
+# v4.0.39-beta (24.04.2024)
+## Panel Status
+- truncate long titles
+- show button to edit panel settings from loglevel 7
+## Settings Panel
+- bug fix in case of new panel without a template and adding new devicekeys
+## Settings
+- Control via URL routes possible
+## App
+- adding default template chart
 # v4.0.38-beta (21.04.2024)
 ## Panel 
 - status now uses the colour variable *primary* analogous to the header of **FHEMApp**

@@ -55,6 +55,7 @@ export const useFhemStore = defineStore('fhem', () => {
         isReady: false,
         message: false,
         currentView: null,
+        settingsTab: null,
         version: null,
         updateAvailable: false,
         updateProgress: false,
@@ -198,6 +199,10 @@ export const useFhemStore = defineStore('fhem', () => {
             if(route.params.view && route.params.view !== app.currentView) {
                 app.currentView = route.params.view
                 res.routeChanged = true
+            }
+
+            if(route.name === 'settings') {
+                app.settingsTab = route.params.tab || 'general'
             }
         }
 

@@ -9,12 +9,12 @@ const router = createRouter({
       component: () => import('../views/DevicesView.vue')
     },
     {
-      path: '/:config/devices/:view',
+      path: '/:config/devices/:view?',
       name: 'devices',
       component: () => import('../views/DevicesView.vue')
     },
     {
-      path: '/:config/settings',
+      path: '/:config/settings/:tab?/:item?',
       name: 'settings',
       component: () => import('../views/SettingsView.vue')
     },

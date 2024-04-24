@@ -1,3 +1,15 @@
 [
-    "switch", "light", "dimmer", "contact", "blind", "thermostat", "temperatur", "smokedetector", "motiondetector", "sonosplayer", "proplanta", "lightscene"
+    "switch", 
+    "light", 
+    "dimmer", 
+    "contact", 
+    "blind", 
+    "thermostat", 
+    "temperatur", 
+    "smokedetector", 
+    "motiondetector", 
+    "sonosplayer", 
+    "proplanta", 
+    "lightscene",
+    "chart"
 ]

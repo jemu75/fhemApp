@@ -1,8 +1,9 @@
 <script setup>
-    import { computed, ref } from 'vue'
+    import { computed, ref, watch } from 'vue'
     import { useFhemStore } from '@/stores/fhem'
     import { useI18n } from 'vue-i18n'
     import { useDisplay } from 'vuetify'
+    import router from '@/router'
 
     import VueJsonPretty from 'vue-json-pretty'
     import 'vue-json-pretty/lib/styles.css'
@@ -39,7 +40,7 @@
     const headers = computed(() => {
         let res = [
             { key: 'name', title: i18n.t(preLang + 'title'), sortable: true, align: 'start' },
-            { key: 'actions', title: '', sortable: false, align: 'end' }
+            { key: 'actions', title: '', sortable: false, align: 'end', width: '50%' }
         ]
 
         if(!mobile.value) {
@@ -48,7 +49,7 @@
                     { key: 'name', title: i18n.t(preLang + 'title'), sortable: true, align: 'start' },
                     { key: 'devices', title: 'Devices', sortable: true, align: 'start', filterable: false },
                     { key: 'advanced', title: i18n.t(preLang + 'extended'), sortable: true, filterable: false },
-                    { key: 'actions', title: '', sortable: false, align: 'end' }
+                    { key: 'actions', title: '', sortable: false, align: 'end', width: '15%' }
                 ]
             } else {
                 res = [
@@ -157,6 +158,33 @@
         jsonError: null
     })
 
+    watch(router.currentRoute, (val) => {
+        let idx 
+
+        if(val.params.item) {
+            idx = fhem.app.config[props.type].map((e) => e.name).indexOf(val.params.item) 
+            
+            if(idx !== -1) {
+                item.value = fhem.app.config[props.type][idx]
+                settings.value.itemIdx = idx
+
+                getReadings()
+
+                settings.value.extended = items.value[items.value.map((e) => e.idx).indexOf(idx)].advanced !== '-' ? true : false
+
+                if(typeof item.value === 'object') {
+                    settings.value.jsonDef = JSON.stringify(item.value, null, '\t')
+                    settings.value.jsonError = null
+                }
+
+                return
+            }
+        } 
+
+        item.value = null
+        settings.value.panel = null
+    }, { immediate: true })
+
     function updatePanel(panel) {
         settings.value.panel = panel
     }
@@ -240,23 +268,13 @@
             }
 
         fhem.app.config[props.type].push(props.type === 'panels' ? newPanel : newTemplate)
-        settings.value.newItem = ''
         
-        editItem(fhem.app.config[props.type].length - 1)
+        editItem(settings.value.newItem)
+        settings.value.newItem = ''
     }
 
-    function editItem(idx) {
-        item.value = fhem.app.config[props.type][idx]
-        settings.value.itemIdx = idx
-
-        getReadings()
-
-        settings.value.extended = items.value[items.value.map((e) => e.idx).indexOf(idx)].advanced !== '-' ? true : false
-
-        if(typeof item.value === 'object') {
-            settings.value.jsonDef = JSON.stringify(item.value, null, '\t')
-            settings.value.jsonError = null
-        }
+    function editItem(val) {
+        router.push({ name: 'settings', params: { tab: props.type, item: val }, query: router.currentRoute.value.query })
     }
 
     function deleteItem(idx) {
@@ -348,7 +366,7 @@
                         variant="plain"
                         density="compact"
                         class="mr-3"
-                        @click="editItem(item.idx)">
+                        @click="editItem(item.name)">
                     </v-btn>
                     <v-btn 
                         icon="mdi-delete"
@@ -364,7 +382,7 @@
             <v-row>
                 <v-col>
                     <v-row class="align-center">
-                        <v-btn variant="plain" icon="mdi-arrow-up-left" @click="item = null; settings.panel = null"></v-btn>
+                        <v-btn variant="plain" icon="mdi-arrow-up-left" @click="editItem()"></v-btn>
 
                         <v-col cols="10" md="">
                             <v-autocomplete v-if="!settings.rawMode"

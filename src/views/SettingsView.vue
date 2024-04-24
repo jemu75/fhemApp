@@ -1,6 +1,7 @@
 <script setup>
   import { ref, watch } from 'vue'
   import { useFhemStore } from '@/stores/fhem'
+  import router from '@/router'
 
   import SettingsHeader from '../components/SettingsHeader.vue'
   import SettingsNavigation from '../components/SettingsNavigation.vue'
@@ -10,14 +11,12 @@
 
   const tabs = ['general', 'panels', 'templates', 'navigation', 'colors', 'content']
 
-  const settingsTab = ref(tabs[0])
-  const configIsChanged = ref(false)
-
   const fhem = useFhemStore()  
+
+  const configIsChanged = ref(false)
 
   watch(fhem.app.config, (newVal) => {
     if(newVal && fhem.app.isReady) configIsChanged.value = true
-    
   })
 
   async function saveSettings(save) {
@@ -36,6 +35,10 @@
     
     await fhem.createSession()
     configIsChanged.value = false
+  }
+
+  function changeTab() {
+    router.replace({ name: 'settings', params: { tab: fhem.app.settingsTab }, query: router.currentRoute.value.query })
   }
 
   if(fhem.app.noConfig) fhem.log(3, 'Settings View - No Config handling', null, 'noConfig')
@@ -62,15 +65,15 @@
       </template>
     </v-toolbar>
 
-    <v-tabs v-model="settingsTab">
+    <v-tabs v-model="fhem.app.settingsTab" @update:model-value="changeTab()">
       <v-tab v-for="tab of tabs" :value="tab" :key="tab">{{ $t('_app.settings.' + tab + '.title', 2) }}</v-tab>
     </v-tabs>
 
-    <SettingsHeader v-if="settingsTab === 'general'"></SettingsHeader>
-    <SettingsNavigation v-if="settingsTab === 'navigation'"></SettingsNavigation>
-    <SettingsProps v-if="settingsTab === 'panels'" :type="settingsTab"></SettingsProps>
-    <SettingsProps v-if="settingsTab === 'templates'" :type="settingsTab"></SettingsProps>
-    <SettingsColors v-if="settingsTab === 'colors'"></SettingsColors>
-    <SettingsContent v-if="settingsTab === 'content'"></SettingsContent>
+    <SettingsHeader v-if="fhem.app.settingsTab === 'general'"></SettingsHeader>
+    <SettingsNavigation v-if="fhem.app.settingsTab === 'navigation'"></SettingsNavigation>
+    <SettingsProps v-if="fhem.app.settingsTab === 'panels'" type="panels"></SettingsProps>
+    <SettingsProps v-if="fhem.app.settingsTab === 'templates'" type="templates"></SettingsProps>
+    <SettingsColors v-if="fhem.app.settingsTab === 'colors'"></SettingsColors>
+    <SettingsContent v-if="fhem.app.settingsTab === 'content'"></SettingsContent>
   </v-card>
 </template>

@@ -162,7 +162,7 @@
         handle=".dd_zone"
         item-key="id">
         <template #item={index}>
-            <v-row no-gutters class="py-3 align-center">
+            <v-row no-gutters class="pt-3 align-center">
                 <v-icon icon="mdi-drag-vertical" class="dd_zone pr-5"></v-icon>
                 <v-col>
                     <v-text-field 
@@ -177,7 +177,7 @@
                         @click:prepend-inner="openAssist(index)">
                     </v-text-field>
                 </v-col>
-                <v-btn variant="plain" density="compact" icon="mdi-delete" @click="deleteDef(index)" class="pl-5"></v-btn>
+                <v-btn variant="plain" icon="mdi-delete" @click="deleteDef(index)"></v-btn>
             </v-row>
         </template>
     </draggable>
@@ -200,7 +200,7 @@
                     @click:append-inner="fhem.help(propHelp)">
                 </v-text-field>                        
             </v-col>
-            <v-btn variant="plain" icon="mdi-plus" :disabled="!newDef" @click="addDef()" class="mr-5"></v-btn>
+            <v-btn variant="plain" icon="mdi-plus" :disabled="!newDef" @click="addDef()" class="mr-8"></v-btn>
         </v-row>
     </v-form>
 

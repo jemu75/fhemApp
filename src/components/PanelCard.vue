@@ -92,6 +92,10 @@
         }
     }
 
+    function editItem(val) {
+        router.push({ name: 'settings', params: { tab: 'panels', item: val }, query: router.currentRoute.value.query })
+    }
+
     function getInfo(pos) {
         let res = fhem.handleDefs(item.panel.info[pos], ['text', 'icon', 'color'],['', '', ''])
 
@@ -144,17 +148,15 @@
         <v-sheet color="primary">
             <v-img :src="img.url" :gradient="img.url ? fhem.app.header.imageGradient : ''" height="48" cover>
                 <v-card-title>
-                    <v-row no-gutters>
-                        <v-col v-if="panel.status.title">
+                    <v-row no-gutters class="align-center">
+                        <v-col v-if="panel.status.title" class="text-truncate">
                             {{  title.title }}
                         </v-col>
-                        <v-spacer></v-spacer>
-                        <v-col v-if="fhem.app.settings.loglevel > 6" class="text-right">
+                        <span v-if="fhem.app.settings.loglevel > 6" class="mx-2">
                             {{ sortby.sortby }}
-                        </v-col>
-                        <v-col v-if="levelOpts.icon" cols="1" class="text-right">
-                            <v-btn :icon="levelOpts.icon" size="small" variant="plain" density="compact" @click="levelClick(false)"></v-btn>
-                        </v-col>
+                        </span>
+                        <v-btn v-if="fhem.app.settings.loglevel > 6" icon="mdi-pencil" size="small" variant="plain" density="compact" @click="editItem(panel.name)"></v-btn>
+                        <v-btn v-if="levelOpts.icon" :icon="levelOpts.icon" size="small" variant="plain" density="compact" @click="levelClick()"></v-btn>
                     </v-row>
                 </v-card-title>
             </v-img>

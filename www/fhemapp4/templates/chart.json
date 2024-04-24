@@ -1,0 +1,97 @@
+{
+	"name": "chart",
+	"author": "jemu",
+	"date": "2024-04-24",	
+	"panel": {
+		"devicekeys": [
+			"chart:FHEM thermostat_FileLog"
+		],
+		"navigation": [
+			"Übersichten",
+			"chart-a-room::Räume->%s",
+			"chart-a-group::Gruppen->%s"
+		],
+		"expandable": [
+			"::true:false:true"
+		],
+		"sortby": [
+			"chart-a-sortby::%s"
+		]
+	},
+	"status": {
+		"title": [
+            "chart-a-alias:^.+$:%s",
+			"chart-i-NAME::%s"
+		],
+		"imageUrl": [
+			"::images/header_01.png"
+		]
+	},
+	"main": [
+		{
+			"level": {
+				"mid": "chart",
+				"height": [
+					"250px"
+				]
+			},
+			"mid": {
+				"serie": [
+					"::get chart - - -4 0 4\\:measured-temp:Temperatur:1:°C:line",
+					"::get chart - - -4 0 4\\:humidity:Luftfeuchte:0:%:line"
+				],
+                "options": {
+					"series": [
+						{
+							"smooth": true,
+							"showSymbol": false
+						},
+						{
+							"smooth": true,
+							"showSymbol": false,
+							"yAxisIndex": 1
+						}
+					]
+				},
+				"options2": {
+                    "grid": {
+                        "top": 30,
+                        "bottom": 120,
+                        "left": 60,
+                        "right": 60
+                    },
+                    "legend": {
+                        "bottom": 60
+                    },
+                    "dataZoom": [
+                        {
+                            "show": true
+                        }
+                    ],
+                    "series": [
+						{
+							"smooth": true,
+							"showSymbol": false
+						},
+						{
+							"smooth": true,
+							"showSymbol": false,
+							"yAxisIndex": 1
+						}
+					]
+                }
+			}
+		}
+	],
+	"info": {
+		"mid1": [
+			"chart-linesInTheFile-ts::%d()"
+		],
+		"right2": [
+			"chart-linesInTheFile::%n()"
+		],
+		"left1": [
+			":::mdi-chart-bar"
+		]
+	}
+}

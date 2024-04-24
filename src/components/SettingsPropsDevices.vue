@@ -58,6 +58,7 @@
     }
 
     function addKey() {
+        if(!fhem.getEl(fhem.app.config[props.type][props.typeIdx], ['panel', 'devices'])) fhem.app.config[props.type][props.typeIdx]['panel']['devices'] = []
         fhem.app.config[props.type][props.typeIdx]['panel']['devices'].push(newKey.value + ':')
         newKey.value = null
         getDevices()
@@ -73,7 +74,7 @@
 
 <template>
     <v-row v-for="(device, idx) of devices" :key="device.key" no-gutters class="pt-3 align-center">
-        <v-col class="pt-3">
+        <v-col>
             <v-autocomplete
                 v-model="devices[idx]['device']"                                
                 :items="fhemDevices"
@@ -84,10 +85,10 @@
                 @update:modelValue="updateDeviceKeys()">
             </v-autocomplete>
         </v-col>
-        <v-btn v-if="extended" variant="plain" icon="mdi-delete" @click="deleteKey(idx)" class="pt-3 pl-5"></v-btn>
+        <v-btn v-if="extended" variant="plain" icon="mdi-delete" @click="deleteKey(idx)"></v-btn>
     </v-row>
     <v-row v-if="extended" no-gutters class="pt-3 align-center">
-        <v-col class="pt-3">
+        <v-col>
             <v-text-field
                 v-model="newKey"
                 density="compact" 
@@ -97,6 +98,6 @@
                 label="new deviceKey">
             </v-text-field>            
         </v-col>
-        <v-btn variant="plain" icon="mdi-plus" :disabled="!newKey" @click="addKey()" class="pt-3 mr-5"></v-btn>
+        <v-btn variant="plain" icon="mdi-plus" :disabled="!newKey" @click="addKey()" class="mr-8"></v-btn>
     </v-row>
 </template>
