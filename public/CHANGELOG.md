@@ -1,3 +1,8 @@
+# v4.0.40-beta (25.04.2024)
+## Core
+- loading of standard templates optimised
+## Panel
+- bug fix in case of maximize panels
 # v4.0.39-beta (24.04.2024)
 ## Panel Status
 - truncate long titles

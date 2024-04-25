@@ -63,12 +63,14 @@
 
         if(init) {
             opts.activeLevels = levelsActive(item.panel.main)
+            if(/=maximized$/.test(fhem.app.currentView)) opts.expanded = true
         } else {
             if(opts.expandable) opts.expanded = !opts.expanded
             if(opts.maximizable) {
                 if(opts.expanded) {
                     router.push({ name: 'devices', params: { view: 'panel=' + item.panel.name + '=maximized' }, query: router.currentRoute.value.query })
                 } else {
+                    fhem.app.currentView = fhem.app.currentView.replace(/=maximized$/, '')
                     router.back()
                 }   
             }

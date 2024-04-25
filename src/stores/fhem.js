@@ -49,7 +49,21 @@ export const useFhemStore = defineStore('fhem', () => {
         panelList: [],
         navigation: [],
         threads: [],
-        distTemplates: [],
+        distTemplates: [
+            'blind', 
+            'chart',
+            'contact', 
+            'dimmer', 
+            'light', 
+            'lightscene',
+            'motiondetector', 
+            'proplanta', 
+            'smokedetector', 
+            'sonosplayer', 
+            'switch', 
+            'temperatur', 
+            'thermostat'
+        ],
         noConfig: null,
         configLoaded: false,        
         isReady: false,
@@ -392,22 +406,27 @@ export const useFhemStore = defineStore('fhem', () => {
         return true
     }
 
-    //coreFunction load default all Templates
-    async function loadDefaultTemplates() {
-        let distTemplate
+    //coreFunction load default Templates if needed
+    async function loadTemplates() {
+        let templateList = [],
+            distTemplate,
+            threadId = thread()
 
-        app.distTemplates = await getJsonFile('./templates/templates.json')
-        app.distTemplates.sort((a, b) => (a > b) ? 1 : (b > a) ? -1 : 0)
-       
-        for(const template of app.distTemplates) {
-            if(app.config.templates.map((e) => e.name).indexOf(template) === -1) {
-                distTemplate = await getJsonFile('./templates/' + template + '.json')
-                if(distTemplate) {
-                    distTemplate.dist = true
-                    app.config.templates.push(distTemplate)
-                }
+        for(const panel of app.config.panels) {
+            if(panel.template && app.config.templates.map((e) => e.name).indexOf(panel.template) === -1) {
+                if(app.distTemplates.indexOf(panel.template) !== -1 && templateList.indexOf(panel.template) === -1) templateList.push(panel.template)
             }
         }
+
+        for(const template of templateList) {
+            distTemplate = await getJsonFile('./templates/' + template + '.json')
+            if(distTemplate) {
+                distTemplate.dist = true
+                app.config.templates.push(distTemplate)
+            }
+        }
+
+        thread(threadId)
 
         return true
     }
@@ -974,7 +993,7 @@ export const useFhemStore = defineStore('fhem', () => {
         if(res && connect) res = await getToken()
         if(res && connect) res = openEventWatcher()
         if(res) res = await loadConfig()
-        if(res) res = await loadDefaultTemplates()
+        if(res) res = await loadTemplates()
         if(res) res = createPanelList()
         if(res) res = await initialLoad()
         if(res) res = createNavigation()
@@ -1015,5 +1034,5 @@ export const useFhemStore = defineStore('fhem', () => {
     //FHEMApp entryPoint
     router.isReady().then(init())
 
-    return { app, getEl, handleDefs, getIcon, replacer, createSession, request, thread, stringToJson, log, help, changeDarkMode, appUpdate }
+    return { app, getEl, handleDefs, getIcon, replacer, createSession, request, thread, stringToJson, log, help, changeDarkMode, appUpdate, loadTemplates }
 })

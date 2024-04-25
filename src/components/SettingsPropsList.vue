@@ -118,7 +118,8 @@
                         :disabled="templates.length === 0"
                         density="compact"
                         variant="outlined"
-                        class="pt-3">
+                        class="pt-3"
+                        @update:model-value="fhem.loadTemplates()">
                     </v-autocomplete>
 
                     <SettingsPropsDevices v-if="def.type === 'devices'"
