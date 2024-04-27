@@ -94,8 +94,23 @@
         }
     }
 
-    function editItem(val) {
-        router.push({ name: 'settings', params: { tab: 'panels', item: val }, query: router.currentRoute.value.query })
+    function getTemplate(val) {
+        let idx = fhem.app.config.panels.map((e) => e.name).indexOf(val),
+            templateIdx,
+            res
+
+        if(idx !== -1) {
+            res = fhem.app.config.panels[idx].template
+            templateIdx = fhem.app.config.templates.map((e) => e.name).indexOf(res)
+
+            if(templateIdx !== -1 && !fhem.app.config.templates[templateIdx].dist) {
+                return res
+            }
+        }
+    }
+
+    function editItem(val, tab) {
+        router.push({ name: 'settings', params: { tab: tab, item: val }, query: router.currentRoute.value.query })
     }
 
     function getInfo(pos) {
@@ -146,21 +161,21 @@
                 />
             </v-col>
         </v-row>
-    
+
         <v-sheet color="primary">
             <v-img :src="img.url" :gradient="img.url ? fhem.app.header.imageGradient : ''" height="48" cover>
-                <v-card-title>
-                    <v-row no-gutters class="align-center">
-                        <v-col v-if="panel.status.title" class="text-truncate">
-                            {{  title.title }}
-                        </v-col>
-                        <span v-if="fhem.app.settings.loglevel > 6" class="mx-2">
-                            {{ sortby.sortby }}
-                        </span>
-                        <v-btn v-if="fhem.app.settings.loglevel > 6" icon="mdi-pencil" size="small" variant="plain" density="compact" @click="editItem(panel.name)"></v-btn>
+                <v-toolbar color="transparent" density="compact" class="pr-1">
+                    <v-toolbar-title class="text-truncate">{{  title.title  }}</v-toolbar-title>
+
+                    <template v-slot:append>
+                        <div v-if="fhem.app.settings.loglevel > 6">
+                            {{  sortby.sortby }}
+                            <v-btn v-if="getTemplate(panel.name)" icon="mdi-application-edit-outline" size="small" variant="plain" @click="editItem(getTemplate(panel.name), 'templates')"></v-btn>
+                            <v-btn icon="mdi-pencil" size="small" variant="plain" @click="editItem(panel.name, 'panels')"></v-btn>
+                        </div>
                         <v-btn v-if="levelOpts.icon" :icon="levelOpts.icon" size="small" variant="plain" density="compact" @click="levelClick()"></v-btn>
-                    </v-row>
-                </v-card-title>
+                    </template>
+                </v-toolbar>        
             </v-img>
         </v-sheet>
 

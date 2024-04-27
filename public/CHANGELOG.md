@@ -1,3 +1,7 @@
+# v4.0.41-beta (27.04.2024)
+## Panel Status
+- bug fix level switch on right side
+- add button for template editor on loglevel 7
 # v4.0.40-beta (25.04.2024)
 ## Core
 - loading of standard templates optimised
