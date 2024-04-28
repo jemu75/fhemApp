@@ -73,7 +73,7 @@ export const useFhemStore = defineStore('fhem', () => {
         version: null,
         updateAvailable: false,
         updateProgress: false,
-        helpURL: 'https://github.com/jemu75/fhemApp/tree/dev-v4?tab=readme-ov-file#'        
+        helpURL: 'https://github.com/jemu75/fhemApp/tree/master?tab=readme-ov-file#'        
     })
 
     const stat = {
