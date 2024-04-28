@@ -1,0 +1,94 @@
+{
+	"name": "blind",
+	"author": "jemu",
+	"date": "2024-04-16",	
+	"panel": {
+		"devicekeys": [
+			"blind:FHEM blind device"
+		],
+		"navigation": [
+			"blind-a-room::Räume->%s",
+			"blind-a-group::Gruppen->%s"
+		],
+		"sortby": [
+			"blind-a-sortby::%s"
+		]
+	},
+	"status": {
+		"title": [
+			"blind-a-alias:^.+$:%s",
+			"blind-i-NAME::%s"
+		],
+		"imageUrl": [
+			"::images/header_01.png"
+		],
+		"bar": [
+			"blind-state:off:0",
+			"blind-pct::%n(0)"
+		]
+	},
+	"main": [
+		{
+			"level": {
+				"mid": "info",
+				"left1": "btn",
+				"right2": "btn"
+			},
+			"mid": {
+				"text": [
+					"blind-motor:up:öffnet...",
+					"blind-motor:down:schließt...",
+					"blind-pct:1:offen",
+					"blind-pct::geschlossen"
+				],
+				"divider": [
+					"::true"
+				],
+				"size": [
+					"::7"
+				]
+			},
+			"left1": {
+				"btn": [
+					"::mdi-chevron-down"
+				],
+				"click": [
+					"blind-motor:stop:set blind off",
+					"::set blind stop"
+				],
+				"longClick": [
+					"::set blind off"
+				],
+				"longRelease": [
+					"::set blind stop"
+				],
+				"divider": [
+					"::true"
+				]
+			},
+			"right2": {
+				"btn": [
+					"::mdi-chevron-up"
+				],
+				"click": [
+					"blind-motor:stop:set blind on",
+					"::set blind stop"
+				],
+				"longClick": [
+					"::set blind on"
+				],
+				"longRelease": [
+					"::set blind stop"
+				]
+			}
+		}
+	],
+	"info": {
+		"left1": [
+			"blind-motor:up::mdi-window-shutter-alert",
+			"blind-motor:down::mdi-window-shutter-alert",
+			"blind-pct:1::mdi-window-shutter-open",
+			":::mdi-window-shutter"
+		]
+	}
+}

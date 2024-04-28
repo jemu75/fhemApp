@@ -1,0 +1,77 @@
+{
+	"name": "light",
+	"author": "jemu",
+	"date": "2024-04-16",	
+	"panel": {
+		"devicekeys": [
+			"light:FHEM lightswitch device"
+		],
+		"navigation": [
+			"light-a-room::Räume->%s",
+			"light-a-group::Gruppen->%s"
+		],
+		"sortby": [
+			"light-a-sortby::%s"
+		]
+	},
+	"status": {
+		"title": [
+			"light-a-alias:^.+$:%s",
+			"light-i-NAME::%s"
+		],
+		"imageUrl": [
+			"::images/header_01.png"
+		],
+		"bar": [
+			"light-state:on:100",
+			"light-state::0"
+		]
+	},
+	"main": [
+		{
+			"level": {
+				"left1": "btn",
+				"mid": "info",
+				"right2": "btn"
+			},
+			"left1": {
+				"btn": [
+					"::mdi-power-off"
+				],
+				"divider": [
+					"::true"
+				],
+				"click": [
+					"::set light off"
+				]
+			},
+			"mid": {
+				"text": [
+					"light-state:on:an",
+					"light-state:off:aus",
+					"light-state::%s"
+				],
+				"divider": [
+					"::true"
+				],
+				"size": [
+					"::7"
+				]
+			},
+			"right2": {
+				"btn": [
+					"::mdi-power-on"
+				],
+				"click": [
+					"::set light on"
+				]
+			}
+		}
+	],
+	"info": {
+		"left1": [
+			"light-state:on::mdi-lightbulb",
+			":::mdi-lightbulb-off"
+		]
+	}
+}

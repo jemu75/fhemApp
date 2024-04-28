@@ -1,0 +1,165 @@
+{
+    "_app": {
+        "settings": {
+            "title": "Einstellungen",
+            "general": {
+                "title": "Allgemein" 
+            },
+            "header": {
+                "title": "Kopfzeile",
+                "barTitle":"Kopfzeile",
+                "imageUrl": "URL für Hintergrundbild",
+                "imageUrlPlaceholder": "https://picsum.photos/1920/1080?random",
+                "imageGradient": "Farbverlauf (CSS Linear Gradient Definition)",
+                "imageGradientPlaceholder": "to top, rgba(33, 33, 33, 0.6), rgba(33, 33, 33, 0.6)",
+                "showTime": "Uhrzeit",
+                "showTimeHint": "Anzeige der Uhrzeit in der Kopfzeile",
+                "showDate": "Datum",
+                "showDateHint": "Anzeige des Datums in der Kopfzeile",
+                "showTitle": "Navigation",
+                "showTitleHint": "Anzeige des aktuellen Navigationspunktes in der Kopfzeile",
+                "optionsTitle":"Optionsmenü",
+                "showDarkMode": "Tag/Nacht Modus",
+                "showDarkModeHint": "",
+                "showReloadPage": "Seite aktualsieren",
+                "showReloadPageHint": "",
+                "showUpdate": "Update anzeigen",
+                "showUpdateHint": "",
+                "showSettings": "Einstellungen",
+                "showSettingsHint": "",
+                "showLanguages": "Sprachen",
+                "showLanguagesHint": "",
+                "optionsCommandTitle":"Optionsmenü FHEM Befehle",
+                "darkModeOverFhem": "DarkMode über FHEM Reading",
+                "commandName": "Name",
+                "commandNamePlaceholder": "restart",
+                "commandNameRules": "Eingabe erforderlich!",
+                "commandTitle": "Beschriftung",
+                "commandTitlePlaceholder": "FHEM Neustart od. %t(optionRestart)",
+                "commandIcon": "Icon",
+                "commandIconPlaceholder": "mdi-rocket",
+                "commandCmd": "FHEM Befehl",
+                "commandCmdPlaceholder": "shutdown restart"
+            },
+            "navigation": {
+                "title": "Navigation",
+                "name": "Name",
+                "namePlaceholder": "home",
+                "title1": "Beschriftung",
+                "title1Placeholder": "Startseite od. %t(navHome)",
+                "icon": "Icon",
+                "iconPlaceholder": "mdi-home",
+                "groupAsChips": "Kompakt",
+                "groupAsChipsHint": "Kompakte Darstellung untergeordneter Navigationspunkte",
+                "sort": "sortiert",
+                "sortHint": "Sortiert untergeordneter Navigationspunkte aufsteigend",
+                "divider": "Trennlinie",
+                "dividerHint": "Trennlinie unterhalb des Navigationspunktes"
+            },
+            "props": {
+                "panel": "Allgemein",                
+                "status": "Statuszeile",
+                "level": "Ebene allgemein",
+                "main": "Ebenen",
+                "type": "Typ",
+                "left1": "left1", 
+                "left2": "left2",
+                "mid": "mid",
+                "right1": "right1",
+                "right2": "right2",
+                "info": "Infozeile"
+            },
+            "panels": {
+                "title": "Panel | Panels",
+                "extended": "erweitert",
+                "rawMode": "raw Mode",
+                "preview": "Panel Vorschau",
+                "search": "Panel suchen",
+                "new": "Name für neues Panel"
+            },
+            "templates": {
+                "title": "Vorlage | Vorlagen",
+                "search": "Vorlage suchen",
+                "new": "Name für neue Vorlage"
+            },
+            "colors": {
+                "title": "Farben",
+                "newKey": "neue Variable"
+            },
+            "content": {
+                "title": "Sprache | Sprachen",
+                "newKey": "neue Variable",
+                "newLang": "neue Sprache (ISO-639)",
+                "search": "Variable suchen",
+                "key": "Variable"
+            },
+            "rules": {
+                "required": "Erforderlich!",
+                "panelUnique": "Panel ist bereits vorhanden!",
+                "iso639code": "Eingabe muss ISO-639-1-Code entsprechen!",
+                "langUnique": "Sprache ist bereits vorhanden!",
+                "keyUnique": "Variable ist bereits vorhanden!"
+            },
+            "assist": {
+                "title": "Assistent",
+                "ok": "Ok",
+                "cancel": "Abbruch"
+            }
+        },
+        "options": {
+            "darkMode": "Tag/Nacht Modus",
+            "reload": "Aktualisieren",
+            "settings": "Einstellungen",
+            "update": "Aktualisierung"
+        },
+        "internals": {
+            "title": "Systeminformationen",
+            "onlyConfig": "nur Config anzeigen"
+        },
+        "messages": {
+            "request": {
+                "title": "Verbindung zu FHEM fehlgeschlagen",
+                "text": "Prüfe ob FHEM erreichbar ist oder die URL Verbindungsparameter (?protocol=...&server=...&port=...&path=...) korrekt sind, falls diese angegeben wurden."
+            },
+            "wrongDevice": {
+                "title": "FHEM Config Device nicht gefunden",
+                "text": "Das FHEM Device das in der URL angegeben wurde (http://url/index.html#/fhemappdevice/...) konnte nicht gefunden werden."
+            },
+            "jsonParse": {
+                "title": "Interner Fehler",
+                "text": "Bei der Verarbeitung einer JSON Definition ist ein Fehler aufgetreten. Für weitere Informationen solltest du das Fehlerlogging über den URL Parameter (?loglevel=7) aktivieren."
+            },
+            "base64": {
+                "title": "Interner Fehler",
+                "text": "Fehler bei der Verarbeitung der Konfiguration. Die Decodierung der base64-codierten Konfiguarationsdaten ist fehlgeschlagen. Für weitere Informationen solltest du das Fehlerlogging über den URL Parameter (?loglevel=7) aktivieren."
+            },
+            "noConfig": {
+                "title": "Keine Einstellungen gefunden",
+                "text": "Für diese Instanz wurden noch keine Einstellungen vorgenommen. Bitte zuerst die Grundeinstellungen für FHEMapp vornehmen und speichern."
+            },
+            "config": {
+                "title": "Laden der Konfiguration fehalgeschlagen",
+                "text": "Es konnten keine Konfiguationsdaten verarbeitet werden. Für weitere Informationen solltest du das Fehlerlogging über den URL Parameter (?loglevel=7) aktivieren."
+            },
+            "websocket": {
+                "title": "WEBSocket Verbidnung fehlgeschlagen",
+                "text": "Der verwendete Browser unterstützt keine WEBSocket-Verbidnungen. Es wurde deshalb eine Longpoll-Verbindung zu FHEM hergestellt. Zum Deaktivieren dieser Meldung solltest du den URL Parameter für Longpoll-Verbindungen (?xhr=1) verwenden."
+            },
+            "reconnect": {
+                "title": "Verbindung zu FHEM wurde unterbrochen",
+                "text": "Neuer Verbindungsversuch erfolgt in 3 Sekunden... Prüfe ob FHEM erreichbar ist, wenn der Fehler weiterhin auftritt."
+            },
+            "noPanels": {
+                "title": "Konfiguration enthält keine Panels",
+                "text": "Bitte erstelle zuerst Panels in den Einstellungen von FHEMapp."
+            },
+            "clipboard": {
+                "text": "Daten wurden in die Zwischenablage kopiert."
+            },
+            "checkDefs": {
+                "text": "Prüfe die Reihenfolge der Definitionen. Die Definition ohne Bedingung sollte immer am Ende stehen."
+            }
+        },
+        "default": "Standard"
+    }
+}

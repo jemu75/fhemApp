@@ -1,0 +1,238 @@
+{
+	"name": "thermostat",
+	"author": "jemu75",
+	"date": "2024-04-16",
+	"panel": {
+        "devicekeys": [
+			"thermo:FHEM thermostat device",
+            "valve:FHEM Valve device"
+		],
+		"navigation": [
+			"thermo-a-room::Räume->%s",
+			"thermo-a-group::Gruppen->%s"
+		],
+		"sortby": [
+			"thermo-a-sortby::%s"
+		]
+	},
+	"status": {
+		"title": [
+			"thermo-a-alias:^.+$:%s",
+			"thermo-i-NAME::%s"
+		],
+		"bar": [
+			"valve-pct:^.+$:%n(0)",
+			"valve-state:on:100",
+            "valve-state::0"
+		],
+		"imageUrl": [
+			"::images/header_01.png"
+		]
+	},
+	"main": [
+		{
+			"level": {
+				"left1": "btn",
+				"mid": "info",
+				"right2": "btn"
+			},
+			"left1": {
+				"btn": [
+					"::mdi-minus"
+				],
+				"divider": [
+					"::true"
+				],
+				"click": [
+					"thermo-desired-temp:17.5:set thermo desired-temp %n(1,-0.5)"
+				],
+				"longClick": [
+					"thermo-R-nightTemp:^.+$:set thermo desired-temp %n(1,0)"
+				]
+			},
+			"mid": {
+				"divider": [
+					"::true"
+				],
+				"text": [
+					"thermo-desired-temp:off:aus",
+					"thermo-desired-temp::%n(1)°C"
+				],
+				"size": [
+					"::7"
+				]
+			},
+			"right2": {
+				"btn": [
+					"::mdi-plus"
+				],
+				"click": [
+					"thermo-desired-temp:25:",
+					"thermo-desired-temp::set thermo desired-temp %n(1,0.5)"
+				],
+				"longClick": [
+					"thermo-R-dayTemp:^.+$:set thermo desired-temp %n(1,0)"
+				]
+			}
+		},
+		{
+			"level": {
+				"mid": "chart",
+				"height": [
+					"280px"
+				]
+			},
+			"mid": {
+				"options": {
+					"legend": {
+						"show": false
+					},
+					"yAxis": {
+						"show": false
+					},
+					"grid": {
+						"top": 0,
+						"bottom": 0,
+						"left": 0,
+						"right": 0
+					},
+					"series": [
+						{
+							"type": "gauge",
+							"center": [
+								"50%",
+								"65%"
+							],
+							"startAngle": 200,
+							"endAngle": -20,
+							"min": 10,
+							"max": 30,
+							"splitNumber": 10,
+							"itemStyle": {
+								"color": "#FFAB91"
+							},
+							"progress": {
+								"show": true,
+								"overlap": false,
+								"width": 20
+							},
+							"pointer": {
+								"show": false
+							},
+							"axisLine": {
+								"lineStyle": {
+									"width": 20
+								}
+							},
+							"axisTick": {
+								"distance": -30,
+								"splitNumber": 4,
+								"lineStyle": {
+									"width": 2,
+									"color": "#999"
+								}
+							},
+							"splitLine": {
+								"distance": -36,
+								"length": 12,
+								"lineStyle": {
+									"width": 3,
+									"color": "#999"
+								}
+							},
+							"axisLabel": {
+								"distance": -10,
+								"color": "#999",
+								"fontSize": 10
+							},
+							"anchor": {
+								"show": false
+							},
+							"title": {
+								"show": false
+							},
+							"detail": {
+								"valueAnimation": true,
+								"width": "60%",
+								"lineHeight": 40,
+								"borderRadius": 8,
+								"offsetCenter": [
+									0,
+									"-15%"
+								],
+								"fontSize": 35,
+								"fontWeight": "bolder",
+								"color": "inherit"
+							}
+						},
+						{
+							"type": "gauge",
+							"center": [
+								"50%",
+								"65%"
+							],
+							"startAngle": 200,
+							"endAngle": -20,
+							"min": 10,
+							"max": 30,
+							"itemStyle": {
+								"color": "#FD7347"
+							},
+							"progress": {
+								"show": true,
+								"width": 8
+							},
+							"pointer": {
+								"show": false
+							},
+							"axisLine": {
+								"show": false
+							},
+							"axisTick": {
+								"show": false
+							},
+							"splitLine": {
+								"show": false
+							},
+							"axisLabel": {
+								"show": false
+							},
+							"detail": {
+								"valueAnimation": true,
+								"width": "60%",
+								"lineHeight": 40,
+								"borderRadius": 8,
+								"offsetCenter": [
+									0,
+									"15%"
+								],
+								"fontSize": 20,
+								"fontWeight": "normal",
+								"color": "inherit"
+							}
+						}
+					]
+				},
+				"serie": [
+					"thermo-desired-temp::%s:Soll:1:°C:gauge",
+					"thermo-measured-temp::%s:Temperatur:1:°C:gauge"
+				]
+			}
+		}
+	],
+	"info": {
+		"mid1": [
+			"thermo-measured-temp::%n(1)°C:mdi-thermometer"
+		],
+		"mid2": [
+			"thermo-humidity::%n()%:mdi-water"
+		],
+		"left1": [
+			"thermo-tempState:day::mdi-weather-sunny",
+			"thermo-tempState:night::mdi-weather-night"
+		],
+		"left2": [
+			"thermo-controlMode:auto::mdi-clock-time-four-outline"
+		]
+	}
+}

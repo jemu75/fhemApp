@@ -1,0 +1,168 @@
+{
+	"name": "sonosplayer",
+	"author": "jemu75",
+	"date": "2024-04-16",
+	"panel": {
+		"devicekeys": [
+			"player:FHEM Sonosplayer device"
+		],
+		"navigation": [
+			"player-a-room::Räume->%s",
+			"player-a-group::Gruppen->%s"
+		],
+		"sortby": [
+			"player-a-sortby::%s"
+		],
+		"expandable": [
+			"::true"
+		]
+	},
+	"status": {
+		"title": [
+			"player-a-alias:^.+$:%s",
+			"player-i-NAME::%s"
+		],
+		"imageUrl": [
+			"::images/header_01.png"
+		],
+		"bar": [
+			"player-presence:^(?!appeared):0:error",
+			"player-transportState:^(?!PLAYING):0",
+			"player-currentTrackPositionSimulatedPercent:0.1:%n()",
+			"player-transportState:PLAYING:100"
+		]
+	},
+	"main": [
+		{
+			"level": {
+				"left1": "btn",
+				"mid": "btn",
+				"right2": "btn"
+			},
+			"left1": {
+				"btn": [
+					"player-presence:disappeared:mdi-skip-previous:true",
+					"player-nextTrackHandle:.\\\\|:mdi-skip-previous",
+					"player-nextTrackHandle::mdi-skip-previous:true"
+				],
+				"click": [
+					"::set player previous"
+				]
+			},
+			"mid": {
+				"btn": [
+					"player-presence:disappeared:mdi-play:true::outlined",
+					"player-transportState:PLAYING:mdi-pause:false::outlined",
+					"player-transportState::mdi-play:false::outlined"
+				],
+				"click": [
+					"player-transportState:PLAYING:set player Pause",
+					"::set player Play"
+				],
+				"size": [
+					"::6"
+				]
+			},
+			"right2": {
+				"btn": [
+					"player-presence:disappeared:mdi-skip-next:true",
+					"player-nextTrackHandle:\\\\|.:mdi-skip-next",
+					"player-nextTrackHandle::mdi-skip-next:true"
+				],
+				"click": [
+					"::set player next"
+				]
+			}
+		},
+		{
+			"level": {
+				"mid": "info",
+				"left1": null,
+				"show": [
+					"player-currentTitle:^.+$:true",
+					"player-currentSource:^.+$:true",
+					"::false"
+				]
+			},
+			"mid": {
+				"text": [
+					"player-currentTitle:^.+$:%s:text-h6",
+					"player-currentSource:^.+$:%s:text-h6"
+				],
+				"text2": [
+					"player-currentArtist:^.+$:%s ~ "
+				],
+				"text3": [
+					"player-currentAlbum:^.+$:%s"
+				]
+			}
+		},
+		{
+			"level": {
+				"left1": "btn",
+				"mid": "slider",
+				"right2": "info"
+			},
+			"left1": {
+				"btn": [
+					"player-GroupMute:1:mdi-volume-high",
+					"player-GroupMute:0:mdi-volume-mute"
+				],
+				"click": [
+					"player-GroupMute:1:set player mute 0",
+					"player-GroupMute:0:set player Mute 1"
+				],
+				"size": [
+					"::2"
+				]
+			},
+			"mid": {
+				"slider": [
+					"player-GroupVolume::set player GroupVolume %v:%n(0):on:0:40:1"
+				]
+			},
+			"right2": {
+				"size": [
+					"::1"
+				]
+			}
+		},
+		{
+			"level": {
+				"mid": "image",
+				"left1": "info",
+				"right2": "info",
+				"show": [
+					"player-currentAlbumArtURL:empty:false",
+					"::true"
+				],
+				"height": [
+					"::350px"
+				]
+			},
+			"mid": {
+				"image": [
+					"player-currentAlbumArtURL::%s"
+				],
+				"size": [
+					"::7"
+				]
+			},
+			"left1": {},
+			"right2": {}
+		}
+	],
+	"info": {
+		"left1": [
+			"player-Mute:1::mdi-volume-off",
+			"player-transportState:PLAYING::mdi-play",
+			":::mdi-pause"
+		],
+		"mid1": [
+			"player-currentTrackProvider:.:%s"
+		],
+		"right2": [
+			"player-currentTrackPositionSimulated::%s"
+		]
+	}
+}

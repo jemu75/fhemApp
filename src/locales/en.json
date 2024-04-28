@@ -1,0 +1,165 @@
+{
+    "_app": {
+        "settings": {
+            "title": "Settings",
+            "general": {
+                "title": "General" 
+            },
+            "header": {
+                "title": "Header",
+                "barTitle":"Header",
+                "imageUrl": "URL for background image",
+                "imageUrlPlaceholder": "https://picsum.photos/1920/1080?random",
+                "imageGradient": "Color gradient (CSS Linear Gradient Definition)",
+                "imageGradientPlaceholder": "to top, rgba(33, 33, 33, 0.6), rgba(33, 33, 33, 0.6)",
+                "showTime": "Time",
+                "showTimeHint": "Show time in the header",
+                "showDate": "Date",
+                "showDateHint": "Show date in the header",
+                "showTitle": "Navigation",
+                "showTitleHint": "Show navigationpoint in the header",
+                "optionsTitle":"Optionsmenu",
+                "showDarkMode": "Day/Night mode",
+                "showDarkModeHint": "",
+                "showReloadPage": "Page refresh",
+                "showReloadPageHint": "",
+                "showUpdate": "show Update",
+                "showUpdateHint": "",
+                "showSettings": "Sesstings",
+                "showSettingsHint": "",
+                "showLanguages": "Languages",
+                "showLanguagesHint": "",
+                "optionsCommandTitle":"Optionsmenu FHEM Commands",
+                "darkModeOverFhem": "DarkMode over FHEM Reading",
+                "commandName": "Name",
+                "commandNamePlaceholder": "restart",
+                "commandNameRules": "Input required!",
+                "commandTitle": "Label",
+                "commandTitlePlaceholder": "FHEM Restart or %t(optionRestart)",
+                "commandIcon": "Icon",
+                "commandIconPlaceholder": "mdi-rocket",
+                "commandCmd": "FHEM Command",
+                "commandCmdPlaceholder": "shutdown restart"
+            },
+            "navigation": {
+                "title": "Navigation",
+                "name": "Name",
+                "namePlaceholder": "home",
+                "title1": "Label",
+                "title1Placeholder": "Homepage or %t(navHome)",
+                "icon": "Icon",
+                "iconPlaceholder": "mdi-home",
+                "groupAsChips": "compact",
+                "groupAsChipsHint": "Compact display of subordinate navigation points",
+                "sort": "sorted",
+                "sortHint": "Sorts subordinate navigation points in ascending order",
+                "divider": "divider",
+                "dividerHint": "Divider line below the navigation point"
+            },
+            "props": {
+                "panel": "General",                
+                "status": "Statusbar",
+                "level": "Level general",
+                "main": "Levels",
+                "type": "Typ",
+                "left1": "left1", 
+                "left2": "left2",
+                "mid": "mid",
+                "right1": "right1",
+                "right2": "right2",
+                "info": "Infoline"
+            },
+            "panels": {
+                "title": "Panel | Panels",
+                "extended": "Advanced",
+                "rawMode": "raw Mode",
+                "preview": "Panel Preview",
+                "search": "Panel search",
+                "new": "Name for new Panel"
+            },
+            "templates": {
+                "title": "Template | Templates",
+                "search": "Template search",
+                "new": "Name for new Template"
+            },
+            "colors": {
+                "title": "Colors",
+                "newKey": "new variable"
+            },
+            "content": {
+                "title": "Language | Languages",
+                "newKey": "new variable",
+                "newLang": "new Language (ISO-639)",
+                "search": "Key search",
+                "key": "Key"
+            },
+            "rules": {
+                "required": "Required!",
+                "panelUnique": "Panel is already defined!",
+                "iso639code": "Input must correspond to ISO 639-1 code!",
+                "langUnique": "Language is already defined!",
+                "keyUnique": "Key is already defined!"
+            },
+            "assist": {
+                "title": "Wizard",
+                "ok": "Ok",
+                "cancel": "Cancel"
+            }
+        },
+        "options": {
+            "darkMode": "Day/Night Mode",
+            "reload": "Refresh",
+            "settings": "Settings",
+            "update": "Update"
+        },
+        "internals": {
+            "title": "Internals",
+            "onlyConfig": "show only config"
+        },
+        "messages": {
+            "request": {
+                "title": "Connection to FHEM failed",
+                "text": "Check if FHEM is reachable or if the URL connection parameters (?protocol=...&server=...&port=...&path=...) are correct, if specified."
+            },
+            "wrongDevice": {
+                "title": "FHEM Config Device not found",
+                "text": "The FHEM device specified in the URL (http://url/index.html#/fhemappdevice/...) could not be found."
+            },
+            "jsonParse": {
+                "title": "Internal error",
+                "text": "An error has occurred while processing a JSON definition. For more information, you should activate error logging via the URL parameter (?loglevel=7)."
+            },
+            "base64": {
+                "title": "Internal error",
+                "text": "Error processing the configuration. The decoding of the base64-encoded configuration data has failed. For more information, you should activate error logging via the URL parameter (?loglevel=7)."
+            },
+            "noConfig": {
+                "title": "No settings found",
+                "text": "No settings have yet been made for this instance. Please make and save the basic settings for FHEMapp first."
+            },
+            "config": {
+                "title": "Failed to load the configuration",
+                "text": "No configuration data could be processed. For more information, you should activate error logging via the URL parameter (?loglevel=7)."
+            },
+            "websocket": {
+                "title": "WEBSocket connection failed",
+                "text": "The browser used does not support WEBSocket connections. A longpoll connection to FHEM has therefore been established. To deactivate this message, you should use the URL parameter for longpoll connections (?xhr=1)."
+            },
+            "reconnect": {
+                "title": "Connection to FHEM was interrupted",
+                "text": "New connection attempt will be made in 3 seconds... Check whether FHEM can be reached if the error still occurs."
+            },
+            "noPanels": {
+                "title": "Configuration does not contain any panels",
+                "text": "Please create panels in the FHEMapp settings first."
+            },
+            "clipboard": {
+                "text": "Data has been copied to the clipboard."
+            },
+            "checkDefs": {
+                "text": "Check the order of the definitions. The definition without a condition should always be at the end."
+            }
+        },
+        "default": "Default"
+    }
+}

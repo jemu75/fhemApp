@@ -1,0 +1,49 @@
+{
+	"name": "smokedetector",
+	"author": "jemu",
+	"date": "2024-04-16",	
+	"panel": {
+		"devicekeys": [
+			"smoke:FHEM smokedetector device"
+		],
+		"navigation": [
+			"smoke-a-room::Räume->%s",
+			"smoke-a-group::Gruppen->%s"
+		],
+		"sortby": [
+			"smoke-a-sortby::%s"
+		]
+	},
+	"status": {
+		"title": [
+			"smoke-a-alias:^.+$:%s",
+			"smoke-i-NAME::%s"
+		],
+		"imageUrl": [
+			"::images/header_01.png"
+		],
+		"bar": [
+			"smoke-level:2:n(0):error",
+			"::100"
+		]
+	},
+	"main": [
+		{
+			"level": {
+				"mid": "info"
+			},
+			"mid": {
+				"text": [
+					"smoke-level:2:Rauchentwicklung",
+					"::bereit"
+				]
+			}
+		}
+	],
+	"info": {
+		"left1": [
+			"level:2::mdi-fire",
+			"level:::mdi-smoke-detector"
+		]
+	}
+}
