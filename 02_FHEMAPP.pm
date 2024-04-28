@@ -1,5 +1,5 @@
 ##############################################
-# $Id: 02_FHEMAPP.pm 1 2023-01-08 10:18:00Z jemu75 $#
+# $Id: 02_FHEMAPP.pm 28679 2024-03-18 20:00:34Z Benni $
 package FHEM::FHEMAPP;
 
 use strict;
@@ -20,13 +20,13 @@ use File::Path qw(rmtree);
 #https://www.perl-howto.de/2008/07/temporare-dateien-sicher-erzeugen.html
 #https://metacpan.org/release/TJENNESS/File-Temp-0.22/view/Temp.pm#OBJECT-ORIENTED_INTERFACE
 
-
 #########################################################################
 # Importing/Exporting Functions and variables from/to main
 #########################################################################
 BEGIN {
 	GP_Import(qw(
 		defs
+		data
 		AttrVal
 		ReadingsVal
 		InternalVal
@@ -73,169 +73,523 @@ BEGIN {
 #########################################################################
 # Trying to import functions from an applicaple JSON-Library
 #########################################################################
-my $JSON="none";
-#JSON-Library-Usage was cpopied from Weather-APIs
-# try to use JSON::MaybeXS wrapper
-# for chance of better performance + open code
-eval {
-    require JSON::MaybeXS;
-    import JSON::MaybeXS qw( decode_json encode_json );
-	$JSON='JSON::MaybeXS';
-    1;
-} or do {
+	my $JSON="none";
+	#JSON-Library-Usage was cpopied from Weather-APIs
+	# try to use JSON::MaybeXS wrapper
+	# for chance of better performance + open code
+	eval {
+		require JSON::MaybeXS;
+		import JSON::MaybeXS qw( decode_json encode_json );
+		$JSON='JSON::MaybeXS';
+		1;
+	} or do {
 
-    # try to use JSON wrapper
-    #   for chance of better performance
-    eval {
-        # JSON preference order
-        local $ENV{PERL_JSON_BACKEND} =
-          'Cpanel::JSON::XS,JSON::XS,JSON::PP,JSON::backportPP'
-          unless ( defined( $ENV{PERL_JSON_BACKEND} ) );
+		# try to use JSON wrapper
+		#   for chance of better performance
+		eval {
+			# JSON preference order
+			local $ENV{PERL_JSON_BACKEND} =
+				'Cpanel::JSON::XS,JSON::XS,JSON::PP,JSON::backportPP'
+				unless ( defined( $ENV{PERL_JSON_BACKEND} ) );
 
-        require JSON;
-        import JSON qw( decode_json encode_json );
-		$JSON='JSON';
-        1;
-    } or do {
+			require JSON;
+			import JSON qw( decode_json encode_json );
+			$JSON='JSON';
+			1;
+		} or do {
 
-        # In rare cases, Cpanel::JSON::XS may
-        #   be installed but JSON|JSON::MaybeXS not ...
-        eval {
-            require Cpanel::JSON::XS;
-            import Cpanel::JSON::XS qw(decode_json encode_json);
-			$JSON='Cpanel::JSON::XS';
-            1;
-        } or do {
+			# In rare cases, Cpanel::JSON::XS may
+			#   be installed but JSON|JSON::MaybeXS not ...
+			eval {
+					require Cpanel::JSON::XS;
+					import Cpanel::JSON::XS qw(decode_json encode_json);
+				$JSON='Cpanel::JSON::XS';
+					1;
+			} or do {
 
-            # In rare cases, JSON::XS may
-            #   be installed but JSON not ...
-            eval {
-                require JSON::XS;
-                import JSON::XS qw(decode_json encode_json);
-				$JSON='JSON::XS';
-                1;
-            } or do {
+					# In rare cases, JSON::XS may
+					#   be installed but JSON not ...
+					eval {
+						require JSON::XS;
+						import JSON::XS qw(decode_json encode_json);
+					$JSON='JSON::XS';
+						1;
+					} or do {
 
-                # Fallback to built-in JSON which SHOULD
-                #   be available since 5.014 ...
-                eval {
-                    require JSON::PP;
-                    import JSON::PP qw(decode_json encode_json);
-					$JSON='JSON::PP';
-                    1;
-                } or do {
+						# Fallback to built-in JSON which SHOULD
+						#   be available since 5.014 ...
+						eval {
+							require JSON::PP;
+							import JSON::PP qw(decode_json encode_json);
+						$JSON='JSON::PP';
+							1;
+						} or do {
 
-                    # Fallback to JSON::backportPP in really rare cases
-                    require JSON::backportPP;
-                    import JSON::backportPP qw(decode_json encode_json);
-					$JSON='JSON::backportPP';
-                    1;
-                };
-            };
-        };
-    };
-};
+							# Fallback to JSON::backportPP in really rare cases
+							require JSON::backportPP;
+							import JSON::backportPP qw(decode_json encode_json);
+						$JSON='JSON::backportPP';
+							1;
+						};
+					};
+			};
+		};
+	};
 
 #########################################################################
 # Constants and defaults
 #########################################################################
+	use constant {
+		FA_VERSION 					=> '1.1.0',			#Version of this Modul
+		FA_VERSION_FILENAME 		=> 'CHANGELOG.md',	#Default Version Filename
+		FA_INIT_INTERVAL			=> 60,				#Default Startup Interval
+		FA_DEFAULT_INTERVAL		=> 3600,			#Default Interval
+		FA_GITHUB_URL 				=> 'https://github.com/jemu75/fhemApp',
+		FA_GITHUB_API_BASEURL	=> 'https://api.github.com/repos/jemu75/fhemApp',
+		FA_GITHUB_API_OWNER     => 'jemu75',
+		FA_GITHUB_API_REPO	   => 'fhemApp',
+		FA_GITHUB_API_RELEASES  => 'releases',
+		FA_TAR_SUB_FOLDER			=> 'www/fhemapp4',
+		FA_VERSION_LOWEST    	=> '4.0.0',
+		FA_MOD_TYPE 				=> (split('::',__PACKAGE__))[-1],
+		INT_SOURCE_URL				=> 'SOURCE_URL',	#INTERNAL NAME
+		INT_CONFIG_FILE			=> 'CONFIG_FILE',	#INTERNAL NAME
+		INT_INTERVAL				=> 'INTERVAL',		#INTERNAL NAME
+		INT_VERSION					=> 'VERSION',		#INTERNAL NAME
+		INT_JSON_LIB				=> '.JSON_LIB',	#INTERNAL NAME
+		INT_LOCAL_INST				=> 'LOCAL',			#INTERNAL NAME
+		INT_PATH						=> 'PATH',			#INTERNAL NAME
+		INT_LINK						=> 'FHEMAPP_UI',  #INTERNAL NAME
+		INT_FANAME					=> 'FHEMAPP_NAME' #INTERNAL NAME
+	};
+	no warnings 'qw';
 
-use constant {
-	FA_VERSION 					=> '0.3.1',			#Version of this Modul
-	#FA_DEFAULT_FOLDER 		=> 'fhemapp',	#Default Path to FHEMapp
-	FA_VERSION_FILENAME 		=> 'CHANGELOG.md',	#Default Version Filename
-	FA_INIT_INTERVAL			=> 60,				#Default Startup Interval
-	FA_DEFAULT_INTERVAL		=> 3600,			#Default Interval
-	FA_GITHUB_URL 				=> 'https://github.com/jemu75/fhemApp',
-	#FA_GITHUB_LATEST_SUB    => 'releases/latest',
-	#FA_GITHUB_PACKAGE_SUB   => 'archive/refs/tags',
-	FA_GITHUB_API_BASEURL	=> 'https://api.github.com/repos/jemu75/fhemApp',
-	FA_GITHUB_API_OWNER     => 'jemu75',
-	FA_GITHUB_API_REPO	   => 'fhemApp',
-	FA_GITHUB_API_RELEASES  => 'releases',
-	FA_TAR_SUB_FOLDER			=> 'www/fhemapp4',
-	FA_VERSION_LOWEST    	=> '4.0.0',
-	FA_MOD_TYPE 				=> (split('::',__PACKAGE__))[-1],
-	INT_SOURCE_URL				=> 'SOURCE_URL',	#INTERNAL NAME
-	INT_CONFIG_FILE			=> 'CONFIG_FILE',	#INTERNAL NAME
-	INT_INTERVAL				=> 'INTERVAL',		#INTERNAL NAME
-	INT_VERSION					=> 'VERSION',		#INTERNAL NAME
-	INT_JSON_LIB				=> '.JSON_LIB',	#INTERNAL NAME
-	INT_LOCAL_INST				=> 'LOCAL',			#INTERNAL NAME
-	INT_PATH						=> 'PATH',			#INTERNAL NAME
-	INT_LINK						=> 'FHEMAPP_UI',  #INTERNAL NAME
-	INT_FANAME					=> 'FHEMAPP_NAME' #INTERNAL NAME
-};
+	my @attrList = qw(
+		disable:1,toggle
+		interval
+		sourceUrl
+		updatePath:beta
+		exposeConfigFile:1
+		linkPath
+	);
 
+	# autoUpdate:1 
 
-#Preparing attribute list
-# dark:1,0 -removed
-# view     -removed
-
-no warnings 'qw';
-my @attrList = qw(
-	disable:1,toggle
-	interval
-	sourceUrl
-	updatePath:beta
-);
-# autoUpdate:1
-use warnings 'qw';
+	use warnings 'qw';
 
 
 
-sub 
+#########################################################################
+# FHEM - Module management Functions (xxxFn)
+#########################################################################
+	#========================================================================
+	sub Initialize
+	#========================================================================
+	{
+		my $hash=shift // return;
+		
+		$hash->{DefFn}     = \&Define;
+		$hash->{GetFn}     = \&Get;
+		$hash->{SetFn}     = \&Set;
+		$hash->{DeleteFn}  = \&Delete;
+		$hash->{CopyFn}    = \&DeviceCopied;
+		$hash->{RenameFn}  = \&DeviceRenamed;
+		$hash->{NotifyFn}  = \&Notify;
+		$hash->{AttrFn}    = \&Attr;
+		
+		$hash->{AttrList} = join(" ", @attrList)." $readingFnAttributes";
+	}
+	#========================================================================
+	sub Attr	# AttrFn
+	#========================================================================
+	{
+		my $cmd= shift // return undef;
+		my $name=shift // return undef;
+		my $att= shift // return undef;
+		my $val= shift;
+
+		my $hash   = $defs{$name};
+		
+		#set fa interval 59
+		Log($name,"AttrFn: $cmd $name $att $val",4);
+		if($att eq 'disable') {
+			if($val && $val==1) {
+				StopLoop($hash);
+				readingsSingleUpdate($hash,'state','disabled',1);
+				
+			}
+			elsif ( $cmd eq "del" or !$val ) {
+				readingsSingleUpdate($hash,'state','defined',1);
+				StartLoop($hash,FA_INIT_INTERVAL,0,1);
+			}
+		}
+		elsif($att eq 'interval') {
+			if($cmd eq 'set') {
+				$val+=0;
+				if($val < FA_INIT_INTERVAL) {
+					$val=0;
+					#will be disabled if < 60 seconds => set to 0
+					return "$att should not be set lower than ".FA_INIT_INTERVAL;
+				} 
+				elsif($val > 86400) {
+					return "$att should not be longer than 1 day (86400 sec)";
+				}
+				elsif($val==FA_DEFAULT_INTERVAL) {
+					return "Default for $att is already $val";
+				}
+				$hash->{&INT_INTERVAL}=$val;
+				StartLoop($hash,FA_INIT_INTERVAL,1);
+			}
+			else
+			{
+				$hash->{&INT_INTERVAL}=FA_DEFAULT_INTERVAL;
+				StartLoop($hash,FA_INIT_INTERVAL,1);
+			}
+		}
+		elsif($att eq 'sourceUrl') {
+			if($cmd eq 'set') {
+				if($val eq FA_GITHUB_URL) {
+					return "$val is already default for $att";
+				}
+				$hash->{&INT_SOURCE_URL}=$val;
+			}
+			else
+			{
+				$hash->{&INT_SOURCE_URL}=FA_GITHUB_URL;
+			}
+		}
+		elsif($att eq 'exposeConfigFile') {
+			my $filespec=get_config_file($name,undef,1);
+			if($cmd eq 'set') {
+				if($val) {
+					if(int($val) != 1) {
+						return "$val is not valid for $att";
+					}
+					Log($name,"$att changed to $val!",4);
+					$data{confFiles}{$filespec} = '0';
+				} 
+			} else {
+				Log($name,"$att was deleted!",4);
+				delete($data{confFiles}{$filespec});
+			}
+			
+		} elsif($att eq 'linkPath') {
+			if($cmd eq "set") {
+				set_fhemapp_link($hash,$val);
+			} else {
+				set_fhemapp_link($hash,'%%DELETE%%');
+			}
+		}
+		return undef;
+	}
+
+	
+	#========================================================================
+	sub Notify	# NofifyFn
+	#========================================================================
+	{
+		my $hash = shift // return;
+		my $src_hash=shift // return;
+
+
+		my $name = $hash->{NAME};
+		return if(IsDisabled($name));
+
+		my $src  = $src_hash->{NAME};
+
+		my $events = deviceEvents($src_hash,1);
+		return if( !$events );
+
+		#HANDLING GLOBAL EVENTS
+		if($src eq 'global') {
+			foreach my $event (@{$events}) {
+				Log($name,"EVENT: $src:$event",5);
+				$event = "" if(!defined($event));
+				if($event eq 'INITIALIZED') {
+					Log($name,"Event recieved from '$src'",5);
+					StartLoop($hash,FA_INIT_INTERVAL);
+				}
+			} 
+		} 
+		return;
+	}
+
+	#========================================================================
+	sub Define	# DefFn
+	#========================================================================
+	{
+		my $hash=shift // return;	
+
+		my $def=shift;
+		my @a = split("[ \t][ \t]*", $def);
+
+		my $name=shift @a;
+		my $type=shift @a;
+		my $fa_name= shift @a;
+		
+		Log(undef,"DefFn called for $name $init_done",4);
+		
+		
+		#Setting INTERNAL values
+		$hash->{&INT_VERSION}=FA_VERSION;
+		$hash->{&INT_SOURCE_URL}=AttrVal($name,'sourceUrl',FA_GITHUB_URL);
+		$hash->{&INT_JSON_LIB}=$JSON;
+		$hash->{&INT_CONFIG_FILE}=get_config_file($name);
+		$hash->{&INT_INTERVAL}=AttrVal($name,'interval',FA_DEFAULT_INTERVAL);  
+		$hash->{&INT_FANAME}=$fa_name;
+
+		$hash->{NOTIFYDEV}="global";
+		
+		#Internal PATH is only available if local path is specified in DEF
+		if($fa_name eq 'none') {
+			delete($hash->{&INT_PATH});
+			$hash->{&INT_LOCAL_INST}=0;
+		} else {
+			$hash->{&INT_PATH}="$FW_dir/$fa_name";
+			$hash->{&INT_LOCAL_INST}=1;
+		}
+		
+		set_fhemapp_link($hash);
+			
+		#Setting defined state
+		if(!$init_done) {
+			#Reading conifg on Define, e.g. when copied from other device
+			#[todo]: this is not necessary on simple define .... Move to CopyFn?
+			ReadConfig($hash);
+		}
+		else 
+		{
+			#Start Version loop 
+			#[todo]: maybe move to global:Initialize handling in NotifyFn
+			StartLoop($hash,FA_INIT_INTERVAL);
+		}
+		
+		#Set startup disabled/defined state
+		if(IsDisabled($name)) {
+			readingsSingleUpdate($hash,'state','disabled',0);   
+		}
+		else
+		{
+			readingsSingleUpdate($hash,'state','defined',0); 
+		}
+
+		#AddExtension( $name, \&ExtensionGetConfigData, FA_MOD_TYPE . "/$name/cfg" );
+	
+		
+		return "Wrong syntax: use define <name> fhemapp <localFhemappPath|none>" if(!$fa_name);
+	}
+
+	#========================================================================
+	sub Get		# GetFn
+	#========================================================================
+	{
+		my $hash=shift // return;
+		my $name=shift;
+		my $opt=shift;
+		
+		return "\"get $name\" needs at least one argument" unless(defined($opt));
+
+		my $localInst=InternalVal($name,INT_LOCAL_INST,0);			
+
+		if($opt eq 'config') {
+			return encode_base64(get_config($hash));
+		}
+		elsif($opt eq 'rawconfig') {
+			return get_config($hash);
+		}	
+		elsif($opt eq 'options') {
+			return AttrOptions_json($name);
+		}	
+		elsif($opt eq 'version') {
+			if($localInst) {
+				check_local_version($hash);
+				return ReadingsVal($name,'local_version','unknown');
+				#return get_local_version($hash);
+			} 
+			return "not available!";
+		}	
+		elsif($opt eq 'localfolder') {
+			if($localInst) {
+				return get_local_path($hash);
+			}
+			return "not available!"
+		}	
+		else
+		{
+			#my $loc_gets='version:noArg';
+			my $loc_gets='version:noArg';
+			if($localInst) {
+				return "Unknown argument $opt, choose one of rawconfig:noArg $loc_gets";
+			} else {
+				return "Unknown argument $opt, choose one of rawconfig:noArg";		
+			}
+		}
+	}
+
+	#========================================================================
+	sub Set		# SetFn
+	#========================================================================
+	{
+		my $hash=shift // return;
+		my $name=shift;
+		my $opt=shift;
+		
+		my @args=@_;
+
+		my $localInst=InternalVal($name,INT_LOCAL_INST,0);			
+		
+		return "\"set $name\" needs at least one argument" unless(defined($opt));
+
+		if($opt eq 'config') {
+			set_config($hash,decode_base64(join(" ",@args)),1);
+		}
+		elsif($opt eq 'rawconfig') {
+			set_config($hash,join(" ",@args),1);
+		}
+		elsif($opt eq 'update') {
+			if($localInst) {
+				update($hash);
+			} else {
+				return "$opt not available for " . FA_MOD_TYPE . " without local fhemapp path!";
+			}
+		}
+		elsif($opt eq 'getConfig') {
+			return get_config($hash);
+		}	
+		#elsif($opt eq 'forceVersion') {
+			#return forceVersion($hash,@args);
+		#}
+		elsif($opt eq "checkVersions") {
+			if($localInst) {
+				check_local_version($hash);
+				Request_Releases($hash)
+			} else {
+				return "$opt not available for " . FA_MOD_TYPE . " without local fhemapp path!";
+			}
+		}
+		elsif($opt eq "createfolder") {
+			create_fhemapp_folder($hash);
+		}
+		elsif($opt eq "refreshLink") {
+				set_fhemapp_link($hash);
+		}
+		elsif($opt eq "rereadCfg") {
+			ReadConfig($hash,1);
+		}
+		else {
+			if($localInst) {
+				return "Unknown argument $opt, choose one of getConfig:noArg checkVersions:noArg update:noArg rereadCfg:noArg";
+			} else {
+				return "Unknown argument $opt, choose one of getConfig:noArg rereadCfg:noArg";
+			}
+		}
+		return undef;
+	}
+
+	#========================================================================
+	sub Delete	# DeleteFn
+	#========================================================================
+	#Cleanup when device is deleted
+	{
+		my $hash=shift // return;
+		
+		#Cancel and delete runnint internal timer
+		StopLoop($hash);
+		#Delete config file 
+		DeleteConfig($hash);	
+	}
+
+
+	#========================================================================
+	sub DeviceCopied	#CopyFn
+	#========================================================================
+	{
+		my $old_name=shift // return;
+		my $new_name=shift // return;
+			
+		Log ($new_name,"Copying config '$old_name' -> '$new_name'",4);
+		$defs{$new_name}{helper}{config} = $defs{$old_name}{helper}{config};
+		#Log($new_name,$new_hash->{helper}{config},5);
+		
+		WriteConfig($defs{$new_name});
+		
+		return;
+	}
+
+	#========================================================================
+	sub DeviceRenamed	#RenameFn
+	#========================================================================
+	{
+		my $new_name=shift // return;
+		my $old_name=shift // return;
+		
+		Log($new_name,"Device renamed '$old_name' -> '$new_name'",4);
+		my $new_hash=$defs{$new_name};
+		WriteConfig($new_hash);
+
+		my $oldFile=get_config_file($old_name);
+		Log($new_name,"Deleting config '$oldFile' ...",4);
+		FileDelete($oldFile);
+		
+		return;
+
+	}
+
+
 #========================================================================
-version_compare
+sub ExtensionGetConfigData
 #========================================================================
 {
-	#returns 1  if v1 > v2
-	#returns -1 if v1 < v1
-	#returns 0  if v1 = v2
-	#if number of version parts are different, only minimum number of
-	#version parts are compared. So '1.4' = '1.4.2' and '1.4' = '1.4.8' ...
-	my $v1=shift // return;
-	my $v2=shift // return;
+	my ($request) = @_;
+	my $TP=FA_MOD_TYPE;
+	#Log($TP,"$TP got WebRequest: $request",2);
+	if ( $request =~ /^\/$TP\/(\w+)\/cfg/x ) {
+		my $name   = $1;
+		my $dta=$defs{$name}{helper}{config};
+		return ( "application/json", $dta );
+		#return ( "text/plain; charset=utf-8",
+		#"you've successfully reached a $TP device ($name) for webhook $request in " . __PACKAGE__ );
 
-	$v1=$v1 =~ s/[^0-9.]//rg;
-	$v1=$v1 =~ s/^\.//gr; 
+	}
 
-	$v2=$v2 =~ s/[^0-9.]//rg;
-	$v2=$v2 =~ s/^\.//gr; 
-
-	#print("version_compare($v1,$v2)");
-
+	return ( "text/plain; charset=utf-8",
+		"No $TP device for webhook $request" );
 
 
-	my @sv1= split /\./, $v1;
-	my @sv2= split /\./, $v2;
-	
-	return if($#sv1 < 0 || $#sv2 < 0);
-	
-	my $min=$#sv1;
-    if($#sv2 < $min) {
-        $min=$#sv2
-    }
-
-	my $result=0;
-
-    for(my $i=0;$i<=$min;$i++) {
-        if($sv1[$i]+0 > $sv2[$i]+0) {
-            $result=1;
-            last;
-        } elsif($sv1[$i]+0 < $sv2[$i]+0) {
-            $result=-1;
-            last;
-        }
-    }
-    
-   return $result;
-	
 }
 
-sub
 #========================================================================
-create_fhemapp_folder
+sub AddExtension 
+#========================================================================
+{
+	my ( $name, $func, $link ) = @_;
+
+	my $url = "/$link";
+	Log( $name, "Registering " . FA_MOD_TYPE . " $name for URL $url",3 );
+	$::data{FWEXT}{$url}{deviceName} = $name;
+	$::data{FWEXT}{$url}{FUNC}       = $func;
+	$::data{FWEXT}{$url}{LINK}       = $link;
+
+	return;
+}
+	
+#========================================================================
+sub RemoveExtension 
+#========================================================================
+{
+	my ($link) = @_;
+
+	my $url  = "/$link";
+	my $name = $::data{FWEXT}{$url}{deviceName};
+	Log( $name, "Unregistering " . FA_MOD_TYPE . " $name for URL $url",3 );
+	delete $::data{FWEXT}{$url};
+
+	return;
+}
+	
+
+#========================================================================
+sub create_fhemapp_folder
 #========================================================================
 {
 	my $hash=shift // return;
@@ -269,10 +623,24 @@ create_fhemapp_folder
 	#my $destFolder=InternalVal($name,INT_PATH,'none');	
 }
 
-
-sub
 #========================================================================
-update {
+sub forceVersion
+#========================================================================
+{
+	my $hash=shift // return 'no hash';
+	my @args=shift // return 'no args';
+
+	my $first=shift @args // return 'empty args';
+
+	my $name=$hash->{NAME};
+	my $localPath=get_local_path($hash);
+
+	return "$first - $localPath";
+
+}
+
+#========================================================================
+sub update {
 #========================================================================
 
 	my $hash=shift // return;
@@ -293,8 +661,6 @@ update {
 		Log($name,"Update ... got releases ... continuing...",4);
 	}
 
-
-#return;
 	#Find required tarball-URL
 	my $url=undef;
 	my $updatePath=AttrVal($name,'updatePath','stable');
@@ -324,9 +690,8 @@ update {
 
 }
 
-sub
 #========================================================================
-update_response{
+sub update_response{
 #========================================================================
     my ($param, $err, $data) = @_;
     my $hash = $param->{hash};
@@ -432,14 +797,14 @@ update_response{
 			my $res=rmtree($bpath,0,1);
 		}
 		check_local_version($hash);
+		check_update_available($hash);
 
    }
 	return;
 }	
 
-sub 
-#========================================================================
-temp_cleanup{
+ #========================================================================
+sub temp_cleanup{
 #========================================================================
 	my $hash=shift // return;
 	my $name=$hash->{NAME};
@@ -452,32 +817,8 @@ temp_cleanup{
 
 }
 
-
-
-sub 
 #========================================================================
-Initialize
-#========================================================================
-{
-	my $hash=shift // return;
-	
-   $hash->{DefFn}     = \&Define;
-   $hash->{GetFn}     = \&Get;
-   $hash->{SetFn}     = \&Set;
-	$hash->{DeleteFn}  = \&Delete;
-	$hash->{CopyFn}    = \&DeviceCopied;
-	$hash->{RenameFn}  = \&DeviceRenamed;
-	$hash->{NotifyFn}  = \&Notify;
-	$hash->{AttrFn}    = \&Attr;
-	
-    $hash ->{AttrList} = join(' ', @attrList);	
-}
-
-
-
-sub 
-#========================================================================
-Request_Releases
+sub Request_Releases
 #========================================================================
 {
     my $hash=shift // return;
@@ -604,292 +945,87 @@ sub Request_Releases_Response($)
 	if($param->{continueUpdate}) {
 		#if called during update process ... continue with update
 		update($hash,1);
+	} else {
+		check_update_available($hash);
 	}
+
     
 }
 
-
 #========================================================================
-sub Attr	# AttrFn
-#========================================================================
-{
-	#my ($cmd,$name,$att,$val) = @_;
-	
-	my $cmd= shift // return undef;
-	my $name=shift // return undef;
-	my $att= shift // return undef;
-	my $val= shift;
-
-	my $hash   = $defs{$name};
-	
-	#set fa interval 59
-	Log($name,"AttrFn: $cmd $name $att $val",4);
-	if($att eq 'disable') {
-		if($val && $val==1) {
-			StopLoop($hash);
-			readingsSingleUpdate($hash,'state','disabled',1);
-			
-		}
-		elsif ( $cmd eq "del" or !$val ) {
-			readingsSingleUpdate($hash,'state','defined',1);
-			StartLoop($hash,FA_INIT_INTERVAL,0,1);
-		}
-	}
-	elsif($att eq 'interval') {
-		if($cmd eq 'set') {
-			$val+=0;
-			if($val < FA_INIT_INTERVAL) {
-				$val=0;
-				#will be disabled if < 60 seconds => set to 0
-				#return "Interval should not be set lower than ".FA_INIT_INTERVAL;
-			} 
-			elsif($val > 86400) {
-				return "Interval should not be longer than 1 day (86400 sec)";
-			}
-			elsif($val==FA_DEFAULT_INTERVAL) {
-				return "Default interval is already $val";
-			}
-			$hash->{&INT_INTERVAL}=$val;
-			StartLoop($hash,FA_INIT_INTERVAL,1);
-		}
-		else
-		{
-			$hash->{&INT_INTERVAL}=FA_DEFAULT_INTERVAL;
-			StartLoop($hash,FA_INIT_INTERVAL,1);
-		}
-	}
-	elsif($att eq 'sourceUrl') {
-		if($cmd eq 'set') {
-			if($val eq FA_GITHUB_URL) {
-				return "$val is already default for SourceUrl";
-			}
-			$hash->{&INT_SOURCE_URL}=$val;
-		}
-		else
-		{
-			$hash->{&INT_SOURCE_URL}=FA_GITHUB_URL;
-		}
-	}
-
-	return undef;
-}
-
-sub 
-#========================================================================
-Notify	# NofifyFn
+sub check_update_available
 #========================================================================
 {
-  my $hash = shift // return;
-  my $src_hash=shift // return;
-
-
-  my $name = $hash->{NAME};
-  return if(IsDisabled($name));
-
-  my $src  = $src_hash->{NAME};
-
-  my $events = deviceEvents($src_hash,1);
-  return if( !$events );
-  
-  #Log($name,"Event recieved from '$src'",5);
-
-  #HANDLING GLOBAL EVENTS
-  if($src eq 'global') {
-	  foreach my $event (@{$events}) {
-	    Log($name,"EVENT: $src:$event",5);
-		$event = "" if(!defined($event));
-		if($event eq 'INITIALIZED') {
-			Log($name,"Event recieved from '$src'",5);
-			StartLoop($hash,FA_INIT_INTERVAL);
-		}
-	  } 
-  } 
-  return;
-}
-
-sub 
-#========================================================================
-set_fhemapp_link {
-#========================================================================
 	my $hash=shift // return;
 	my $name=$hash->{NAME};
-	my $fa_name=$hash->{&INT_FANAME};
 
-	if($hash->{&INT_LOCAL_INST}) {
-		my $fw_me=$FW_ME;
-		$fw_me //= '/fhem';
+	my $path=AttrVal($name,'updatePath','stable');
+	my $ver=ReadingsVal($name,'stable_tag_name','unknown');
+	$ver=ReadingsVal($name,'pre_tag_name','unknown') if($path eq "beta");
+
+	return if($ver eq 'unknown');
+
+	my $local_ver=ReadingsVal($name,'local_version','unknown');
+
+	if ($local_ver eq 'unknown' || version_compare($ver,$local_ver) ) {
+		readingsSingleUpdate($hash,'update_available',1,1);
+	} else {
+		if(ReadingsVal($name,'update_available',undef) ne '0') {
+			readingsSingleUpdate($hash,'update_available','0',1);
+		}
+	}
+}
+
+
+#========================================================================
+sub set_fhemapp_link {
+#========================================================================
+	my $hash=shift // return;
+	my $forceValue=shift;
+
+	my $name=$hash->{NAME};
+	#my $fa_name=$hash->{&INT_FANAME};
+
+	my $fw_me=$FW_ME;
+	$fw_me //= '/fhem';
+
+	my $fa_name=AttrVal($name,'linkPath',undef);
+	$fa_name=$hash->{&INT_FANAME} if($hash->{&INT_LOCAL_INST});
+
+	if($forceValue) {
+		if($forceValue ne '%%DELETE%%') {
+			$fa_name=$forceValue;
+		} else {
+			$fa_name=undef;
+		}
+	}
+
+	if($fa_name) {
 		my $link="$fw_me/$fa_name/index.html#/$name";
 		$hash->{&INT_LINK}="<html><a href=\"$link\">$link</a></html>";
 	} else {
 		delete($hash->{&INT_LINK});
 	}
-}
 
-
-
-sub
-#========================================================================
-Define	# DefFn
-#========================================================================
-{
-  my $hash=shift // return;	
-
-  my $def=shift;
-  my @a = split("[ \t][ \t]*", $def);
-
-  my $name=shift @a;
-  my $type=shift @a;
-  my $fa_name= shift @a;
-  
-  Log(undef,"DefFn called for $name $init_done",4);
-  
-  
-  #Setting INTERNAL values
-  $hash->{&INT_VERSION}=FA_VERSION;
-  $hash->{&INT_SOURCE_URL}=AttrVal($name,'sourceUrl',FA_GITHUB_URL);
-  $hash->{&INT_JSON_LIB}=$JSON;
-  $hash->{&INT_CONFIG_FILE}=get_config_file($name);
-  $hash->{&INT_INTERVAL}=AttrVal($name,'interval',FA_DEFAULT_INTERVAL);  
-  $hash->{&INT_FANAME}=$fa_name;
-
-  $hash->{NOTIFYDEV}="global";
-  
-  #Internal PATH is only available if local path is specified in DEF
-  if($fa_name eq 'none') {
-	delete($hash->{&INT_PATH});
-	$hash->{&INT_LOCAL_INST}=0;
-  } else {
-   $hash->{&INT_PATH}="$FW_dir/$fa_name";
-  	$hash->{&INT_LOCAL_INST}=1;
-  }
-  
-  set_fhemapp_link($hash);
 	
-  #Setting defined state
-  if(!$init_done) {
-  	#Reading conifg on Define, e.g. when copied from other device
-	#[todo]: this is not necessary on simple define .... Move to CopyFn?
-  	ReadConfig($hash);
-  }
-  else 
-  {
-  	#Start Version loop 
-	#[todo]: maybe move to global:Initialize handling in NotifyFn
-	StartLoop($hash,FA_INIT_INTERVAL);
-  }
-  
-  #Set startup disabled/defined state
-  if(IsDisabled($name)) {
-  	readingsSingleUpdate($hash,'state','disabled',0);   
-  }
-  else
-  {
-  	readingsSingleUpdate($hash,'state','defined',0); 
-  }
-  
-  return "Wrong syntax: use define <name> fhemapp <localFhemappPath|none>" if(!$fa_name);
+
+#	if($hash->{&INT_LOCAL_INST}) {
+#		my $link="$fw_me/$fa_name/index.html#/$name";
+#		$hash->{&INT_LINK}="<html><a href=\"$link\">$link</a></html>";
+#	} else {
+#		$fa_name=AttrVal($name,'linkPath',undef);
+#		if($fa_name) {
+#			$link="$fw_me/$fa_name/index.html#/$name";
+#			$hash->{&INT_LINK}="<html><a href=\"$link\">$link</a></html>";
+#		} else {
+#			delete($hash->{&INT_LINK});
+#		}
+#	}
 }
 
 
-sub
 #========================================================================
-Get		# GetFn
-#========================================================================
-{
-	my $hash=shift // return;
-	my $name=shift;
-	my $opt=shift;
-	
-    return "\"get $name\" needs at least one argument" unless(defined($opt));
-
-	if($opt eq 'config') {
-		return encode_base64(get_config($hash));
-	}
-	elsif($opt eq 'rawconfig') {
-		return get_config($hash);
-	}	
-	elsif($opt eq 'options') {
-		return AttrOptions_json($name);
-	}	
-	elsif($opt eq 'version') {
-		check_local_version($hash);
-		return ReadingsVal($name,'local_version','unknown');
-		#return get_local_version($hash);
-	}	
-	elsif($opt eq 'localfolder') {
-		return get_local_path($hash);
-	}	
-	else
-	{
-		#my $loc_gets='version:noArg';
-		my $loc_gets='';
-		if(get_local_path($hash)) {
-			return "Unknown argument $opt, choose one of rawconfig:noArg $loc_gets";
-		} else {
-			return "Unknown argument $opt, choose one of rawconfig:noArg";		
-		}
-	}
-}
-
-sub
-#========================================================================
-Set		# SetFn
-#========================================================================
-{
-	my $hash=shift // return;
-	my $name=shift;
-	my $opt=shift;
-	
-	my @args=@_;
-	    
-    return "\"set $name\" needs at least one argument" unless(defined($opt));
-
-	if($opt eq 'config') {
-		set_config($hash,decode_base64(join(" ",@args)),1);
-	}
-	elsif($opt eq 'rawconfig') {
-		set_config($hash,join(" ",@args),1);
-	}
-	elsif($opt eq 'update') {
-		update($hash);
-	}
-	elsif($opt eq "checkVersions") {
-		check_local_version($hash);
-		Request_Releases($hash);
-	}
-	elsif($opt eq "createfolder") {
-		create_fhemapp_folder($hash);
-	}
-	elsif($opt eq "refreshLink") {
-		set_fhemapp_link($hash);
-	}
-	elsif($opt eq "rereadCfg") {
-		ReadConfig($hash,1);
-	}
-	else {
-		return "Unknown argument $opt, choose one of checkVersions:noArg update:noArg rereadCfg:noArg";
-	}
-    return undef;
-}
-
-sub 
-#========================================================================
-Delete	# DeleteFn
-#========================================================================
-#Cleanup when device is deleted
-{
-	my $hash=shift // return;
-	
-	#Cancel and delete runnint internal timer
-	StopLoop($hash);
-	#Delete config file 
-	DeleteConfig($hash);		
-}
-
-
-sub 
-#========================================================================
-AttrNames{
+sub AttrNames{
 #========================================================================
 	my $name=shift;
 	
@@ -908,10 +1044,8 @@ AttrNames{
 	return @rList;
 }
 
-
-sub
 #========================================================================
-AttrOptions_json
+sub AttrOptions_json
 #========================================================================
 {
 	my $name=shift // return undef;
@@ -928,17 +1062,21 @@ AttrOptions_json
 	return undef;
 }
 
-
-sub 
 #========================================================================
-get_config
+sub get_config
 #========================================================================
 {
 	my $hash=shift // return;
 	
 	my $name=$hash->{NAME};
 	
-	my $jOpts=AttrOptions_json($name);	
+	#FHEMApp does not need any Attributes from FHEMAPP-Device,
+	#so deactivate appending Attributes
+	#(https://forum.fhem.de/index.php?topic=137239.msg1305847#msg1305847)
+	
+	#my $jOpts=AttrOptions_json($name);	
+	my $jOpts=undef;
+
 	my $config=$hash->{helper}{config};
 	
 	if(!$config) {
@@ -962,12 +1100,11 @@ get_config
 	
 	}
 	
-	return jError("No config found!");
+	return jsonError("No config found!");
 }
 
-sub 
 #========================================================================
-set_config
+sub set_config
 #========================================================================
 {
 	my $hash=shift // return;
@@ -984,26 +1121,30 @@ set_config
 	
 }
 
-sub
 #========================================================================
-jError {
-#========================================================================
-	my $err=shift;
-	return "{\"error\":\"$err\"}";
-}
-
-sub
-#========================================================================
-get_config_file
+sub get_config_file
 #========================================================================
 {
 	my $name=shift // return;
-	return lc("$FW_confdir/${name}_config.".FA_MOD_TYPE);	
+	my $getOld=shift;
+	my $noPath=shift;
+
+	my $ret="${name}_config.".FA_MOD_TYPE;
+	$ret="$ret.json" if(!$getOld);
+
+	$ret="$FW_confdir/$ret" if(!$noPath);
+
+	return lc($ret);
+
+	#if($getOld) {
+	#	return lc("$FW_confdir/${name}_config.".FA_MOD_TYPE);
+	#} 
+	#return lc("$FW_confdir/${name}_config.".FA_MOD_TYPE.".json");	
 }
 
-sub 
+ 
 #========================================================================
-WriteConfig
+sub WriteConfig
 #========================================================================
 {
 	my $hash=shift // return;
@@ -1035,10 +1176,9 @@ WriteConfig
 	}
 	return;
 }
-
-sub 
+ 
 #========================================================================
-ReadConfig
+sub ReadConfig
 #========================================================================
 {
 	my $hash=shift // return;
@@ -1047,26 +1187,59 @@ ReadConfig
 	$event=1 if($event ne 0);
 
 	my $name=$hash->{NAME};
+
+
+	#during first part of beta testing, the config files where stored with a
+	#.fhemapp suffix 
+	#In fact the files are .json files so they will be saved as .fhemapp.json
+	#This conversion is done out of user sight when reading the config file.
+
+	#First try to read a "new" file with .json extension
 	my $filename=get_config_file($name);
-
+	my $saveAsNew=undef;
+	
 	Log($name,"Reading config '$filename' ...",4);
-
 	my ($err,@content)=FileRead($filename);	
+
+	if($err) {
+		#Reading failed, then check if a file with .fhemapp extension exists
+		Log($name,"Could not read $filename",4);
+		Log($name,"Check if an old .fhemapp file exists...",4);
+		$err=undef;
+		$filename=get_config_file($name,1); 
+		Log($name,"Trying to read $filename",5);
+		($err,@content)=FileRead($filename);
+		if(!$err) {
+			#old .fhemapp file successfully read ... need to save later
+			Log($name, "Successfully read old formatted '$filename'",4);
+			$saveAsNew=1;
+		}
+	}
 	if(!$err) {
 		$hash->{helper}{config}=join('',@content);
 		readingsSingleUpdate($hash,'configLastRead',localtime(),$event);
+		if($saveAsNew) {
+			#Old .fhemapp file was loaded, need to save it under new name
+			#with .json extension
+			Log($name, "Storing under new name with .json extension...",2);
+			WriteConfig($hash);
+			Log($name, "Deleting old config file '$filename' ...",2);
+			#And fianally delete the old config file!
+			FileDelete($filename);
+		}
 	} else {
+		#Neither an "old", nor a "new" formatted config file could be read
+		#... so most likely it was never written by FHEMAapp
 		readingsSingleUpdate($hash,'configLastRead',$err,$event);
-		Log($name,"ERROR: Reading config!",2);
-		Log($name,$err,2);
+		Log($name,"WARNING: No Config found when trying to read config-file!",3);
+		Log($name,$err,5);
 	}
 	
 	return;
 }
-
-sub 
+ 
 #========================================================================
-DeleteConfig
+sub DeleteConfig
 #========================================================================
 {
 	my $hash = shift // return;
@@ -1079,47 +1252,10 @@ DeleteConfig
 	
 	return;
 }
+ 
 
-sub 
 #========================================================================
-DeviceCopied	#CopyFn
-#========================================================================
-{
-	my $old_name=shift // return;
-	my $new_name=shift // return;
-		
-	Log ($new_name,"Copying config '$old_name' -> '$new_name'",4);
-	$defs{$new_name}{helper}{config} = $defs{$old_name}{helper}{config};
-	#Log($new_name,$new_hash->{helper}{config},5);
-	
-	WriteConfig($defs{$new_name});
-	
-	return;
-}
-
-sub 
-#========================================================================
-DeviceRenamed	#RenameFn
-#========================================================================
-{
-	my $new_name=shift // return;
-	my $old_name=shift // return;
-	
-	Log($new_name,"Device renamed '$old_name' -> '$new_name'",4);
-	my $new_hash=$defs{$new_name};
-	WriteConfig($new_hash);
-
-	my $oldFile=get_config_file($old_name);
-	Log($new_name,"Deleting config '$oldFile' ...",4);
-	FileDelete($oldFile);
-	
-	return;
-
-}
-
-sub 
-#========================================================================
-get_local_path
+sub get_local_path
 #========================================================================
 {
 	my $hash=shift // return undef;
@@ -1142,10 +1278,8 @@ get_local_path
 	return undef;
 }
 
-
-sub
 #========================================================================
-get_local_version
+sub get_local_version
 #========================================================================
 {
 	my $hash=shift // return;
@@ -1174,14 +1308,11 @@ get_local_version
 			return (split(' ',$vLine))[-2];
 		}
 	}
-	
-	
 	return undef;
 }
 
-sub
 #========================================================================
-check_local_version
+sub check_local_version
 #========================================================================
 {
 	my $hash=shift // return;
@@ -1230,9 +1361,8 @@ check_local_version
 	return;
 }
 
-sub 
 #========================================================================
-StartLoop
+sub StartLoop
 #========================================================================
 {
 	my $hash=shift // return;	
@@ -1241,6 +1371,7 @@ StartLoop
 	my $force=shift;
 	
 	my $name=$hash->{NAME};
+	my $localInst=InternalVal($name,INT_LOCAL_INST,0);			
 	
 	my $currentInterval=AttrVal($name,'interval',FA_DEFAULT_INTERVAL);
 	if($currentInterval < FA_DEFAULT_INTERVAL) {
@@ -1248,6 +1379,15 @@ StartLoop
 		Log($name,"Interval is lower than " . FA_DEFAULT_INTERVAL . " seconds. Stopping all loop activities",5);
 		return;
 	}
+
+	if(!$localInst) {
+		#As the only reason for the loop is to check for new versions, it should be only available for 
+		#FHEMAPP-Instances with local installations
+		Log($name,"No local Installation - no need to check for new versions periodically",5);
+		StopLoop($hash);
+		return;
+	}
+
 	if(!IsDisabled($name) or $force) {
 		$stop //= 1;
 		$time //= 0;
@@ -1263,7 +1403,7 @@ StartLoop
 }
 
 #========================================================================
-sub Loop
+ sub Loop
 #========================================================================
 {
 	my $hash = shift // return;
@@ -1277,12 +1417,10 @@ sub Loop
 	StartLoop($hash);
 	
 	return;
-
 }
 
-sub 
 #========================================================================
-StopLoop
+sub StopLoop
 #========================================================================
 {
 	my $hash=shift // return;	
@@ -1295,29 +1433,88 @@ StopLoop
 	return;
 }
 
+############################################################################
+# HELPER - Functions
+############################################################################
 
-sub
-#========================================================================
-Log
-#========================================================================
-#own log routine adding package and device name to log entries
-{
-	my $name=shift;
-	my $msg=shift;
-	my $verb=shift;
-	
-	$msg //= 'noMsg';
-	my $verbRef = $name; #(undef=global!)
-	$name //= __PACKAGE__;
-	$verb //= 3;
-	
+	#========================================================================
+	sub Log
+	#========================================================================
+	#own log routine adding package and device name to log entries
+	{
+		my $name=shift;
+		my $msg=shift;
+		my $verb=shift;
+		
+		$msg //= 'noMsg';
+		my $verbRef = $name; #(undef=global!)
+		$name //= __PACKAGE__;
+		$verb //= 3;
+		
 
-	Log3 $verbRef,$verb,'['.$name.']: '.$msg;
-	return undef
-}
+		Log3 $verbRef,$verb,'['.$name.']: '.$msg;
+		return undef
+	}
 
-#######################################################################################
+	#========================================================================
+	sub version_compare
+	#========================================================================
+	{
+		#returns 1  if v1 > v2
+		#returns -1 if v1 < v1
+		#returns 0  if v1 = v2
+		#if number of version parts are different, only minimum number of
+		#version parts are compared. So '1.4' = '1.4.2' and '1.4' = '1.4.8' ...
+		my $v1=shift // return;
+		my $v2=shift // return;
 
+		$v1=$v1 =~ s/[^0-9.]//rg;
+		$v1=$v1 =~ s/^\.//gr; 
+
+		$v2=$v2 =~ s/[^0-9.]//rg;
+		$v2=$v2 =~ s/^\.//gr; 
+
+		my @sv1= split /\./, $v1;
+		my @sv2= split /\./, $v2;
+		
+		return if($#sv1 < 0 || $#sv2 < 0);
+		
+		my $min=$#sv1;
+		if($#sv2 < $min) {
+			$min=$#sv2
+		}
+
+		my $result=0;
+
+		for(my $i=0;$i<=$min;$i++) {
+			if($sv1[$i]+0 > $sv2[$i]+0) {
+					$result=1;
+					last;
+			} elsif($sv1[$i]+0 < $sv2[$i]+0) {
+					$result=-1;
+					last;
+			}
+		}
+		
+		return $result;
+		
+	}
+
+	#========================================================================
+	sub jsonError {
+	#========================================================================
+		my $err=shift;
+		return "{\"error\":\"$err\"}";
+	}
+
+
+
+
+#########################################################################
+# HELP - Documentation for FHEM help command in EN and DE
+#------------------------------------------------------------------------
+# must be validated with ./contrib/commandref_join.pl -> No Errors!
+#########################################################################
 1;
 
 =pod
@@ -1332,8 +1529,13 @@ Log
 <ul>
 
   Defines a helper device for FHEMapp UI.<br>
-  Provides configuration storage, special functionalities for a FHEMapp UI.
-  Multiple instances of FHEMAPP devices are possible.
+  Provides configuration storage, special functionalities for a FHEMapp UI.<br><br>
+  
+  This requires at least one installation of FHEMApp to be delivered by a Web-Server. If the installation should
+  run on the same computer as FHEM and FHEM should deliver the FHEMApp-UI (recommended) then The 
+  installation can be performed by a FHEMAPP device itself locally.<br><br>
+
+  For more information and detailed instructions, see FHEMApp on github: <a href="https://github.com/jemu75/fhemApp">https://github.com/jemu75/fhemApp</a>
   <br><br>
 
   <a id="FHEMAPP-define"></a>
@@ -1357,6 +1559,12 @@ Log
     <ul>
       <code>define fa2 FHEMAPP none</code><br>
     </ul>
+
+	 <br><br>
+	 <b>Important:</b> If the device is deleted with delete command, it
+	    also deletes the config file!<br>
+		 The fhemapp application files (in ./www) are currently <b>not</b> deleted
+		 if the device is deleted.
   </ul>
   <br>
 
@@ -1365,15 +1573,23 @@ Log
   <ul>
     <li>checkVersions<br>
 	Executes the version check, which is usually performed cyclic, immediately.
-	This has no effect on the actual version check cycle itself.
+	This has no effect on the actual version check cycle itself.<br>
+	This command is only available for FHEMAPP instances that are managing a 
+	local FHEMApp installation
 	</li>
     <li>update<br>
 	Updates the locally managed fhemapp installation to the latest release or
-	pre-release, depending on the updatePath (see attribute).
+	pre-release, depending on the updatePath (see attribute).<br>
+	This command is only available for FHEMAPP instances that are managing a 
+	local FHEMApp installation
 	</li>
     <li>rereadCfg<br>
 	Reloads the config from the fhemapp config file. Could be used in case of
 	changes to the file were made manually.
+	</li>
+    <li>getConfig<br>
+	Returns the current configuration JSON in the active window withoud surrounding
+	dialog.
 	</li>
   </ul>
   <br>
@@ -1419,6 +1635,19 @@ Log
 		Can be set to "beta" to retreive pre-releases. Default is 
 		stable (attribute is unset).
 	</li>
+    <li><a id="FHEMAPP-attr-exposeConfigFile">exposeConfigFile</a><br>
+	   By setting this attribute, the config file is made availabel in the 
+		"Edit Files" list in FHEM.
+		This is could be usefull for backup purposes.<br>
+		!!! Direct editing the config file is explicitly NOT RECOMMENDED!!!
+	 </li>
+    <li><a id="FHEMAPP-attr-linkPath">linkPath</a><br>
+	   FHEMAPP instances, that are managing local FHEMApp installations usually have
+		a INTERNAL containing a link to the UI.
+		For instances that are defined with "none", the required path information is
+		missing and could therefore be set here the same way as in DEF for "full" instances.<br>
+		This is only relevant for instances without local FHEMApp-Installation.
+	 </li>
 
   </ul>
   <br>
@@ -1433,9 +1662,16 @@ Log
 <h3>FHEMAPP</h3>
 <ul>
 
-  Definiert ein Hilfs-Device für FHEMapp, das für die Konfigurationsverwaltung
-  und Bereitstellung von Spezialfunktionalität für FHEMapp zuständig ist.
-  Es können mehrer Instanzen solcher Hilfs-Devices existieren.
+  Definiert ein Hilfs-Device für FHEMApp (UI)
+  Es &uuml;bernimm dafür die Konfigurationsverwaltung stellt weitere Hilfsfunktionen für FHEMApp bereit.
+  <br><br>
+  
+  Es wird mindestens eine erreichbare Installation von FHEMApp UI ben&ouml;tigt, die von einem Web-Server ausgeliefert wird.
+  Soll die Installation auf demselben Computer, auf dem auch FHEM installiert ist erfolgen und soll FHEM als Web-Server
+  für die Auslieferung der FHEMApp UI - Anwendung sein (das ist die bevorzuge Methode), so kann ein FHEMAPP-Device diese
+  lokale Installation selbst vornehemen.<br><br>
+
+  Für weitere Informationen und die FHEMApp-Dokumentation siehe FHEMApp auf github: <a href="https://github.com/jemu75/fhemApp">https://github.com/jemu75/fhemApp</a>
   <br><br>
 
   <a id="FHEMAPP-define"></a>
@@ -1458,6 +1694,11 @@ Log
     <ul>
       <code>define fa2 FHEMAPP none</code><br>
     </ul>
+
+	 <br><br>
+	 <b>WICHTIG:</b> Wenn das Device mittels delete Befehl aus FHEM gel&ouml;scht wird, 
+		 dann wird ebenfalls die Config-Datei gel&ouml;scht!<br>
+		 Die fhemapp Anwendungsinstallation (in ./www) wird derzeit <b>nicht</b> mit-gel&ouml;scht.
   </ul>
   <br>
 
@@ -1466,15 +1707,23 @@ Log
   <ul>
     <li>checkVersions<br>
 	F&uuml;hrt den Check, der nmormalerweise zyklisch ausgef&uuml;hrt wird, 
-	sofort aus. Der normale Abfragezyklus wird davon nicht beeinflu&szlig;t.
+	sofort aus. Der normale Abfragezyklus wird davon nicht beeinflu&szlig;t.<br>
+	Dieser befehl ist nur bei einer FHEMAPP-Instanz vorhanden, die auch eine
+	lokales FHEMApp-Installation verwaltet
 	</li>
     <li>update<br>
 	F&uuml;hrt ein update der lokal verwalteten fhemapp-Installation auf die
-	aktuellste Version im gewählten Update-Pfad durch.
+	aktuellste Version im gewählten Update-Pfad durch.<br>
+	Dieser befehl ist nur bei einer FHEMAPP-Instanz vorhanden, die auch eine
+	lokales FHEMApp-Installation verwaltet
 	</li>
     <li>rereadCfg<br>
 	Erzwingt ein erneutes Einlesen der fhemapp Config-Datei. Dies kann notwendig
 	sein, wenn manuell &Auml;nderungen an der Datei vorgenommen wurden.
+	</li>
+    <li>getConfig<br>
+	Ruft die aktuell im Speicher vorhandene Config als JSON ab. Die Ausgabe
+	efolgt dabei direkt im Fenster, ohne umschließenden Diealog, wie bei get.
 	</li>
   </ul>
   <br>
@@ -1493,13 +1742,15 @@ Log
   <a id="FHEMAPP-attr"></a>
   <b>Attributes</b>
   <ul>
-    <li><a href="#disable">disable</a>
+    <li><a href="#disable">disable</a><br>
 	Es wird lediglich die zyklische Versionspr&uuml;fung deaktiviert!</li>
 
     <li><a id="FHEMAPP-attr-interval">interval</a><br>
       &uuml;berschreibt das Default-Intervall (alle 3600 Sekunden) für die zyklische
 	  Abfrage der Versionsinformationen. Minimum-Wert ist 60 Sekunden, Maximum
 	  ist 1 Tag (86400 Sekunden).<br>
+	  Dieses Attribut ist nur bei Instanzen relevant, die auch ein lokale FHEMApp-Installation
+	  verwalten.<br>
 	  Siehe auch INTERNAL INTERVAL</li>
 
     <li><a id="FHEMAPP-attr-sourceUrl">sourceUrl</a><br>
@@ -1507,12 +1758,23 @@ Log
 	  Versions-Abfragen, Installation und Aktualisierungen verwendet werden soll
 	  &uuml;berschrieben werden. Das ist i.d.R. ein github-Repository.<br>
 	  Siehe auch INTERNAL SOURCE_URL</li>
-
     <li><a id="FHEMAPP-attr-updatePath">updatePath</a><br>
       Mit diesem Attribut kann der Update-Pfad festgelegt werden, sprich welche
 		Updates &uuml;berhaupt installiert werden sollen. Das Attribut kann auf "beta" 
 		gesetzt werden, um pre-releases zu erhalten. Default ist "stable" (Wenn
 		das Attribut nicht gesetzt ist)</li>
+    <li><a id="FHEMAPP-attr-exposeConfigFile">exposeConfigFile</a><br>
+      Mit diesem Attribut kann festgelegt werden, dass das Config-File in der Liste
+		unter "Edit Files" zur Bearbeitung zur Verf&uuml;gung steht.
+		Diese Funktion kann zu Backup-Zwecken verwendet werden!<br>
+		!!! Die direkte Bearbeitung der Config wird ausdrücklich NICHT empfohlen!!!</li>
+    <li><a id="FHEMAPP-attr-linkPath">linkPath</a><br>
+      Bei FHEMAPP-Instanzen, die eine lokale FHEMApp-Installation verwalten wird 
+		automatisch ein Link generiert, &uuml;ber den FHEMApp mit der Config dieser 
+		Instanz aufgerufen werden kann. Bei Instanzen, wo im DEF "none" angegeben wurde,
+		fehlt die notwendige Information f&uuml;r den aufruf. Die kann hier analog zum DEF
+		nachgeholt werden.<br>
+		Bei Instanzen mit lokaler FHEMApp-Verwaltung hat dieses Attribut keine Relevanz</li>
 
   </ul>
   <br>
