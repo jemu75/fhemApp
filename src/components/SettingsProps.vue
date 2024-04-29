@@ -158,31 +158,41 @@
         jsonError: null
     })
 
-    watch(router.currentRoute, (val) => {
+    function editItem(val) {
         let idx 
 
-        if(val.params.item) {
-            idx = fhem.app.config[props.type].map((e) => e.name).indexOf(val.params.item) 
-            
-            if(idx !== -1) {
-                item.value = fhem.app.config[props.type][idx]
-                settings.value.itemIdx = idx
+        idx = fhem.app.config[props.type].map((e) => e.name).indexOf(val) 
+        
+        if(idx !== -1) {
+            item.value = fhem.app.config[props.type][idx]
+            settings.value.itemIdx = idx
 
-                getReadings()
+            getReadings()
 
-                settings.value.extended = items.value[items.value.map((e) => e.idx).indexOf(idx)].advanced !== '-' ? true : false
+            settings.value.extended = items.value[items.value.map((e) => e.idx).indexOf(idx)].advanced !== '-' ? true : false
 
-                if(typeof item.value === 'object') {
-                    settings.value.jsonDef = JSON.stringify(item.value, null, '\t')
-                    settings.value.jsonError = null
-                }
-
-                return
+            if(typeof item.value === 'object') {
+                settings.value.jsonDef = JSON.stringify(item.value, null, '\t')
+                settings.value.jsonError = null
             }
-        } 
+
+            return
+        }
 
         item.value = null
         settings.value.panel = null
+    }
+
+    watch(router.currentRoute, (val) => {
+        if(val.params.item) editItem(val.params.item)
+    })
+
+    watch(() => fhem.app.isReady, (val) => {
+        if(val) {
+            if(router.currentRoute.value.params.item) editItem(router.currentRoute.value.params.item)
+            getFhemDevices()
+        }
+        
     }, { immediate: true })
 
     function updatePanel(panel) {
@@ -269,11 +279,11 @@
 
         fhem.app.config[props.type].push(props.type === 'panels' ? newPanel : newTemplate)
         
-        editItem(settings.value.newItem)
+        gotoItem(settings.value.newItem)
         settings.value.newItem = ''
     }
 
-    function editItem(val) {
+    function gotoItem(val) {
         router.push({ name: 'settings', params: { tab: props.type, item: val }, query: router.currentRoute.value.query })
     }
 
@@ -302,8 +312,6 @@
     function copyBtn() {
         toClipboard(settings.value.jsonDef)
     }
-
-    getFhemDevices()
  </script>
 
 <template>
@@ -366,7 +374,7 @@
                         variant="plain"
                         density="compact"
                         class="mr-3"
-                        @click="editItem(item.name)">
+                        @click="gotoItem(item.name)">
                     </v-btn>
                     <v-btn 
                         icon="mdi-delete"
@@ -382,7 +390,7 @@
             <v-row>
                 <v-col>
                     <v-row class="align-center">
-                        <v-btn variant="plain" icon="mdi-arrow-up-left" @click="editItem()"></v-btn>
+                        <v-btn variant="plain" icon="mdi-arrow-up-left" @click="gotoItem()"></v-btn>
 
                         <v-col cols="10" md="">
                             <v-autocomplete v-if="!settings.rawMode"

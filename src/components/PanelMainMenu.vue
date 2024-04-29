@@ -31,6 +31,8 @@
             divider,
             re
 
+        menuItems.value = []
+
         for(const def of defs) {
             vals = /^get/.test(def.name) ? await doCmd(def.name) : def.name
             

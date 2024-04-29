@@ -1034,5 +1034,5 @@ export const useFhemStore = defineStore('fhem', () => {
     //FHEMApp entryPoint
     router.isReady().then(init())
 
-    return { app, getEl, handleDefs, getIcon, replacer, createSession, request, thread, stringToJson, log, help, changeDarkMode, appUpdate, loadTemplates }
+    return { app, getEl, handleDefs, getIcon, replacer, createSession, request, thread, stringToJson, log, help, changeDarkMode, appUpdate, loadTemplates, createURL }
 })
