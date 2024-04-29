@@ -113,6 +113,10 @@
         router.push({ name: 'settings', params: { tab: tab, item: val }, query: router.currentRoute.value.query })
     }
 
+    function  openFhemDevice(device) {
+        window.open(fhem.createURL('?detail=' + device), '_self')
+    }
+
     function getInfo(pos) {
         let res = fhem.handleDefs(item.panel.info[pos], ['text', 'icon', 'color'],['', '', ''])
 
@@ -170,8 +174,33 @@
                     <template v-slot:append>
                         <div v-if="fhem.app.settings.loglevel > 6">
                             {{  sortby.sortby }}
-                            <v-btn v-if="getTemplate(panel.name)" icon="mdi-application-edit-outline" size="small" variant="plain" @click="editItem(getTemplate(panel.name), 'templates')"></v-btn>
-                            <v-btn icon="mdi-pencil" size="small" variant="plain" @click="editItem(panel.name, 'panels')"></v-btn>
+                            <v-menu>
+                                <template v-slot:activator="{ props }">
+                                    <v-btn icon="mdi-dots-vertical" density="compact" v-bind="props"></v-btn>
+                                </template>
+
+                                <v-list density="compact">
+                                    <v-list-item v-if="getTemplate(panel.name)"
+                                        key="template"
+                                        title="Template"
+                                        prepend-icon="mdi-application-edit-outline"
+                                        @click="editItem(getTemplate(panel.name), 'templates')">
+                                    </v-list-item>
+                                    <v-list-item
+                                        key="panel"
+                                        title="Panel"
+                                        prepend-icon="mdi-pencil"
+                                        @click="editItem(panel.name, 'panels')">
+                                    </v-list-item>
+                                    <v-divider></v-divider>
+                                    <v-list-item v-for="device of panel.panel.devices"
+                                        :key="device.split(':')[0]"
+                                        :title="device.split(':')[1]"
+                                        prepend-icon="mdi-link"
+                                        @click="openFhemDevice(device.split(':')[1])">
+                                    </v-list-item>
+                                </v-list>
+                            </v-menu>
                         </div>
                         <v-btn v-if="levelOpts.icon" :icon="levelOpts.icon" size="small" variant="plain" density="compact" @click="levelClick()"></v-btn>
                     </template>

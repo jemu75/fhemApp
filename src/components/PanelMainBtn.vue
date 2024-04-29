@@ -34,22 +34,22 @@
     }
 
     function doCmd(obj) {
-        let defParts = [],
-            cmd = obj.cmd,
-            rp
+        let cmdList
 
-        if(obj.type === 'cmd') {
-            for(const device of props.devices) {
-                defParts = device.split(':')
-                rp = RegExp(defParts[0], 'g')
-                if(rp.test(cmd)) cmd = cmd.replace(rp, defParts[1])
+        if(obj.cmd) {
+            if(obj.type === 'cmd') {
+                cmdList = obj.cmd.split(';')
+                for(const [idx, cmd] of Object.entries(cmdList)) {
+                    cmdList[idx] = cmd
+                    for(const device of props.devices) cmdList[idx] = cmdList[idx].replace(device.split(':')[0], device.split(':')[1])
+                } 
+
+                fhem.request('text', cmdList.join(';'))
             }
-
-            fhem.request('text', cmd)
+            
+            if(obj.type === 'route') router.push({ name: 'devices', params: { view: obj.cmd }, query: router.currentRoute.value.query })
+            if(obj.type === 'url') window.open(obj.cmd, '_self')
         }
-        
-        if(obj.type === 'route') router.push({ name: 'devices', params: { view: obj.cmd }, query: router.currentRoute.value.query })
-        if(obj.type === 'url') window.open(obj.cmd, '_self')
     }
 
     function btnClick(evt) {

@@ -1,3 +1,10 @@
+# v4.1.1 (29.04.2024)
+## Panel Button
+- bugfix if fhem command will be send
+## Panel Menu
+- bugfix double load menu items
+## Panel
+- add options menu for loglevel 7
 # v4.1.0 (28.04.2024)
 ## App
 - merge Beta Version to Stable Version
