@@ -21,10 +21,9 @@
 </script>
 
 <template>
-  <span v-for="(item, idx) of items" :key="item.name">
+  <span v-for="(item, idx) of items" :key="idx">
     <v-list-item
       v-if="(!item.group || item.group.length < 1) && !isChip" 
-      :key="idx"
       :title="fhem.replacer(item.title, '') || item.name"
       :prepend-icon="item.icon"
       rounded="pill"
@@ -35,7 +34,6 @@
       v-if="(!item.group || item.group.length < 1) && isChip"
       class="my-1 ml-2"
       :prepend-icon="item.icon"
-      :key="idx"
       @click="loadView(idx)"
     >
       {{ fhem.replacer(item.title, '') || item.name }}

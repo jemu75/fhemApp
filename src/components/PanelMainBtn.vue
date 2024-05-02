@@ -55,16 +55,17 @@
     function btnClick(evt) {
         let click = fhem.handleDefs(props.el.click, ['cmd', 'type'], ['', 'cmd'], false, null, true),
             longClick = fhem.handleDefs(props.el.longClick, ['cmd', 'type'], ['', 'cmd'], false, null, true),
-            longRelease = fhem.handleDefs(props.el.longRelease, ['cmd', 'type'], ['', 'cmd'], false, null, true)
+            longRelease = fhem.handleDefs(props.el.longRelease, ['cmd', 'type'], ['', 'cmd'], false, null, true),
+            isTouch = 'ontouchstart' in document
 
-        if(evt === 'mouseStart') {
+        if((!isTouch && evt === 'mouseStart') || evt === 'touchStart') {
             btnState.timer = setTimeout(() => {
                 btnState.long = true
                 if(longClick.cmd) doCmd(longClick)
             }, 1000)
         }
 
-        if(evt === 'mouseEnd') {
+        if((!isTouch && evt === 'mouseEnd') || evt === 'touchEnd') {
             if(btnState.long) {
                 if(longRelease.cmd) doCmd(longRelease)
             } else {
@@ -91,7 +92,9 @@
         :disabled="btn.disabled" 
         :color="btn.color" 
         @mousedown="btnClick('mouseStart')"
+        @touchstart="btnClick('touchStart')"
         @mouseup="btnClick('mouseEnd')"
+        @touchend="btnClick('touchEnd')"
         class="my-2">
         <v-icon size="large">
             {{ btn.icon }}
