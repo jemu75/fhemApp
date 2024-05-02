@@ -1,3 +1,8 @@
+# v4.1.2 (02.05.2024)
+## Settings
+- bugfix back button at panel and template settings
+## Panel Button
+- bugfix for touchdevices
 # v4.1.1 (29.04.2024)
 ## Panel Button
 - bugfix if fhem command will be send

@@ -184,7 +184,7 @@
     }
 
     watch(router.currentRoute, (val) => {
-        if(val.params.item) editItem(val.params.item)
+        editItem(val.params.item)
     })
 
     watch(() => fhem.app.isReady, (val) => {
