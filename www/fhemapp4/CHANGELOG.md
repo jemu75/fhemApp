@@ -1,3 +1,12 @@
+# v4.1.3 (04.05.2024)
+## App
+- update core modules and dependencies
+- bugfix with of Optionmenu in case of changing screensize
+- bugfix Navigation menu opens several subgroups
+## Settings
+- bugfix Filtering the lists for panels and templates
+- bugfix Cursor keys work correctly for panels and templates in raw mode
+- defaultRoute can be defined
 # v4.1.2 (02.05.2024)
 ## Settings
 - bugfix back button at panel and template settings

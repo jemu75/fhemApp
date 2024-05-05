@@ -21,9 +21,9 @@
 </script>
 
 <template>
-  <span v-for="(item, idx) of items" :key="idx">
+  <template v-for="(item, idx) of items">
     <v-list-item
-      v-if="(!item.group || item.group.length < 1) && !isChip" 
+      v-if="(!item.group || item.group.length < 1) && !isChip"
       :title="fhem.replacer(item.title, '') || item.name"
       :prepend-icon="item.icon"
       rounded="pill"
@@ -39,16 +39,14 @@
       {{ fhem.replacer(item.title, '') || item.name }}
     </v-chip>
 
-    <v-list-group 
-      v-if="item.group && item.group.length > 0"
-      :value="item.name"
-    >
+    <v-list-group v-if="item.group && item.group.length > 0">
       <template v-slot:activator="{ props }">
         <v-list-item
           v-bind="props"
           :title="fhem.replacer(item.title, '') || item.name"
           :prepend-icon="item.icon"
           rounded="pill"
+          :key="idx"
         ></v-list-item>
       </template>
 
@@ -56,5 +54,5 @@
     </v-list-group>
 
     <v-divider v-if="item.divider"/>
-  </span>
+  </template>
 </template>

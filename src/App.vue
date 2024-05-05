@@ -74,7 +74,6 @@
         </v-row>
 
         <v-divider/>
-
       </v-navigation-drawer>
 
       <v-app-bar :order="mobile ? 0 : -1" :color="fhem.app.settings.loglevel > 6 ? 'error' : 'primary'">
