@@ -100,6 +100,9 @@ Wenn das Farbschema über ein **FHEM Reading** gesteuert wird, dann wird die Bro
 
 Die Umschaltung des Farbschema über das **Optionsmenü** kann zur Laufzeit immer erfolgen, wird jedoch nicht gespeichert.
 
+## Startseite
+Beim Starten von **FHEMApp** kann eine bestimmte Seite aus dem Navigationsmenü geöffnet werden. Diese Seite wird jedoch nur dann angezeigt, wenn die URL beim Aufruf von **FHEMApp** keinen Verweis auf eine bestimmte Seite (z.B. `...#/myapp/devices/Räume->Wohnzimmer...`) enthält.
+
 ## Optionsmenü
 Durch Aktivierung der folgenden Optionen wird das Optionsmenü oben rechts in der Kopfleiste eingeblendet.
 ![](./docs/media/example_option_menu.png)

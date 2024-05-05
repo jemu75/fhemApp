@@ -48,6 +48,7 @@
                 res = [
                     { key: 'name', title: i18n.t(preLang + 'title'), sortable: true, align: 'start' },
                     { key: 'devices', title: 'Devices', sortable: true, align: 'start', filterable: false },
+                    { key: 'template', title: i18n.t('_app.settings.templates.title'), sortable: true, filterable: true },
                     { key: 'advanced', title: i18n.t(preLang + 'extended'), sortable: true, filterable: false },
                     { key: 'actions', title: '', sortable: false, align: 'end', width: '15%' }
                 ]
@@ -93,6 +94,7 @@
                 res.push({ 
                     idx: parseFloat(idx), 
                     name: el.name, 
+                    template: el.template,
                     advanced: advanced.length > 0 ? advanced.join(', ') : '-', 
                     panels: !panelCount ? '-' : panelCount,
                     devices: devices
@@ -210,6 +212,8 @@
             res = await fhem.request('json', 'jsonlist2 .* Name alias'),
             alias
 
+        settings.value.fhemDevices = []
+
         if(res && res.Results.length > 0) {
             for(const dev of res.Results) {
                 alias = dev.Attributes.alias ? ' (' + dev.Attributes.alias + ')' : ''
@@ -283,8 +287,8 @@
         settings.value.newItem = ''
     }
 
-    function gotoItem(val) {
-        router.push({ name: 'settings', params: { tab: props.type, item: val }, query: router.currentRoute.value.query })
+    function gotoItem(val, tab) {
+        router.push({ name: 'settings', params: { tab: tab || props.type, item: val }, query: router.currentRoute.value.query })
     }
 
     function deleteItem(idx) {
@@ -312,7 +316,13 @@
     function copyBtn() {
         toClipboard(settings.value.jsonDef)
     }
- </script>
+
+    function isDefaultTemplate(val) {
+        let idx = fhem.app.config.templates.map((e) => e.name).indexOf(val)
+
+        return idx !== -1 && fhem.app.config.templates[idx].dist ? true : false 
+    }
+ </script> 
 
 <template>
     <v-list>
@@ -368,6 +378,10 @@
                 :search="settings.search"                                              
                 density="compact"
                 @update:itemsPerPage = "settings.pageSize = $event">
+                <template v-slot:item.template="{ value }">
+                    <v-chip v-if="value" @click="gotoItem(value, 'templates')" :disabled="isDefaultTemplate(value)"  variant="text">{{ value }}</v-chip>
+                </template>
+                
                 <template v-slot:item.actions="{ item }">
                     <v-btn 
                         icon="mdi-pencil"

@@ -42,7 +42,8 @@ export const useFhemStore = defineStore('fhem', () => {
             showUpdate: false,
             showSettings: false,
             commands: [],
-            darkModeOverFhem: null
+            darkModeOverFhem: null,
+            defaultRoute: null
         },
         fhemDevice: null,
         panelView: [],
@@ -398,6 +399,7 @@ export const useFhemStore = defineStore('fhem', () => {
         
         //merge header
         Object.assign(app.header, JSON.parse(JSON.stringify(app.config.header)))
+        if(app.config.header.defaultRoute && !app.currentView) app.currentView = app.config.header.defaultRoute
         changeDarkMode(theme.global.name.value)
 
         app.configLoaded = true

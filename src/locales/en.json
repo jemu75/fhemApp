@@ -31,6 +31,7 @@
                 "showLanguagesHint": "",
                 "optionsCommandTitle":"Optionsmenu FHEM Commands",
                 "darkModeOverFhem": "DarkMode over FHEM Reading",
+                "defaultRoute": "Default page when opening",
                 "commandName": "Name",
                 "commandNamePlaceholder": "restart",
                 "commandNameRules": "Input required!",

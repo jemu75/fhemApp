@@ -28,6 +28,22 @@
   function deleteItem(idx) {
     fhem.app.config.header.commands.splice(idx, 1)
   }
+
+  function loadNavigationItems(items, route) {
+    let result = []
+
+    if(items && items.length > 0) {
+      for(const item of items) {
+        if(item.group && item.group.length > 0) {
+          result.push(...loadNavigationItems(item.group, (route ? (route + '->') : '') + item.name))
+        } else {
+          result.push((route ? (route + '->') : '') + item.name)
+        }
+      }
+    }
+
+    return result
+  }
 </script>
 
 <template>  
@@ -109,6 +125,33 @@
             v-model="fhem.app.config.header.darkModeOverFhem"        
             >
           </v-text-field>
+        </v-col>
+      </v-row>
+    </v-list-item>
+
+    <v-divider></v-divider>
+    <v-list-item :title="$t(preLang + 'defaultRoute')">
+      <template v-slot:append>
+        <v-btn
+          color="info"
+          icon="mdi-help-circle"
+          variant="text"
+          @click="fhem.help('Startseite')"
+        ></v-btn>
+      </template>
+    </v-list-item>
+    <v-list-item>
+      <v-row no-gutters>
+        <v-col cols="12" md="4" class="pt-3">
+          <v-select 
+            density="compact" 
+            variant="outlined"             
+            label="Route"
+            clearable
+            :items="loadNavigationItems(fhem.app.navigation)"
+            v-model="fhem.app.config.header.defaultRoute"
+            >
+          </v-select>
         </v-col>
       </v-row>
     </v-list-item>
