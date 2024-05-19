@@ -1,5 +1,5 @@
 import { reactive } from 'vue'
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import router from '@/router'
 import { useI18n } from 'vue-i18n'
 import { useTheme } from 'vuetify'
@@ -34,7 +34,7 @@ export const useFhemStore = defineStore('fhem', () => {
             showTime: false,
             showDate: false,
             showTitle: true,
-            showHomeBtn: false,
+            hideNavigation: false,
             imageUrl: null,
             imageGradient: null,
             showDarkMode: false,
@@ -65,12 +65,13 @@ export const useFhemStore = defineStore('fhem', () => {
             'temperatur', 
             'thermostat'
         ],
-        noConfig: null,
+        noConfig: false,
         configLoaded: false,        
         isReady: false,
         message: false,
         currentView: null,
         settingsTab: null,
+        settingsItem: null,
         version: null,
         updateAvailable: false,
         updateProgress: false,
@@ -83,7 +84,8 @@ export const useFhemStore = defineStore('fhem', () => {
         xhrOffset: 0,
         xhrBuffer: '',
         evtBuffer: [],
-        panelMap: []
+        panelMap: [],
+        timeOffset: 0
     }
 
     //coreFunction emit messages 1=status, 2=error, 3=warning, 4=info, 5=send, 6=receive, 7=details
@@ -121,7 +123,7 @@ export const useFhemStore = defineStore('fhem', () => {
     //coreFunction for Clock
     function initClock() {
         setInterval(() => {
-            app.header.time = new Date()
+            app.header.time = new Date(new Date().getTime() + stat.timeOffset)
         }, 1000)
     }
 
@@ -218,6 +220,7 @@ export const useFhemStore = defineStore('fhem', () => {
 
             if(route.name === 'settings') {
                 app.settingsTab = route.params.tab || 'general'
+                app.settingsItem = route.params.item
             }
         }
 
@@ -280,6 +283,16 @@ export const useFhemStore = defineStore('fhem', () => {
 
         if(!res) return false
         stat.csrf = res.token
+
+        return true
+    }
+
+    //coreFunction get Timestamp from FHEM  Server
+    async function timeSync() {
+        let res = await request('text', '{ localtime() }')
+
+        if(!res) return false
+        stat.timeOffset = new Date(res) - new Date()
 
         return true
     }
@@ -359,7 +372,6 @@ export const useFhemStore = defineStore('fhem', () => {
 
         resText = base64ToString(res)
         cfg = typeof resText === 'string' ? stringToJson(resText) : false
-
         app.noConfig = false
 
         if(!cfg) {
@@ -368,18 +380,11 @@ export const useFhemStore = defineStore('fhem', () => {
         }
 
         if(cfg.error) {
-            if(cfg.error === 'No config found!') {
-                app.noConfig = true
-                router.push({ name: 'settings', query: router.currentRoute.value.query })
-                log(3, cfg.error, null)
-            } else {
-                //ToDo
-                //ggf. weitere Fehler von FHEM, die beim Laden der Konfiguration auftreten, abfangen
-                console.log(cfg.error)
-            }
-            
+            if(cfg.error === 'No config found!') app.noConfig = true
+            log(3, cfg.error)
         }
 
+        //write config into app
         for(const cfgPart of Object.keys(app.config)) {
             if(cfg[cfgPart] && cfg[cfgPart] !== app.config[cfgPart]) {
                 if(app.config[cfgPart].length > 0) app.config[cfgPart].splice(0)
@@ -402,9 +407,11 @@ export const useFhemStore = defineStore('fhem', () => {
         if(app.config.header.defaultRoute && !app.currentView) app.currentView = app.config.header.defaultRoute
         changeDarkMode(theme.global.name.value)
 
+        //ToDo wofür wird dieses Flag verwendet???
         app.configLoaded = true
 
-        log(4, 'Config loaded.', cfg)
+        if(!app.noConfig) log(4, 'Config loaded.', cfg)
+        
         return true
     }
 
@@ -994,6 +1001,7 @@ export const useFhemStore = defineStore('fhem', () => {
 
         if(res && connect) res = await getToken()
         if(res && connect) res = openEventWatcher()
+        if(res) res = await timeSync()
         if(res) res = await loadConfig()
         if(res) res = await loadTemplates()
         if(res) res = createPanelList()
@@ -1003,10 +1011,20 @@ export const useFhemStore = defineStore('fhem', () => {
 
         if(!res) {
             log(3, 'FHEMApp launching failed.')
-        } else {
-            app.message = false
+        } else {            
             app.isReady = true
-            log(1, connect ? 'FHEMApp launched.' : 'Session refreshed.', app)
+
+            if(connect) {
+                log(1, 'FHEMApp launched.')    
+
+                if(app.noConfig) {
+                    await router.push({ name: 'settings', query: router.currentRoute.value.query })
+                    log(3, 'No Config handling', null, 'noConfig')
+                }
+            } else {
+                app.message = false
+                log(1, 'Session refreshed.')
+            }
         }        
 
         thread(tid)

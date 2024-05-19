@@ -9,7 +9,8 @@
 
   const fhem = useFhemStore()
   const { mobile } = useDisplay()
-  const drawer = ref(true)
+  
+  const drawer = ref(fhem.app.header.hideNavigation.value ? false : true)
 
   const mobileTitle = computed(() => {
     let navPath = [],
@@ -52,7 +53,7 @@
         </v-progress-circular>
       </v-overlay>
 
-      <v-navigation-drawer v-model="drawer" color="secondary">
+      <v-navigation-drawer v-model="drawer" color="secondary" :temporary="fhem.app.header.hideNavigation">
         <template v-slot:prepend>
           <v-img :src="logo"></v-img>
           <v-divider/>
@@ -82,7 +83,7 @@
         </template>
 
         <template v-slot:prepend>
-          <v-app-bar-nav-icon class="d-lg-none" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+          <v-app-bar-nav-icon :class="fhem.app.header.hideNavigation ? '' : 'd-lg-none'" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
           <div v-if="!mobile && fhem.app.header.showTime" class="text-h5">{{ $d(fhem.app.header.time, fhem.app.header.timeFormat) }}</div>
         </template>
 

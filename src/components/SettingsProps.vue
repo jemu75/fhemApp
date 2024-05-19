@@ -407,14 +407,14 @@
                         <v-btn variant="plain" icon="mdi-arrow-up-left" @click="gotoItem()"></v-btn>
 
                         <v-col cols="10" md="">
-                            <v-autocomplete v-if="!settings.rawMode"
+                            <v-select v-if="!settings.rawMode"
                                 v-model="settings.section"                                
                                 :items="sections"
                                 :disabled="settings.extended || props.type === 'templates' ? false : true"
                                 density="compact"
                                 hide-details
                                 variant="outlined">
-                            </v-autocomplete>
+                            </v-select>
                         </v-col>
 
                         <v-col v-if="props.type === 'panels'" cols="6" md="auto" class="pl-5">

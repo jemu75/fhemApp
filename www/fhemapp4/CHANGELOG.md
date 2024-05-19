@@ -1,3 +1,16 @@
+# v4.1.4 (20.05.2024)
+## App
+- correct translations for settings
+- Time from FHEM Server will be used
+## Settings
+- optimization for general settings tab
+- option for hide Navigation for large screens
+## Panel Colorpicker
+- bugfix Element Style; level height is now recommended for 140px
+## Panel Image
+- no scroller if panel is maximized
+## Panel IFrame
+- new main Element for embedding iframes
 # v4.1.3 (04.05.2024)
 ## App
 - update core modules and dependencies
