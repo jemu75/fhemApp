@@ -79,9 +79,7 @@ Nachdem du Einstellungen in **FHEMApp** angepasst hast, müssen diese gespeicher
 # Allgemeine Einstellungen
 
 ## Kopfzeile
-In den Einstellungen für die Kopfzeile kann die Anzeige für das aktuelle Datum, die Uhrzeit und die aktuelle Navigationauswahl aktiviert werden. Die Anzeige für Datum und Uhrzeit erfolgt nur in der Desktopansicht. In der mobilen Ansicht werden Datum und Uhrzeit nicht angezeigt. Die Anzeige für die Navigationsauswahl erfolgt nur in der mobilen Ansicht.
-
-Weiterhin kann ein Hintergrundbild für die Kopfzeile festgelegt werden. Die Verwendung des Farbfilters mit einer [CSS Linear Gradient Definition](https://www.w3schools.com/css/css3_gradients.asp) ermöglicht ein Anpassung des Hintergrundbildes an das festgelegte Farbschema. 
+In den Einstellungen für die Kopfzeile kann die Anzeige für das Datum und die Uhrzeit vom FHEM Server in der Desktopansicht aktiviert werden. Es kann das Navigationsmenü in der Desktopansicht optional ausgeblendet werden und die Anzeige der aktuellen Seite für die mobile Ansicht aktiviert werden. Weiterhin kann ein Hintergrundbild für die Kopfzeile festgelegt werden. Die Verwendung des Farbfilters mit einer [CSS Linear Gradient Definition](https://www.w3schools.com/css/css3_gradients.asp) ermöglicht ein Anpassung des Hintergrundbildes an das festgelegte Farbschema. 
 
 ## Farbschema
 In **FHEMApp** werden zwei Farbschemen (dunkel und hell) unterstützt. Die einzelnen Farben können für beide Farbschemen wie im Abschnitt [Farben](#farben) beschrieben, angepasst werden. Beim Öffnen von **FHEMApp** wird das Farbschema (dunkel bzw. hell) aus den Einstellungen des Browsers bzw. des Betriebssystems verwendet. Zusätzlich kann das Farbschema wie folgt gesteuert werden.
@@ -372,6 +370,7 @@ Es stehen folgende Typen zur Verfügung
 |info|Es können bis zu 3 Textelemente und ein Icon zur Anzeige von Statuswerten konfiguriert werden|
 |slider|Es kann ein Slider zu Steuerung von Aktoren konfiguriert werden|
 |image|Es kann ein Bild über eine URL angezeigt werden|
+|iframe|Es kann ein HTML <iframe> über eine URL eingebettet werden|
 |menu|Es kann ein DropDown-Menü zur Steuerung verschiedener Aktoren bzw. Aktorwerte konfiguriert werden|
 |chart|Es kann ein Chart angezeigt werden|
 |colorpicker|Es kann ein Slider zur Steuerung von RGB Lights konfiguriert werden|
@@ -471,6 +470,14 @@ Zeigt ein Bild an.
 |value||siehe Parameter [value](#konfiguration-der-elemente)|
 |source||URL die auf ein Bild verweist. Bei direkter Eingabe von URLs müssen Doppelpunkte entsprechend ersetzt werden. (siehe auch [Ersetzungen](#ersetzungen)) [string]|
 |height||legt die absolute Höhe des Bildes in Pixeln fest [string]|
+### Level Element IFrame iframe
+Bettet ein iframe ein.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|source||URL deren Inhalt im Panel angezeigt werden soll. Bei direkter Eingabe von URLs müssen Doppelpunkte entsprechend ersetzt werden. (siehe auch [Ersetzungen](#ersetzungen)) [string]|
 ### Level Element Menu btn
 Zeigt einen Button an, der beim Klicken ein DropDown-Menü öffnet. Wenn dieses Element nicht definiert ist wird ein Standard-Button angezeigt, sobald mindestens ein [Menüeintrag](#level-element-menu-menu) definiert ist.
 

@@ -4,6 +4,7 @@
     import PanelMainBtn from './PanelMainBtn.vue'
     import PanelMainSlider from './PanelMainSlider.vue'
     import PanelMainImage from './PanelMainImage.vue'
+    import PanelMainIframe from './PanelMainIframe.vue'
     import PanelMainMenu from './PanelMainMenu.vue'
     import PanelMainChart from './PanelMainChart.vue'
     import PanelMainColorpicker from './PanelMainColorpicker.vue'
@@ -42,6 +43,7 @@
         if(type === 'btn') return PanelMainBtn
         if(type === 'slider') return PanelMainSlider
         if(type === 'image') return PanelMainImage
+        if(type === 'iframe') return PanelMainIframe
         if(type === 'menu') return PanelMainMenu
         if(type === 'chart') return PanelMainChart
         if(type === 'colorpicker') return PanelMainColorpicker
@@ -49,7 +51,7 @@
 </script>
 
 <template>
-    <div v-for="(lvl, idx) of main" :key="idx">
+    <template v-for="(lvl, idx) of main" :key="idx">
         <v-expand-transition>
             <v-row v-if="levels.indexOf(idx) !== -1 ? true : false" no-gutters class="text-center align-center">
                 <v-sheet :height="getHeight(lvl, 'level')"></v-sheet>
@@ -62,5 +64,5 @@
                 <v-divider v-if="showDivider(lvl, 'level')"></v-divider>
             </v-row>
         </v-expand-transition>
-    </div>    
+    </template>    
 </template>

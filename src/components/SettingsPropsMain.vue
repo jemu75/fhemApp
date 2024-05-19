@@ -27,6 +27,7 @@
         { title: 'info', value: 'info' },
         { title: 'slider', value: 'slider' },
         { title: 'image', value: 'image' },
+        { title: 'iframe', value: 'frame' },
         { title: 'menu', value: 'menu' },
         { title: 'chart', value: 'chart' },
         { title: 'colorpicker', value: 'colorpicker' }
@@ -59,6 +60,11 @@
         ],
         image: [
             { type: 'defs', required: false, prop: 'image', def: 'reading:value:source:height', help: 'level-element-image-image', assist: 'props' },
+            { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider', assist: 'props' },
+            { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size', assist: 'props' }
+        ],
+        iframe: [
+            { type: 'defs', required: false, prop: 'iframe', def: 'reading:value:source', help: 'level-element-iframe-iframe', assist: 'props' },
             { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider', assist: 'props' },
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size', assist: 'props' }
         ],

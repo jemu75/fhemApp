@@ -8,7 +8,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Chrome mit \"localhost\" starten",
-            "url": "http://localhost:3000/#/demo/?protocol=http&server=fhem&port=8083&path=fhem",
+            "url": "http://localhost:3000/#/test/settings?protocol=http&server=fhem&port=8083&path=fhem",
             "webRoot": "${workspaceFolder}"
         }
     ]

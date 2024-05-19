@@ -2,6 +2,7 @@
     import { computed } from 'vue'
     import { useFhemStore } from '@/stores/fhem'
     import ColorPicker from '@radial-color-picker/vue-color-picker'
+    import '@radial-color-picker/vue-color-picker/dist/vue-color-picker.min.css'
 
     const props = defineProps({
         el: Object,
@@ -84,24 +85,20 @@
 
         return { hue: h, saturation: s, luminosity: l }
     }
+
+    function getSize() {
+        let size = props.height
+
+        return 'height: ' + size + '; width: ' + size +';'
+    }
 </script>
 
 <template>
-    <div class="mt-4 mb-2">
-        <ColorPicker v-bind="hexToHSL(color.current)" variant="persistent" @change="doCmd($event)"></ColorPicker>
-    </div>
+    <v-row>
+        <v-spacer></v-spacer>
+        <v-col class="ma-4">
+            <ColorPicker v-bind="hexToHSL(color.current)" variant="persistent" @change="doCmd($event)" :style="getSize()"></ColorPicker>
+        </v-col>
+        <v-spacer></v-spacer>
+    </v-row>
 </template>
-
-<style>
-    @import '@radial-color-picker/vue-color-picker/dist/vue-color-picker.min.css';
-
-    .rcp {
-        display: inline-block;
-        height: 140px;
-        width: 140px;
-    }
-
-    .rcp__well {
-        border: 2px solid #fff;
-    }
-</style>

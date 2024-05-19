@@ -3,7 +3,8 @@
   import { useFhemStore } from '@/stores/fhem'
   import router from '@/router'
 
-  import SettingsHeader from '../components/SettingsHeader.vue'
+  import SettingsGeneral from '../components/SettingsGeneral.vue'
+
   import SettingsNavigation from '../components/SettingsNavigation.vue'
   import SettingsProps from '../components/SettingsProps.vue'
   import SettingsColors from '../components/SettingsColors.vue'
@@ -41,7 +42,9 @@
     router.replace({ name: 'settings', params: { tab: fhem.app.settingsTab }, query: router.currentRoute.value.query })
   }
 
-  if(fhem.app.noConfig) fhem.log(3, 'Settings View - No Config handling', null, 'noConfig')
+  function getComponent(tab) {
+    if(tab === 'general') return SettingsGeneral
+  }
 </script>
 
 <template>
@@ -69,7 +72,8 @@
       <v-tab v-for="tab of tabs" :value="tab" :key="tab">{{ $t('_app.settings.' + tab + '.title', 2) }}</v-tab>
     </v-tabs>
 
-    <SettingsHeader v-if="fhem.app.settingsTab === 'general'"></SettingsHeader>
+    <component v-if="fhem.app.isReady" :is="getComponent(fhem.app.settingsTab)" :tab="fhem.app.settingsTab" :item="fhem.app.settingsItem"></component>
+
     <SettingsNavigation v-if="fhem.app.settingsTab === 'navigation'"></SettingsNavigation>
     <SettingsProps v-if="fhem.app.settingsTab === 'panels'" type="panels"></SettingsProps>
     <SettingsProps v-if="fhem.app.settingsTab === 'templates'" type="templates"></SettingsProps>
