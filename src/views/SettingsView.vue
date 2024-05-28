@@ -21,17 +21,19 @@
   })
 
   async function saveSettings(save) {
-    let config = null,
+    let cfg = '',
+        cfgDecoded = '',
         newTemplates = []
     
     if(save) {
       for(const template of fhem.app.config.templates) if(!template.dist) newTemplates.push(template)
       fhem.app.config.templates = newTemplates
       
-      const utfStr = new TextEncoder().encode(JSON.stringify(fhem.app.config))
-      config = encodeURIComponent(btoa(String.fromCodePoint(...utfStr)))
-
-      await fhem.request('text', 'set ' + fhem.app.fhemDevice + ' config ' + config)
+      const utfArr = new TextEncoder().encode(JSON.stringify(fhem.app.config))
+      for(const str of utfArr) cfg += String.fromCodePoint(str)
+      cfgDecoded = btoa(cfg)
+      
+      await fhem.request('text', 'set ' + fhem.app.fhemDevice + ' config ' + encodeURIComponent(cfgDecoded))
     }
     
     await fhem.createSession()

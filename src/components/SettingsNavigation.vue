@@ -106,7 +106,7 @@
             :label="$t(preLang + 'title1')"
             v-model="item.title"/>
         </v-col>
-        <v-col cols="12" lg="3" class="pt-3 pr-3">
+        <v-col cols="12" lg="2" class="pt-3 pr-3">
           <v-text-field 
             density="compact" 
             variant="outlined"
@@ -117,13 +117,13 @@
             :append-inner-icon="item.icon"
             v-model="item.icon"/>
         </v-col>
-        <v-col :cols="4" lg="" class="pt-1">
+        <v-col cols="4" lg="" class="pt-1">
           <v-checkbox               
           :hint="$t(preLang + 'groupAsChipsHint')"
             :label="$t(preLang + 'groupAsChips')"
             v-model="item.groupAsChips"/>
         </v-col>
-        <v-col :cols="4" lg="" class="pt-1">
+        <v-col cols="4" lg="" class="pt-1">
           <v-checkbox               
           :hint="$t(preLang + 'sortHint')"
             :label="$t(preLang + 'sort')"
@@ -171,7 +171,7 @@
               :label="$t(preLang + 'title1')"
               v-model="navSettings.newItem.title"/>
           </v-col>
-          <v-col cols="12" lg="3" class="pt-3 pr-3">
+          <v-col cols="12" lg="2" class="pt-3 pr-3">
             <v-text-field 
               density="compact" 
               variant="outlined"

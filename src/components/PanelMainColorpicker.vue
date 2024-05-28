@@ -14,25 +14,28 @@
     const fhem = useFhemStore()
 
     const color = computed(() => {
-        return fhem.handleDefs(props.el.picker, ['cmd', 'current'],['', false])
+        return fhem.handleDefs(props.el.picker, ['cmd', 'current', 'type'],['', false, 'hex'])
     })
 
+    function getCurrentVal(obj) {
+        let res = { hue: 0, saturation: 100, luminosity: 50 }
+
+        if(obj.type === 'hex') res = hexToHSL(obj.current)
+        if(obj.type === 'hue') res.hue = obj.current || 0
+
+        return res
+    }
+
     function doCmd(val) {
-        let hex = hslToHex(val, 50, 100),
-            cmd = color.value.cmd,
-            defParts = []
+        let hex = hslToHex(val, 100, 50),
+            cmd = color.value.cmd.replace('%v', color.value.type === 'hex' ? hex : Math.round(val))
 
-        cmd = cmd.replace('%v', hex)
-
-        for(const device of props.devices) {
-            defParts = device.split(':')
-            if(RegExp(defParts[0]).test(cmd)) cmd = cmd.replace(defParts[0], defParts[1])
-        }
+        for(const device of props.devices) cmd = cmd.replace(' ' + device.split(':')[0] + ' ', ' ' + device.split(':')[1] + ' ')
 
         fhem.request('text', cmd)
     }
 
-    function hslToHex(h, l, s) {
+    function hslToHex(h, s, l) {
         l /= 100
         const a = s * Math.min(l, 1 - l) / 100
         const f = n => {
@@ -45,9 +48,9 @@
     }
 
     function hexToHSL(hex) {
-        if(hex.split(' ').length > 1) hex = hex.split(' ').slice(-1)[0]        
+        if(hex && hex.split(' ').length > 1) hex = hex.split(' ').slice(-1)[0]        
 
-        hex = hex.replace(/^#/, '')
+        hex = hex ? hex.replace(/^#/, '') : 0
 
         let bigint = parseInt(hex, 16),
             r = (bigint >> 16) & 255,
@@ -97,7 +100,7 @@
     <v-row>
         <v-spacer></v-spacer>
         <v-col class="ma-4">
-            <ColorPicker v-bind="hexToHSL(color.current)" variant="persistent" @change="doCmd($event)" :style="getSize()"></ColorPicker>
+            <ColorPicker v-bind="getCurrentVal(color)" variant="persistent" @change="doCmd($event)" :style="getSize()"></ColorPicker>
         </v-col>
         <v-spacer></v-spacer>
     </v-row>

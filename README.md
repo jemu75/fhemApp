@@ -493,7 +493,7 @@ Zeigt einen Button an, der beim Klicken ein DropDown-Menü öffnet. Wenn dieses 
 ### Level Element Menu menu
 Definiert die Menüeinträge, die beim Öffnen des DropDown-Menü angezeigt werden. Bei Klick auf einen Menüpunkt wird der hinterlegte Befehl an FHEM gesendet. Im Gegensatz zu normalen Definitionen, werden zur Anzeige der Menüpunkte **alle** Definitionen verwendet, deren Bedingungen zutreffen.
 
-Menüeinträge können auch dynamisch von FHEM übergeben werden. Der Rückgabewert vom FHEM Befehl *get* bzw. dem *reading* oder *attribute* muss dabei durch einen der folgenden Zeichen (`,` `|` `\n`) getrennt werden. Bei dynamisch erzeugten Menüeinträgen muss der FHEM *get-Befehl* oder *%s* bei Verwendung eines *reading* bzw. *attribute* in den Parameter `name` eingetragen werden. Im Parameter `cmd` kann dann die Ersetzung **%v** verwendet werden um den aktuellen Menüeinträge über einen *set-Befehl* an FHEM zu übergeben.
+Menüeinträge können auch dynamisch von FHEM übergeben werden. Der Rückgabewert vom FHEM Befehl *get* bzw. dem *reading* oder *attribute* muss dabei durch eines der folgenden Zeichen (`,` `|` `\n`) getrennt werden. Bei dynamisch erzeugten Menüeinträgen muss der FHEM *get-Befehl* oder *%s* bei Verwendung eines *reading* bzw. *attribute* in den Parameter `name` eingetragen werden. Im Parameter `cmd` kann dann die Ersetzung **%v** verwendet werden, um die aktuellen Menüeinträge über einen *set-Befehl* an FHEM zu übergeben.
 
 |Parameter|Default|Beschreibung|
 |---|---|---|
@@ -607,6 +607,7 @@ Parameter|Default|Beschreibung|
 |value||siehe Parameter [value](#konfiguration-der-elemente)|
 |cmd||FHEM Kommando. Die Ersetzung **%v** repräsentiert den aktuellen Wert des Colorpickers. (siehe auch [Ersetzungen](#ersetzungen)) [string]|
 |current||aktueller Wert des Colorpickers [string]|
+|type|hex|Typ des RGB-Wertes *hex* oder *hue* [string]|
 ## Bereich Info
 Der Infobereich befindet sich im unteren Teil. Er dient dazu, weitere Werte des Sonsors oder Aktors in Form von Icons oder Text darzustellen. Es können bis zu 6 Spalten für die Anzeige von Icons bzw. Texten verwendet werden.
 ### Element info

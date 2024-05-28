@@ -18,6 +18,12 @@
 			],
 			"label": "npm: test:unit",
 			"detail": "vitest"
+		},
+		{
+			"label": "Copy Build to FHEM appache",
+			"type": "shell",
+			"command": "rsync -rv --stats www/fhemapp4 fhem@192.168.2.157:/var/www/html",
+			"problemMatcher": []
 		}
 	]
 }

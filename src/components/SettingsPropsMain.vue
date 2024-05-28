@@ -91,7 +91,7 @@
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size', assist: 'props' }
         ],
         colorpicker: [
-            { type: 'defs', required: false, prop: 'picker', def: 'reading:value:cmd:current', help: 'level-element-colorpicker-picker', assist: 'props' },
+            { type: 'defs', required: false, prop: 'picker', def: 'reading:value:cmd:current:type', help: 'level-element-colorpicker-picker', assist: 'props' },
             { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider', assist: 'props' },
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size', assist: 'props' }
         ]

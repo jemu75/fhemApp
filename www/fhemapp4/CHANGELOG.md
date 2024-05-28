@@ -1,3 +1,15 @@
+# v4.2.0 (28.05.2024)
+## Panel Colorpicker
+- handling for hue values implemented
+## Default Templates
+- add menu for favourites at sonosplayer
+## Core
+- Optimization reconnect to FHEM Server
+## Panel
+- bugfix for vertical dividers in mainlevels
+- bugfix for replacing devicekeys in FHEM set commands
+## Settings
+- bugfix for saving large configurations
 # v4.1.4 (20.05.2024)
 ## App
 - correct translations for settings

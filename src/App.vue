@@ -43,7 +43,7 @@
 
 <template>
   <v-app class="noselect">
-    <v-layout v-show="fhem.app.configLoaded">
+    <v-layout>
       <v-overlay
         :model-value="fhem.app.threads.length > 0"
         class="align-center justify-center">
@@ -77,7 +77,7 @@
         <v-divider/>
       </v-navigation-drawer>
 
-      <v-app-bar :order="mobile ? 0 : -1" :color="fhem.app.settings.loglevel > 6 ? 'error' : 'primary'">
+      <v-app-bar v-if="fhem.app.isLoaded" :order="mobile ? 0 : -1" :color="fhem.app.settings.loglevel > 6 ? 'error' : 'primary'">
         <template v-if="fhem.app.header.imageUrl && fhem.app.settings.loglevel < 7" v-slot:image>
           <v-img :src="fhem.app.header.imageUrl" cover :gradient="fhem.app.header.imageGradient"></v-img>        
         </template>
@@ -98,7 +98,7 @@
 
       <v-main>
         <v-container fluid class="pa-2">
-          <v-alert v-if="fhem.app.message"
+          <v-alert v-if="fhem.app.message && fhem.app.message.type"
             closable            
             :type="fhem.app.message.type"
             :title="$t(fhem.app.message.title)"
