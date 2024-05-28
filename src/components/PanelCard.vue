@@ -146,7 +146,7 @@
 </script>
 
 <template>
-    <v-card variant="tonal" v-if="fhem.app.isReady">
+    <v-card variant="tonal">
         <v-row no-gutters>
             <v-col v-if="panel.status.bar">
                 <v-progress-linear

@@ -23,7 +23,7 @@
 <template>
   <template v-for="(item, idx) of items">
     <v-list-item
-      v-if="(!item.group || item.group.length < 1) && !isChip"
+      v-if="(!item.group || item.group.length < 1) && !isChip"      
       :title="fhem.replacer(item.title, '') || item.name"
       :prepend-icon="item.icon"
       rounded="pill"

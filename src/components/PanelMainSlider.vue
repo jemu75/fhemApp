@@ -38,10 +38,7 @@
 
         cmd = cmd.replace('%v', newVal.toFixed(decimals))
 
-        for(const device of props.devices) {
-            defParts = device.split(':')
-            if(RegExp(defParts[0]).test(cmd)) cmd = cmd.replace(defParts[0], defParts[1])
-        }
+        for(const device of props.devices) cmd = cmd.replace(' ' + device.split(':')[0] + ' ', ' ' + device.split(':')[1] + ' ')
 
         clearTimeout(timer)
 

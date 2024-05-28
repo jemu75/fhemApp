@@ -51,14 +51,15 @@
     }
 
     async function doCmd(cmd) {
-        let defParts = []
+        let cmdList = []
 
-        for(const device of props.devices) {
-            defParts = device.split(':')
-            if(RegExp(defParts[0]).test(cmd)) cmd = cmd.replace(defParts[0], defParts[1])
-        }
+        cmdList = cmd.split(';')
 
-        return fhem.request('text', cmd)
+        for(const [idx] of Object.entries(cmdList)) {
+            for(const device of props.devices) cmdList[idx] = cmdList[idx].replace(' ' + device.split(':')[0] + ' ', ' ' + device.split(':')[1] + ' ')
+        } 
+
+        return fhem.request('text', cmdList.join(';'))
     }
 
     loadMenu()

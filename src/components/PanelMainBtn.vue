@@ -34,14 +34,13 @@
     }
 
     function doCmd(obj) {
-        let cmdList
+        let cmdList = []
 
         if(obj.cmd) {
             if(obj.type === 'cmd') {
                 cmdList = obj.cmd.split(';')
-                for(const [idx, cmd] of Object.entries(cmdList)) {
-                    cmdList[idx] = cmd
-                    for(const device of props.devices) cmdList[idx] = cmdList[idx].replace(device.split(':')[0], device.split(':')[1])
+                for(const [idx] of Object.entries(cmdList)) {
+                    for(const device of props.devices) cmdList[idx] = cmdList[idx].replace(' ' + device.split(':')[0] + ' ', ' ' + device.split(':')[1] + ' ')
                 } 
 
                 fhem.request('text', cmdList.join(';'))

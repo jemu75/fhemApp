@@ -66,7 +66,7 @@ export const useFhemStore = defineStore('fhem', () => {
             'thermostat'
         ],
         noConfig: false,
-        configLoaded: false,        
+        isLoaded: false,
         isReady: false,
         message: false,
         currentView: null,
@@ -144,7 +144,7 @@ export const useFhemStore = defineStore('fhem', () => {
                 return res.text()
             })
 
-        app.version = await log.split('\n')[0].split(' ')[1].trim()
+        app.version = log.split('\n')[0].split(' ')[1].trim()
     }
 
     //coreFunction to handle internal Threads
@@ -224,8 +224,6 @@ export const useFhemStore = defineStore('fhem', () => {
             }
         }
 
-        app.message = false
-
         log(4, 'URL processed.', route)
 
         return res
@@ -273,13 +271,13 @@ export const useFhemStore = defineStore('fhem', () => {
             })
             .catch((err) => {
                 log(2, 'Connection to FHEM failed.', err, 'request')
-                return 
+                return false
             })
     }
 
     //coreFunction fill settings (session)
     async function getToken() {
-        let res = await request('token')
+        let res = await request('token', null)
 
         if(!res) return false
         stat.csrf = res.token
@@ -407,10 +405,10 @@ export const useFhemStore = defineStore('fhem', () => {
         if(app.config.header.defaultRoute && !app.currentView) app.currentView = app.config.header.defaultRoute
         changeDarkMode(theme.global.name.value)
 
-        //ToDo wofür wird dieses Flag verwendet???
-        app.configLoaded = true
-
-        if(!app.noConfig) log(4, 'Config loaded.', cfg)
+        if(!app.noConfig) {
+            log(4, 'Config loaded.', cfg)
+            app.isLoaded = true
+        }
         
         return true
     }
@@ -537,8 +535,8 @@ export const useFhemStore = defineStore('fhem', () => {
                 log(4, 'Websocket Connection opened.')
             }
             stat.conn.onmessage = (msg) => handleEvent(msg)
-            stat.conn.onerror = () => refreshEventWatcher()
-            stat.conn.onclose = () => refreshEventWatcher()
+            stat.conn.onerror = () => refreshEventWatcher(0)
+            stat.conn.onclose = () => refreshEventWatcher(0)
         } else {
             stat.conn = new XMLHttpRequest()
             stat.conn.open("GET", url, true)
@@ -552,8 +550,8 @@ export const useFhemStore = defineStore('fhem', () => {
                 log(4, 'Longpoll Connection opened.')
             }
 
-            stat.conn.onerror = () => refreshEventWatcher()
-            stat.conn.onloadend = () => refreshEventWatcher()
+            stat.conn.onerror = () => refreshEventWatcher(0)
+            stat.conn.onloadend = () => refreshEventWatcher(0)
 
             stat.conn.onreadystatechange = () => {
                 if(stat.conn.status === 200 && stat.conn.readyState === 3) handleEvent(stat.conn.responseText)
@@ -569,15 +567,19 @@ export const useFhemStore = defineStore('fhem', () => {
     function refreshEventWatcher(delay) {
         let res
 
-        stat.conn = null
-        app.isReady = false
+        if(delay < 3000) app.message = {}
 
         setTimeout(async () => {
-            res = await createSession(true)            
-            if(!res) {
-                app.message = false
-                log(3, 'Connection to FHEM was interrupted. Try to reconnect in 3 seconds.', null, 'reconnect')
-                refreshEventWatcher(3000)
+            res = await createSession(true)
+
+            if(!res) {                
+                if(delay < 3000) {
+                    delay += 500                    
+                } else {
+                    app.message = false
+                    log(3, 'Connection to FHEM was interrupted. Try to reconnect in 3 seconds.', null, 'reconnect')
+                }
+                refreshEventWatcher(delay)
             }
         }, delay)
     }
@@ -652,6 +654,7 @@ export const useFhemStore = defineStore('fhem', () => {
         
         if(app.config.panels.length === 0) log(3, 'No Panels defined.', null, 'noPanels')
 
+        stat.panelMap = []
         app.panelList = []
         
         for(const [idx, panelDef] of Object.entries(panels)) {
@@ -997,8 +1000,8 @@ export const useFhemStore = defineStore('fhem', () => {
         log(4, connect ? 'Create Session...' : 'Refresh Session...')
 
         app.isReady = false
-        stat.panelMap = []
 
+        if(connect) stat.conn = null
         if(res && connect) res = await getToken()
         if(res && connect) res = openEventWatcher()
         if(res) res = await timeSync()
@@ -1012,18 +1015,13 @@ export const useFhemStore = defineStore('fhem', () => {
         if(!res) {
             log(3, 'FHEMApp launching failed.')
         } else {            
+            app.message = false
             app.isReady = true
+            log(1, connect ? 'FHEMApp launched.' : 'Session refreshed.')
 
-            if(connect) {
-                log(1, 'FHEMApp launched.')    
-
-                if(app.noConfig) {
-                    await router.push({ name: 'settings', query: router.currentRoute.value.query })
-                    log(3, 'No Config handling', null, 'noConfig')
-                }
-            } else {
-                app.message = false
-                log(1, 'Session refreshed.')
+            if(connect && app.noConfig) {
+                await router.push({ name: 'settings', query: router.currentRoute.value.query })
+                log(3, 'No Config handling', null, 'noConfig')
             }
         }        
 

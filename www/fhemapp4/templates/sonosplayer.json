@@ -101,7 +101,7 @@
 			"level": {
 				"left1": "btn",
 				"mid": "slider",
-				"right2": "info"
+				"right2": "menu"
 			},
 			"left1": {
 				"btn": [
@@ -111,19 +111,17 @@
 				"click": [
 					"player-GroupMute:1:set player mute 0",
 					"player-GroupMute:0:set player Mute 1"
-				],
-				"size": [
-					"::2"
 				]
 			},
 			"mid": {
 				"slider": [
-					"player-GroupVolume::set player GroupVolume %v:%n(0):on:0:40:1"
-				]
+					"player-GroupVolume::set player GroupVolume %v:%n(0):on:0:60:1"
+				],
+				"size": ["::8"]
 			},
 			"right2": {
-				"size": [
-					"::1"
+				"menu": [
+					"player-FavouritesListAlias::%s:set player StartFavourite %v:regExp"
 				]
 			}
 		},
