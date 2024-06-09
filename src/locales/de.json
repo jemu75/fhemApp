@@ -48,12 +48,14 @@
                 "title1Placeholder": "Startseite od. %t(navHome)",
                 "icon": "Icon",
                 "iconPlaceholder": "mdi-home",
-                "groupAsChips": "Kompakt",
-                "groupAsChipsHint": "Kompakte Darstellung untergeordneter Navigationspunkte",
-                "sort": "sortiert",
-                "sortHint": "Sortiert untergeordneter Navigationspunkte aufsteigend",
-                "divider": "Trennlinie",
-                "dividerHint": "Trennlinie unterhalb des Navigationspunktes"
+                "optionsTitle": "Optionen",
+                "optionsClose": "Schließen",
+                "optionsChipsTitle": "Darstellung",
+                "optionsChips": "Zeigt untergeordnete Navigationspunkte in kompakter Form an",
+                "optionsSortTitle": "Sortierung",
+                "optionsSort": "Sortiert untergeordnete Navigationspunkte aufsteigend",
+                "optionsDividerTitle": "Trennlinie",
+                "optionsDivider": "Zeigt eine Trennlinie unterhalb des Navigationspunktes"
             },
             "props": {
                 "panel": "Allgemein",                

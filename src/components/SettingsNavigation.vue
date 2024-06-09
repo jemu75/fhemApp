@@ -1,211 +1,242 @@
 <script setup>
-  import { reactive, ref } from 'vue'
-  import { useDisplay } from 'vuetify'
-  import { useFhemStore } from '@/stores/fhem'
+    import { ref, computed } from 'vue'
+    import { useFhemStore } from '@/stores/fhem'
+    import { useDisplay } from 'vuetify'
+    import draggable from 'vuedraggable'
 
-  const { mobile } = useDisplay()
+    const fhem = useFhemStore()
+    const { mobile } = useDisplay()
+    const preLang = '_app.settings.navigation.'
 
-  const fhem = useFhemStore()  
+	const newItem = ref({
+		name: '',
+		title: '',
+		icon: '',
+		group: [],
+		groupAsChips: false,
+		sort: false,
+		divider: false
+	})
 
-  const preLang = '_app.settings.navigation.'
+	const items = ref(fhem.app.config.navigation)
 
-  const navSettings = reactive({
-    path: [],
-    route: ['navigation'],
-    items: [],
-    newItem: {
-      name: null,
-      title: null,
-      icon: null,
-      divider: false,
-      groupAsChips: false,
-      sort: false,
-      group: []
-    }
-  })
+	const path = ref([])
 
-  const form = ref()
+	const pathText = computed(() => {
+		let res = [],
+			currentPath = JSON.parse(JSON.stringify(path.value))
 
-  const rules = {
-    required: value => !!value || fhem.replacer('%t(_app.settings.rules.required)')
-  }
+		while (currentPath.length > 0) {
+			currentPath.splice(-1)
+			res.unshift(fhem.getEl(fhem.app.config.navigation, currentPath).name)
+			currentPath.splice(-1)
+		}
 
-  function loadItems(idx) {
-    if(typeof idx !== 'undefined') {
-      navSettings.path.push(idx, 'group')
-      navSettings.route.push(navSettings.items[idx].name)
-    }
+		return res.join(' > ')
+	})
 
-    navSettings.items = fhem.getEl(fhem.app.config.navigation, navSettings.path)
-  }
+	function loadGroup(idx) {
+		if(idx !== -1) {
+			path.value.push(idx, 'group')
+		} else {
+			path.value.splice(-2)
+		}
+				
+		items.value = fhem.getEl(fhem.app.config.navigation, path.value)
+	}
 
-  function addItem() {
-    let n = JSON.parse(JSON.stringify(navSettings.newItem))
-    fhem.getEl(fhem.app.config.navigation, navSettings.path).push(n)
-    loadItems()
-    form.value.reset()
-  }
+	function updateGroup() {
+		fhem.getEl(fhem.app.config.navigation, path.value).splice(0)
+		fhem.getEl(fhem.app.config.navigation, path.value).push(...items.value)
+	}
 
-  function deleteItem(idx) {
-    fhem.getEl(fhem.app.config.navigation, navSettings.path).splice(idx, 1)
-  }
-
-  function getGroupItems(idx) {
-    let group = fhem.getEl(navSettings.items[idx], ['group']) || []
-
-    return group.length
-  }
-
-  function goBack() {
-    navSettings.route.pop()
-    navSettings.path.splice(-2, 2)
-    loadItems()
-  }
-
-  loadItems()
+	function addItem() {
+		items.value.push(newItem.value)
+		newItem.value = {
+			name: '',
+			title: '',
+			icon: '',
+			group: [],
+			groupAsChips: false,
+			sort: false,
+			divider: false
+		}
+}
 </script>
 
-<template>  
-  <v-list>
-    <v-list-item :title="$t(preLang + 'title')">
-      <template v-slot:append>
-        <v-btn
-          color="info"
-          icon="mdi-help-circle"
-          variant="text"
-          @click="fhem.help('navigation')"
-        ></v-btn>
-      </template>
-    </v-list-item>
+<template>
+    <v-list>	
+        <v-list-item :title="$t(preLang + 'title')">
+        	<template v-slot:append>
+            	<v-icon color="info" @click="fhem.help('navigation')">mdi-help-circle</v-icon>
+        	</template>
+		</v-list-item>
 
-    <v-list-item v-if="navSettings.path.length > 0">
-      <v-btn variant="text" icon="mdi-arrow-up-left" @click="goBack()"></v-btn>
-      {{ navSettings.route.join(' > ') }}
-    </v-list-item>
+		<v-list-item v-if="pathText">
+			<v-btn variant="text" density="compact" icon="mdi-arrow-up-left" @click="loadGroup(-1)"></v-btn>
+			{{ pathText }}
+		</v-list-item>
 
-    <v-list-item v-for="(item, idx) of navSettings.items" :key="idx">
-      <v-row no-gutters>
-        <v-col cols="12" lg="2" class="pt-3 pr-3">
-          <v-text-field 
-            density="compact" 
-            variant="outlined" 
-            clearable
-            persistent-placeholder
-            :placeholder="$t(preLang + 'namePlaceholder')"
-            :label="$t(preLang + 'name')"
-            :rules="[rules.required]"
-            v-model="item.name"/>
-        </v-col>
-        <v-col cols="12" lg="3" class="pt-3 pr-3">
-          <v-text-field 
-            density="compact" 
-            variant="outlined" 
-            clearable
-            persistent-placeholder
-            :placeholder="$t(preLang + 'title1Placeholder')"
-            :label="$t(preLang + 'title1')"
-            v-model="item.title"/>
-        </v-col>
-        <v-col cols="12" lg="2" class="pt-3 pr-3">
-          <v-text-field 
-            density="compact" 
-            variant="outlined"
-            clearable 
-            persistent-placeholder
-            :placeholder="$t(preLang + 'iconPlaceholder')"
-            :label="$t(preLang + 'icon')" 
-            :append-inner-icon="item.icon"
-            v-model="item.icon"/>
-        </v-col>
-        <v-col cols="4" lg="" class="pt-1">
-          <v-checkbox               
-          :hint="$t(preLang + 'groupAsChipsHint')"
-            :label="$t(preLang + 'groupAsChips')"
-            v-model="item.groupAsChips"/>
-        </v-col>
-        <v-col cols="4" lg="" class="pt-1">
-          <v-checkbox               
-          :hint="$t(preLang + 'sortHint')"
-            :label="$t(preLang + 'sort')"
-            v-model="item.sort"/>
-        </v-col>
-        <v-col cols="4" lg="" class="pt-1">
-          <v-checkbox
-            :hint="$t(preLang + 'dividerHint')"              
-            :label="$t(preLang + 'divider')"
-            v-model="item.divider"/>
-        </v-col>
-        <v-col class="pt-3 text-right">
-          <v-btn variant="text" icon @click="loadItems(idx)">
-            <v-badge v-if="getGroupItems(idx) > 0" color="success" :content="getGroupItems(idx)">
-              <v-icon icon="mdi-arrow-down-right"></v-icon>
-            </v-badge>
-            <v-icon v-if="getGroupItems(idx) === 0" icon="mdi-arrow-down-right"></v-icon>
-          </v-btn>
-          <v-btn variant="text" icon="mdi-delete" @click="deleteItem(idx)"></v-btn>
-        </v-col>
-      </v-row>
-      <v-divider v-if="mobile"></v-divider>
-    </v-list-item>
-    <v-list-item>
-      <v-form ref="form">
-        <v-row no-gutters>
-          <v-col cols="12" lg="2" class="pt-3 pr-3">
-            <v-text-field 
-              density="compact" 
-              variant="outlined" 
-              clearable
-              persistent-placeholder
-              :placeholder="$t(preLang + 'namePlaceholder')"
-              :label="$t(preLang + 'name')"
-              :rules="[rules.required]"
-              v-model="navSettings.newItem.name"/>
-          </v-col>
-          <v-col cols="12" lg="3" class="pt-3 pr-3">
-            <v-text-field 
-              density="compact" 
-              variant="outlined" 
-              clearable
-              persistent-placeholder
-              :placeholder="$t(preLang + 'title1Placeholder')"
-              :label="$t(preLang + 'title1')"
-              v-model="navSettings.newItem.title"/>
-          </v-col>
-          <v-col cols="12" lg="2" class="pt-3 pr-3">
-            <v-text-field 
-              density="compact" 
-              variant="outlined"
-              clearable
-              persistent-placeholder
-              :placeholder="$t(preLang + 'iconPlaceholder')"
-              :label="$t(preLang + 'icon')" 
-              :append-inner-icon="navSettings.newItem.icon"
-              v-model="navSettings.newItem.icon"/>
-          </v-col>
-          <v-col cols="4" lg="" class="pt-1">
-            <v-checkbox
-              :hint="$t(preLang + 'groupAsChipsHint')"               
-              :label="$t(preLang + 'groupAsChips')"
-              v-model="navSettings.newItem.groupAsChips"/>
-          </v-col>
-          <v-col cols="4" lg="" class="pt-1">
-            <v-checkbox
-              :hint="$t(preLang + 'sortHint')"               
-              :label="$t(preLang + 'sort')"
-              v-model="navSettings.newItem.sort"/>
-          </v-col>
-          <v-col cols="4" lg="" class="pt-1">
-            <v-checkbox               
-              :hint="$t(preLang + 'dividerHint')"  
-              :label="$t(preLang + 'divider')"
-              v-model="navSettings.newItem.divider"/>
-          </v-col>
-          <v-col class="pt-3 text-right">
-            <v-btn variant="text" icon="mdi-cancel" @click="form.reset()"></v-btn>
-            <v-btn variant="text" icon="mdi-plus" :disabled="!navSettings.newItem.name" @click="addItem()"></v-btn>
-          </v-col>
-        </v-row>
-      </v-form>
-    </v-list-item>    
-</v-list>
+		<v-list-item v-if="items.length > 0">
+			<draggable
+				v-model="items"
+				animation="300"
+				handle=".dd_zone"
+				item-key="id"
+				@change="updateGroup()">
+				<template #item={index}>
+					<v-row class="align-center pl-3 mr-1 pt-2">
+						<v-btn variant="text" icon density="compact" :disabled="items.length > 1 ? false : true" class="dd_zone">
+							<v-icon>mdi-drag-vertical</v-icon>
+						</v-btn>
+						<v-col>
+							<v-row>
+								<v-col cols="12" lg="4">
+									<v-text-field
+										v-model="items[index].name"
+										variant="outlined"
+										density="compact"
+										:label="$t(preLang + 'name')"
+										:placeholder="$t(preLang + 'namePlaceholder')"
+										persistent-placeholder
+										hide-details
+										clearable>
+									</v-text-field>
+								</v-col>
+								<v-col cols="12" lg="4">
+									<v-text-field
+										v-model="items[index].title"
+										variant="outlined"
+										density="compact"
+										:label="$t(preLang + 'title1')"
+										:placeholder="$t(preLang + 'title1Placeholder')"
+										persistent-placeholder
+										hide-details
+										clearable>
+									</v-text-field>
+								</v-col>
+								<v-col cols="12" lg="4">
+									<v-text-field
+										v-model="items[index].icon"
+										variant="outlined"
+										density="compact"
+										:label="$t(preLang + 'icon')"
+										:placeholder="$t(preLang + 'iconPlaceholder')"
+										persistent-placeholder
+										:append-inner-icon="items[index].icon"
+										hide-details
+										clearable>
+									</v-text-field>
+								</v-col>
+							</v-row>
+						</v-col>
+
+						<v-col cols="12" lg="3" class="text-right">
+							<v-chip v-if="items[index].groupAsChips" size="small" color="info" class="ma-1">xs</v-chip>
+							<v-chip v-if="items[index].sort" size="small" color="info" class="ma-1">a-z</v-chip>
+							<v-chip v-if="items[index].divider" size="small" color="info" class="ma-1">__</v-chip>
+
+							<v-btn variant="text" density="compact" icon @click="loadGroup(index)" class="mx-3">
+								<v-badge v-if="items[index].group.length > 0" color="success" :content="items[index].group.length">
+									<v-icon>mdi-arrow-down-right</v-icon>
+								</v-badge>
+								<v-icon v-if="items[index].group.length < 1">mdi-arrow-down-right</v-icon>
+							</v-btn>
+
+							<v-dialog max-width="650px">
+								<template v-slot:activator="{ props: activatorProps }">
+									<v-btn
+										v-bind="activatorProps"
+										variant="flat"
+										density="compact"
+										icon="mdi-dots-vertical">
+									</v-btn>
+								</template>
+
+  								<template v-slot:default="{ isActive }">
+									<v-card>
+										<v-sheet color="primary">
+											<v-card-title>{{ $t(preLang + 'optionsTitle') }}</v-card-title>
+										</v-sheet>
+										<v-list lines="two" density="compact">
+											<v-list-item :title="$t(preLang + 'optionsChipsTitle')" :subtitle="$t(preLang + 'optionsChips')">
+												<template v-slot:append>
+													<v-switch v-model="items[index].groupAsChips" color="info" hide-details></v-switch>
+												</template>
+											</v-list-item>
+
+											<v-list-item :title="$t(preLang + 'optionsSortTitle')" :subtitle="$t(preLang + 'optionsSort')">
+												<template v-slot:append>
+													<v-switch v-model="items[index].sort" color="info" hide-details></v-switch>
+												</template>
+											</v-list-item>
+
+											<v-list-item :title="$t(preLang + 'optionsDividerTitle')" :subtitle="$t(preLang + 'optionsDivider')">
+												<template v-slot:append>
+													<v-switch v-model="items[index].divider" color="info" hide-details></v-switch>
+												</template>
+											</v-list-item>
+										</v-list>
+										<v-card-actions>
+											<v-spacer></v-spacer>
+											<v-btn @click="isActive.value = false" :disabled="false">{{ $t(preLang + 'optionsClose') }}</v-btn>
+										</v-card-actions>
+									</v-card>
+								</template>
+							</v-dialog>
+
+							<v-btn variant="text" density="compact" icon="mdi-delete" @click="items.splice(index, 1)" class="ml-3"></v-btn>
+						</v-col>
+						<v-divider v-if="mobile"></v-divider>
+					</v-row>
+				</template>
+			</draggable>
+			<v-divider v-if="!mobile" class="mt-4"></v-divider>
+        </v-list-item>
+		<v-list-item>
+			<v-row class="align-center pl-3 mr-1 pt-2">
+				<div class="pl-7"></div>
+				<v-col cols="12" lg="">
+					<v-text-field
+						v-model="newItem.name"
+						variant="outlined"
+						density="compact"
+						:label="$t(preLang + 'name')"
+						:placeholder="$t(preLang + 'namePlaceholder')"
+						persistent-placeholder
+						hide-details
+						clearable>
+					</v-text-field>
+				</v-col>
+				<v-col cols="12" lg="">
+					<v-text-field
+						v-model="newItem.title"
+						variant="outlined"
+						density="compact"
+						:label="$t(preLang + 'title1')"
+						:placeholder="$t(preLang + 'title1Placeholder')"
+						persistent-placeholder
+						hide-details
+						clearable>
+					</v-text-field>
+				</v-col>
+				<v-col cols="12" lg="">
+					<v-text-field
+						v-model="newItem.icon"
+						variant="outlined"
+						density="compact"
+						:label="$t(preLang + 'icon')"
+						:placeholder="$t(preLang + 'iconPlaceholder')"
+						persistent-placeholder
+						:append-inner-icon="newItem.icon"
+						hide-details
+						clearable>
+					</v-text-field>
+				</v-col>
+				<v-col cols="12" lg="3" class="text-right pr-3">
+					<v-btn variant="text" density="compact" icon="mdi-plus" :disabled="!newItem.name" @click="addItem()"></v-btn>
+				</v-col>
+			</v-row>
+		</v-list-item>
+    </v-list>
 </template>

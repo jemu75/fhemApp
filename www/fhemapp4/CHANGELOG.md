@@ -1,3 +1,9 @@
+# v4.3.0 (09.06.2024)
+## Panel
+- optimization of show/hide mainlevels
+## Settings
+- optimization of navigation settings
+- bugfix for iframes
 # v4.2.0 (28.05.2024)
 ## Panel Colorpicker
 - handling for hue values implemented

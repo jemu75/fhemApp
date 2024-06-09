@@ -1,5 +1,5 @@
 <script setup>
-    import { computed, watch, onMounted, ref } from 'vue'
+    import { computed, ref } from 'vue'
     import router from '@/router'
     import { useFhemStore } from '@/stores/fhem'
     import PanelMain from './PanelMain.vue'
@@ -9,10 +9,6 @@
     })
 
     const fhem = useFhemStore()
-
-    let threadId = fhem.thread()
-
-    onMounted(() => fhem.thread(threadId))
 
     function getBar(pos) {
         let res = fhem.handleDefs(item.panel.status[pos], ['level','color','min','max','reverse'],[0, 'success', 0, 100, false])
@@ -36,63 +32,91 @@
         return fhem.handleDefs(item.panel.status.title, ['title'],[''])        
     })
 
-    const levelOpts = ref(fhem.handleDefs(item.panel.panel.expandable, ['expandable','expanded','maximizable'],[false, false, false]))
-
-    watch(item.panel.main, (newVal) => {
-        let activeLevels = levelsActive(newVal)
-
-        if(levelOpts.value.activeLevels.join('-') !== activeLevels.join('-')) {
-            levelOpts.value.activeLevels = activeLevels
-            levelClick(true)
-        }
+    const lvl = ref({
+        panel: {
+            expandable: false,
+            expanded: false,
+            maximizable: false
+        },
+        expandable: false,
+        expanded: false,
+        maximizable: false,
+        activeLevels: [],
+        icon: '',
+        isClick: false
     })
 
-    function levelsActive(obj) {
-        let res = []
+    const activeLevels = computed(() => {
+        let idx,
+            opts = {},
+            levels = [],
+            res = []
 
-        for(const [idx, lvl] of Object.entries(obj)) {
-            if(fhem.handleDefs(lvl.level.show, ['show'], [true]).show) res.push(Number(idx))
+        opts = fhem.handleDefs(item.panel.panel.expandable, ['expandable','expanded','maximizable'],[false, false, false])
+
+        for(const [idx, level] of Object.entries(item.panel.main)) {
+            if(fhem.handleDefs(level.level.show, ['show'], [true]).show) levels.push(Number(idx))
         }
 
-        return res
-    }
+        if(opts.expandable !== lvl.value.panel.expandable) {
+            lvl.value.panel.expandable = opts.expandable
+            lvl.value.expandable = opts.expandable
+        }
 
-    function levelClick(init) {
-        let opts = levelOpts.value,
-            idx
+        if(opts.expanded !== lvl.value.panel.expanded) {
+            lvl.value.panel.expanded = opts.expanded
+            lvl.value.expanded = opts.expanded
+        }
 
-        if(init) {
-            opts.activeLevels = levelsActive(item.panel.main)
-            if(/=maximized$/.test(fhem.app.currentView)) opts.expanded = true
-        } else {
-            if(opts.expandable) opts.expanded = !opts.expanded
-            if(opts.maximizable) {
-                if(opts.expanded) {
+        if(opts.maximizable !== lvl.value.panel.maximizable) {
+            lvl.value.panel.maximizable = opts.maximizable
+            lvl.value.maximizable = opts.maximizable
+        }
+
+        if(/=maximized$/.test(fhem.app.currentView)) lvl.value.expanded = true
+
+        if(!lvl.value.expanded && levels.indexOf(lvl.value.activeLevels[0]) == -1)  lvl.value.activeLevels = [levels[0]]
+
+        if(lvl.value.isClick) {
+            if(lvl.value.expandable) {
+                lvl.value.expanded = !lvl.value.expanded
+            } else {
+                idx = levels.indexOf(lvl.value.activeLevels[0])
+                lvl.value.activeLevels = [levels[idx + 1] >= 0 ? levels[idx + 1] : levels[0]]
+            }
+
+            if(lvl.value.maximizable) {
+                if(lvl.value.expanded) {
                     router.push({ name: 'devices', params: { view: 'panel=' + item.panel.name + '=maximized' }, query: router.currentRoute.value.query })
                 } else {
                     fhem.app.currentView = fhem.app.currentView.replace(/=maximized$/, '')
                     router.back()
                 }   
             }
+
+            lvl.value.isClick = false    
         }
 
-        if(opts.expanded) {
-            opts.levels = opts.activeLevels
+        if(lvl.value.expanded) {
+            lvl.value.activeLevels = levels
         } else {
-            if(opts.expandable || init) {
-                opts.levels = [opts.activeLevels[0]]
+            if(lvl.value.expandable || lvl.value.activeLevels.length === 0) lvl.value.activeLevels = [levels[0]]
+        }
+
+        if(!lvl.value.expandable && !lvl.value.expanded) {
+            lvl.value.icon = levels.length > 1 ? 'mdi-swap-vertical' : ''
+        } else {
+            if(!lvl.value.maximizable && levels.length < 2) {
+                lvl.icon = ''
             } else {
-                idx = opts.activeLevels.indexOf(opts.levels[0])
-                opts.levels = [opts.activeLevels[idx + 1] >= 0 ? opts.activeLevels[idx + 1] : opts.activeLevels[0]]
+                lvl.value.icon = lvl.value.expandable ? lvl.value.expanded ? 'mdi-arrow-collapse' : 'mdi-arrow-expand' : ''
             }
         }
 
-        if(opts.activeLevels.length > 1 || opts.maximizable) {
-            opts.icon = !opts.expandable ? !opts.expanded ? 'mdi-swap-vertical' : '' : opts.expanded ? 'mdi-arrow-collapse' : 'mdi-arrow-expand'
-        } else {
-            opts.icon = ''
-        }
-    }
+        res = lvl.value.activeLevels
+
+        return res
+    })
 
     function getTemplate(val) {
         let idx = fhem.app.config.panels.map((e) => e.name).indexOf(val),
@@ -141,8 +165,6 @@
     const infoMid2 = computed(() => getInfo('mid2'))
     const infoRight1 = computed(() => getInfo('right1'))
     const infoRight2 = computed(() => getInfo('right2'))
-
-    levelClick(true)
 </script>
 
 <template>
@@ -202,13 +224,13 @@
                                 </v-list>
                             </v-menu>
                         </div>
-                        <v-btn v-if="levelOpts.icon" :icon="levelOpts.icon" size="small" variant="plain" density="compact" @click="levelClick()"></v-btn>
+                        <v-btn v-if="lvl.icon" :icon="lvl.icon" size="small" variant="plain" density="compact" @click="lvl.isClick = true"></v-btn>
                     </template>
                 </v-toolbar>        
             </v-img>
         </v-sheet>
 
-        <PanelMain :main="panel.main" :levels="levelOpts.levels" :iconmap="panel.panel.iconmap" :devices="panel.panel.devices"></PanelMain>
+        <PanelMain :main="panel.main" :levels="activeLevels" :iconmap="panel.panel.iconmap" :devices="panel.panel.devices"></PanelMain>
 
         <v-card-text v-if="item.panel.internals">
             {{ item.panel.internals }}
