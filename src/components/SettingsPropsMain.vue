@@ -27,7 +27,7 @@
         { title: 'info', value: 'info' },
         { title: 'slider', value: 'slider' },
         { title: 'image', value: 'image' },
-        { title: 'iframe', value: 'frame' },
+        { title: 'iframe', value: 'iframe' },
         { title: 'menu', value: 'menu' },
         { title: 'chart', value: 'chart' },
         { title: 'colorpicker', value: 'colorpicker' }

@@ -1,7 +1,6 @@
 <script setup>
-    import { ref} from 'vue'
+    import { ref } from 'vue'
     import { useFhemStore } from '@/stores/fhem'
-import { VueElement } from 'vue';
     import { useDisplay } from 'vuetify'
     
     const fhem = useFhemStore()
