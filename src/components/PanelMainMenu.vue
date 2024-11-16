@@ -44,7 +44,7 @@
 
                     if(/%v/.test(def.cmd) && def.convert === 'regExp') re = RegExp(val.replace(/[^a-z,^A-Z]/g, '.'))
 
-                    menuItems.value.push({ name: val, cmd: def.cmd.replace(/%v/g, re) }) 
+                    menuItems.value.push({ name: val.replace('_', ' '), cmd: def.cmd.replace(/%v/g, re) }) 
                 }
             }
         }

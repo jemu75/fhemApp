@@ -13,24 +13,23 @@
 
     const extContent = ref()
 
-    const iframe = computed(() => {
-        return fhem.handleDefs(props.el.iframe, ['source'],[''])
-    })
-
-    const contentSize = computed(() => {
-        return {
+    const content = computed(() => {
+        let res = {
+            source: fhem.handleDefs(props.el.iframe, ['source'],['']).source,
             width: extContent.value && extContent.value.scrollWidth ? extContent.value.scrollWidth : 0,
             height: /=maximized$/.test(fhem.app.currentView) ? (window.innerHeight - 170) : props.height
         }
+
+        return res
     })
 </script>
 
 <template>
     <div ref="extContent">
         <iframe 
-            :src="iframe.source"
-            :width="contentSize.width"
-            :height="contentSize.height"
+            :src="content.source"
+            :width="content.width"
+            :height="content.height"
             loading="lazy"
             style="border:none;">
         </iframe>

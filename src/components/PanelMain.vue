@@ -2,6 +2,7 @@
     import { useFhemStore } from '@/stores/fhem'
     import PanelMainInfo from './PanelMainInfo.vue'
     import PanelMainBtn from './PanelMainBtn.vue'
+    import PanelMainInput from './PanelMainInput.vue'
     import PanelMainSlider from './PanelMainSlider.vue'
     import PanelMainImage from './PanelMainImage.vue'
     import PanelMainIframe from './PanelMainIframe.vue'
@@ -41,6 +42,7 @@
     function getComponent(type) {
         if(type === 'info') return PanelMainInfo
         if(type === 'btn') return PanelMainBtn
+        if(type === 'input') return PanelMainInput
         if(type === 'slider') return PanelMainSlider
         if(type === 'image') return PanelMainImage
         if(type === 'iframe') return PanelMainIframe

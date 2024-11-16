@@ -24,6 +24,7 @@
     const subSectionTypes = [
         { title: 'none', value: null },
         { title: 'button', value: 'btn' },
+        { title: 'input', value: 'input' },
         { title: 'info', value: 'info' },
         { title: 'slider', value: 'slider' },
         { title: 'image', value: 'image' },
@@ -35,7 +36,7 @@
 
     const listItemDefs = {
         level: [
-            { type: 'defs', required: false, prop: 'show', def: 'reading:value:show', help: 'main-element-show', assist: 'props' },
+            { type: 'defs', required: false, prop: 'show', def: 'reading:value:show:expanded:collapsed', help: 'main-element-show', assist: 'props' },
             { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'main-element-divider', assist: 'props' },
             { type: 'defs', required: false, prop: 'height', def: 'reading:value:height', help: 'main-element-height', assist: 'props' },
             { type: 'types', required: false, prop: 'left1', help: 'main-element-typ' },
@@ -53,7 +54,12 @@
             { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider', assist: 'props' },
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size', assist: 'props' }
         ],
-        slider: [
+        input: [
+            { type: 'defs', required: false, prop: 'textfield', def: 'reading:value:cmd:current:label:placeholder:type:icon:color', help: 'level-element-input-textfield', assist: 'props' },
+            { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider', assist: 'props' },
+            { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size', assist: 'props' }
+        ],
+         slider: [
             { type: 'defs', required: false, prop: 'slider', def: 'reading:value:cmd:current:color:min:max:steps:reverse:size:vertical', help: 'level-element-slider-slider', assist: 'props' },
             { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider', assist: 'props' },
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size', assist: 'props' }

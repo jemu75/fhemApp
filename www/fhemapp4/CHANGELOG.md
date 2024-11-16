@@ -1,3 +1,13 @@
+# v4.4.0 (08.09.2024)
+## Core
+- add replacer %r for replacing values
+- new parameter diff for replacer %d to show timedifferences
+## Panel
+- add options `expanded` and `collapsed` for parameter `show` in mainlevels 
+## Panel Menu
+- replace underlines with spaces in case of getting values from lightscene
+## Panel Textfield
+- new main Element for input values and send to FHEM
 # v4.3.0 (09.06.2024)
 ## Panel
 - optimization of show/hide mainlevels
@@ -122,7 +132,8 @@
 # v4.0.30-beta (20.03.2024)
 ## Core
 - bugfix for euro-sign inside from definitions
-## Component Chart
+## Component Chart## Core
+- replacer %n option noLocaleNumber deprecated -> removed!
 - Optimization for displaying formatted values
 ## Settings
 - Wizard for devices definitions in panels 

@@ -31,8 +31,7 @@
     function doCmd(newVal) {
         let cmd = slider.value.cmd,
             hasDecimalSteps = /\./.exec(slider.value.steps),
-            decimals = 0,
-            defParts = []
+            decimals = 0
 
         if(hasDecimalSteps) decimals = slider.value.steps.slice(hasDecimalSteps.index).length - 1
 
