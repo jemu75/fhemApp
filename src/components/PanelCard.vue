@@ -48,14 +48,23 @@
 
     const activeLevels = computed(() => {
         let idx,
+            show,
             opts = {},
             levels = [],
+            expanded = [],
+            collapsed = [],
             res = []
 
         opts = fhem.handleDefs(item.panel.panel.expandable, ['expandable','expanded','maximizable'],[false, false, false])
 
         for(const [idx, level] of Object.entries(item.panel.main)) {
-            if(fhem.handleDefs(level.level.show, ['show'], [true]).show) levels.push(Number(idx))
+            show = fhem.handleDefs(level.level.show, ['show','expanded','collapsed'], [true, true, idx === '0' ? true : false])
+
+            if(show.show) {
+                levels.push(Number(idx))
+                if(show.expanded) expanded.push(Number(idx))
+                if(show.collapsed) collapsed.push(Number(idx))
+            }
         }
 
         if(opts.expandable !== lvl.value.panel.expandable) {
@@ -75,7 +84,7 @@
 
         if(/=maximized$/.test(fhem.app.currentView)) lvl.value.expanded = true
 
-        if(!lvl.value.expanded && levels.indexOf(lvl.value.activeLevels[0]) == -1)  lvl.value.activeLevels = [levels[0]]
+        if(!lvl.value.expanded && levels.indexOf(lvl.value.activeLevels[0]) == -1) lvl.value.activeLevels = [levels[0]]
 
         if(lvl.value.isClick) {
             if(lvl.value.expandable) {
@@ -98,9 +107,9 @@
         }
 
         if(lvl.value.expanded) {
-            lvl.value.activeLevels = levels
+            lvl.value.activeLevels = expanded
         } else {
-            if(lvl.value.expandable || lvl.value.activeLevels.length === 0) lvl.value.activeLevels = [levels[0]]
+            if(lvl.value.expandable || lvl.value.activeLevels.length === 0) lvl.value.activeLevels = collapsed
         }
 
         if(!lvl.value.expandable && !lvl.value.expanded) {

@@ -621,6 +621,15 @@ export const useFhemStore = defineStore('fhem', () => {
                             } else {
                                 stat.panelMap[idx].items.push([...path, key])
                             }
+
+                            if(/%d\(.*{.*"diff".*/.test(val)) {
+                                setInterval(() => {
+                                    let val = getEl(app.panelList, path)
+                                    val[0] = val[0] + ' '
+                                    val[0] = val[0].substr(0, val[0].length - 1)
+                                }, 1000)
+                            }
+                            
                         }
                     }
                 }
@@ -787,7 +796,45 @@ export const useFhemStore = defineStore('fhem', () => {
         return icon
     }
 
-    //coreFunction Replace Values %s %n() %d() %t() &#058;
+    //coreFunction get Date/Time Diff from ISO-Date
+    function getTimeDiff(timestamp, options) {
+        let parts
+        let res = []
+        let diffMs = new Date(new Date().getTime() + stat.timeOffset) - new Date(timestamp)
+        let diffDays = options.days ? Math.floor(diffMs / (1000 * 60 * 60 * 24)) : 0
+        let diffHours = options.hours ? Math.floor(diffMs / (1000 * 60 * 60)) - (diffDays * 24) : 0
+        let diffMinutes = options.minutes ? Math.floor(diffMs / (1000 * 60)) - (diffDays * 24 * 60) - (diffHours * 60) : 0
+        let diffSeconds = options.seconds ? Math.floor(diffMs / 1000) - (diffDays * 24 * 60 * 60) - (diffHours * 60 * 60) - (diffMinutes * 60): 0 
+        
+        if(/%t\(.*\)/.test(options.daysSuffix)) {
+            parts = /%t\(.*\)/.exec(options.daysSuffix)
+            options.daysSuffix.replace(parts[0], i18n.t(parts[0].slice(3, -1)))
+        }
+
+        if(/%t\(.*\)/.test(options.hoursSuffix)) {
+            parts = /%t\(.*\)/.exec(options.hoursSuffix)
+            options.hoursSuffix.replace(parts[0], i18n.t(parts[0].slice(3, -1)))
+        }
+
+        if(/%t\(.*\)/.test(options.minutesSuffix)) {
+            parts = /%t\(.*\)/.exec(options.minutesSuffix)
+            options.minutesSuffix.replace(parts[0], i18n.t(parts[0].slice(3, -1)))
+        }
+
+        if(/%t\(.*\)/.test(options.secondsSuffix)) {
+            parts = /%t\(.*\)/.exec(options.secondsSuffix)
+            options.secondsSuffix.replace(parts[0], i18n.t(parts[0].slice(3, -1)))
+        }
+
+        if(options.days) res.push(diffDays, options.daysSuffix || ' Tag(e) ')
+        if(options.hours) res.push(diffHours, options.hoursSuffix || ' Stunde(n) ')
+        if(options.minutes) res.push(options.hoursSuffix === ':' && diffMinutes < 10 ? 0 : '', diffMinutes, options.minutesSuffix || ' Minute(n) ')
+        if(options.seconds) res.push(options.minutesSuffix === ':' && diffSeconds < 10 ? 0 : '', diffSeconds, options.secondsSuffix || ' Sekunde(n) ')
+
+        return res.join('').trim()
+    }
+
+    //coreFunction Replace Values %s %n() %d() %t() %r() &#058;
     function replacer(prop, val, noLocalConv) {
         let res = prop
 
@@ -813,7 +860,7 @@ export const useFhemStore = defineStore('fhem', () => {
             res = def.input.replace(def[0], noLocalConv ? num.toFixed(digits) : i18n.n(num, { minimumFractionDigits: digits, maximumFractionDigits: digits }))
         }
 
-        if(/%d\(.*\)/.test(res)) {
+        if(/%d\(.*\)/.test(res) && val) {
             let def = /%d\(.*\)/.exec(res)
             let opts = def[0].slice(3, -1)
             let options = { dateStyle: 'short', timeStyle: 'medium' }
@@ -828,15 +875,25 @@ export const useFhemStore = defineStore('fhem', () => {
             if(!/(T|Z)/.test(date)) date += 'T00:00:00'
 
             if(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)((-(\d{2}):(\d{2})|Z)?)$/.test(date)) {
-                res = def.input.replace(def[0], i18n.d(date, options)).replace(', ',' ')
+                res = options.diff ? getTimeDiff(date, options.diff) : def.input.replace(def[0], i18n.d(date, options)).replace(', ',' ')
             } else {
-                res = def.input.replace(def[0], date + ' -> is no ISO-Date/Time!')
+                res = def.input.replace(def[0], date + ' -> no ISO-Date')
             }
         }
 
         if(/%t\(.*\)/.test(res)) {
             let def = /%t\(.*\)/.exec(res)
             res = def.input.replace(def[0], i18n.t(def[0].slice(3, -1)))
+        }
+
+        if(/%r\(.*\,.*\,.*\)/.test(res)) {
+            let def = /%r\(.*\)/.exec(res)
+            let defParts = def[0].slice(3, -1).split(',')
+            let r = defParts[defParts.length - 1]
+            let s = defParts[defParts.length - 2]
+            defParts.splice(-2, 2)
+
+            res = defParts.join(',').replace(new RegExp(s, 'g'), r)
         }
         
         return res

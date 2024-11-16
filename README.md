@@ -7,6 +7,8 @@
 
 ![](./docs/media/example_desktop_3.png)*Beispiel für Grafiken in der Desktopansicht*
 
+![](./docs/media/example_desktop_4.png)*Beispiel für dunkles Farbschema in der Desktopansicht*
+
 ![](./docs/media/example_mobile_1.png)*Beispiele für mobile Ansicht*
 
 ![](./docs/media/example_mobile_2.png)*Beispiele für mobile Ansicht*
@@ -15,8 +17,13 @@
 
 ![](./docs/media/example_settings_2.png)*Beispiel für Konfiguration von Templates*
 
+![](./docs/media/example_settings_2a.png)*Beispiel für Konfiguration von Templates mit Assistent*
+
 ![](./docs/media/example_settings_3.png)*Beispiel für Konfiguration von Sprachvariablen*
 
+![](./docs/media/example_settings_4.png)*Beispiel für Konfiguration von allgemeinen Einstellungen*
+
+![](./docs/media/example_settings_5.png)*Beispiel für Konfiguration von Navigationselementen*
 
 # Systemanforderungen
 Für den Einsatz von **FHEMApp** wird FHEM(tm) benötigt. Weitere Informationen zu FHEM findest du unter https://fhem.de/
@@ -195,10 +202,12 @@ Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zu
 |%d(time)|als Zeitwert im gewählten Sprachschema zurück|
 |%d(date)|als Datum im gewählten Sprachschema zurück|
 |%d({ "weekday"\\: "long" })|als Wochentag im gewählten Sprachschema zurück (siehe auch [Datumsformatierung](https://www.w3schools.com/jsref/jsref_tolocalestring.asp))|
+|%d({ "diff"\\: {...} })|als Differenz zur FHEM Serverzeit zurück|
 
 |Ersetzung|Beschreibung|
 |---|---|
-|%t(on)|gibt die Übersetzung für die Variable `on` an. (siehe auch [Sprachen](#sprachen))|
+|%t(`val`)|gibt die Übersetzung für `val` an. (siehe auch [Sprachen](#sprachen))|
+|%r(`val`,`search`,`replace`)|sucht in `val` nach `search` und ersetzt alle Vorkommen durch `replace`|
 |%v|liefert den aktuellen Wert von Slidern oder Menüeinträgen
 |\\:|wird zur Ausgabe von `:` innerhalb von Element-Definitionen verwendet|
 
@@ -211,7 +220,9 @@ Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zu
 |`state-ts::%d(time)`|2023-12-17 17:53:32|17:53:32|abhängig vom Sprachschema|
 |`state-ts::%d(date)`|2023-12-17 17:53:32|17.12.2023|abhängig vom Sprachschema|
 |`state-ts::%d({ "weekday"\: "long" })`|2023-12-17 17:53:32|Sonntag|abhängig vom Sprachschema|
-|`state::%t(on)`|on|an|wenn unter [Sprachen](#sprachen) für die Variable `on` im deutschen Sprachschema `an` hinterlegt wurde|
+|`state-ts::%d({ "diff"\: { "days"\: true, "hours"\: true, "minutes"\: true, "seconds"\: true, "daysSuffix"\: " Tag(e) ", "hoursSuffix"\: "\:", "minutesSuffix"\: "\:", "secondsSuffix"\: " " } } })`||10 Tag(e) 8:07:34|auf korrekte JSON Notation achten und zusätzlich Doppelpunkte escapen|
+|`state::%t(%s)`|on|an|wenn unter [Sprachen](#sprachen) für die Variable `on` im deutschen Sprachschema `an` hinterlegt wurde|
+|`state::%r(%s,_, )`|alle_offen|alle offen|ersetzt alle Unterstriche durch Leerzeichen|
 |`temp::Temperatur\: %n(1)°C`|18.7|Temperatur: 18,7°C|
 ## Panel allgemein
 In den allgemeinen Einstellungen für Panels wird festgelegt, ob eine **Vorlage** zur Darstellung des Panels verwendet werden soll und mit welchen FHEM **Devices** das Panel verknüpft ist. Weiterhin wird festgelegt, unter welchen Navigationspunkten das Panel zur Anzeige gebracht werden soll. Zusätzlich können verschiedene Einstellung zur Darstellung des Panels erfolgen.
@@ -336,13 +347,15 @@ Der Bereich Main erlaubt zudem die Definition mehrerer Ebenen. Diese können ent
 
 Jede Ebene erfordert Grundeinstellungen. Über diese kann festgelegt werden, welche Spalten angezeigt werden sollen. Zudem können weitere Anzeigeeinstellungen für die jeweilige Ebene definiert werden.
 ### Main Element show
-Ebenen können ausgeblendet werden.
+Ebenen können ausgeblendet werden. Optional kann die Sichtbarkeit der Ebene gesteuert werden, wenn für das Panel der Parameter `expandable` gesetzt ist. 
 
 |Parameter|Default|Beschreibung|
 |---|---|---|
 |reading||siehe Parameter [reading](#konfiguration-der-elemente)|
 |value||siehe Parameter [value](#konfiguration-der-elemente)|
 |show|true|blendet Ebenen ein oder aus [string \| number]|
+|expanded|true|blendet Ebenen ein oder aus, wenn der Parameter `expandable` für das Panel gesetzt und das Panel ausgeklappt ist [string \| number]|
+|collapsed|true(1.Ebene) false|blendet Ebenen ein oder aus, wenn der Parameter `expandable` für das Panel gesetzt und das Panel eingeklappt ist [string \| number]|
 ### Main Element divider
 Zeigt eine horizontale Trennlinie am unteren Ende der Ebene.
 
@@ -370,7 +383,7 @@ Es stehen folgende Typen zur Verfügung
 |info|Es können bis zu 3 Textelemente und ein Icon zur Anzeige von Statuswerten konfiguriert werden|
 |slider|Es kann ein Slider zu Steuerung von Aktoren konfiguriert werden|
 |image|Es kann ein Bild über eine URL angezeigt werden|
-|iframe|Es kann ein HTML <iframe> über eine URL eingebettet werden|
+|iframe|Es kann ein HTML-iframe über eine URL eingebettet werden|
 |menu|Es kann ein DropDown-Menü zur Steuerung verschiedener Aktoren bzw. Aktorwerte konfiguriert werden|
 |chart|Es kann ein Chart angezeigt werden|
 |colorpicker|Es kann ein Slider zur Steuerung von RGB Lights konfiguriert werden|
@@ -531,7 +544,7 @@ Parameter|Default|Beschreibung|
 |---|---|---|
 |reading||siehe Parameter [reading](#konfiguration-der-elemente)|
 |value||siehe Parameter [value](#konfiguration-der-elemente)|
-|icon|| Icon das agezeigt wird. (siehe auch [mdi Icons](https://pictogrammers.com/library/mdi/) und [Icon Mapping](#element-iconmap)) [string]|
+|icon||Icon das agezeigt wird. (siehe auch [mdi Icons](https://pictogrammers.com/library/mdi/) und [Icon Mapping](#element-iconmap)) [string]|
 |color||legt die Farbe für das Icon fest. (siehe auch [Farben](#farben)) [string]|
 |size|x-large| Größe des Icons (x-small, small, medium, large, x-large) [string]|
 ### Level Element Info status
@@ -608,8 +621,25 @@ Parameter|Default|Beschreibung|
 |cmd||FHEM Kommando. Die Ersetzung **%v** repräsentiert den aktuellen Wert des Colorpickers. (siehe auch [Ersetzungen](#ersetzungen)) [string]|
 |current||aktueller Wert des Colorpickers [string]|
 |type|hex|Typ des RGB-Wertes *hex* oder *hue* [string]|
+### Level Element Input textfield
+Zeigt ein Eingabegfeld an. Die eingegebenen Werte können an FHEM gesendet werden.
+
+**ACHTUNG** Das Element Input ist neu in Version 4.4.0 und befindet sich aktuell noch in der Beta-Phase!
+
+Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|cmd||FHEM Kommando. Die Ersetzung **%v** repräsentiert den aktuellen Wert des Colorpickers. (siehe auch [Ersetzungen](#ersetzungen)) [string]|
+|current||aktueller Wert des Eingabefeldes [string]|
+|label||Name des Eingabegeldes [string]|
+|placeholder||Beispiel für mögliche Eingaben. Der Text wird im Eingabefeld angezeigt solange dieses leer ist [string]|
+|type|text|Typ des Eingabefeldes (siehe auch [HTML Doku](https://www.w3schools.com/html/html_form_input_types.asp))|
+|icon|mdi-send|Icon für den Button zum Senden des FHEM Kommando. (siehe auch [mdi Icons](https://pictogrammers.com/library/mdi/) und [Icon Mapping](#element-iconmap)) [string]|
+|color|success|Farbe in dem der Button angezeigt wird. (siehe auch [Farben](#farben)) [string]|
+
 ## Bereich Info
-Der Infobereich befindet sich im unteren Teil. Er dient dazu, weitere Werte des Sonsors oder Aktors in Form von Icons oder Text darzustellen. Es können bis zu 6 Spalten für die Anzeige von Icons bzw. Texten verwendet werden.
+Der Infobereich befindet sich im unteren Teil. Er dient dazu, weitere Werte des Sensors oder Aktors in Form von Icons oder Text darzustellen. Es können bis zu 6 Spalten für die Anzeige von Icons bzw. Texten verwendet werden.
 ### Element info
 Es wird ein Text und/oder ein Icon in einem der 6 Spalten (left1, left2, mid1, mid2, right1, right2) angezeigt. Es sollten keine zu langen Texte ausgegeben werden, da der Platz auf die Gesamtbreite des Panels begrenzt ist. Wenn Texte zu lang für die jeweilige Spalte sind, so werden diese abgeschnitten.
 
