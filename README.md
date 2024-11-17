@@ -220,7 +220,7 @@ Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zu
 |`state-ts::%d(time)`|2023-12-17 17:53:32|17:53:32|abhängig vom Sprachschema|
 |`state-ts::%d(date)`|2023-12-17 17:53:32|17.12.2023|abhängig vom Sprachschema|
 |`state-ts::%d({ "weekday"\: "long" })`|2023-12-17 17:53:32|Sonntag|abhängig vom Sprachschema|
-|`state-ts::%d({ "diff"\: { "days"\: true, "hours"\: true, "minutes"\: true, "seconds"\: true, "daysSuffix"\: " Tag(e) ", "hoursSuffix"\: "\:", "minutesSuffix"\: "\:", "secondsSuffix"\: " " } } })`||10 Tag(e) 8:07:34|auf korrekte JSON Notation achten und zusätzlich Doppelpunkte escapen|
+|`state-ts::%d({ "diff"\: { "days"\: true, "hours"\: true, "minutes"\: true, "seconds"\: true, "daysSuffix"\: " Tag(e) ", "hoursSuffix"\: "\:", "minutesSuffix"\: "\:", "secondsSuffix"\: " " } })`||10 Tag(e) 8:07:34|auf korrekte JSON Notation achten und zusätzlich Doppelpunkte escapen|
 |`state::%t(%s)`|on|an|wenn unter [Sprachen](#sprachen) für die Variable `on` im deutschen Sprachschema `an` hinterlegt wurde|
 |`state::%r(%s,_, )`|alle_offen|alle offen|ersetzt alle Unterstriche durch Leerzeichen|
 |`temp::Temperatur\: %n(1)°C`|18.7|Temperatur: 18,7°C|
