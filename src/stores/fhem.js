@@ -826,7 +826,7 @@ export const useFhemStore = defineStore('fhem', () => {
             options.secondsSuffix.replace(parts[0], i18n.t(parts[0].slice(3, -1)))
         }
 
-        if(options.days) res.push(diffDays, options.daysSuffix || ' Tag(e) ')
+        if(options.days && diffDays > 0) res.push(diffDays, options.daysSuffix || ' Tag(e) ')
         if(options.hours) res.push(diffHours, options.hoursSuffix || ' Stunde(n) ')
         if(options.minutes) res.push(options.hoursSuffix === ':' && diffMinutes < 10 ? 0 : '', diffMinutes, options.minutesSuffix || ' Minute(n) ')
         if(options.seconds) res.push(options.minutesSuffix === ':' && diffSeconds < 10 ? 0 : '', diffSeconds, options.secondsSuffix || ' Sekunde(n) ')
@@ -875,7 +875,7 @@ export const useFhemStore = defineStore('fhem', () => {
             if(!/(T|Z)/.test(date)) date += 'T00:00:00'
 
             if(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)((-(\d{2}):(\d{2})|Z)?)$/.test(date)) {
-                res = options.diff ? getTimeDiff(date, options.diff) : def.input.replace(def[0], i18n.d(date, options)).replace(', ',' ')
+                res = def.input.replace(def[0], options.diff ? getTimeDiff(date, options.diff) : i18n.d(date, options).replace(', ',' '))
             } else {
                 res = def.input.replace(def[0], date + ' -> no ISO-Date')
             }

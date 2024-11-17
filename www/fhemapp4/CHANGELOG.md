@@ -1,4 +1,7 @@
-# v4.4.0 (08.09.2024)
+# v4.4.1 (17.11.2024)
+## Core
+- bugfix for replacer %d
+# v4.4.0 (16.11.2024)
 ## Core
 - add replacer %r for replacing values
 - new parameter diff for replacer %d to show timedifferences
