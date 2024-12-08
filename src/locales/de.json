@@ -55,7 +55,9 @@
                 "optionsSortTitle": "Sortierung",
                 "optionsSort": "Sortiert untergeordnete Navigationspunkte aufsteigend",
                 "optionsDividerTitle": "Trennlinie",
-                "optionsDivider": "Zeigt eine Trennlinie unterhalb des Navigationspunktes"
+                "optionsDivider": "Zeigt eine Trennlinie unterhalb des Navigationspunktes",
+                "optionsRowsTitle": "Spalten",
+                "optionsRows": "Legt die Anzahl der Spalten für Panels abhängig vom Display fest"
             },
             "props": {
                 "panel": "Allgemein",                

@@ -2,11 +2,12 @@ import { reactive } from 'vue'
 import { defineStore, storeToRefs } from 'pinia'
 import router from '@/router'
 import { useI18n } from 'vue-i18n'
-import { useTheme } from 'vuetify'
+import { useTheme, useDisplay } from 'vuetify'
 
 export const useFhemStore = defineStore('fhem', () => {
     const i18n = useI18n()
     const theme = useTheme()
+    const display = useDisplay()
 
     const app = reactive({
         settings: {
@@ -43,7 +44,7 @@ export const useFhemStore = defineStore('fhem', () => {
             showSettings: false,
             commands: [],
             darkModeOverFhem: null,
-            defaultRoute: null
+            defaultRoute: null            
         },
         fhemDevice: null,
         panelView: [],
@@ -68,6 +69,8 @@ export const useFhemStore = defineStore('fhem', () => {
         noConfig: false,
         isLoaded: false,
         isReady: false,
+        display: display.name,
+        viewCols: { xxl: 4, xl: 3, lg: 3, md: 2, sm: 2, xs: 1 },
         message: false,
         currentView: null,
         settingsTab: null,
@@ -805,7 +808,12 @@ export const useFhemStore = defineStore('fhem', () => {
         let diffHours = options.hours ? Math.floor(diffMs / (1000 * 60 * 60)) - (diffDays * 24) : 0
         let diffMinutes = options.minutes ? Math.floor(diffMs / (1000 * 60)) - (diffDays * 24 * 60) - (diffHours * 60) : 0
         let diffSeconds = options.seconds ? Math.floor(diffMs / 1000) - (diffDays * 24 * 60 * 60) - (diffHours * 60 * 60) - (diffMinutes * 60): 0 
-        
+
+        let showDay = /nozero/.test(options.days) ? false : true
+        let showHour = /nozero/.test(options.hours) ? false : true
+        let showMinute = /nozero/.test(options.minutes) ? false : true
+        let showSecond = /nozero/.test(options.seconds) ? false : true
+
         if(/%t\(.*\)/.test(options.daysSuffix)) {
             parts = /%t\(.*\)/.exec(options.daysSuffix)
             options.daysSuffix.replace(parts[0], i18n.t(parts[0].slice(3, -1)))
@@ -826,10 +834,14 @@ export const useFhemStore = defineStore('fhem', () => {
             options.secondsSuffix.replace(parts[0], i18n.t(parts[0].slice(3, -1)))
         }
 
-        if(options.days && diffDays > 0) res.push(diffDays, options.daysSuffix || ' Tag(e) ')
-        if(options.hours) res.push(diffHours, options.hoursSuffix || ' Stunde(n) ')
-        if(options.minutes) res.push(options.hoursSuffix === ':' && diffMinutes < 10 ? 0 : '', diffMinutes, options.minutesSuffix || ' Minute(n) ')
-        if(options.seconds) res.push(options.minutesSuffix === ':' && diffSeconds < 10 ? 0 : '', diffSeconds, options.secondsSuffix || ' Sekunde(n) ')
+        if(!/numeric/.test(options.hours)) diffHours = (diffHours < 10 ? '0' : '') + diffHours
+        if(!/numeric/.test(options.minutes)) diffMinutes = (options.hoursSuffix === ':' && diffMinutes < 10 ? '0' : '') + diffMinutes
+        if(!/numeric/.test(options.seconds)) diffSeconds = (options.minutesSuffix === ':' && diffSeconds < 10 ? '0' : '') + diffSeconds
+
+        if(options.days && showDay) res.push(diffDays, options.daysSuffix || ' Tag(e) ')
+        if(options.hours && showHour) res.push(diffHours, options.hoursSuffix || ' Stunde(n) ')
+        if(options.minutes && showMinute) res.push(diffMinutes, options.minutesSuffix || ' Minute(n) ')
+        if(options.seconds && showSecond) res.push(diffSeconds, options.secondsSuffix || ' Sekunde(n) ')
 
         return res.join('').trim()
     }
