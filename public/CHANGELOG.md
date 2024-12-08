@@ -1,3 +1,10 @@
+# v4.5.0 (08.12.2024)
+## Core
+- new settings for parameter diff into replacer %d (nozero and numeric)
+## Panels
+- Panels are displayed without gaps if they are of different heights
+## Slider
+- Bugfix for setting Height of vertical slider
 # v4.4.1 (17.11.2024)
 ## Core
 - bugfix for replacer %d

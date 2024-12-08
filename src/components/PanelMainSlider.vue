@@ -11,6 +11,10 @@
 
     const fhem = useFhemStore()
 
+    const sliderHeight = ref(props.height + (/px/.test(props.height) ? '' : 'px'))
+
+    console.log(props.height)
+
     const sliderVal = ref()
 
     function setSliderVal(val) {
@@ -60,7 +64,7 @@
         hide-details
         thumb-label
         @update:modelValue="doCmd($event)"
-        >
+        class="py-2">
         <template v-slot:thumb-label="{ modelValue }">
             <div class="text-white">
                 {{ modelValue }}
@@ -68,3 +72,9 @@
         </template>
     </v-slider>
 </template>
+
+<style>    
+    .v-slider.v-input--vertical > .v-input__control {
+        min-height: v-bind(sliderHeight)
+    }
+</style>

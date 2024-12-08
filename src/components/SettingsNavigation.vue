@@ -8,6 +8,15 @@
     const { mobile } = useDisplay()
     const preLang = '_app.settings.navigation.'
 
+	const colDefs = [
+		{ name: "xs", label: "xs", placeholder: "1" },
+		{ name: "sm", label: "sm", placeholder: "2" },
+		{ name: "md", label: "md", placeholder: "2" },
+		{ name: "lg", label: "lg", placeholder: "3" },
+		{ name: "xl", label: "xl", placeholder: "3" },
+		{ name: "xxl", label: "xxl", placeholder: "4" }
+	]
+
 	const newItem = ref({
 		name: '',
 		title: '',
@@ -15,7 +24,13 @@
 		group: [],
 		groupAsChips: false,
 		sort: false,
-		divider: false
+		divider: false,
+		xxl: null, 
+		xl: null, 
+		lg: null, 
+		md: null, 
+		sm: null, 
+		xs: null	
 	})
 
 	const items = ref(fhem.app.config.navigation)
@@ -59,7 +74,13 @@
 			group: [],
 			groupAsChips: false,
 			sort: false,
-			divider: false
+			divider: false,
+			xxl: null, 
+			xl: null, 
+			lg: null, 
+			md: null, 
+			sm: null, 
+			xs: null
 		}
 }
 </script>
@@ -175,6 +196,22 @@
 												<template v-slot:append>
 													<v-switch v-model="items[index].divider" color="info" hide-details></v-switch>
 												</template>
+											</v-list-item>
+
+											<v-list-item :title="$t(preLang + 'optionsRowsTitle')" :subtitle="$t(preLang + 'optionsRows')">
+												<v-row class="mt-1">
+													<v-col v-for="col of colDefs" :key="col.name">
+														<v-text-field
+															v-model="items[index][col.name]"
+															variant="outlined"
+															density="compact"
+															:label="col.label"
+															:placeholder="col.placeholder"
+															persistent-placeholder
+															hide-details>
+														</v-text-field>
+													</v-col>
+												</v-row>
 											</v-list-item>
 										</v-list>
 										<v-card-actions>

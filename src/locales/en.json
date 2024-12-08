@@ -55,7 +55,9 @@
                 "optionsSortTitle": "Sorting",
                 "optionsSort": "Sorts subordinate navigation items in ascending order",
                 "optionsDividerTitle": "Divider",
-                "optionsDivider": "Shows a dividing line below the navigation point"
+                "optionsDivider": "Shows a dividing line below the navigation point",
+                "optionsRowsTitle": "Columns",
+                "optionsRows": "Defines the number of columns for panels depending on the display"
             },
             "props": {
                 "panel": "General",                

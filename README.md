@@ -220,7 +220,7 @@ Ersetzungen bieten die Möglichkeit, Werte innerhalb von Element-Definitionen zu
 |`state-ts::%d(time)`|2023-12-17 17:53:32|17:53:32|abhängig vom Sprachschema|
 |`state-ts::%d(date)`|2023-12-17 17:53:32|17.12.2023|abhängig vom Sprachschema|
 |`state-ts::%d({ "weekday"\: "long" })`|2023-12-17 17:53:32|Sonntag|abhängig vom Sprachschema|
-|`state-ts::%d({ "diff"\: { "days"\: true, "hours"\: true, "minutes"\: true, "seconds"\: true, "daysSuffix"\: " Tag(e) ", "hoursSuffix"\: "\:", "minutesSuffix"\: "\:", "secondsSuffix"\: " " } })`||10 Tag(e) 8:07:34|auf korrekte JSON Notation achten und zusätzlich Doppelpunkte escapen|
+|`state-ts::%d({ "diff"\: { "days"\: "nozero", "hours"\: "numeric", "minutes"\: true, "seconds"\: true, "daysSuffix"\: " Tag(e) ", "hoursSuffix"\: "\:", "minutesSuffix"\: "\:", "secondsSuffix"\: " " } })`||10 Tag(e) 8:07:34|auf korrekte JSON Notation achten und Doppelpunkte escapen|
 |`state::%t(%s)`|on|an|wenn unter [Sprachen](#sprachen) für die Variable `on` im deutschen Sprachschema `an` hinterlegt wurde|
 |`state::%r(%s,_, )`|alle_offen|alle offen|ersetzt alle Unterstriche durch Leerzeichen|
 |`temp::Temperatur\: %n(1)°C`|18.7|Temperatur: 18,7°C|
@@ -240,8 +240,6 @@ Für jede Vorlage muss mindestens ein *devicekey* festgelegt werden.
 |---|---|
 |key|eindeutiger Schlüssel, der für Element-Definitionen an Stelle von festen FHEM-Devicenamen verwendet werden soll|
 |description|kurze Beschreibung des jeweiligen FHEM Devicetypen|
-
-
 
 ### Element devices
 Liste der FHEM-Devices, die mit dem Panel verknüpft sind. Es muss mindestens ein FHEM-Device mit einem Panel verknüpft werden. (siehe auch [neues Panel erstellen](#neues-panel-erstellen))
@@ -663,8 +661,24 @@ Das Navigationsmenü von **FHEMApp** kann individuell angepasst werden. So ist e
 
 Die alternativen Beschriftungen können somit auch für die Erstellung mehrsprachiger Instanzen von **FHEMApp** verwendet werden. Hierbei kann die Ersetzung `%t(...)` (siehe auch [Ersetzungen](#ersetzungen)) eingesetzt werden.
 
+Für jeden Navigationspunkt können weitere Optionen festgelegt werden. 
+- untergeordnete Navigationspunkte in **kompakter Darstellung**
+- alphabetische **Sortierung** untergeordneter Navigationspunkte
+- **Trennlinie** unterhalb des Navigationspunktes
+- Anzahl der **Spalten** für die Anzeige der Panels unter dem Navigationspunkt
+
+|Device|Code|Range|Spalten (Default)|
+|---|---|---|---|
+|Extra small|xs|<660px|1|
+|Small|sm|600px - 960px|2|
+|Medium|md|960px - 1264px|2|
+|Large|lg|1264px - 1904px|3|
+|Exra large|xl|1904px - 2560px|3|
+|Extra wide|xxl|>2560px|4|
+
 ![](./docs/media/example_settings_5.png)
 <br>*Beispiel für ein angepasstes Navigationsmenü*
+
 # Farben
 In **FHEMApp** können altrnativ zu hexadezimalen Farbangaben auch  Farbvariablen eingesetzt werden. Damit können Themen erstellt und Farben schnell angepasst werden. Grundsätzlich steht ein helles und ein dunkles Farbschema für jede Instanz von **FHEMApp** zur Verfügung. (siehe auch [Farbschema](#farbschema))
 
