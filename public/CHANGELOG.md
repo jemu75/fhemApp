@@ -1,3 +1,6 @@
+# v4.5.1 (09.12.2024)
+## Core
+- bugfix for changing darkmode
 # v4.5.0 (08.12.2024)
 ## Core
 - new settings for parameter diff into replacer %d (nozero and numeric)

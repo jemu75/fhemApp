@@ -484,7 +484,9 @@ export const useFhemStore = defineStore('fhem', () => {
                     for(const path of stat.panelMap[idx].items) {
                         doUpdate(app.panelList, path, evt.value)
                     }
-                } else {
+                } 
+
+                if(stat.panelMap[idx].task) {
                     handleInternalTask(stat.panelMap[idx].task, evt.value)
                 }
 
@@ -662,6 +664,7 @@ export const useFhemStore = defineStore('fhem', () => {
             panels = JSON.parse(JSON.stringify(app.config.panels)),
             templates = JSON.parse(JSON.stringify(app.config.templates)),
             templateIdx,
+            taskIdx,
             darkModeDef
         
         if(app.config.panels.length === 0) log(3, 'No Panels defined.', null, 'noPanels')
@@ -708,10 +711,21 @@ export const useFhemStore = defineStore('fhem', () => {
         }
 
         //add watching for updates
-        stat.panelMap.push({ reading: app.fhemDevice + '-update_available', task: 'update' })
-        if(app.header.darkModeOverFhem) {
-            darkModeDef = app.header.darkModeOverFhem.split(':')
-            if(darkModeDef.length === 2) stat.panelMap.push({ reading: darkModeDef[0], task: 'darkMode'})
+        taskIdx = stat.panelMap.map((e) => e.reading).indexOf(app.fhemDevice + '-update_available')
+        if(taskIdx !== -1) {
+            stat.panelMap[taskIdx].task = 'update'
+        } else {
+            stat.panelMap.push({ reading: app.fhemDevice + '-update_available', task: 'update' })
+        }
+
+        darkModeDef = app.header.darkModeOverFhem.split(':')
+        if(darkModeDef.length === 2) {
+            taskIdx = stat.panelMap.map((e) => e.reading).indexOf(darkModeDef[0])
+            if(taskIdx !== -1) {
+                stat.panelMap[taskIdx].task = 'darkMode'
+            } else {
+                stat.panelMap.push({ reading: darkModeDef[0], task: 'darkMode'})
+            }
         }
 
         log(4, 'PanelList and PanelMapping created.', { panelList: app.panelList, panelMap: stat.panelMap })
@@ -772,7 +786,9 @@ export const useFhemStore = defineStore('fhem', () => {
 
             if(item.items) {
                 for(const path of item.items) doUpdate(panelList, path, val)
-            } else {
+            }
+
+            if(item.task) {
                 handleInternalTask(item.task, val)
             }
         }
