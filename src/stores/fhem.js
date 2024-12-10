@@ -718,13 +718,15 @@ export const useFhemStore = defineStore('fhem', () => {
             stat.panelMap.push({ reading: app.fhemDevice + '-update_available', task: 'update' })
         }
 
-        darkModeDef = app.header.darkModeOverFhem.split(':')
-        if(darkModeDef.length === 2) {
-            taskIdx = stat.panelMap.map((e) => e.reading).indexOf(darkModeDef[0])
-            if(taskIdx !== -1) {
-                stat.panelMap[taskIdx].task = 'darkMode'
-            } else {
-                stat.panelMap.push({ reading: darkModeDef[0], task: 'darkMode'})
+        if(app.header.darkModeOverFhem) {
+            darkModeDef = app.header.darkModeOverFhem.split(':')
+            if(darkModeDef.length === 2) {
+                taskIdx = stat.panelMap.map((e) => e.reading).indexOf(darkModeDef[0])
+                if(taskIdx !== -1) {
+                    stat.panelMap[taskIdx].task = 'darkMode'
+                } else {
+                    stat.panelMap.push({ reading: darkModeDef[0], task: 'darkMode'})
+                }
             }
         }
 

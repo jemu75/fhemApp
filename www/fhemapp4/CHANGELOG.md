@@ -1,3 +1,6 @@
+# v4.5.2 (10.12.2024)
+## Core
+- bugfix for loading FHEMApp if darkmode over FHEM is not used
 # v4.5.1 (09.12.2024)
 ## Core
 - bugfix for changing darkmode
