@@ -1,3 +1,7 @@
+# v4.5.3 (12.12.2024)
+## App
+- bugfix for panel width on large screens
+- update core modules and dependencies
 # v4.5.2 (10.12.2024)
 ## Core
 - bugfix for loading FHEMApp if darkmode over FHEM is not used

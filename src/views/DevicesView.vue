@@ -24,13 +24,13 @@
     for(const item of items) {
       if(!res[colIdx]) res[colIdx] = []
       res[colIdx].push(item)
-      colIdx = colIdx === cols.value ? 1 : colIdx + 1
+      colIdx = colIdx === showCols.value ? 1 : colIdx + 1
     }
 
     return res
   })
 
-  const cols = computed(() => {
+  const showCols = computed(() => {
     return getCols(fhem.app.currentView, fhem.app.navigation) || fhem.app.viewCols[fhem.app.display]
   })
 
@@ -57,7 +57,7 @@
 
 <template>
   <v-row no-gutters>
-    <v-col v-for="col of cols" :key="col">
+    <v-col :cols="12 / showCols" v-for="col of showCols" :key="col">
       <v-row no-gutters>
         <v-col cols="12" v-for="(panel) of view[col]" :key="panel.name" class="pa-1">
           <PanelCard :panel="panel"/>
