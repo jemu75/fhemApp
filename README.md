@@ -284,7 +284,7 @@ Panels können als Popup angezeigt werden, sobald ein FHEM Reading einen bestimm
 |---|---|---|
 |reading||siehe Parameter [reading](#konfiguration-der-elemente)|
 |value||siehe Parameter [value](#konfiguration-der-elemente)|
-|show|false|soll ausklappbar sein [boolean]|
+|show|false|soll angezeigt werden [boolean]|
 |width|400px|legt die Breite des Popup in 'px' oder '%' fest [string]|
 |cmd|| FHEM Kommando [string]|
 
