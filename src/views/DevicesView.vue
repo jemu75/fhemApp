@@ -2,7 +2,6 @@
   import { computed } from 'vue'
   import { useFhemStore } from '@/stores/fhem'
   import PanelCard from '../components/PanelCard.vue'
-
   
   const fhem = useFhemStore()
 

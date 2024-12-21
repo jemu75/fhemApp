@@ -5,6 +5,7 @@
   import router from '@/router'
   import AppNavigation from './components/AppNavigation.vue'
   import OptionsMenu from './components/OptionsMenu.vue'
+  import PanelCard from './components/PanelCard.vue'
   import logo from '@/assets/logo_v4.png'
 
   const fhem = useFhemStore()
@@ -107,6 +108,21 @@
             @click:close="fhem.app.message = false"
             >
           </v-alert>
+
+          <template v-if="fhem.app.popOutList.length > 0 && !/=maximized$/.test(fhem.app.currentView)">
+            <v-dialog 
+              v-model="fhem.app.popOutList[0].show" 
+              :width="fhem.app.popOutList[0].width" 
+              opacity="60%"
+              persistent           
+              class="noselect"
+              >
+              <v-sheet>
+                <PanelCard :panel="fhem.app.panelList[fhem.app.popOutList[0].panel]" :popoutIdx="0"/>
+              </v-sheet>
+            </v-dialog>
+          </template>
+
           <RouterView />
         </v-container>
       </v-main>

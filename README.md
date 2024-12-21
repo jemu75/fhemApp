@@ -276,6 +276,18 @@ Panels können ausgeklappt werden sobald mehr als eine aktive Ebene im Bereich [
 |expandable|false|soll ausklappbar sein [boolean]|
 |expanded|false|ist beim Laden ausgeklappt [boolean]|
 |maximizable|false|kann auf volle Bildschirmgröße maximiert werden [boolean]|
+
+## Element popout
+Panels können als Popup angezeigt werden, sobald ein FHEM Reading einen bestimmten Wert hat. Beim Schließen des Popup kann optional ein FHEM Kommando gesendet werden.
+
+|Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|show|false|soll ausklappbar sein [boolean]|
+|width|400px|legt die Breite des Popup in 'px' oder '%' fest [string]|
+|cmd|| FHEM Kommando [string]|
+
 ### Element sortby
 Panels können in einer bestimmten Reihenfolge angezeigt werden. Hierfür kann ein beliebiger Sortierschlüssel festgelegt werden. Panels mit Sortierschlüssel werden immer zuerst angezeigt. Danach folgen alle Panels ohne Sortierschlüssel.
 
