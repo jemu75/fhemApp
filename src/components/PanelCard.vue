@@ -5,7 +5,8 @@
     import PanelMain from './PanelMain.vue'
 
     const item = defineProps({
-        panel: Object
+        panel: Object,
+        popoutIdx: { type: Number, default: -1 }
     })
 
     const fhem = useFhemStore()
@@ -150,6 +151,22 @@
         window.open(fhem.createURL('?detail=' + device), '_self')
     }
 
+    function closePopout() {
+        let cmd = fhem.handleDefs(item.panel.panel.popout, ['show', 'width', 'cmd'], [true, null, null]).cmd
+        let cmdList
+
+        if(cmd) {
+            cmdList = cmd.split(';')
+            for(const [idx] of Object.entries(cmdList)) {
+                for(const device of item.panel.panel.devices) cmdList[idx] = cmdList[idx].replace(' ' + device.split(':')[0] + ' ', ' ' + device.split(':')[1] + ' ')
+            } 
+            
+            fhem.request('text', cmdList.join(';'))
+        }
+        
+        fhem.app.popOutList.splice(item.popoutIdx, 1)
+    }
+
     function getInfo(pos) {
         let res = fhem.handleDefs(item.panel.info[pos], ['text', 'icon', 'color'],['', '', ''])
 
@@ -201,7 +218,6 @@
             <v-img :src="img.url" :gradient="img.url ? fhem.app.header.imageGradient : ''" height="48" cover>
                 <v-toolbar color="transparent" density="compact" class="pr-1">
                     <v-toolbar-title class="text-truncate">{{  title.title  }}</v-toolbar-title>
-
                     <template v-slot:append>
                         <div v-if="fhem.app.settings.loglevel > 6">
                             {{  sortby.sortby }}
@@ -234,6 +250,7 @@
                             </v-menu>
                         </div>
                         <v-btn v-if="lvl.icon" :icon="lvl.icon" size="small" variant="plain" density="compact" @click="lvl.isClick = true"></v-btn>
+                        <v-btn v-if="popoutIdx !== -1" icon="mdi-close" size="small" variant="plain" @click="closePopout"></v-btn>
                     </template>
                 </v-toolbar>        
             </v-img>

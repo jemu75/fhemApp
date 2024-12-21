@@ -24,6 +24,7 @@
             { type: 'defs', show: ['templates'], required: true, prop: 'devicekeys', def: 'key:description', help: 'element-devicekeys' },
             { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'navigation', def: 'reading:value:route', help: 'element-navigation', assist: 'props' },
             { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'expandable', def: 'reading:value:expandable:expanded:maximizable', help: 'element-expandable', assist: 'props' },
+            { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'popout', def: 'reading:value:show:width:cmd', help: 'element-popout', assist: 'props' },
             { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'sortby', def: 'reading:value:sortkey', help: 'element-sortkey', assist: 'props' },
             { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'show', def: 'reading:value:show', help: 'element-show', assist: 'props' },
             { type: 'defs', show: ['extended.panels', 'templates'], required: false, prop: 'iconmap', def: 'search:icon', help: 'element-iconmap' }

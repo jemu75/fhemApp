@@ -49,6 +49,7 @@ export const useFhemStore = defineStore('fhem', () => {
         fhemDevice: null,
         panelView: [],
         panelList: [],
+        popOutList: [],
         navigation: [],
         threads: [],
         distTemplates: [
@@ -448,12 +449,30 @@ export const useFhemStore = defineStore('fhem', () => {
         request('text', 'set ' + app.fhemDevice + ' update')
     }
 
-    //subFunction for handle internal tasks triggered from FHEM (update, darkMode) called from handleEventBuffer and initialLoad
-    function handleInternalTask(task, val) {
-        if(task === 'update' && val === '1') app.updateAvailable = true
-        if(task === 'update' && val === '0' && app.updateProgress) location.reload()
+    //coreFunction handle internal Task PopOut-Event 
+    function handlePopOut(panels, val) {
+        let panelIdx,
+            popoutDef
 
-        if(task === 'darkMode') changeDarkMode(handleDefs([[app.header.darkModeOverFhem.split(':')[1], val, 'true'].join(':')], ['dark'], [false]).dark ? 'dark' : 'light')
+        for(const idx of panels) {
+            panelIdx = app.popOutList.map((e) => e.panel).indexOf(idx)
+            popoutDef = handleDefs(app.panelList[idx].panel.popout, ['show', 'width', 'cmd'], [false, '400px', null])
+            popoutDef.panel = idx
+
+            if(panelIdx === -1 && popoutDef.show) app.popOutList.push(popoutDef)
+            if(panelIdx !== -1 && popoutDef.show) app.popOutList[panelIdx] = popoutDef
+            if(panelIdx !== -1 && !popoutDef.show) app.popOutList.splice(panelIdx, 1)
+        }
+    }
+
+    //subFunction for handle internal tasks triggered from FHEM (update, darkMode) called from handleEventBuffer and initialLoad
+    function handleInternalTask(obj, val) {
+        if(obj.task === 'update' && val === '1') app.updateAvailable = true
+        if(obj.task === 'update' && val === '0' && app.updateProgress) location.reload()
+
+        if(obj.task === 'darkMode') changeDarkMode(handleDefs([[app.header.darkModeOverFhem.split(':')[1], val, 'true'].join(':')], ['dark'], [false]).dark ? 'dark' : 'light')
+
+        if(obj.task === 'popout') handlePopOut(obj.popoutPanels, val)
     }
 
     //subFunction for update values in panelList
@@ -487,7 +506,7 @@ export const useFhemStore = defineStore('fhem', () => {
                 } 
 
                 if(stat.panelMap[idx].task) {
-                    handleInternalTask(stat.panelMap[idx].task, evt.value)
+                    handleInternalTask(stat.panelMap[idx], evt.value)
                 }
 
                 if(!localLoop) log(6, 'Data from FHEM handled.', evt)
@@ -607,7 +626,8 @@ export const useFhemStore = defineStore('fhem', () => {
     function createPanelMap(devices, obj, path) {
         let val,
             reading,
-            idx
+            idx,
+            item
 
         if(obj) {
             for (const [key, value] of Object.entries(obj)) {
@@ -622,9 +642,22 @@ export const useFhemStore = defineStore('fhem', () => {
                             idx = stat.panelMap.map((e) => e.reading).indexOf(reading)
     
                             if(idx === -1) {
-                                stat.panelMap.push({ reading: reading, items: [[...path, key]] })
+                                item = { reading: reading, items: [[...path, key]] }
+                                if(path.slice(-2).join('-') === 'panel-popout') {
+                                    item.task = 'popout'
+                                    item.popoutPanels = [path[0]]
+                                }
+                                stat.panelMap.push(item)
                             } else {
                                 stat.panelMap[idx].items.push([...path, key])
+                                if(path.slice(-2).join('-') === 'panel-popout') {
+                                    if(stat.panelMap[idx].task === 'popout' && !stat.panelMap[idx].popoutPanels.find((e) => e === path[0])) {
+                                        stat.panelMap[idx].popoutPanels.push(path[0])
+                                    } else {
+                                        stat.panelMap[idx].task = 'popout'
+                                        stat.panelMap[idx].popoutPanels = [path[0]]
+                                    }
+                                }
                             }
 
                             if(/%d\(.*{.*"diff".*/.test(val)) {
@@ -710,7 +743,7 @@ export const useFhemStore = defineStore('fhem', () => {
             }
         }
 
-        //add watching for updates
+        //add updatewatcher
         taskIdx = stat.panelMap.map((e) => e.reading).indexOf(app.fhemDevice + '-update_available')
         if(taskIdx !== -1) {
             stat.panelMap[taskIdx].task = 'update'
@@ -718,6 +751,7 @@ export const useFhemStore = defineStore('fhem', () => {
             stat.panelMap.push({ reading: app.fhemDevice + '-update_available', task: 'update' })
         }
 
+        //add darkmodewatcher
         if(app.header.darkModeOverFhem) {
             darkModeDef = app.header.darkModeOverFhem.split(':')
             if(darkModeDef.length === 2) {
@@ -748,7 +782,8 @@ export const useFhemStore = defineStore('fhem', () => {
             parts,
             idx,
             jsonList2Item,
-            val
+            val,
+            taskList = []
 
         for(const item of stat.panelMap) {
             device = item.reading.split('-')[0]
@@ -764,7 +799,7 @@ export const useFhemStore = defineStore('fhem', () => {
         res = await request('json', 'jsonlist2 ' + deviceList.join(','))
         if(!res) return
 
-        for(const item of stat.panelMap) {
+        for(const [mapIdx, item] of stat.panelMap.entries()) {
             parts = item.reading.split('-')
             idx = res.Results.map((e) => e.Name).indexOf(parts[0])
 
@@ -786,16 +821,15 @@ export const useFhemStore = defineStore('fhem', () => {
 
             val = getEl(res.Results[idx], jsonList2Item)
 
-            if(item.items) {
-                for(const path of item.items) doUpdate(panelList, path, val)
-            }
+            if(item.items) for(const path of item.items) doUpdate(panelList, path, val)
 
-            if(item.task) {
-                handleInternalTask(item.task, val)
-            }
+            if(item.task) taskList.push({ idx: mapIdx, value: val })
         }
 
         app.panelList = panelList
+
+        for(const item of taskList) handleInternalTask(stat.panelMap[item.idx], item.value)
+
         log(4, 'Devices from FHEM loaded.', res)
         return true
     }

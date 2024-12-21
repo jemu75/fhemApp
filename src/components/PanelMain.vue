@@ -23,14 +23,6 @@
         return fhem.handleDefs(lvl[position].size, ['size'],[false]).size
     }
 
-    function getClass(position) {
-        let res = ''
-
-        if(['info'].indexOf(position) !== -1) res = "mx-2"
-
-        return res
-    }
-
     function showDivider(lvl, position) {
         return lvl[position] ? fhem.handleDefs(lvl[position].divider, ['show'],[false]).show : false
     }
@@ -58,7 +50,7 @@
             <v-row v-if="levels.indexOf(idx) !== -1 ? true : false" no-gutters class="text-center align-center">
                 <v-sheet :height="getHeight(lvl, 'level')"></v-sheet>
                 <template v-for="position of ['left1', 'left2', 'mid', 'right1', 'right2']" :key="position">
-                    <v-col v-if="lvl.level[position]" :cols="getCols(lvl, position)" :class="getClass(lvl.level[position])">
+                    <v-col v-if="lvl.level[position]" :cols="getCols(lvl, position)">
                         <component :is="getComponent(lvl.level[position])" :el="lvl[position]" :iconmap="iconmap" :devices="devices" :height="getHeight(lvl, 'level')"></component>
                     </v-col>
                     <v-divider v-if="showDivider(lvl, position)" vertical></v-divider>

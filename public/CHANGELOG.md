@@ -1,3 +1,7 @@
+# v.4.6.0 (21.12.2024)
+## Panel
+- new panel element popout
+- bugfix position of vertical divider
 # v4.5.3 (12.12.2024)
 ## App
 - bugfix for panel width on large screens
