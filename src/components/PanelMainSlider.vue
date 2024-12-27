@@ -1,6 +1,7 @@
 <script setup>
     import { computed, ref } from 'vue'
     import { useFhemStore } from '@/stores/fhem'
+import { number } from 'echarts'
 
     const props = defineProps({
         el: Object,
@@ -11,11 +12,17 @@
 
     const fhem = useFhemStore()
 
-    const sliderHeight = ref(props.height + (/px/.test(props.height) ? '' : 'px'))
-
-    console.log(props.height)
+    const sliderHeight = ref(getSliderHeight(props.height))
 
     const sliderVal = ref()
+
+    function getSliderHeight(val) {
+        let res = val
+
+        res = (parseInt(val) - 40) + 'px'
+
+        return res
+    }
 
     function setSliderVal(val) {
         sliderVal.value = val
@@ -73,8 +80,8 @@
     </v-slider>
 </template>
 
-<style>    
+<style>
     .v-slider.v-input--vertical > .v-input__control {
-        min-height: v-bind(sliderHeight)
+        min-height: v-bind(sliderHeight) !important;
     }
 </style>
