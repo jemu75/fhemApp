@@ -1,4 +1,5 @@
 # v4.6.1 (27.12.2024)
+## Slider
 - Bugfix for setting Height of vertical slider
 # v4.6.0 (21.12.2024)
 ## Panel
