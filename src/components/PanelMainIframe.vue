@@ -14,8 +14,10 @@
     const extContent = ref()
 
     const content = computed(() => {
-        let res = {
-            source: fhem.handleDefs(props.el.iframe, ['source'],['']).source,
+        let src = fhem.handleDefs(props.el.iframe, ['source', 'lazyload'],['', true]),
+            res = {
+            source: src.source,
+            lazy: src.lazyload ? 'lazy' :'eager',
             width: extContent.value && extContent.value.scrollWidth ? extContent.value.scrollWidth : 0,
             height: /=maximized$/.test(fhem.app.currentView) ? (window.innerHeight - 170) : props.height
         }
@@ -30,7 +32,7 @@
             :src="content.source"
             :width="content.width"
             :height="content.height"
-            loading="lazy"
+            :loading="content.lazy"
             style="border:none;">
         </iframe>
     </div>

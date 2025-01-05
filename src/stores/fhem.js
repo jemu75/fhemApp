@@ -774,9 +774,9 @@ export const useFhemStore = defineStore('fhem', () => {
     }
 
     //coreFunction inital Loading from FHEM
-    async function initialLoad() {
+    async function initialLoad(refresh) {
         let deviceList = [],
-            panelList = JSON.parse(JSON.stringify(app.panelList)),
+            panelList = refresh ? app.panelList : JSON.parse(JSON.stringify(app.panelList)),
             device,
             res,
             parts,
@@ -826,7 +826,7 @@ export const useFhemStore = defineStore('fhem', () => {
             if(item.task) taskList.push({ idx: mapIdx, value: val })
         }
 
-        app.panelList = panelList
+        if(!refresh) app.panelList = panelList
 
         for(const item of taskList) handleInternalTask(stat.panelMap[item.idx], item.value)
 
@@ -1114,33 +1114,33 @@ export const useFhemStore = defineStore('fhem', () => {
     }
 
     //coreFunction create a new Session
-    async function createSession(connect) {
+    async function createSession(refresh) {
         let res = true
         let tid = thread()
 
-        log(4, connect ? 'Create Session...' : 'Refresh Session...')
+        log(4, refresh ? 'Refresh Session...' : 'Create Session...')
 
         app.isReady = false
 
-        if(connect) stat.conn = null
-        if(res && connect) res = await getToken()
-        if(res && connect) res = openEventWatcher()
+        stat.conn = null
+        if(res) res = await getToken()
+        if(res) res = openEventWatcher()
         if(res) res = await timeSync()
-        if(res) res = await loadConfig()
-        if(res) res = await loadTemplates()
-        if(res) res = createPanelList()
-        if(res) res = await initialLoad()
-        if(res) res = createNavigation()
-        if(res) res = loadPanelView()
+        if(res && !refresh) res = await loadConfig()
+        if(res && !refresh) res = await loadTemplates()
+        if(res && !refresh) res = createPanelList()
+        if(res) res = await initialLoad(refresh)
+        if(res && !refresh) res = createNavigation()
+        if(res && !refresh) res = loadPanelView()
 
         if(!res) {
             log(3, 'FHEMApp launching failed.')
         } else {            
             app.message = false
             app.isReady = true
-            log(1, connect ? 'FHEMApp launched.' : 'Session refreshed.')
+            log(1, refresh ? 'Session refreshed.' : 'FHEMApp launched.')
 
-            if(connect && app.noConfig) {
+            if(!refresh && app.noConfig) {
                 await router.push({ name: 'settings', query: router.currentRoute.value.query })
                 log(3, 'No Config handling', null, 'noConfig')
             }
@@ -1164,7 +1164,7 @@ export const useFhemStore = defineStore('fhem', () => {
 
             if(res.langChanged) i18n.locale.value = app.settings.lang
             if(res.darkChanged) changeDarkMode(app.settings.dark === '0' ? 'light' : 'dark')
-            if(res.connChanged || !app.isReady) return createSession(true)
+            if(res.connChanged || !app.isReady) return createSession()
             if(res.configChanged) return location.reload()
             if(res.routeChanged) loadPanelView()
         })

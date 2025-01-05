@@ -16,7 +16,7 @@
                 "headLineRouteTitle": "aktuelle Seite",
                 "headLineRouteSubTitle": "Zeigt den aktuell ausgewählte Seite in der mobilen Ansicht in der Mitte der Kopfzeile an",
                 "headLineNavigationTitle": "Navigationsmenü ausblenden",
-                "headLineNavigationSubTitle": "Zeigt den Buttom zum Einblenden des Navigaitonsmenü in der Desktopansicht an",
+                "headLineNavigationSubTitle": "Zeigt den Buttom zum Einblenden des Navigationsmenü in der Desktopansicht an",
                 "darkMode": "Farbschema",
                 "darkModeTitle": "DarkMode über FHEM",
                 "darkModeSubTitle": "Schaltet in das dunkle Farbschema um, wenn der Wert des FHEM Reading zutrifft",
