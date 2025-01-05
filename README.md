@@ -493,6 +493,7 @@ Zeigt ein Bild an.
 |value||siehe Parameter [value](#konfiguration-der-elemente)|
 |source||URL die auf ein Bild verweist. Bei direkter Eingabe von URLs müssen Doppelpunkte entsprechend ersetzt werden. (siehe auch [Ersetzungen](#ersetzungen)) [string]|
 |height||legt die absolute Höhe des Bildes in Pixeln fest [string]|
+|lazyload|true|schaltet das dynamische Nachladen aus bzw. ein [boolean]|
 ### Level Element IFrame iframe
 Bettet ein iframe ein.
 
@@ -501,6 +502,7 @@ Bettet ein iframe ein.
 |reading||siehe Parameter [reading](#konfiguration-der-elemente)|
 |value||siehe Parameter [value](#konfiguration-der-elemente)|
 |source||URL deren Inhalt im Panel angezeigt werden soll. Bei direkter Eingabe von URLs müssen Doppelpunkte entsprechend ersetzt werden. (siehe auch [Ersetzungen](#ersetzungen)) [string]|
+|lazyload|true|schaltet das dynamische Nachladen aus bzw. ein [boolean]|
 ### Level Element Menu btn
 Zeigt einen Button an, der beim Klicken ein DropDown-Menü öffnet. Wenn dieses Element nicht definiert ist wird ein Standard-Button angezeigt, sobald mindestens ein [Menüeintrag](#level-element-menu-menu) definiert ist.
 

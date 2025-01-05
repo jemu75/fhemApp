@@ -14,7 +14,7 @@
     const loaded = ref(false)
 
     const image = computed(() => {
-        return fhem.handleDefs(props.el.image, ['source','height'],['', 'auto'])
+        return fhem.handleDefs(props.el.image, ['source','height', 'lazyload'],['', 'auto', true])
     })
 
     const contentSize = computed(() => {
@@ -26,7 +26,7 @@
 </script>
 
 <template>
-    <v-skeleton-loader v-if="!loaded" type="image">
+    <v-skeleton-loader v-if="image.lazyload && !loaded" type="image">
     </v-skeleton-loader>
     <v-img
         :src="image.source"

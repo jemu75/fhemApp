@@ -34,6 +34,8 @@
   })
 
   function getCols(route, navObj) {
+    if(!route) return null
+    
     if(/=maximized$/.test(route)) return 1
     
     let path = route.split('->'),

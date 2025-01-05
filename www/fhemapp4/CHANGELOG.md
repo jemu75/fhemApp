@@ -1,4 +1,12 @@
+# v4.7.0 (05.01.2025)
+## Core
+- Optimization of Reconnect and Refreshing Session
+## Image
+- new Option for disabling lazy loading
+## iFrame
+- new Option for disabling lazy loading
 # v4.6.1 (27.12.2024)
+## Slider
 - Bugfix for setting Height of vertical slider
 # v4.6.0 (21.12.2024)
 ## Panel

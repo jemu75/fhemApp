@@ -81,7 +81,7 @@
                     logData = await fhem.request('text', cmd.join(' '))
                     
                     data = []
-                    rows = logData.split('\n')
+                    if(logData) rows = logData.split('\n')
 
                     if(rows.length > 0) {
                         for(const row of rows) {
