@@ -1,3 +1,6 @@
+# v4.8.0 (11.01.2025)
+## Button
+- new command type popout
 # v4.7.0 (05.01.2025)
 ## Core
 - Optimization of Reconnect and Refreshing Session

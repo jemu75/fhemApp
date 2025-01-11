@@ -1,5 +1,5 @@
 import { reactive } from 'vue'
-import { defineStore, storeToRefs } from 'pinia'
+import { defineStore } from 'pinia'
 import router from '@/router'
 import { useI18n } from 'vue-i18n'
 import { useTheme, useDisplay } from 'vuetify'
