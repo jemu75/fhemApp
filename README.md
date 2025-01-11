@@ -417,6 +417,7 @@ Legt die Breite der Spalte fest.
 Zeigt einen Button an, der folgendes ermöglicht. Das Auslösen der Befehle wird in [click](#level-element-button-click), [longClick](#level-element-button-longclick) und [longRelease](#level-element-button-longrelease) konfiguriert.
 - das Senden von FHEM Kommandos
 - das Aufrufen von Navigationspunkten in **FHEMApp**
+- das Aufrufen eines Panels als Popup in **FHEMApp**
 - das Aufrufen von beliebigen URLs
 
 |Parameter|Default|Beschreibung|
@@ -447,13 +448,14 @@ Legt den Befehl fest, der bei kurzem Drücken des Button ausgeführt wird.
 |reading||siehe Parameter [reading](#konfiguration-der-elemente)|
 |value||siehe Parameter [value](#konfiguration-der-elemente)|
 |cmd|| FHEM Kommando, Route oder Link [string]|
-|type|cmd| cmd, route, url [string]|
+|type|cmd| cmd, route, popout, url [string]|
 
 |Beispiel|Erklärung|
 |---|---|
 |`::set switch on`|sendet den Befehl `set switch on` an FHEM. Dabei wird im Panel unter dem [Element devices](#element-devices) nach dem Schlüssel `switch` gesucht und falls vorhanden, durch den Name des FHEM Devices ersetzt. Kann kein entsprechender Schlüssel gefunden werden, so wird der Befehl unverändert an FHEM gesendet. Es können auch mehrere Befehle (durch Semikolon getrennt) an FHEM gesendet werden.|
 |`::home:route`|wechselt zum Navigationspunkt `home` in **FHEMApp**. Die angegebene Route muss existieren und der Route in der URL (.../devices/{route}/?...) entsprechen|
 |`::panel=licht_bad:route`|wechselt zum Panel `licht_bad` in **FHEMApp**. Das angegebene Panel muss existieren|
+|`::panel=licht_bad width=300px:popout`|öffnet das Panel mit dem Name `licht_bad` als Popup in **FHEMApp** Das angegebene Panel muss existieren. Zusätzlich kann `width=`verwendet werden, um die Breite des Popup festzulegen| 
 |`::https\\://fhem.de:url`|wechsel direkt zu der URL `https://fhem.de`. Bei direkter Eingabe von URLs müssen Doppelpunkte entsprechend ersetzt werden. (siehe auch [Ersetzungen](#ersetzungen))|
 |`cam-link::%s:url`|wechsel direkt zu der URL, die im Device `cam` im Reading `link` hinterlegt ist|
 ### Level Element Button longClick
