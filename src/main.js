@@ -19,13 +19,6 @@ import messages from '@intlify/unplugin-vue-i18n/messages'
 
 import "echarts"
 
-/*
-import {use} from 'echarts/core'
-import {SVGRenderer} from 'echarts/renderers'
-import {LineChart, BarChart } from 'echarts/charts'
-import {TitleComponent, TooltipComponent, LegendComponent, GridComponent, DataZoomComponent } from 'echarts/components'
-*/
-
 const vuetify = createVuetify({
     locale: {
         locale: 'de',
@@ -53,7 +46,3 @@ app.use(vuetify)
 app.use(i18n)
 
 app.mount('#app')
-
-/*
-use([SVGRenderer, LineChart, BarChart, TitleComponent, TooltipComponent, LegendComponent, GridComponent, DataZoomComponent])
-*/
