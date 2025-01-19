@@ -1,3 +1,8 @@
+# v4.8.1 (12.01.2025)
+## Button
+- Bugfix for popout command
+## iFrame
+- Bugfix for width on Resizing
 # v4.8.0 (11.01.2025)
 ## Button
 - new command type popout
