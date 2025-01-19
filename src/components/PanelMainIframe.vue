@@ -1,5 +1,5 @@
 <script setup>
-    import { computed, ref, onMounted } from 'vue'
+    import { computed, onMounted, ref } from 'vue'
     import { useFhemStore } from '@/stores/fhem'
 
     const props = defineProps({
@@ -11,8 +11,6 @@
 
     const fhem = useFhemStore()
 
-    const extContent = ref()
-    const width = ref()
     const height = ref(/=maximized$/.test(fhem.app.currentView) ? (window.innerHeight - 170) : props.height)
 
     const content = computed(() => {
@@ -24,27 +22,13 @@
 
         return res
     })
-
-    function refreshIframe() {
-        if(extContent.value) width.value = extContent.value.scrollWidth
-    }
-
-    onMounted(() => {
-        window.addEventListener('resize', refreshIframe)
-        refreshIframe()
-    })
-        
 </script>
 
 <template>
-    <div>
-        <div ref="extContent"></div>
-        <iframe 
-            :src="content.source"
-            :width="width"
-            :height="height"
-            :loading="content.lazy"
-            style="border:none;">
-        </iframe>
-    </div>
+    <iframe 
+        :src="content.source"
+        :loading="content.lazy"
+        :height="height"
+        style="border:none; width:100%;">
+    </iframe>
 </template>

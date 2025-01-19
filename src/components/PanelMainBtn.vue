@@ -49,10 +49,10 @@
             if(obj.type === 'route') router.push({ name: 'devices', params: { view: obj.cmd }, query: router.currentRoute.value.query })
             if(obj.type === 'url') window.open(obj.cmd, '_self')
             if(obj.type === 'popout') {
-                let name = /panel=/.test(obj.cmd) ? obj.cmd.split('panel=')[1].split(' ')[0] : -1,
-                    width = /width=/.test(obj.cmd) ? obj.cmd.split('width=')[1].split(' ')[0] : '400px',
+                let name = /panel=/.test(obj.cmd) ? obj.cmd.split('panel=')[1].split(' width=')[0] : -1,
+                    width = /width=/.test(obj.cmd) ? obj.cmd.split('width=')[1] : '400px',
                     panel = fhem.app.panelList.map((e) => e.name).indexOf(name)
-                
+
                 if(panel !== -1) fhem.app.popOutList.push({ show: true, width, panel })
             }
         }
