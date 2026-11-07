@@ -9,10 +9,13 @@
   import logo from '@/assets/logo_v4.png'
 
   const fhem = useFhemStore()
-  const { mobile } = useDisplay()
+  const { mobile, xs } = useDisplay()
   
   const drawer = ref(fhem.app.header.hideNavigation.value ? false : true)
 
+  const showTime = computed(() => fhem.app.header.showTime && (!mobile.value || fhem.app.header.showTimeMobile))
+  const showDate = computed(() => fhem.app.header.showDate && (!mobile.value || (fhem.app.header.showDateMobile && !xs.value)))
+  const showMobileTitle = computed(() => mobile.value && fhem.app.header.showTitle)
   const mobileTitle = computed(() => {
     let navPath = [],
         navIdx,
@@ -85,11 +88,14 @@
 
         <template v-slot:prepend>
           <v-app-bar-nav-icon :class="fhem.app.header.hideNavigation ? '' : 'd-lg-none'" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-          <div v-if="!mobile && fhem.app.header.showTime" class="text-h5">{{ $d(fhem.app.header.time, fhem.app.header.timeFormat) }}</div>
+          <div v-if="showTime" class="text-h5">{{ $d(fhem.app.header.time, fhem.app.header.timeFormat) }}</div>
         </template>
 
-        <div v-if="!mobile && fhem.app.header.showDate" class="text-h5">{{ $d(fhem.app.header.time, fhem.app.header.dateFormat) }}</div>
-        <div v-if="mobile && fhem.app.header.showTitle" class="text-h5">{{ mobileTitle }}</div>
+        <div v-if="showDate || showMobileTitle" class="text-h5 text-truncate">
+          <span v-if="showDate">{{ $d(fhem.app.header.time, fhem.app.header.dateFormat) }}</span>
+          <span v-if="showDate && showMobileTitle"> | </span>
+          <span v-if="showMobileTitle">{{ mobileTitle }}</span>
+        </div>
 
         <template v-slot:append>
           <v-btn v-if="fhem.app.settings.loglevel > 6" icon="mdi-information" @click="showInternals()"></v-btn>
