@@ -96,10 +96,26 @@
                     </template>
                 </v-list-item>
 
+                <v-list-item :lines="mobile ? 'two' : 'one'" :title="$t(preLang + 'headLineTimeMobileTitle')" :subtitle="$t(preLang + 'headLineTimeMobileSubTitle')">
+                    <template v-slot:append>
+                        <v-list-item-action start>
+                            <v-switch v-model="fhem.app.config.header.showTimeMobile" :disabled="!fhem.app.config.header.showTime" color="primary" hide-details density="compact"></v-switch>
+                        </v-list-item-action>
+                    </template>
+                </v-list-item>
+
                 <v-list-item :lines="mobile ? 'two' : 'one'" :title="$t(preLang + 'headLineDateTitle')" :subtitle="$t(preLang + 'headLineDateSubTitle')">
                     <template v-slot:append>
                         <v-list-item-action start>
                             <v-switch v-model="fhem.app.config.header.showDate" color="primary" hide-details density="compact"></v-switch>
+                        </v-list-item-action>
+                    </template>
+                </v-list-item>
+
+                <v-list-item :lines="mobile ? 'two' : 'one'" :title="$t(preLang + 'headLineDateMobileTitle')" :subtitle="$t(preLang + 'headLineDateMobileSubTitle')">
+                    <template v-slot:append>
+                        <v-list-item-action start>
+                            <v-switch v-model="fhem.app.config.header.showDateMobile" :disabled="!fhem.app.config.header.showDate" color="primary" hide-details density="compact"></v-switch>
                         </v-list-item-action>
                     </template>
                 </v-list-item>

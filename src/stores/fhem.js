@@ -34,6 +34,8 @@ export const useFhemStore = defineStore('fhem', () => {
             dateFormat: { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' },
             showTime: false,
             showDate: false,
+            showTimeMobile: false,
+            showDateMobile: false,
             showTitle: true,
             hideNavigation: false,
             imageUrl: null,
