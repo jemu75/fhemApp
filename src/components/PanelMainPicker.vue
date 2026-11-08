@@ -11,7 +11,7 @@
     })
     const fhem = useFhemStore()
     const i18n = useI18n()
-    const defaultFormats = { date: 'YYYY-MM-DD', time: 'HH:mm', datetime: 'YYYY-MM-DD HH:mm' }
+    const defaultFormats = { date: 'YYYY-MM-DD', time: 'HH:mm', datetime: 'YYYY-MM-DDTHH:mm:00' }
     const wrapper = ref(null)
     const width = ref(0)
     const state = ref({
