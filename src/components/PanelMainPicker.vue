@@ -193,9 +193,9 @@
                 </v-btn>
             </template>
             <v-card :class="{ 'picker-compact': compact }">
-                <v-tabs v-if="picker.type === 'datetime'" v-model="state.tab" grow density="compact">
-                    <v-tab value="date" prepend-icon="mdi-calendar"></v-tab>
-                    <v-tab value="time" prepend-icon="mdi-clock-outline"></v-tab>
+                <v-tabs v-if="picker.type === 'datetime'" v-model="state.tab" grow>
+                    <v-tab value="date" prepend-icon="mdi-calendar" :text="$t('_app.picker.date')"></v-tab>
+                    <v-tab value="time" prepend-icon="mdi-clock-outline" :text="$t('_app.picker.time')"></v-tab>
                 </v-tabs>
                 <v-card-text class="pa-0">
                     <v-locale-provider :locale="i18n.locale.value">

@@ -165,6 +165,8 @@
         },
         "default": "Standard",
         "picker": {
+            "date": "Datum",
+            "time": "Uhrzeit",
             "ok": "Ok",
             "cancel": "Abbruch"
         }

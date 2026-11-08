@@ -165,6 +165,8 @@
         },
         "default": "Default",
         "picker": {
+            "date": "Date",
+            "time": "Time",
             "ok": "Ok",
             "cancel": "Cancel"
         }
