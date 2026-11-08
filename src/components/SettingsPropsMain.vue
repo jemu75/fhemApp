@@ -31,7 +31,8 @@
         { title: 'iframe', value: 'iframe' },
         { title: 'menu', value: 'menu' },
         { title: 'chart', value: 'chart' },
-        { title: 'colorpicker', value: 'colorpicker' }
+        { title: 'colorpicker', value: 'colorpicker' },
+        { title: 'datetimepicker', value: 'datetimepicker' }
     ]
 
     const listItemDefs = {
@@ -98,6 +99,11 @@
         ],
         colorpicker: [
             { type: 'defs', required: false, prop: 'picker', def: 'reading:value:cmd:current:type', help: 'level-element-colorpicker-picker', assist: 'props' },
+            { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider', assist: 'props' },
+            { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size', assist: 'props' }
+        ],
+        datetimepicker: [
+            { type: 'defs', required: false, prop: 'picker', def: 'reading:value:cmd:current:type:format:step:icon:color:variant', help: 'level-element-datetimepicker-picker', assist: 'props' },
             { type: 'defs', required: false, prop: 'divider', def: 'reading:value:divider', help: 'level-element-divider', assist: 'props' },
             { type: 'defs', required: false, prop: 'size', def: 'reading:value:size', help: 'level-element-size', assist: 'props' }
         ]

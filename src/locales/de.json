@@ -163,6 +163,10 @@
                 "text": "Prüfe die Reihenfolge der Definitionen. Die Definition ohne Bedingung sollte immer am Ende stehen."
             }
         },
-        "default": "Standard"
+        "default": "Standard",
+        "picker": {
+            "ok": "Ok",
+            "cancel": "Abbruch"
+        }
     }
 }
