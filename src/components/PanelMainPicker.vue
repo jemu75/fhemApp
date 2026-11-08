@@ -3,6 +3,8 @@
     import { useFhemStore } from '@/stores/fhem'
     import { useI18n } from 'vue-i18n'
     import { VTimePicker } from 'vuetify/labs/VTimePicker'
+    import { VMenu, VDialog } from 'vuetify/components'
+    import { useDisplay } from 'vuetify'
     const props = defineProps({
         el: Object,
         iconmap: Array,
@@ -11,6 +13,9 @@
     })
     const fhem = useFhemStore()
     const i18n = useI18n()
+    const { height: viewHeight } = useDisplay()
+    const compact = computed(() => viewHeight.value < 600)
+    const overlay = computed(() => compact.value ? { is: VDialog, props: { scrollable: true, width: 'auto' } } : { is: VMenu, props: { closeOnContentClick: false } })
     const defaultFormats = { date: 'YYYY-MM-DD', time: 'HH:mm', datetime: 'YYYY-MM-DDTHH:mm:00' }
     const wrapper = ref(null)
     const width = ref(0)
@@ -169,9 +174,10 @@
 
 <template>
     <div ref="wrapper" class="mx-3 d-flex justify-center" style="flex: 1 1 auto; min-width: 0;">
-        <v-menu
+        <component
+            :is="overlay.is"
+            v-bind="overlay.props"
             v-model="state.menu"
-            :close-on-content-click="false"
             :disabled="!picker.cmd">
             <template v-slot:activator="{ props }">
                 <v-btn
@@ -186,38 +192,41 @@
                     <v-icon v-else>{{ picker.icon }}</v-icon>
                 </v-btn>
             </template>
-            <v-locale-provider :locale="i18n.locale.value">
-                <v-card>
-                    <v-tabs v-if="picker.type === 'datetime'" v-model="state.tab" grow density="compact">
-                        <v-tab value="date" prepend-icon="mdi-calendar"></v-tab>
-                        <v-tab value="time" prepend-icon="mdi-clock-outline"></v-tab>
-                    </v-tabs>
-                    <v-date-picker
-                        v-if="state.tab === 'date'"
-                        v-model="state.date"
-                        color="secondary"
-                        @update:model-value="dateSelected()">
-                    </v-date-picker>
-                    <v-time-picker
-                        v-if="state.tab === 'time'"
-                        v-model="state.time"
-                        color="secondary"
-                        :format="hourFormat"
-                        :ampm-in-title="hourFormat === 'ampm'"
-                        :use-seconds="picker.useSeconds"
-                        :allowed-minutes="allowedMinutes"
-                        @update:hour="timeChanged(0, $event)"
-                        @update:minute="timeChanged(1, $event)"
-                        @update:second="timeChanged(2, $event)"
-                        @update:period="periodChanged($event)">
-                    </v-time-picker>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn variant="text" @click="state.menu = false">{{ $t('_app.picker.cancel') }}</v-btn>
-                        <v-btn variant="text" :disabled="picker.hasDate && !state.date" @click="doCmd()">{{ $t('_app.picker.ok') }}</v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-locale-provider>
-        </v-menu>
+            <v-card>
+                <v-tabs v-if="picker.type === 'datetime'" v-model="state.tab" grow density="compact">
+                    <v-tab value="date" prepend-icon="mdi-calendar"></v-tab>
+                    <v-tab value="time" prepend-icon="mdi-clock-outline"></v-tab>
+                </v-tabs>
+                <v-card-text class="pa-0">
+                    <v-locale-provider :locale="i18n.locale.value">
+                        <v-date-picker
+                            v-if="state.tab === 'date'"
+                            v-model="state.date"
+                            color="secondary"
+                            :hide-header="compact"
+                            @update:model-value="dateSelected()">
+                        </v-date-picker>
+                        <v-time-picker
+                            v-if="state.tab === 'time'"
+                            v-model="state.time"
+                            color="secondary"
+                            :format="hourFormat"
+                            :ampm-in-title="hourFormat === 'ampm'"
+                            :use-seconds="picker.useSeconds"
+                            :allowed-minutes="allowedMinutes"
+                            @update:hour="timeChanged(0, $event)"
+                            @update:minute="timeChanged(1, $event)"
+                            @update:second="timeChanged(2, $event)"
+                            @update:period="periodChanged($event)">
+                        </v-time-picker>
+                    </v-locale-provider>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn variant="text" @click="state.menu = false">{{ $t('_app.picker.cancel') }}</v-btn>
+                    <v-btn variant="text" :disabled="picker.hasDate && !state.date" @click="doCmd()">{{ $t('_app.picker.ok') }}</v-btn>
+                </v-card-actions>
+            </v-card>
+        </component>
     </div>
 </template>
