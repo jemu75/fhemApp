@@ -192,7 +192,7 @@
                     <v-icon v-else>{{ picker.icon }}</v-icon>
                 </v-btn>
             </template>
-            <v-card>
+            <v-card :class="{ 'picker-compact': compact }">
                 <v-tabs v-if="picker.type === 'datetime'" v-model="state.tab" grow density="compact">
                     <v-tab value="date" prepend-icon="mdi-calendar"></v-tab>
                     <v-tab value="time" prepend-icon="mdi-clock-outline"></v-tab>
@@ -230,3 +230,18 @@
         </component>
     </div>
 </template>
+
+<style scoped>
+    .picker-compact :deep(.v-picker-title) {
+        display: none;
+    }
+    .picker-compact :deep(.v-time-picker.v-picker) {
+        grid-template-areas: "header body";
+        grid-template-columns: auto auto;
+        align-items: center;
+        width: auto;
+    }
+    .picker-compact :deep(.v-time-picker-controls) {
+        padding-inline-start: 16px;
+    }
+</style>
