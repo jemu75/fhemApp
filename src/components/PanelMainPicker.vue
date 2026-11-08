@@ -33,7 +33,7 @@
         res.icon = fhem.getIcon(res.icon, props.iconmap)
         res.hasDate = res.type !== 'time'
         res.hasTime = res.type !== 'date'
-        res.useSeconds = res.hasTime && /s/.test(res.format)
+        res.useSeconds = res.hasTime && /ss/.test(res.format)
         return res
     })
     const current = computed(() => parseValue(picker.value.current))
