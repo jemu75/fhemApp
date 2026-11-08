@@ -397,6 +397,7 @@ Es stehen folgende Typen zur Verfügung
 |menu|Es kann ein DropDown-Menü zur Steuerung verschiedener Aktoren bzw. Aktorwerte konfiguriert werden|
 |chart|Es kann ein Chart angezeigt werden|
 |colorpicker|Es kann ein Slider zur Steuerung von RGB Lights konfiguriert werden|
+|datetimepicker|Es kann ein Datum, eine Uhrzeit oder beides ausgewählt und an FHEM gesendet werden|
 ### Level Element divider
 Zeigt eine vertikale Linie auf der rechten Seite der Spalte an.
 
@@ -635,6 +636,32 @@ Parameter|Default|Beschreibung|
 |cmd||FHEM Kommando. Die Ersetzung **%v** repräsentiert den aktuellen Wert des Colorpickers. (siehe auch [Ersetzungen](#ersetzungen)) [string]|
 |current||aktueller Wert des Colorpickers [string]|
 |type|hex|Typ des RGB-Wertes *hex* oder *hue* [string]|
+### Level Element Datetimepicker picker
+Zeigt einen Button mit dem aktuellen Datum bzw. der aktuellen Uhrzeit an. Beim Klick öffnet sich ein Kalender, eine Uhr oder beides (in zwei Tabs). Der gewählte Wert wird mit **Ok** an FHEM gesendet, mit **Abbruch** wird nichts gesendet.
+
+Der Button passt seine Darstellung an die verfügbare Breite der Spalte an (langes Datum mit Icon, kurzes Datum mit Icon, kurzes Datum ohne Icon, nur Icon). Bei geringer Bildschirmhöhe (z. B. Smartphone im Querformat) öffnet sich die Auswahl als scrollbarer Dialog.
+
+Parameter|Default|Beschreibung|
+|---|---|---|
+|reading||siehe Parameter [reading](#konfiguration-der-elemente)|
+|value||siehe Parameter [value](#konfiguration-der-elemente)|
+|cmd||FHEM Kommando. Die Ersetzung **%v** repräsentiert den ausgewählten Wert im Format von *format*. Ist kein Kommando definiert, wird der Button deaktiviert dargestellt. (siehe auch [Ersetzungen](#ersetzungen)) [string]|
+|current||aktueller Wert, der im Button angezeigt und beim Öffnen vorausgewählt wird. Erkannt werden *YYYY-MM-DD*, *YYYY-MM-DD HH:MM[:SS]*, *YYYY-MM-DDTHH:MM[:SS]*, *DD.MM.YYYY [HH:MM]*, *HH:MM[:SS]* sowie ein 10-stelliger Unix-Zeitstempel, auch innerhalb eines längeren Textes (z. B. *Next: 07:30:00*) [string]|
+|type|date|*date* für Datum, *time* für Uhrzeit, *datetime* für Datum und Uhrzeit [string]|
+|format|abhängig von *type*|Format des Wertes für **%v**. Default für *date* ist *YYYY-MM-DD*, für *time* *HH:mm* und für *datetime* *YYYY-MM-DDTHH:mm:00*. Die Defaults entsprechen den Formaten, die FHEM z. B. für *at* (timespec bzw. datespec) erwartet. Mögliche Platzhalter: *YYYY*, *YY*, *MM*, *M*, *DD*, *D*, *HH*, *H*, *mm*, *ss*, *X* (Unix-Zeitstempel). Ist *ss* enthalten, werden auch Sekunden ausgewählt. Doppelpunkte müssen mit `\:` maskiert werden [string]|
+|step|1|Raster für die Minutenauswahl, z. B. 5 oder 15 [number]|
+|icon|abhängig von *type*|Icon im Button. Default ist *mdi-calendar*, *mdi-clock-outline* bzw. *mdi-calendar-clock*. (siehe auch [mdi Icons](https://pictogrammers.com/library/mdi/) und [Icon Mapping](#element-iconmap)) [string]|
+|color||Farbe in dem der Button angezeigt wird. (siehe auch [Farben](#farben)) [string]|
+|variant|outlined|Darstellung des Buttons: *outlined*, *flat*, *elevated*, *tonal*, *text* oder *plain* [string]|
+
+Beispiele
+
+|Anwendung|Definition|
+|---|---|
+|Datum in ein Reading schreiben|`dev-datum::set dev datum %v:%s:date`|
+|Uhrzeit eines bestehenden *at* ändern (5-Minuten-Raster)|`wk-i-TIMESPEC::set wk modifyTimeSpec %v:%s:time::5:mdi-alarm`|
+|Einmalige Aktion zu Datum und Uhrzeit anlegen|`::defmod at_einmal at %v set lampe on::datetime`|
+|Datum im deutschen Format|`dev-datum::set dev datum %v:%s:date:DD.MM.YYYY`|
 ### Level Element Input textfield
 Zeigt ein Eingabegfeld an. Die eingegebenen Werte können an FHEM gesendet werden.
 

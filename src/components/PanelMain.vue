@@ -9,6 +9,7 @@
     import PanelMainMenu from './PanelMainMenu.vue'
     import PanelMainChart from './PanelMainChart.vue'
     import PanelMainColorpicker from './PanelMainColorpicker.vue'
+    import PanelMainPicker from './PanelMainPicker.vue'
 
     defineProps({
         main: Object,
@@ -41,6 +42,7 @@
         if(type === 'menu') return PanelMainMenu
         if(type === 'chart') return PanelMainChart
         if(type === 'colorpicker') return PanelMainColorpicker
+        if(type === 'datetimepicker') return PanelMainPicker
     }
 </script>
 
