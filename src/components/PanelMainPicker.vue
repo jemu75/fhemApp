@@ -232,16 +232,49 @@
 </template>
 
 <style scoped>
+    .picker-compact {
+        width: 448px;
+        max-width: 100%;
+    }
     .picker-compact :deep(.v-picker-title) {
         display: none;
+    }
+    .picker-compact :deep(.v-date-picker) {
+        margin-inline: auto;
     }
     .picker-compact :deep(.v-time-picker.v-picker) {
         grid-template-areas: "header body";
         grid-template-columns: auto auto;
+        justify-content: center;
         align-items: center;
+        column-gap: 24px;
         width: auto;
+        padding: 12px 16px 0;
     }
     .picker-compact :deep(.v-time-picker-controls) {
-        padding-inline-start: 16px;
+        margin-bottom: 0;
+    }
+    .picker-compact :deep(.v-time-picker-controls__time__btn.v-btn--density-default.v-btn) {
+        width: 72px;
+        height: 64px;
+        font-size: 40px;
+    }
+    .picker-compact :deep(.v-time-picker-controls__time__separator) {
+        width: 16px;
+        height: 64px;
+        font-size: 40px;
+        line-height: 64px;
+    }
+    .picker-compact :deep(.v-time-picker-clock__container) {
+        flex-basis: auto;
+        padding: 0;
+    }
+    .picker-compact :deep(.v-time-picker-clock) {
+        width: 216px;
+        height: 216px;
+    }
+    .picker-compact :deep(.v-card-actions) {
+        min-height: 44px;
+        padding-top: 0;
     }
 </style>
